@@ -230,6 +230,32 @@ Keep the numbers in each title sequential as you add, remove, or reorder chapter
 !!! warning
     Each markdown file can contain only one heading 1 (`#`). Zensical numbers headings sequentially across the whole document in `nav` order, starting a new top-level number at each heading 1 - a second heading 1 in the same file breaks that numbering and confuses the table of contents. If you need another top-level heading, create a new markdown file for it and add it to `nav` instead.
 
+### Section cross-references
+
+This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extensions/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for cross-references: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
+
+!!! info "How the PDF handles this"
+    Same as citations/glossary below - `build_pdf.py` renders this page through the real Zensical/prodockit pipeline, so `\ref{id}` resolves the same way in both outputs with no separate PDF-side translation.
+
+1. Every heading already has an id, the same slugified-from-its-text id `toc`'s permalinks use (this section's own "### Changing heading numbering" heading above got `changing-heading-numbering` automatically, with no extra markup needed). Give it an explicit id instead with [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax when you want a short, stable id that won't change if you reword the heading later, or to avoid a collision with another heading elsewhere in the document that slugifies to the same text:
+
+    ``` markdown
+    ## SubSection {: #citations-example }
+    ```
+
+2. Reference it from anywhere in the document with `\ref{id}`:
+
+    ``` markdown
+    As covered in \ref{changing-heading-numbering}, ...
+    ```
+
+    Which renders as: As covered in \ref{changing-heading-numbering}, ...
+
+    No need to track down the section's current number, or update it by hand if the target moves - `\ref{id}` re-resolves on every build. This template's own `docs/section1.md`-`docs/section4.md` cross-reference each other's citation/acronym/glossary/caption examples this way, each using an explicit attr_list id since "SubSection" repeats several times per page.
+
+!!! note
+    A reference to a heading that doesn't exist (a typo in the id, or a heading in a page not yet processed) falls back to `??`, the same way an undefined LaTeX `\ref` shows `??` until a later compilation pass - a quick visual signal something needs fixing.
+
 ### References and bibliography
 
 This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for citations: define a source once, cite it by key anywhere with `\cite{id}`.
@@ -616,61 +642,29 @@ Initial commit
 
 ## Finalising your document
 
-Before you release your document, work through the following steps. The short version of this section lives in the stub [Start here](https://buckwem.github.io/prodockit-template/starthere/){target="_blank"} page itself, in your own copy of the template - this is the fuller explanation.
-
-### Remove "START HERE" from the navigation
-
-The "Start Here" stub page you're reading a copy of is an author-facing pointer, not part of your final document, so it needs to come out of `nav` before you release it. In `zensical.toml`, comment out the `"START HERE"` group:
-
-```toml
-{"Assignment" = [
-  {"2. Section" = "section1.md"},
-  {"3. Section" = "section2.md"},
-  {"4. Section" = "section3.md"},
-  {"5. Section" = "section4.md"}
-]},
-# {"START HERE" = [
-#   {"6. Start Here" = "starthere.md"}
-# ]},
-{"Appendixes" = [
-  {"Appendix A. Acronyms" = "acronyms.md"},
-  {"Appendix B. Glossary" = "glossary.md"},
-  {"Appendix C. References" = "references.md"}
-]}
-```
-
-Since `nav` drives both outputs (see [Navigation structure](#navigation-structure)), commenting it out removes the "START HERE" tab from the website's sidebar and drops the stub page from the generated PDF in one change - without touching any files on disk. This is the only step that's strictly required: it's what actually keeps this guidance out of the document you hand in.
-
-### Delete `starthere.md`
-
-Removing the page from `nav` is enough to keep it out of your document, but the source file itself is still sitting at `docs/starthere.md` (see [Directory structure](#directory-structure)). Deleting it entirely is optional but recommended once you're confident you won't need to refer back to it - it keeps the repository free of a file that's no longer used.
-
-```bash
-rm docs/starthere.md
-```
-
-!!! warning
-    Delete the file only *after* you've commented out (or removed) the `"START HERE"` group in `nav`. If a `nav` entry still points at a file that no longer exists, the build fails with a missing-file error.
+Before you release your document, work through the following step.
 
 ### Remove the Originality warning
 
 Delete the first Warning admonition box in `originality.md` - it's a note for you as the author, explaining what to do on that page, and isn't part of your declaration itself.
 
+!!! note
+    Earlier versions of this template shipped a "START HERE" nav entry and stub page (`docs/starthere.md`) that had to be removed before submitting. The template no longer ships one at all - this User Guide is the only copy of this guidance, so there's nothing left in your own fork to comment out of `nav` or delete.
+
 ## Directory structure
 
-Now that you've customised the website, the document structure, the cover page, and the PDF layout, it's worth knowing where everything you've just changed actually lives. The listing below is a complete map of the template as delivered: every markdown page under `docs/`, the configuration and build scripts at the project root, the CSS that drives both outputs, and the CI/CD workflows that publish them. Use it as a reference when you're looking for a file mentioned earlier in this section, deciding where to add a new page, or checking what's safe to delete (such as `starthere.md` once you no longer need it).
+Now that you've customised the website, the document structure, the cover page, and the PDF layout, it's worth knowing where everything you've just changed actually lives. The listing below is a complete map of the template as delivered: every markdown page under `docs/`, the configuration and build scripts at the project root, the CSS that drives both outputs, and the CI/CD workflows that publish them. Use it as a reference when you're looking for a file mentioned earlier in this section, or deciding where to add a new page.
 
 * :material-folder: **docs/** — Holds the documentation source tree.
     * :material-file-document-outline: `index.md` — The cover page of your documentation.
     * :material-file-document-outline: `originality.md` — Your declaration of originality and AI use for you to complete.
-    * :material-file-document-outline: `section1.md` — The first section of your documentation for you to edit.
-    * :material-file-document-outline: `section2.md` — The second section of your documentation for you to edit.
-    * :material-file-document-outline: `section3.md` — The third section of your documentation for you to edit.
-    * :material-file-document-outline: `section4.md` — The fourth section of your documentation for you to edit.
+    * :material-file-document-outline: `section1.md` — The first section of your documentation for you to edit - ships with worked examples of citations, acronyms, and the glossary (see [References and bibliography](#references-and-bibliography), [Acronyms and abbreviations](#acronyms-and-abbreviations), and [Glossary](#glossary)).
+    * :material-file-document-outline: `section2.md` — The second section, with a worked cross-reference example (see [Section cross-references](#section-cross-references)).
+    * :material-file-document-outline: `section3.md` — The third section, with a worked figure-caption example (see [Captions](#captions)).
+    * :material-file-document-outline: `section4.md` — The fourth section, with a worked table-caption example (see [Captions](#captions)).
     * :material-file-document-outline: `acronyms.md` — Your acronym list, for you to complete - see [Acronyms and abbreviations](#acronyms-and-abbreviations).
     * :material-file-document-outline: `glossary.md` — Your glossary of key terms, for you to complete - see [Glossary](#glossary).
     * :material-file-document-outline: `references.md` — Your bibliography, for you to complete - see [References and bibliography](#references-and-bibliography).
-    * :material-file-document-outline: `starthere.md` — Short author-facing pointer explaining the template and linking out to the full [prodockit User Guide](https://buckwem.github.io/prodockit-userguide/){target="_blank"} - delete it once you're familiar with the template.
     * :material-folder: **assets/** — Images, logos, and header backgrounds used across the site and the cover page.
     * :material-folder: **stylesheets/** — CSS for the website and the PDF.
         * :material-file-document-outline: `extra.css` — Most of the template's own website customisations (logo swap, header image, cover page styles, `.pdf-only`/`.web-only` markers).
