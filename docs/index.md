@@ -1,5 +1,8 @@
 ---
 icon: lucide/book-open
+hide:
+    - navigation
+    - toc
 ---
 
 <!--
