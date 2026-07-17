@@ -1,0 +1,20 @@
+# Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
+# SPDX-License-Identifier: MIT
+
+# Environments
+.venv
+
+# Artifacts
+__pycache__
+.pytest_cache
+
+# macOS internals
+.DS_Store
+
+# Temporary files
+tmp
+.cache/
+public/
+
+# Local Claude Code config (dev-preview launch config, personal permissions)
+.claude/

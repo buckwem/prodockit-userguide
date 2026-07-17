@@ -1,0 +1,181 @@
+# Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
+# SPDX-License-Identifier: MIT
+
+[project]
+
+site_name = "prodockit User Guide"
+site_description = "Full setup, authoring, customisation, and testing guide for prodockit-template and other prodockit-based Zensical projects."
+site_author = "Mark Buckwell"
+site_url = "https://github.com/buckwem/prodockit-userguide/"
+site_dir = "public"
+
+repo_url = "https://github.com/buckwem/prodockit-userguide"
+repo_name = "prodockit-userguide"
+edit_uri = "edit/main/docs/"
+
+copyright = """
+Author: Mark Buckwell and contributors. Licensed under the MIT License.
+"""
+
+nav = [
+  {"Home" = ["index.md"]},
+  {"Guide" = [
+    {"1. Install tooling" = "installtooling.md"},
+    {"2. Start editing" = "startediting.md"},
+    {"3. Markdown basics" = "markdown.md"},
+    {"4. Zensical basics" = "zensicalbasics.md"},
+    {"5. Customisation" = "customise.md"},
+    {"6. Additional tooling" = "additionaltooling.md"},
+    {"7. Shell commands" = "shcommands.md"},
+    {"8. Testing" = "testing.md"}
+  ]},
+  {"Reference" = [
+    {"Acronyms" = "acronyms.md"},
+    {"Glossary" = "glossary.md"},
+    {"References" = "references.md"}
+  ]}
+]
+
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = [
+  "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
+  "javascript/extra.js"
+]
+
+[project.theme]
+
+logo = "assets/logo_black.png"
+custom_dir = "overrides"
+language = "en"
+
+features = [
+    "announce.dismiss",
+    "content.action.view",
+    "content.code.annotate",
+    "content.code.copy",
+    "content.code.select",
+    "content.footnote.tooltips",
+    "content.tabs.link",
+    "content.tooltips",
+    "navigation.footer",
+    "navigation.indexes",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "navigation.sections",
+    "navigation.tabs",
+    "navigation.tabs.sticky",
+    "navigation.top",
+    "navigation.tracking",
+    "search.highlight",
+    "toc.integrate",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.theme.icon]
+edit = "lucide/pencil"
+view = "lucide/eye"
+repo = "fontawesome/brands/github"
+
+[project.theme.icon.admonition]
+note = "fontawesome/solid/note-sticky"
+abstract = "fontawesome/solid/book"
+info = "fontawesome/solid/circle-info"
+tip = "fontawesome/solid/bullhorn"
+success = "fontawesome/solid/check"
+question = "fontawesome/solid/circle-question"
+warning = "fontawesome/solid/triangle-exclamation"
+failure = "fontawesome/solid/bomb"
+danger = "fontawesome/solid/skull"
+bug = "fontawesome/solid/robot"
+example = "fontawesome/solid/flask"
+quote = "fontawesome/solid/quote-left"
+
+[project.extra]
+# Kept only so acronyms.md/glossary.md/references.md - included here purely
+# to demonstrate prodockit.citations/prodockit.glossary live, the same way
+# customise.md documents them - render with the same tight list spacing as
+# prodockit-template's own copies. This guide has no PDF build, so the
+# pdf_* settings prodockit-template also sets here don't apply.
+reference_style = "european"
+reference_spacing_european = "-0.8em"
+reference_indent_global = "1.27cm"
+reference_spacing_global = "2em"
+
+# ----------------------------------------------------------------------------
+# Markdown extensions - mirrors prodockit-template's own config, since every
+# page here demonstrates one of these features live.
+# ----------------------------------------------------------------------------
+[project.markdown_extensions.abbr]
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.def_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+[project.markdown_extensions.toc]
+permalink = true
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+[project.markdown_extensions.pymdownx.betterem]
+smart_enable = "all"
+[project.markdown_extensions.pymdownx.caret]
+[project.markdown_extensions.pymdownx.details]
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+options.custom_icons = ["overrides/.icons"]
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+[project.markdown_extensions.pymdownx.inlinehilite]
+[project.markdown_extensions.pymdownx.keys]
+[project.markdown_extensions.pymdownx.magiclink]
+[project.markdown_extensions.pymdownx.mark]
+[project.markdown_extensions.pymdownx.smartsymbols]
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
+]
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+combine_header_slug = true
+[project.markdown_extensions.pymdownx.tasklist]
+custom_checkbox = true
+[project.markdown_extensions.pymdownx.tilde]
+[project.markdown_extensions.tables]
+
+# prodockit.headings/refs/citations/glossary - see prodockit-template's own
+# zensical.toml for the full rationale. Registered the same way here so the
+# live \cite{}/\gls{} examples on the Customisation page actually resolve.
+[project.markdown_extensions."prodockit.headings"]
+numbering = "continuous"
+[project.markdown_extensions."prodockit.refs"]
+[project.markdown_extensions."prodockit.citations"]
+[project.markdown_extensions."prodockit.glossary"]
+[project.markdown_extensions.pymdownx.snippets]
+[project.markdown_extensions.pymdownx.blocks.caption]
+types = [
+  { name = "caption" },
+  { name = "figure-caption", prefix = "{}.", classes = "prodockit-figure-caption" },
+  { name = "table-caption", prefix = "{}.", classes = "prodockit-table-caption" },
+]
+[project.markdown_extensions.zensical.extensions.glightbox]
+
+[project.markdown_extensions.zensical.extensions.macros]
+# macros.py here just re-exports prodockit.zensical_macros.define_env() -
+# needed for acronym_style()/glossary_style()/reference_style() (used by
+# the Reference pages) - see macros.py's own docstring for why this isn't
+# registered via the `modules = [...]` option instead.
+module_name = "macros"
+on_error_fail = true

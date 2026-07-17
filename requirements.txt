@@ -1,0 +1,5 @@
+# Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
+# SPDX-License-Identifier: MIT
+
+zensical
+prodockit>=0.1.0

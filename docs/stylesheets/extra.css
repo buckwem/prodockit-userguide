@@ -1,0 +1,87 @@
+/* Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors */
+/* SPDX-License-Identifier: MIT */
+
+/* ============================================================= */
+/* ================ Style for slate theme logo ================ */
+/* ============================================================= */
+
+[data-md-color-scheme="slate"] .md-logo img {
+  content: url("../assets/logo_white.png");
+}
+[data-md-color-scheme="default"] .md-logo img {
+  content: url("../assets/logo_black.png");
+}
+
+/* ============================================================= */
+/* ======= Fix for the bundled theme's #only-light/dark bug ===== */
+/* ============================================================= */
+
+/* Zensical's own theme CSS hides #only-dark images in light (default)
+   mode and #only-light images in dark (slate) mode, but neither rule
+   uses !important, so attr_list-style inline `style="display: block"`
+   silently wins over both of them - both the light and dark image end up
+   visible at once, in both modes. Reassert both directions here, with
+   !important, to actually win (see zensicalbasics.md's own "Images"
+   section, which demonstrates this hash-fragment syntax live). */
+[data-md-color-scheme="default"] img[src$="#gh-dark-mode-only"],
+[data-md-color-scheme="default"] img[src$="#only-dark"] {
+  display: none !important;
+}
+[data-md-color-scheme="slate"] img[src$="#gh-light-mode-only"],
+[data-md-color-scheme="slate"] img[src$="#only-light"] {
+  display: none !important;
+}
+
+/* ============================================================= */
+/* ================ Styles for framed screenshots ================ */
+/* ============================================================= */
+
+/* Applied via "{ .screenshot }" on an image (see "Captions" in
+   customise.md) - a subtle border, rounded corners, and a light shadow
+   signal "this is a picture of your screen", distinguishing a real
+   application/tool screenshot from a logo, icon, or diagram. */
+.md-typeset img.screenshot {
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+[data-md-color-scheme="slate"] .md-typeset img.screenshot {
+  border-color: #4a4a4a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================= */
+/* ============== Styles for use with card grids =============== */
+/* ============================================================= */
+
+.grid.cards.one-column {
+  grid-template-columns: 1fr;
+}
+
+/* ============================================================= */
+/* ============= Styles for text background colour ============= */
+/* ============================================================= */
+
+.bg-blue {
+    background-color: #0078d4;
+    color: #ffffff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.bg-green {
+    background-color: #029e50;
+    color: #ffffff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.bg-grey {
+    background-color: #6e6d6dca;
+    color: #ffffff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+}
