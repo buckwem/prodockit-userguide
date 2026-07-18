@@ -3,3 +3,8 @@
 
 zensical
 prodockit>=0.1.0
+# prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
+# their Python APIs - pandoc itself isn't pip-installable (see
+# .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI
+# entry point is, so it's listed here rather than assumed pre-installed.
+weasyprint
