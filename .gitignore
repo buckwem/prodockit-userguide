@@ -16,5 +16,9 @@ tmp
 .cache/
 public/
 
+# Generated PDF build output
+docs/site_documentation.pdf
+docs/.prodockit-pdf-mermaid/
+
 # Local Claude Code config (dev-preview launch config, personal permissions)
 .claude/
