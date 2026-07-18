@@ -296,14 +296,14 @@ This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-e
 
     `"european"` (the default) - single line spacing, no indent, entries close together:
 
-    ![European reference style: single line spacing, no indent, entries close together](images/reference-style-european.png){ .screenshot }
+    ![European reference style: single line spacing, no indent, entries close together](images/reference-style-european.png){ width="100%" .screenshot }
     /// figure-caption
     European reference style
     ///
 
     `"global"` - double spacing between entries, with a 0.5in/1.27cm hanging indent on wrapped lines (the common APA/MLA/Chicago style):
 
-    ![Global reference style: double spacing between entries, with a hanging indent on wrapped lines](images/reference-style-global.png){ .screenshot }
+    ![Global reference style: double spacing between entries, with a hanging indent on wrapped lines](images/reference-style-global.png){ width="100%" .screenshot }
     /// figure-caption
     Global reference style
     ///
@@ -530,7 +530,7 @@ Every page except the cover shows a running header: your project's `site_name` (
 
 The header also shows the current chapter title, right-aligned - starting from the first numbered heading 1, so it's blank on the cover page and the Table of Contents. `build_pdf.py` computes it automatically from each page's heading 1 (including its chapter number), so there's nothing to configure here either.
 
-![PDF page header layout: site_name top-left, the current chapter's H1 top-right](images/pdf-page-header-layout.png)
+![PDF page header layout: site_name top-left, the current chapter's H1 top-right](images/pdf-page-header-layout.png){ width="100%" }
 /// figure-caption
 PDF page header layout
 ///
@@ -539,7 +539,7 @@ PDF page header layout
 
 Every page except the cover also shows a running footer: your `copyright` text (left-aligned - see [Copyright](#copyright)) and a "Page X of Y" counter (right-aligned).
 
-![PDF page footer layout: copyright bottom-left, and the Page N of M counter bottom-right](images/pdf-page-footer-layout.png)
+![PDF page footer layout: copyright bottom-left, and the Page N of M counter bottom-right](images/pdf-page-footer-layout.png){ width="100%" }
 /// figure-caption
 PDF page footer layout
 ///

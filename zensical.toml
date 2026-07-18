@@ -13,12 +13,18 @@ repo_url = "https://github.com/buckwem/prodockit-userguide"
 repo_name = "prodockit-userguide"
 edit_uri = "edit/main/docs/"
 
-copyright = """
-Author: Mark Buckwell and contributors. Licensed under the MIT License.
-"""
+# Single-line, not the triple-quoted block customise.md's own example
+# shows: prodockit.pdf substitutes this verbatim into a CSS `content: "..."`
+# string for the PDF's running footer (see "Page footer" in customise.md) -
+# literal embedded newlines from a multi-line TOML string break that CSS
+# declaration, silently dropping the whole footer with no error. Harmless
+# multi-line whitespace on the website (its own copy renders through normal
+# HTML, which collapses it), so this only shows up in the PDF.
+copyright = "Author: Mark Buckwell and contributors. Licensed under the MIT License."
 
 nav = [
   {"Home" = ["index.md"]},
+  {"About" = ["about.md"]},
   {"Guide" = [
     {"1. Install tooling" = "installtooling.md"},
     {"2. Start editing" = "startediting.md"},
@@ -100,15 +106,27 @@ example = "fontawesome/solid/flask"
 quote = "fontawesome/solid/quote-left"
 
 [project.extra]
-# Kept only so acronyms.md/glossary.md/references.md - included here purely
-# to demonstrate prodockit.citations/prodockit.glossary live, the same way
-# customise.md documents them - render with the same tight list spacing as
-# prodockit-template's own copies. This guide has no PDF build, so the
-# pdf_* settings prodockit-template also sets here don't apply.
+# Reference/acronym/glossary list spacing - kept in sync with
+# prodockit-template's own copies so acronyms.md/glossary.md/references.md
+# demonstrate prodockit.citations/prodockit.glossary with the same tight
+# list spacing customise.md documents.
 reference_style = "european"
 reference_spacing_european = "-0.8em"
 reference_indent_global = "1.27cm"
 reference_spacing_global = "2em"
+
+# PDF page size/margins and running header/footer style - explicitly set to
+# match prodockit-template's own values (which are themselves prodockit.pdf's
+# defaults), so a reader comparing this guide's PDF against one built from
+# the template sees the same page layout.
+pdf_page_size = "A4"
+pdf_margin_top = "2cm"
+pdf_margin_right = "2cm"
+pdf_margin_bottom = "2cm"
+pdf_margin_left = "2cm"
+pdf_header_footer_font_size = "10pt"
+pdf_header_footer_color = "#555555"
+pdf_header_footer_divider_color = "#e2e8f0"
 
 # ----------------------------------------------------------------------------
 # Markdown extensions - mirrors prodockit-template's own config, since every
