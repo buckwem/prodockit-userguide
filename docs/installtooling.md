@@ -359,7 +359,7 @@ Fork and Clone Comparison at a Glance
 
 The features of forking and cloning are complementary. You can fork a repository to create your own copy on the remote host, and then clone that fork to your local machine to work on it. The standard workflow is:
 
-1. **Fork:** You find a project on GitHub. You click the Fork button on the website. Now, you have a copy at `github.com/your-username/project`.
+1. **Fork:** You find a project on GitHub. You click the Fork button on the website (or run `gh repo fork`/`glab repo fork` from your terminal instead - see [Fork the prodockit-template](#fork-the-prodockit-template) below). Now, you have a copy at `github.com/your-username/project`.
 2. **Clone:** You run `git clone git@github.com:your-username/project.git` in your terminal. Now, the code is on your laptop.
 3. **Work:** You write code, make local commits, and test your changes.
 4. **Push:** You run `git push origin main` to send your local changes back up to your cloud fork.
@@ -372,46 +372,72 @@ The features of forking and cloning are complementary. You can fork a repository
 
 You may already have a GitLab or GitHub repository containing a Zensical template provided for you. If you do, you can skip this section and go to the next section to clone the repository locally.
 
-1. Start with opening up a browser and go to the prodockit-template repository - on [GitHub](https://github.com/buckwem/prodockit-template){target="_blank"}, or on the [University of Surrey GitLab](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank"} if that's what your course uses.
+This section forks the repository entirely from your terminal over SSH, using the GitHub CLI (`gh`) or GitLab CLI (`glab`), instead of clicking through the website.
 
-1. Next, fork the documentation template to create a copy of the template in your own Git cloud account. Follow the instructions below to fork the repository.
+1. Install the command line tool for whichever host your course uses.
 
-    <div class="grid cards one-column" markdown>
-    
-    -   :material-clock-fast:{ .lg .middle } __Fork the documentation template__
+    | OS | GitHub CLI (`gh`) | GitLab CLI (`glab`) |
+    |---|---|---|
+    | macOS (Homebrew) | `brew install gh` | `brew install glab` |
+    | Windows 11 (PowerShell) | `winget install GitHub.cli` | `winget install GitLab.GLab` |
+    | Linux (Ubuntu/Debian) | `sudo apt install gh` | `sudo apt install glab` |
 
-        === "GitLab"
+    !!! Tip
+        If `gh`/`glab` isn't packaged for your Linux distribution yet, see the [GitHub CLI](https://github.com/cli/cli/blob/trunk/docs/install_linux.md){target="_blank"} or [GitLab CLI](https://gitlab.com/gitlab-org/cli#installation){target="_blank"} install docs for an up-to-date package repository to add.
 
-            1. Click on the link to [fork a copy of the documentation template](https://gitlab.surrey.ac.uk/mb0105/prodockit-template/-/forks/new){target="_blank"} to create a copy of the template for your use.
-            
-                ![Image title](images/gitlab-fork-project.png){ width=70% .screenshot }
-                /// figure-caption
-                GitLab fork project
-                ///
-           
-            2. Enter your *Project name* using the format the coursework specifies. For example, for coursework 1 for the module COMM058 in the year 2026 for your GitLab ID az1234, enter 'cw1-az1234' in the project name field. Edit the *Project slug* to match the project name. Use all lowercase and a dash between words with no spaces.
-            3. Then select the project namespace for the module as directed by your course tutor.
-            4. Change the *Visibility Level* to *Private*.
-            5. Press the button **Fork Project**{: .bg-blue} to create your own copy of the project in the group namespace.
-        
-        === "GitHub"
+1. Authenticate the CLI with your account, choosing **SSH** as the Git protocol when prompted - this reuses the same SSH keys you set up in [Generate and configure ssh keys for Git](#generate-and-configure-ssh-keys-for-git).
 
-            1. Go to the [prodockit-template repository](https://github.com/buckwem/prodockit-template){target="_blank"} on GitHub and click the **Fork**{: .bg-green} button near the top-right of the page.
-            2. On the "Create a new fork" page, keep your own account selected as the **Owner**.
-            3. Enter a *Repository name* using the format the coursework specifies, matching the naming convention your course tutor directs (e.g. `cw1-your-username`).
-            4. Leave **Copy the `main` branch only** checked.
-            5. Click **Create fork**{: .bg-green}.
-            6. Once forked, go to your new repository's **Settings** tab, scroll down to the **Danger Zone**, and change the visibility to **Private**.
-            7. While you're in **Settings**, select **Pages** in the left-hand sidebar, and under **Build and deployment > Source**, change it from **Deploy from a branch** to **GitHub Actions**. GitHub Pages doesn't exist for a repository until you set this, so without it the `docs.yml` workflow fails on its first run with an error like `Get Pages site failed... Not Found`.
+    === "GitLab"
 
-    </div>
+        ``` bash
+        glab auth login --hostname gitlab.com --git-protocol ssh
+        ```
+
+        Use your own GitLab instance's hostname instead if your course uses a self-hosted GitLab, for example `gitlab.surrey.ac.uk`.
+
+    === "GitHub"
+
+        ``` bash
+        gh auth login --hostname github.com --git-protocol ssh
+        ```
+
+1. Fork the repository and clone it in the same step.
+
+    === "GitLab"
+
+        ``` bash
+        glab repo fork gitlab.surrey.ac.uk/mb0105/prodockit-template --name cw1-az1234 --path your-group/cw1-az1234 --clone
+        ```
+
+        Replace `gitlab.surrey.ac.uk/mb0105/prodockit-template` with the actual GitLab instance and path your course uses, `cw1-az1234` with the project name your course tutor specifies, and `your-group` with the namespace they direct you to fork into (leave `--path` off entirely to fork into your own personal namespace instead).
+
+        Then open the new project on the website and go to **Settings > General > Visibility, project features, permissions**, and change **Project visibility** to **Private** - `glab` has no command line switch for this yet.
+
+    === "GitHub"
+
+        ``` bash
+        gh repo fork buckwem/prodockit-template --fork-name cw1-your-username --clone
+        ```
+
+        Replace `cw1-your-username` with the repository name your coursework specifies.
+
+        Then set the fork to private, and switch on GitHub Pages - neither exists yet on a fresh fork, and Pages must exist before the `docs.yml` workflow's first run, or it fails with `Get Pages site failed... Not Found`:
+
+        ``` bash
+        gh repo edit your-username/cw1-your-username --visibility private --accept-visibility-change-consequences
+        gh api repos/your-username/cw1-your-username/pages -X POST -f build_type=workflow
+        ```
+
+        Replace `your-username`/`cw1-your-username` with your own account and the repository name from the previous command. If the `gh api` call fails, set this up on the website instead: **Settings > Pages**, then change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**.
+
+    Both commands clone the new fork straight into a `cw1-az1234`/`cw1-your-username` folder in your current directory - you don't need [Clone the prodockit-template](#clone-the-prodockit-template) below unless you skipped forking entirely (see the note at the top of this section).
 
 !!! Warning
     Don't forget to set the visibility to private, otherwise others can see your repository. Ask someone else to check whether they can see your repository.
 
 ### Clone the prodockit-template
 
-This section takes you through the steps to clone the documentation template into your own local device. You will then be able to edit the template locally in Visual Studio Code and eventually publish your own documentation website.
+If you forked using `glab`/`gh repo fork --clone` above, you already have a local copy from that step - skip this section entirely. Otherwise (you were given an existing repository, or forked some other way), this section clones the template into your own local device. You will then be able to edit the template locally in Visual Studio Code and eventually publish your own documentation website.
 
 1. Start with creating a directory for all your *GitLab* or *GitHub* projects on your local desktop. For example, create a directory called 'GitLab' in your OneDrive directory.
     
