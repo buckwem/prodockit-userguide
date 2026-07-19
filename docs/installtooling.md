@@ -58,14 +58,6 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
 
 </div>
 
-### Install Visual Studio Code plugins
-
-VS Code has a rich ecosystem of plugins that can enhance your editing experience. The following plugins work well for Markdown and Zensical:
-
-1. Install [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint){target="_blank"} plugin for Visual Studio Code from the marketplace. This markdownlint extension checks your markdown files using a library of rules to encourage consistent formatting.
-1. Install [Even Better TOML](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml){target="_blank"} plugin for Visual Studio Code from the marketplace. This extension helps manage a [TOML](https://toml.io/en/){target="_blank"} file.
-1. Install [LTeX+–LanguageTool grammar/spell checking](https://marketplace.visualstudio.com/items?itemName=ltex-plus.vscode-ltex-plus){target="_blank"} plugin for Visual Studio Code from the marketplace to enable spelling and grammar checking for Markdown. Configure the plugin in the settings to use the *language* `en-GB`.
-
 ## Install Git with Visual Studio Code
 
 [Git](https://git-scm.com/){target="_blank"} is a version control system that enables you to track changes to your code and collaborate with others. You will be using Git to manage your documentation website and push your changes to your **GitLab** or **GitHub** cloud repository.
@@ -124,10 +116,12 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
 
 1. Register for an account on the **GitLab** or **GitHub** cloud instance you will use. If you have already registered, you can skip this step.
 
+{% if is_surrey %}
 !!! Info "University of Surrey GitLab"
     For the University of Surrey, you will be using the GitLab instance provided by the university at [https://gitlab.surrey.ac.uk](https://gitlab.surrey.ac.uk){target="_blank"}. When you get to the login page, select the button **Surrey Login**{: .bg-grey} and use your university credentials.
 
     If you'd also like an account on the public GitLab at [https://gitlab.com](https://gitlab.com){target="_blank"} - for example, to keep using GitLab for personal projects after you graduate - you can register for one separately; the steps below work the same for both.
+{% endif %}
 
 ### Generate and configure ssh keys for Git
 
@@ -184,6 +178,7 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
     
     paste the following configuration into the file:
 
+{% if is_surrey %}
     ```text
     # GitLab
     Host gitlab.com
@@ -203,10 +198,25 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
         User git
         IdentityFile ~/.ssh/id_ed25519_github
     ```
+{% else %}
+    ```text
+    # GitLab
+    Host gitlab.com
+        HostName gitlab.com
+        User git
+        IdentityFile ~/.ssh/id_ed25519_gitlab
 
-    The same key works for both GitLab entries - you just need to add its public key (`~/.ssh/id_ed25519_gitlab.pub`) to each account separately in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below. Leave the `gitlab.com` entry (or the `gitlab.surrey.ac.uk` entry, if you're not at Surrey) out if you don't need it.
+    # GitHub
+    Host github.com
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/id_ed25519_github
+    ```
+{% endif %}
 
-    then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano). On Windows, you can use `Notepad` or any text editor to create the `config` file in the `.ssh` directory.
+    The same key works for multiple GitLab/GitHub instances - you just need to add the public key (`~/.ssh/id_ed25519_gitlab.pub`) to each account separately in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below. 
+
+    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano). On Windows, you can use `Notepad` or any text editor to create the `config` file in the `.ssh` directory.
 
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
@@ -219,26 +229,6 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
     ```
 
     Windows handles permissions differently and are normally set to only allow access to the user, but ensure that the private keys aren't accessible to other users.
-
-1. Test the SSH connection to GitHub and GitLab to ensure that the keys are working correctly. Run the following commands in your terminal:
-
-    ```bash
-    ssh -T git@github.com
-    ssh -T git@gitlab.com
-    ```
-
-    If you're using the University of Surrey GitLab, test that connection too:
-
-    ```bash
-    ssh -T git@gitlab.surrey.ac.uk
-    ```
-
-    If successful, you will see greetings like:
-
-    ```text
-    Hi username! You've successfully authenticated, but GitHub does not provide shell access.
-    Welcome to GitLab, @username!
-    ```
 
 1. You've set a passphrase for the SSH keys, so you'll need to enter it every time you use a key. To avoid this, you can use an SSH agent to cache your passphrase. Follow the instructions below to start the SSH agent and add your keys.
 
@@ -300,33 +290,55 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
 
 ### Integrate Visual Studio Code with Git
 
-Now that you've generated your keys and finished the configuration, add them to your GitHub and GitLab accounts using the instructions below.
+1. Now that you've generated your keys and finished the configuration, add them to your GitHub and GitLab accounts using the instructions below.
 
-<div class="grid cards one-column" markdown>
+    <div class="grid cards one-column" markdown>
     
--   :material-clock-fast:{ .lg .middle } __Integrate Visual Studio Code with Git__
+    -   :material-clock-fast:{ .lg .middle } __Integrate Visual Studio Code with Git__
 
-    === "GitLab"
+        === "GitLab"
 
-        1. Log in to your **GitLab** account in a web browser.
-        2. In the top-right corner, click on your **profile avatar** and select **Edit profile**.
-        3. On the left-hand sidebar, select **Access > SSH Keys**.
-        4. Click **Add new key**{: .bg-blue} and fill out the following details:
-            * **Title:** Give it a clear name (e.g., VS Code Extension).
-            * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_gitlab.pub`).
-        5. Click **Add key**{: .bg-blue} to save the key.
+            1. Log in to your **GitLab** account in a web browser.
+            2. In the top-right corner, click on your **profile avatar** and select **Edit profile**.
+            3. On the left-hand sidebar, select **Access > SSH Keys**.
+            4. Click **Add new key**{: .bg-blue} and fill out the following details:
+                * **Title:** Give it a clear name (e.g., VS Code Extension).
+                * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_gitlab.pub`).
+            5. Click **Add key**{: .bg-blue} to save the key.
 
-    === "GitHub"
+        === "GitHub"
 
-        1. Log in to your **GitHub** account in a web browser.
-        2. In the top-right corner, click on your **profile avatar** and select **Settings**.
-        3. On the left-hand sidebar, select **SSH and GPG keys**.
-        4. Click **New SSH key**{: .bg-green} and fill out the following details:
-            * **Title:** Give it a clear name (e.g., VS Code Extension).
-            * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_github.pub`).
-        5. Click **Add SSH key**{: .bg-green} to save the key.
+            1. Log in to your **GitHub** account in a web browser.
+            2. In the top-right corner, click on your **profile avatar** and select **Settings**.
+            3. On the left-hand sidebar, select **SSH and GPG keys**.
+            4. Click **New SSH key**{: .bg-green} and fill out the following details:
+                * **Title:** Give it a clear name (e.g., VS Code Extension).
+                * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_github.pub`).
+            5. Click **Add SSH key**{: .bg-green} to save the key.
 
-</div>
+    </div>
+
+1. Test the SSH connection to GitHub and GitLab to ensure that the keys are working correctly. Run the following commands in your terminal:
+
+    ```bash
+    ssh -T git@github.com
+    ssh -T git@gitlab.com
+    ```
+
+{% if is_surrey %}
+    If you're using the University of Surrey GitLab, test that connection too:
+
+    ```bash
+    ssh -T git@gitlab.surrey.ac.uk
+    ```
+{% endif %}
+
+    If successful, you will see greetings like:
+
+    ```text
+    Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+    Welcome to GitLab, @username!
+    ```
 
 ## Fork and cloning the prodockit-template
 
@@ -504,19 +516,24 @@ Follow the instructions below to install Python, create a virtual environment, a
 
 Once installed, open the Command Palette (`Ctrl+Shift+P`/`Cmd+Shift+P`) and run **Python: Select Interpreter**, then choose the one under `.venv` in your project folder. Visual Studio Code will then activate this virtual environment automatically in any new integrated terminal you open.
 
-### Install Zensical Studio plugin
+### Install Zensical Studio and other plugins
 
-Install [Zensical Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=zensical.zensical-studio){target="_blank"} plugin for Visual Studio Code from the marketplace. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.
+Now we'll install the Zensical Studio plugin for Visual Studio Code, which provides a set of tools to help you work with Zensical projects, including commands to build and preview your site. Then we'll install a couple of other useful plugins for working with Markdown and TOML files.
 
-Follow the instructions on the Zensical Studio plugin page to configure the extension. Add to the `.vscode/settings.json` file in your project directory the following lines:
+1. Start by opening Visual Studio Code and navigating to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`/`Cmd+Shift+X`.
+1. Install the **Zensical Studio** extension by searching for "Zensical Studio" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.
+1. Follow the instructions on the Zensical Studio plugin page to configure the extension. Add to the `.vscode/settings.json` file in your project directory the following lines:
 
-```json
-{
-  "files.associations": {
-    "*.md": "python-markdown"
-  }
-}
-```
+    ```json
+    {
+      "files.associations": {
+       "*.md": "python-markdown"
+      }
+    }
+   ```
+
+1. Install the **Even Better TOML** extensiuon for Visual Studio Code by searching for "Even Better TOML" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides syntax highlighting and other features for working with TOML files, which are used for configuration in Zensical projects.
+1. Install the **LTeX+ – LanguageTool grammar/spell checking** plugin for Visual Studio Code by searching for "LTeX+" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} to enable spelling and grammar checking for Markdown. Configure the plugin in the settings to use the *language* `en-GB`.
 
 There are many other extensions available for Visual Studio Code that can help you with your documentation. You can explore the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/vscode){target="_blank"} to find more extensions that suit your needs.
 

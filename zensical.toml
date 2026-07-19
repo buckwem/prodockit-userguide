@@ -24,7 +24,9 @@ copyright = "Author: Mark Buckwell and contributors. Licensed under the MIT Lice
 
 nav = [
   {"Home" = ["index.md"]},
-  {"About" = ["about.md"]},
+  {"About" = [
+    {"1. About this guide" = "about.md"}
+  ]},
   {"Guide" = [
     {"2. Install tooling" = "installtooling.md"},
     {"3. Start editing" = "startediting.md"},
@@ -36,9 +38,9 @@ nav = [
     {"9. Testing" = "testing.md"}
   ]},
   {"Reference" = [
-    {"Acronyms" = "acronyms.md"},
-    {"Glossary" = "glossary.md"},
-    {"References" = "references.md"}
+    {"A. Acronyms" = "acronyms.md"},
+    {"B. Glossary" = "glossary.md"},
+    {"C. References" = "references.md"}
   ]}
 ]
 
