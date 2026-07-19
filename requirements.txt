@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 zensical
-prodockit>=0.1.0
+prodockit>=0.5.0
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI
