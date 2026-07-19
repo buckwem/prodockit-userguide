@@ -7,6 +7,8 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
+
 # Customisation
 
 A small number of files control almost every visible part of this template - the website, the cover page, and the generated PDF: `zensical.toml` for configuration, `macros.py` for build-time logic, and `docs/stylesheets/extra.css`/`print.css` for appearance. This section walks through each of these in turn: customising the website's branding and behaviour, restructuring the document itself, customising the cover page, and adjusting the PDF's page layout. It ends with a full map of the template's directory structure, so you know where everything lives.

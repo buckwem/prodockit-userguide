@@ -1,5 +1,6 @@
 ---
 icon: lucide/book-open
+is_appendix: true
 ---
 
 <!--
@@ -7,6 +8,7 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
 {{ glossary_style() }}
 
 # Glossary

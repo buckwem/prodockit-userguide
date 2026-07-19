@@ -215,6 +215,86 @@
 }
 
 /* ============================================================= */
+/* ============ Styles for numbering page headings ============= */
+/* ============================================================= */
+
+/* Matches prodockit-template's own copy exactly - see "Continuous numbering
+   across pages" in customise.md. `heading_counter_reset(page)`, called near
+   the top of every content page, overrides `h1-count`/`toc1` below with
+   this page's own starting value (or a lettered "Appendix X" scheme),
+   turning per-document numbering into continuous numbering across the
+   whole nav. */
+
+/* 1. Reset the main counter at the start of the page content */
+.md-typeset {
+  counter-reset: h1-count 0; /* Change 0 to (StartNumber - 1) to offset */ }
+
+/* 2. Style Heading 1 */
+.md-typeset h1 {
+  counter-increment: h1-count; counter-reset: h2-count; /* Reset H2s when a new H1 appears */ }
+.md-typeset h1::before {
+  content: counter(h1-count) ". "; }
+
+/* 3. Style Heading 2 */
+.md-typeset h2 {
+  counter-increment: h2-count; counter-reset: h3-count; /* Reset H3s when a new H2 appears */ }
+.md-typeset h2::before {
+  content: counter(h1-count) "." counter(h2-count) " "; }
+
+/* 4. Style Heading 3 */
+.md-typeset h3 {
+  counter-increment: h3-count; }
+.md-typeset h3::before {
+  content: counter(h1-count) "." counter(h2-count) "." counter(h3-count) " "; }
+
+/* prodockit.headings' own "unnumbered" class (e.g. this template's cover
+   page title, `# Title {: .unnumbered }`) only excludes a heading from the
+   Python-side registry - counter-increment above still runs unconditionally
+   for every h1/h2/h3, so without this override an "unnumbered" heading
+   would still visibly show a number. prodockit-template's own cover page
+   sidesteps this a different way (hiding its h1 outright via `display:
+   none`); this project's cover page keeps its title visible, so the number
+   itself needs suppressing instead. */
+.md-typeset h1.unnumbered::before,
+.md-typeset h2.unnumbered::before,
+.md-typeset h3.unnumbered::before {
+  content: none; }
+
+/* 3. Level 2 (The subsections) */
+.md-nav--secondary > .md-nav__list > .md-nav__item {
+  counter-increment: toc2;
+  counter-reset: toc3 0; /* Ensures every new H1 resets the H2 count to .1 */ }
+
+.md-nav--secondary > .md-nav__list > .md-nav__item > .md-nav__link .md-ellipsis::before {
+  content: counter(toc1) "." counter(toc2) " "; /* Result: 3.1 */ }
+
+/* 4. Level 3 (The subsubsections) */
+.md-nav--secondary > .md-nav__list > .md-nav__item .md-nav__list > .md-nav__item {
+  counter-increment: toc3; }
+
+.md-nav--secondary > .md-nav__list > .md-nav__item .md-nav__list > .md-nav__item > .md-nav__link .md-ellipsis::before {
+  content: counter(toc1) "." counter(toc2) "." counter(toc3) " "; /* Result: 3.1.1 */ }
+
+/* ============================================================= */
+/* ============ Styles for figure/table caption numbers ========= */
+/* ============================================================= */
+
+/* pymdownx.blocks.caption's own auto-number (zensical.toml's "{}." prefix
+   template) only knows about the current page, not this template's
+   cross-page chapter numbering - so it supplies just the auto-incrementing
+   part ("1.", "2.", ...) inside .caption-prefix, and this prepends the
+   "Figure "/"Table " word plus the current page's own chapter number
+   (already tracked by h1-count - see "Styles for numbering page headings"
+   above) in front of it via ::before, e.g. "Figure " + "7." + "1." =
+   "Figure 7.1.". See "Captions" in customise.md. Appendix pages override
+   these same rules with a literal letter instead of counter(h1-count) - see
+   heading_counter_reset() in macros.py. */
+.md-typeset .prodockit-figure-caption .caption-prefix::before {
+  content: "Figure " counter(h1-count) "."; }
+.md-typeset .prodockit-table-caption .caption-prefix::before {
+  content: "Table " counter(h1-count) "."; }
+
+/* ============================================================= */
 /* ============ PDF-only / web-only content markers ============= */
 /* ============================================================= */
 

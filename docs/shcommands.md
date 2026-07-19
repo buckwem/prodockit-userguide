@@ -7,6 +7,8 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
+
 # Shell commands
 
 You will be using shell commands if you are operating on Linux or macOS to write your documentation. This section serves as a refresher on the essential commands for navigating and managing your system using either bash or zsh.

@@ -7,6 +7,8 @@ Copyright (c) 2025-2026 Mark Buckwell and contributors
 SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
+
 # Install tooling
 
 This section takes you through the core installation steps for the tools needed to edit your static website. The instructions are for macOS, Windows 11, and Linux (Ubuntu/Debian). If you are using a different operating system, please refer to the official documentation for that operating system.
@@ -55,14 +57,6 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
         Further installation instructions are available on the [Visual Studio Code website](https://code.visualstudio.com/docs/setup/linux){target="_blank"}.
 
 </div>
-
-### Install Visual Studio Code plugins
-
-VS Code has a rich ecosystem of plugins that can enhance your editing experience. The following plugins work well for Markdown and Zensical:
-
-1. Install [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint){target="_blank"} plugin for Visual Studio Code from the marketplace. This markdownlint extension checks your markdown files using a library of rules to encourage consistent formatting.
-1. Install [Even Better TOML](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml){target="_blank"} plugin for Visual Studio Code from the marketplace. This extension helps manage a [TOML](https://toml.io/en/){target="_blank"} file.
-1. Install [LTeX+–LanguageTool grammar/spell checking](https://marketplace.visualstudio.com/items?itemName=ltex-plus.vscode-ltex-plus){target="_blank"} plugin for Visual Studio Code from the marketplace to enable spelling and grammar checking for Markdown. Configure the plugin in the settings to use the *language* `en-GB`.
 
 ## Install Git with Visual Studio Code
 
@@ -122,10 +116,12 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
 
 1. Register for an account on the **GitLab** or **GitHub** cloud instance you will use. If you have already registered, you can skip this step.
 
+{% if is_surrey %}
 !!! Info "University of Surrey GitLab"
     For the University of Surrey, you will be using the GitLab instance provided by the university at [https://gitlab.surrey.ac.uk](https://gitlab.surrey.ac.uk){target="_blank"}. When you get to the login page, select the button **Surrey Login**{: .bg-grey} and use your university credentials.
 
     If you'd also like an account on the public GitLab at [https://gitlab.com](https://gitlab.com){target="_blank"} - for example, to keep using GitLab for personal projects after you graduate - you can register for one separately; the steps below work the same for both.
+{% endif %}
 
 ### Generate and configure ssh keys for Git
 
@@ -182,6 +178,7 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
     
     paste the following configuration into the file:
 
+{% if is_surrey %}
     ```text
     # GitLab
     Host gitlab.com
@@ -201,10 +198,25 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
         User git
         IdentityFile ~/.ssh/id_ed25519_github
     ```
+{% else %}
+    ```text
+    # GitLab
+    Host gitlab.com
+        HostName gitlab.com
+        User git
+        IdentityFile ~/.ssh/id_ed25519_gitlab
 
-    The same key works for both GitLab entries - you just need to add its public key (`~/.ssh/id_ed25519_gitlab.pub`) to each account separately in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below. Leave the `gitlab.com` entry (or the `gitlab.surrey.ac.uk` entry, if you're not at Surrey) out if you don't need it.
+    # GitHub
+    Host github.com
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/id_ed25519_github
+    ```
+{% endif %}
 
-    then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano). On Windows, you can use `Notepad` or any text editor to create the `config` file in the `.ssh` directory.
+    The same key works for multiple GitLab/GitHub instances - you just need to add the public key (`~/.ssh/id_ed25519_gitlab.pub`) to each account separately in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below. 
+
+    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano). On Windows, you can use `Notepad` or any text editor to create the `config` file in the `.ssh` directory.
 
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
@@ -217,26 +229,6 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
     ```
 
     Windows handles permissions differently and are normally set to only allow access to the user, but ensure that the private keys aren't accessible to other users.
-
-1. Test the SSH connection to GitHub and GitLab to ensure that the keys are working correctly. Run the following commands in your terminal:
-
-    ```bash
-    ssh -T git@github.com
-    ssh -T git@gitlab.com
-    ```
-
-    If you're using the University of Surrey GitLab, test that connection too:
-
-    ```bash
-    ssh -T git@gitlab.surrey.ac.uk
-    ```
-
-    If successful, you will see greetings like:
-
-    ```text
-    Hi username! You've successfully authenticated, but GitHub does not provide shell access.
-    Welcome to GitLab, @username!
-    ```
 
 1. You've set a passphrase for the SSH keys, so you'll need to enter it every time you use a key. To avoid this, you can use an SSH agent to cache your passphrase. Follow the instructions below to start the SSH agent and add your keys.
 
@@ -298,33 +290,55 @@ Now generate the ssh keys to use for authentication with your GitLab or GitHub a
 
 ### Integrate Visual Studio Code with Git
 
-Now that you've generated your keys and finished the configuration, add them to your GitHub and GitLab accounts using the instructions below.
+1. Now that you've generated your keys and finished the configuration, add them to your GitHub and GitLab accounts using the instructions below.
 
-<div class="grid cards one-column" markdown>
+    <div class="grid cards one-column" markdown>
     
--   :material-clock-fast:{ .lg .middle } __Integrate Visual Studio Code with Git__
+    -   :material-clock-fast:{ .lg .middle } __Integrate Visual Studio Code with Git__
 
-    === "GitLab"
+        === "GitLab"
 
-        1. Log in to your **GitLab** account in a web browser.
-        2. In the top-right corner, click on your **profile avatar** and select **Edit profile**.
-        3. On the left-hand sidebar, select **Access > SSH Keys**.
-        4. Click **Add new key**{: .bg-blue} and fill out the following details:
-            * **Title:** Give it a clear name (e.g., VS Code Extension).
-            * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_gitlab.pub`).
-        5. Click **Add key**{: .bg-blue} to save the key.
+            1. Log in to your **GitLab** account in a web browser.
+            2. In the top-right corner, click on your **profile avatar** and select **Edit profile**.
+            3. On the left-hand sidebar, select **Access > SSH Keys**.
+            4. Click **Add new key**{: .bg-blue} and fill out the following details:
+                * **Title:** Give it a clear name (e.g., VS Code Extension).
+                * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_gitlab.pub`).
+            5. Click **Add key**{: .bg-blue} to save the key.
 
-    === "GitHub"
+        === "GitHub"
 
-        1. Log in to your **GitHub** account in a web browser.
-        2. In the top-right corner, click on your **profile avatar** and select **Settings**.
-        3. On the left-hand sidebar, select **SSH and GPG keys**.
-        4. Click **New SSH key**{: .bg-green} and fill out the following details:
-            * **Title:** Give it a clear name (e.g., VS Code Extension).
-            * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_github.pub`).
-        5. Click **Add SSH key**{: .bg-green} to save the key.
+            1. Log in to your **GitHub** account in a web browser.
+            2. In the top-right corner, click on your **profile avatar** and select **Settings**.
+            3. On the left-hand sidebar, select **SSH and GPG keys**.
+            4. Click **New SSH key**{: .bg-green} and fill out the following details:
+                * **Title:** Give it a clear name (e.g., VS Code Extension).
+                * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_github.pub`).
+            5. Click **Add SSH key**{: .bg-green} to save the key.
 
-</div>
+    </div>
+
+1. Test the SSH connection to GitHub and GitLab to ensure that the keys are working correctly. Run the following commands in your terminal:
+
+    ```bash
+    ssh -T git@github.com
+    ssh -T git@gitlab.com
+    ```
+
+{% if is_surrey %}
+    If you're using the University of Surrey GitLab, test that connection too:
+
+    ```bash
+    ssh -T git@gitlab.surrey.ac.uk
+    ```
+{% endif %}
+
+    If successful, you will see greetings like:
+
+    ```text
+    Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+    Welcome to GitLab, @username!
+    ```
 
 ## Fork and cloning the prodockit-template
 
@@ -345,7 +359,7 @@ Fork and Clone Comparison at a Glance
 
 The features of forking and cloning are complementary. You can fork a repository to create your own copy on the remote host, and then clone that fork to your local machine to work on it. The standard workflow is:
 
-1. **Fork:** You find a project on GitHub. You click the Fork button on the website. Now, you have a copy at `github.com/your-username/project`.
+1. **Fork:** You find a project on GitHub. You click the Fork button on the website (or run `gh repo fork`/`glab repo fork` from your terminal instead - see [Fork the prodockit-template](#fork-the-prodockit-template) below). Now, you have a copy at `github.com/your-username/project`.
 2. **Clone:** You run `git clone git@github.com:your-username/project.git` in your terminal. Now, the code is on your laptop.
 3. **Work:** You write code, make local commits, and test your changes.
 4. **Push:** You run `git push origin main` to send your local changes back up to your cloud fork.
@@ -358,46 +372,72 @@ The features of forking and cloning are complementary. You can fork a repository
 
 You may already have a GitLab or GitHub repository containing a Zensical template provided for you. If you do, you can skip this section and go to the next section to clone the repository locally.
 
-1. Start with opening up a browser and go to the prodockit-template repository - on [GitHub](https://github.com/buckwem/prodockit-template){target="_blank"}, or on the [University of Surrey GitLab](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank"} if that's what your course uses.
+This section forks the repository entirely from your terminal over SSH, using the GitHub CLI (`gh`) or GitLab CLI (`glab`), instead of clicking through the website.
 
-1. Next, fork the documentation template to create a copy of the template in your own Git cloud account. Follow the instructions below to fork the repository.
+1. Install the command line tool for whichever host your course uses.
 
-    <div class="grid cards one-column" markdown>
-    
-    -   :material-clock-fast:{ .lg .middle } __Fork the documentation template__
+    | OS | GitHub CLI (`gh`) | GitLab CLI (`glab`) |
+    |---|---|---|
+    | macOS (Homebrew) | `brew install gh` | `brew install glab` |
+    | Windows 11 (PowerShell) | `winget install GitHub.cli` | `winget install GitLab.GLab` |
+    | Linux (Ubuntu/Debian) | `sudo apt install gh` | `sudo apt install glab` |
 
-        === "GitLab"
+    !!! Tip
+        If `gh`/`glab` isn't packaged for your Linux distribution yet, see the [GitHub CLI](https://github.com/cli/cli/blob/trunk/docs/install_linux.md){target="_blank"} or [GitLab CLI](https://gitlab.com/gitlab-org/cli#installation){target="_blank"} install docs for an up-to-date package repository to add.
 
-            1. Click on the link to [fork a copy of the documentation template](https://gitlab.surrey.ac.uk/mb0105/prodockit-template/-/forks/new){target="_blank"} to create a copy of the template for your use.
-            
-                ![Image title](images/gitlab-fork-project.png){ width=70% .screenshot }
-                /// figure-caption
-                GitLab fork project
-                ///
-           
-            2. Enter your *Project name* using the format the coursework specifies. For example, for coursework 1 for the module COMM058 in the year 2026 for your GitLab ID az1234, enter 'cw1-az1234' in the project name field. Edit the *Project slug* to match the project name. Use all lowercase and a dash between words with no spaces.
-            3. Then select the project namespace for the module as directed by your course tutor.
-            4. Change the *Visibility Level* to *Private*.
-            5. Press the button **Fork Project**{: .bg-blue} to create your own copy of the project in the group namespace.
-        
-        === "GitHub"
+1. Authenticate the CLI with your account, choosing **SSH** as the Git protocol when prompted - this reuses the same SSH keys you set up in [Generate and configure ssh keys for Git](#generate-and-configure-ssh-keys-for-git).
 
-            1. Go to the [prodockit-template repository](https://github.com/buckwem/prodockit-template){target="_blank"} on GitHub and click the **Fork**{: .bg-green} button near the top-right of the page.
-            2. On the "Create a new fork" page, keep your own account selected as the **Owner**.
-            3. Enter a *Repository name* using the format the coursework specifies, matching the naming convention your course tutor directs (e.g. `cw1-your-username`).
-            4. Leave **Copy the `main` branch only** checked.
-            5. Click **Create fork**{: .bg-green}.
-            6. Once forked, go to your new repository's **Settings** tab, scroll down to the **Danger Zone**, and change the visibility to **Private**.
-            7. While you're in **Settings**, select **Pages** in the left-hand sidebar, and under **Build and deployment > Source**, change it from **Deploy from a branch** to **GitHub Actions**. GitHub Pages doesn't exist for a repository until you set this, so without it the `docs.yml` workflow fails on its first run with an error like `Get Pages site failed... Not Found`.
+    === "GitLab"
 
-    </div>
+        ``` bash
+        glab auth login --hostname gitlab.com --git-protocol ssh
+        ```
+
+        Use your own GitLab instance's hostname instead if your course uses a self-hosted GitLab, for example `gitlab.surrey.ac.uk`.
+
+    === "GitHub"
+
+        ``` bash
+        gh auth login --hostname github.com --git-protocol ssh
+        ```
+
+1. Fork the repository and clone it in the same step.
+
+    === "GitLab"
+
+        ``` bash
+        glab repo fork gitlab.surrey.ac.uk/mb0105/prodockit-template --name cw1-az1234 --path your-group/cw1-az1234 --clone
+        ```
+
+        Replace `gitlab.surrey.ac.uk/mb0105/prodockit-template` with the actual GitLab instance and path your course uses, `cw1-az1234` with the project name your course tutor specifies, and `your-group` with the namespace they direct you to fork into (leave `--path` off entirely to fork into your own personal namespace instead).
+
+        Then open the new project on the website and go to **Settings > General > Visibility, project features, permissions**, and change **Project visibility** to **Private** - `glab` has no command line switch for this yet.
+
+    === "GitHub"
+
+        ``` bash
+        gh repo fork buckwem/prodockit-template --fork-name cw1-your-username --clone
+        ```
+
+        Replace `cw1-your-username` with the repository name your coursework specifies.
+
+        Then set the fork to private, and switch on GitHub Pages - neither exists yet on a fresh fork, and Pages must exist before the `docs.yml` workflow's first run, or it fails with `Get Pages site failed... Not Found`:
+
+        ``` bash
+        gh repo edit your-username/cw1-your-username --visibility private --accept-visibility-change-consequences
+        gh api repos/your-username/cw1-your-username/pages -X POST -f build_type=workflow
+        ```
+
+        Replace `your-username`/`cw1-your-username` with your own account and the repository name from the previous command. If the `gh api` call fails, set this up on the website instead: **Settings > Pages**, then change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**.
+
+    Both commands clone the new fork straight into a `cw1-az1234`/`cw1-your-username` folder in your current directory - you don't need [Clone the prodockit-template](#clone-the-prodockit-template) below unless you skipped forking entirely (see the note at the top of this section).
 
 !!! Warning
     Don't forget to set the visibility to private, otherwise others can see your repository. Ask someone else to check whether they can see your repository.
 
 ### Clone the prodockit-template
 
-This section takes you through the steps to clone the documentation template into your own local device. You will then be able to edit the template locally in Visual Studio Code and eventually publish your own documentation website.
+If you forked using `glab`/`gh repo fork --clone` above, you already have a local copy from that step - skip this section entirely. Otherwise (you were given an existing repository, or forked some other way), this section clones the template into your own local device. You will then be able to edit the template locally in Visual Studio Code and eventually publish your own documentation website.
 
 1. Start with creating a directory for all your *GitLab* or *GitHub* projects on your local desktop. For example, create a directory called 'GitLab' in your OneDrive directory.
     
@@ -425,13 +465,16 @@ If you already have Python installed, you can check the version by running the f
 python --version
 ```
 
+!!! Note
+    You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
+
 The instructions below are for installing Python 3.8 or later. If you have an older version, please update to Python 3.8 or later.
 
 Follow the instructions below to install Python, create a virtual environment, and install Zensical inside it for your operating system.
 
 <div class="grid cards one-column" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Install Python and Zensical__
+-   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
 
     === "macOS using Homebrew"
 
@@ -445,13 +488,13 @@ Follow the instructions below to install Python, create a virtual environment, a
 
             ``` bash
             # 1. Create the virtual environment
-            python3 -m venv .venv
+            python -m venv .venv
 
             # 2. Activate it
             source .venv/bin/activate
 
             # 3. Install Zensical
-            pip install zensical
+            pip install -r requirements.txt
             ```
 
     === "Windows 11 using PowerShell"
@@ -473,7 +516,7 @@ Follow the instructions below to install Python, create a virtual environment, a
             .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
 
             # 3. Install Zensical inside the environment
-            pip install zensical
+            pip install -r requirements.txt
             ```
 
     === "Linux (Ubuntu/Debian) using bash"
@@ -495,26 +538,31 @@ Follow the instructions below to install Python, create a virtual environment, a
             source .venv/bin/activate
 
             # 3. Install Zensical
-            pip install zensical
+            pip3 install -r requirements.txt
             ```
 
 </div>
 
-Once installed, open the Command Palette (`Ctrl+Shift+P`/`Cmd+Shift+P`) and run **Python: Select Interpreter**, then choose the one under `.venv` in your project folder. Visual Studio Code will then activate this virtual environment automatically in any new integrated terminal you open.
+Close VS Code and reopen it in the project folder to ensure that the virtual environment is activated. If the Terminal is not open at the bottom, select the menu Terminal -> New Terminal. You should see the command 'source /home/buckwem/prodockit-template/.venv/bin/activate' in the terminal. If you don't see this, you may need to activate the virtual environment manually by running the command `source .venv/bin/activate` (macOS/Linux) or `.venv\Scripts\Activate.ps1` (Windows PowerShell).
 
-### Install Zensical Studio plugin
+### Install Zensical Studio and other plugins
 
-Install [Zensical Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=zensical.zensical-studio){target="_blank"} plugin for Visual Studio Code from the marketplace. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.
+Now we'll install the Zensical Studio plugin for Visual Studio Code, which provides a set of tools to help you work with Zensical projects, including commands to build and preview your site. Then we'll install a couple of other useful plugins for working with Markdown and TOML files.
 
-Follow the instructions on the Zensical Studio plugin page to configure the extension. Add to the `.vscode/settings.json` file in your project directory the following lines:
+1. Start by opening Visual Studio Code and navigating to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`/`Cmd+Shift+X`.
+1. Install the **Zensical Studio** extension by searching for "Zensical Studio" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.
+1. Follow the instructions on the Zensical Studio plugin page to configure the extension. Add to the `.vscode/settings.json` file in your project directory the following lines:
 
-```json
-{
-  "files.associations": {
-    "*.md": "python-markdown"
-  }
-}
-```
+    ```json
+    {
+      "files.associations": {
+       "*.md": "python-markdown"
+      }
+    }
+    ```
+
+1. Install the **Even Better TOML** extensiuon for Visual Studio Code by searching for "Even Better TOML" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides syntax highlighting and other features for working with TOML files, which are used for configuration in Zensical projects.
+1. Install the **LTeX+ – LanguageTool grammar/spell checking** plugin for Visual Studio Code by searching for "LTeX+" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} to enable spelling and grammar checking for Markdown. Configure the plugin in the settings to use the *language* `en-GB`.
 
 There are many other extensions available for Visual Studio Code that can help you with your documentation. You can explore the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/vscode){target="_blank"} to find more extensions that suit your needs.
 
