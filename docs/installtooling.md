@@ -465,13 +465,16 @@ If you already have Python installed, you can check the version by running the f
 python --version
 ```
 
+!!! Note
+    You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
+
 The instructions below are for installing Python 3.8 or later. If you have an older version, please update to Python 3.8 or later.
 
 Follow the instructions below to install Python, create a virtual environment, and install Zensical inside it for your operating system.
 
 <div class="grid cards one-column" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Install Python and Zensical__
+-   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
 
     === "macOS using Homebrew"
 
@@ -485,13 +488,13 @@ Follow the instructions below to install Python, create a virtual environment, a
 
             ``` bash
             # 1. Create the virtual environment
-            python3 -m venv .venv
+            python -m venv .venv
 
             # 2. Activate it
             source .venv/bin/activate
 
             # 3. Install Zensical
-            pip install zensical
+            pip install -r requirements.txt
             ```
 
     === "Windows 11 using PowerShell"
@@ -513,7 +516,7 @@ Follow the instructions below to install Python, create a virtual environment, a
             .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
 
             # 3. Install Zensical inside the environment
-            pip install zensical
+            pip install -r requirements.txt
             ```
 
     === "Linux (Ubuntu/Debian) using bash"
@@ -535,12 +538,12 @@ Follow the instructions below to install Python, create a virtual environment, a
             source .venv/bin/activate
 
             # 3. Install Zensical
-            pip install zensical
+            pip3 install -r requirements.txt
             ```
 
 </div>
 
-Once installed, open the Command Palette (`Ctrl+Shift+P`/`Cmd+Shift+P`) and run **Python: Select Interpreter**, then choose the one under `.venv` in your project folder. Visual Studio Code will then activate this virtual environment automatically in any new integrated terminal you open.
+Close VS Code and reopen it in the project folder to ensure that the virtual environment is activated. If the Terminal is not open at the bottom, select the menu Terminal -> New Terminal. You should see the command 'source /home/buckwem/prodockit-template/.venv/bin/activate' in the terminal. If you don't see this, you may need to activate the virtual environment manually by running the command `source .venv/bin/activate` (macOS/Linux) or `.venv\Scripts\Activate.ps1` (Windows PowerShell).
 
 ### Install Zensical Studio and other plugins
 
@@ -556,7 +559,7 @@ Now we'll install the Zensical Studio plugin for Visual Studio Code, which provi
        "*.md": "python-markdown"
       }
     }
-   ```
+    ```
 
 1. Install the **Even Better TOML** extensiuon for Visual Studio Code by searching for "Even Better TOML" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides syntax highlighting and other features for working with TOML files, which are used for configuration in Zensical projects.
 1. Install the **LTeX+ – LanguageTool grammar/spell checking** plugin for Visual Studio Code by searching for "LTeX+" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} to enable spelling and grammar checking for Markdown. Configure the plugin in the settings to use the *language* `en-GB`.
