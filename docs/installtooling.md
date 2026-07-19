@@ -518,6 +518,6 @@ Follow the instructions on the Zensical Studio plugin page to configure the exte
 
 There are many other extensions available for Visual Studio Code that can help you with your documentation. You can explore the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/vscode){target="_blank"} to find more extensions that suit your needs.
 
-## Where to go next
+## Where to go next {: #installtooling-where-to-go-next }
 
 You now have Visual Studio Code, Git, and Zensical installed, and your own copy of the documentation template cloned locally. Continue to [Start editing](startediting.md) to preview your changes locally and publish them to GitLab or GitHub.

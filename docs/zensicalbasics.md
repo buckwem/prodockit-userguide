@@ -58,7 +58,7 @@ Zensical supports collapsible blocks using the `???` syntax. This is useful for 
     This content is hidden until you click to expand it.
     Great for FAQs or long explanations.
 
-## Code blocks
+## Code blocks {: #zensicalbasics-code-blocks }
 
 Zensical supports fenced code blocks with syntax highlighting. You can specify the language for syntax highlighting by adding the language name after the opening backticks. For further details, go to the [code blocks documentation](https://zensical.org/docs/authoring/code-blocks/).
 
@@ -190,7 +190,7 @@ $$
   };
 </script>
 
-## Task lists
+## Task lists {: #zensicalbasics-task-lists }
 
 Zensical supports task lists, which allow you to create checklists with checkboxes. You can create a task list by using the `- [ ]` syntax for an unchecked item and `- [x]` for a checked item. For further details, go to the [task lists documentation](https://zensical.org/docs/authoring/lists/#using-task-lists).
 
@@ -207,6 +207,6 @@ Zensical supports tooltips, which allow you to add additional information that a
 
   [example]: https://example.com "I'm a tooltip!"
 
-## Where to go next
+## Where to go next {: #zensicalbasics-where-to-go-next }
 
 Continue to [Customisation](customise.md) to change this template's branding, restructure your document's pages, and customise the cover page and PDF layout.
