@@ -131,7 +131,7 @@ function hello() {
 ```
 ````
 
-[`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/){target="_blank"} also lets you nest fenced code blocks inside other Markdown structures such as lists and admonitions, and supports custom fence types - the Mermaid diagrams in [Diagrams](zensicalbasics.md#diagrams) are a fenced ` ```mermaid ` block rather than plain code. For line highlighting, titled code blocks, and inline code with syntax highlighting, see [Code blocks](zensicalbasics.md#code-blocks) in Zensical basics.
+[`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/){target="_blank"} also lets you nest fenced code blocks inside other Markdown structures such as lists and admonitions, and supports custom fence types - the Mermaid diagrams in [Diagrams](zensicalbasics.md#diagrams) are a fenced ` ```mermaid ` block rather than plain code. For line highlighting, titled code blocks, and inline code with syntax highlighting, see [Code blocks](zensicalbasics.md#zensicalbasics-code-blocks) in Zensical basics.
 
 ## Tables
 
