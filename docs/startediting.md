@@ -7,6 +7,8 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
+
 # Start editing
 
 This page covers the day-to-day cycle of working on your document: previewing your changes locally, syncing them to GitLab or GitHub, viewing the published website, building the PDF, working with branches and issues, troubleshooting common problems, and finally releasing your report. It assumes no prior experience with the command line, Git, or software development - each step includes the exact commands to type. For one-time setup (installing Python, Git, and Zensical itself), see [Install tooling](installtooling.md) first if you haven't already.

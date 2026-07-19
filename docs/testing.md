@@ -7,6 +7,8 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
+
 # Testing
 
 Every other page in this section explains how to *use* this template to write your report. This page is different: it documents the test suite in `test/`, which checks that this template's own prodockit-specific features (References, Acronyms, Glossary, Appendix numbering, word-count exclusions, and so on) actually work and haven't regressed - a contributor/maintainer tool, not something you need while writing your assignment.

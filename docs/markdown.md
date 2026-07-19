@@ -7,6 +7,7 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
 
 # Markdown basics
 

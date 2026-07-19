@@ -7,6 +7,8 @@ Copyright (c) 2025-2026 Mark Buckwell and contributors
 SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
+
 # Install tooling
 
 This section takes you through the core installation steps for the tools needed to edit your static website. The instructions are for macOS, Windows 11, and Linux (Ubuntu/Debian). If you are using a different operating system, please refer to the official documentation for that operating system.

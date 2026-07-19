@@ -7,6 +7,8 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
+{{ heading_counter_reset(page) }}
+
 # About this guide
 
 A docs-as-code workflow makes it easy to publish documentation on a static website. [Markdown](https://www.markdownguide.org/){target=_blank} is a markup language you use to write documentation in text files, which you then store in a Git repository. Hosted Git services such as GitLab or GitHub, together with tooling such as Visual Studio Code, make it easy to maintain and host documentation.
