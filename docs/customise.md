@@ -317,7 +317,7 @@ This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-e
     reference_spacing_global = "2em"       # gap between entries, "global" style
     ```
 
-    Each accepts any valid CSS length and defaults to the value shown above if left unset. `reference_spacing_european` also controls the [Acronyms](#acronyms-and-abbreviations) and [Glossary](#glossary) pages' own list spacing, which share the same tight "european" look but have no "global"-style alternative to switch to.
+    Each accepts any valid CSS length and defaults to the value shown above if left unset. `reference_spacing_european` also controls the [Acronyms](#acronyms-and-abbreviations) and [Glossary](#glossary-page-setup) pages' own list spacing, which share the same tight "european" look but have no "global"-style alternative to switch to.
 
 !!! tip
     Keep ids short and stable (e.g. `skou2023`, author surname plus year) so citations keep working even if you reorder entries on the references page later. Unlike a hand-typed link, `\cite{id}` needs no adjustment when citing from a page nested in a subdirectory.
@@ -350,7 +350,7 @@ This template uses [`prodockit.glossary`](https://buckwem.github.io/prodockit-ex
 !!! tip
     Keep ids short and lowercase (e.g. `css`, `pdf`) so `\gls{id}` keeps working even if you reorder entries on the acronyms page later.
 
-### Glossary
+### Glossary {: #glossary-page-setup }
 
 You can build a glossary of key terms the same way, in its own page - this template includes one at `docs/glossary.md`, right after the acronyms page in `nav`. Acronym entries and glossary entries share the same `prodockit.glossary` registry - they're the same kind of thing, an id with a short display text - so a `\gls{id}` works identically whichever page defines it.
 
@@ -658,12 +658,12 @@ Now that you've customised the website, the document structure, the cover page, 
 * :material-folder: **docs/** — Holds the documentation source tree.
     * :material-file-document-outline: `index.md` — The cover page of your documentation.
     * :material-file-document-outline: `originality.md` — Your declaration of originality and AI use for you to complete.
-    * :material-file-document-outline: `section1.md` — The first section of your documentation for you to edit - ships with worked examples of citations, acronyms, and the glossary (see [References and bibliography](#references-and-bibliography), [Acronyms and abbreviations](#acronyms-and-abbreviations), and [Glossary](#glossary)).
+    * :material-file-document-outline: `section1.md` — The first section of your documentation for you to edit - ships with worked examples of citations, acronyms, and the glossary (see [References and bibliography](#references-and-bibliography), [Acronyms and abbreviations](#acronyms-and-abbreviations), and [Glossary](#glossary-page-setup)).
     * :material-file-document-outline: `section2.md` — The second section, with a worked cross-reference example (see [Section cross-references](#section-cross-references)).
     * :material-file-document-outline: `section3.md` — The third section, with a worked figure-caption example (see [Captions](#captions)).
     * :material-file-document-outline: `section4.md` — The fourth section, with a worked table-caption example (see [Captions](#captions)).
     * :material-file-document-outline: `acronyms.md` — Your acronym list, for you to complete - see [Acronyms and abbreviations](#acronyms-and-abbreviations).
-    * :material-file-document-outline: `glossary.md` — Your glossary of key terms, for you to complete - see [Glossary](#glossary).
+    * :material-file-document-outline: `glossary.md` — Your glossary of key terms, for you to complete - see [Glossary](#glossary-page-setup).
     * :material-file-document-outline: `references.md` — Your bibliography, for you to complete - see [References and bibliography](#references-and-bibliography).
     * :material-folder: **assets/** — Images, logos, and header backgrounds used across the site and the cover page.
     * :material-folder: **stylesheets/** — CSS for the website and the PDF.
@@ -686,6 +686,6 @@ Now that you've customised the website, the document structure, the cover page, 
 * :material-folder: **.github/workflows/** — Configuration for GitHub Actions.
     * :material-file-document-outline: `docs.yml` — Builds and publishes the site (and the PDF) to GitHub Pages.
 
-## Where to go next
+## Where to go next {: #customise-where-to-go-next }
 
 Continue to [Additional tooling](additionaltooling.md) for optional extras - VS Code extensions, commit signing, and Vale - or jump straight to [Finalising your document](#finalising-your-document) above once your document itself is ready to submit.

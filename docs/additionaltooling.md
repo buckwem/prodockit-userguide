@@ -442,6 +442,6 @@ If you'd rather compress images from your desktop without opening a browser each
 
 </div>
 
-## Where to go next
+## Where to go next {: #additionaltooling-where-to-go-next }
 
 This is the last of the step-by-step "Start Here" chapters. [Shell commands](shcommands.md) is a standalone reference you can return to any time you need a reminder of a terminal command - it isn't something you need to read in order.

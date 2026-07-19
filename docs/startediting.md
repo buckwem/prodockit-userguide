@@ -376,7 +376,7 @@ Before you submit your report, remove the "Start Here" stub page so it isn't par
 !!! Info
     Once you've removed the stub from your own report, you can still come back to this guidance any time on the independent [prodockit User Guide](https://buckwem.github.io/prodockit-userguide/){target="_blank"} site.
 
-## Where to go next
+## Where to go next {: #startediting-where-to-go-next }
 
 Continue to [Markdown basics](markdown.md) and [Zensical basics](zensicalbasics.md) to learn the syntax you'll actually use to write your document. Once you're comfortable writing content, come back to these later chapters when you need them:
 

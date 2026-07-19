@@ -82,6 +82,6 @@ Where a check needs "the real thing this feature is supposed to do" as a source 
 Test suite batches
 ///
 
-## Where to go next
+## Where to go next {: #testing-where-to-go-next }
 
 This is the last of the "Start Here" reference pages. Continue to [Finalising your document](customise.md#finalising-your-document) once your report itself is ready to submit - removing `starthere/` (this page included) is part of that step.

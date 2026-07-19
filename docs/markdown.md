@@ -116,7 +116,7 @@ Second term
 :   A second definition for the same term.
 ```
 
-## Code blocks
+## Code blocks {: #markdown-code-blocks }
 
 Markdown is a favourite for developers because of how it handles code snippets. This template uses the [`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/){target="_blank"} extension for fenced code blocks (in place of Python Markdown's more limited built-in [`fenced_code`](https://python-markdown.github.io/extensions/fenced_code_blocks/){target="_blank"}), together with [`pymdownx.highlight`](https://facelessuser.github.io/pymdown-extensions/extensions/highlight/){target="_blank"} and [`pymdownx.inlinehilite`](https://facelessuser.github.io/pymdown-extensions/extensions/inlinehilite/){target="_blank"} for syntax highlighting.
 
@@ -160,7 +160,7 @@ Put three or more hyphens, asterisks, or underscores on their own line, surround
 ___
 ```
 
-## Task lists
+## Task lists {: #markdown-task-lists }
 
 Task lists aren't part of core [Python Markdown](https://python-markdown.github.io/){target="_blank"} either - they're enabled by the [`pymdownx.tasklist`](https://facelessuser.github.io/pymdown-extensions/extensions/tasklist/){target="_blank"} extension, configured in this template to render as clickable checkboxes rather than plain `[x]`/`[ ]` text.
 
@@ -190,6 +190,6 @@ For structured callouts with an icon and title (notes, warnings, tips), use an a
 
 * **Attributes on any element:** The [`attr_list`](https://python-markdown.github.io/extensions/attr_list/){target="_blank"} extension used for links, images, and headings above works on most other Markdown elements too - for example adding a CSS class to a paragraph or list item with `{: .my-class }` directly after it.
 
-## Where to go next
+## Where to go next {: #markdown-where-to-go-next }
 
 The syntax on this page works in any Markdown file, including plain README files on GitLab or GitHub. Continue to [Zensical basics](zensicalbasics.md) for the extensions that only work in this template's own Zensical-built pages - admonitions, content tabs, diagrams, and more.
