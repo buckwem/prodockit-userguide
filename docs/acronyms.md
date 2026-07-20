@@ -13,7 +13,7 @@ is_appendix: true
 
 # Acronyms
 
-The following acronyms and abbreviations are used throughout this document. `\gls{css}` is also referenced by [Customisation](customise.md)'s live example.
+The following \index{acronyms} and abbreviations are used throughout this document. `\gls{css}` is also referenced by [Customisation](customise.md)'s live example.
 
 **AI** - Artificial Intelligence
 {: #ai .acronym data-term="AI" }
