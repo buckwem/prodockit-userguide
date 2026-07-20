@@ -23,8 +23,8 @@ Knowing where you are and how to move is the first step to understanding bash/zs
 
 | Command | Action |
 | -- |-- |
-| `pwd` | Print Working Directory: Shows exactly where you are. |
-| `ls` | List: Shows files in the current folder. |
+| \index{Shell commands!`pwd`} | Print Working Directory: Shows exactly where you are. |
+| \index{Shell commands!`ls`} | List: Shows files in the current folder. |
 | `ls -la` | List All: Shows hidden files and detailed info (sizes, dates). |
 | `cd [dir]` | Change Directory: Move to a folder (For example, cd Documents). |
 | `cd ..` | Go Up: Moves one level up to the parent folder. |
@@ -82,7 +82,7 @@ Often the permissions of files and folders will need changing. Here are some com
 | Command | Action |
 | -- |-- |
 | `sudo [cmd]` | SuperUser Do: Runs a command with admin privileges. |
-| `chmod 755 [file]` | Changes permissions (755 is standard for executable scripts). |
+| \index{Shell commands!`chmod`} `755 [file]` | Changes permissions (755 is standard for executable scripts). |
 | `chown [user] [file]` | Changes the owner of a file. |
 | `history` | Shows a list of all recently used commands. |
 /// table-caption | <
@@ -113,7 +113,7 @@ Essential commands for finding files and file contents.
 
 | Command | Action |
 | -- |-- |
-| `grep "word" [file]` | Searches for a specific string inside a file. |
+| \index{Shell commands!`grep`} `"word" [file]` | Searches for a specific string inside a file. |
 | `find . -name "*.txt"` | Finds all .txt files in the current directory and subdirectories. |
 | `[cmd] | grep "word"` | The Pipe (\|) takes the output of one command and sends it to another. |
 /// table-caption | <
