@@ -11,7 +11,7 @@ icon: lucide/book-open
 
 # Shell commands
 
-You will be using shell commands if you are operating on Linux or macOS to write your documentation. This section serves as a refresher on the essential commands for navigating and managing your system using either bash or zsh.
+You will be using \index{Shell commands} if you are operating on Linux or macOS to write your documentation. This section serves as a refresher on the essential commands for navigating and managing your system using either \index{Shell commands!bash} or \index{Shell commands!zsh}.
 
 !!! tip
 

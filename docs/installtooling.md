@@ -125,7 +125,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
 
 ### Generate and configure ssh keys for Git
 
-Now generate the \index{ssh keys} to use for authentication with your GitLab or GitHub account and configure your ssh settings to use these keys. 
+Now generate the \index{Git!ssh keys} to use for authentication with your GitLab or GitHub account and configure your ssh settings to use these keys. 
 
 1. Follow the instructions below to generate a new SSH key pair and add it to your GitLab or GitHub account. It's best practice to use modern, secure `ed25519` keys and create separate ones for GitHub and GitLab.
 
@@ -372,7 +372,7 @@ The features of forking and cloning are complementary. You can fork a repository
 
 You may already have a GitLab or GitHub repository containing a Zensical template provided for you. If you do, you can skip this section and go to the next section to clone the repository locally.
 
-This section forks the repository entirely from your terminal over SSH, using the \index{GitHub CLI} (`gh`) or \index{GitLab CLI} (`glab`), instead of clicking through the website.
+This section forks the repository entirely from your terminal over SSH, using the \index{Git!GitHub CLI} (`gh`) or \index{Git!GitLab CLI} (`glab`), instead of clicking through the website.
 
 1. Install the command line tool for whichever host your course uses.
 
@@ -470,7 +470,7 @@ python --version
 
 The instructions below are for installing Python 3.8 or later. If you have an older version, please update to Python 3.8 or later.
 
-Follow the instructions below to install Python, create a \index{virtual environment}, and install Zensical inside it for your operating system.
+Follow the instructions below to install Python, create a \index{Python!virtual environment}, and install Zensical inside it for your operating system.
 
 <div class="grid cards one-column" markdown>
 
@@ -547,7 +547,7 @@ Close VS Code and reopen it in the project folder to ensure that the virtual env
 
 ### Install Zensical Studio and other plugins
 
-Now we'll install the \index{Zensical Studio} plugin for Visual Studio Code, which provides a set of tools to help you work with Zensical projects, including commands to build and preview your site. Then we'll install a couple of other useful plugins for working with Markdown and TOML files.
+Now we'll install the \index{VS Code!Zensical Studio} plugin for Visual Studio Code, which provides a set of tools to help you work with Zensical projects, including commands to build and preview your site. Then we'll install a couple of other useful plugins for working with Markdown and TOML files.
 
 1. Start by opening Visual Studio Code and navigating to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`/`Cmd+Shift+X`.
 1. Install the **Zensical Studio** extension by searching for "Zensical Studio" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.
