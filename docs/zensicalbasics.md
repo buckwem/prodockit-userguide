@@ -11,7 +11,7 @@ icon: lucide/book-open
 
 # Zensical basics
 
-Zensical is the static site generator that powers this template: it turns the Markdown files under `docs/` into the website you're reading now, and (via `build_pdf.py`) into the single-file PDF version of your document. It reads its configuration from `zensical.toml`, extends Markdown with the authoring features shown below (admonitions, tabs, diagrams, maths, and more), and lets you preview your changes locally with `zensical serve` before publishing.
+\index{Zensical} is the static site generator that powers this template: it turns the Markdown files under `docs/` into the website you're reading now, and (via `build_pdf.py`) into the single-file PDF version of your document. It reads its configuration from `zensical.toml`, extends Markdown with the authoring features shown below (admonitions, tabs, diagrams, maths, and more), and lets you preview your changes locally with `zensical serve` before publishing.
 
 This page is a quick reference for the Markdown extensions you're most likely to use while writing your document, each with a live example. For the underlying, general-purpose Markdown syntax these extensions build on (headings, links, bold/italic text, and so on), see [Markdown basics](markdown.md). For full documentation on Zensical itself, visit [zensical.org](https://zensical.org/docs/).
 
@@ -41,7 +41,7 @@ Markdown supports nested lists by indenting the inner list by four spaces. This 
 
 ### Admonitions
 
-Zensical supports admonitions, that highlight blocks of content to draw attention to important information. Admonitions are available for notes, warnings, tips, and more. For further details, go to the [admonitions documentation](https://zensical.org/docs/authoring/admonitions/).
+Zensical supports \index{admonitions}, that highlight blocks of content to draw attention to important information. Admonitions are available for notes, warnings, tips, and more. For further details, go to the [admonitions documentation](https://zensical.org/docs/authoring/admonitions/).
 
 !!! note
 
@@ -131,7 +131,7 @@ graph LR
 
 ## Footnotes
 
-Zensical supports footnotes, which enables you to add references or additional information without cluttering the main text. You can create a footnote by using the `[^1]` syntax. For further details, go to the [footnotes documentation](https://zensical.org/docs/authoring/footnotes/).
+Zensical supports \index{footnotes}, which enables you to add references or additional information without cluttering the main text. You can create a footnote by using the `[^1]` syntax. For further details, go to the [footnotes documentation](https://zensical.org/docs/authoring/footnotes/).
   
 
 Here's a sentence with a footnote.[^1]
@@ -170,7 +170,7 @@ $$
 $$
 
 !!! warning "Needs configuration"
-    This page includes MathJax via a `script` tag, but the generated default
+    This page includes \index{MathJax} via a `script` tag, but the generated default
     configuration doesn't enable it everywhere, to avoid loading it on pages
     that don't need it. See the documentation for details on how to configure
     it on all your pages if they're more maths-heavy than these simple

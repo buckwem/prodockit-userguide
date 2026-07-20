@@ -361,7 +361,7 @@ If `python build_pdf.py` errors out or produces a PDF missing content:
 
 1. Check the error message in the terminal - it usually names the file and the problem directly.
 2. Make sure you've installed the dependencies from `requirements.txt` in your active virtual environment (see [Install Python and Zensical](installtooling.md#install-python-and-zensical)).
-3. If your document uses Mermaid diagrams or maths, make sure you've installed the optional Node tooling too (see [Additional tooling](additionaltooling.md)) - without it, the build silently skips those elements rather than raising an error.
+3. If your document uses \index{Mermaid} diagrams or maths, make sure you've installed the optional Node tooling too (see [Additional tooling](additionaltooling.md)) - without it, the build silently skips those elements rather than raising an error.
 
 ### Published site shows old content or a 404
 

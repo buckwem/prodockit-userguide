@@ -22,7 +22,7 @@ The install and configuration starts with the setup of Visual Studio Code.
 
 [Visual Studio Code](https://code.visualstudio.com){target="_blank"} (VS Code) is the selected primary editor for developing your documentation website using Zensical. You can use other editors, but the availability of many plugins in Visual Studio Code will help you edit your documentation more efficiently.
 
-The steps below will help you install VS Code and some essential plugins to edit your documentation. If you have already installed VS Code, check through the steps so you have the plugins installed.
+The steps below will help you install \index{VS Code} and some essential plugins to edit your documentation. If you have already installed VS Code, check through the steps so you have the plugins installed.
 
 ### Install Visual Studio Code
 
@@ -60,7 +60,7 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
 
 ## Install Git with Visual Studio Code
 
-[Git](https://git-scm.com/){target="_blank"} is a version control system that enables you to track changes to your code and collaborate with others. You will be using Git to manage your documentation website and push your changes to your **GitLab** or **GitHub** cloud repository.
+[Git](https://git-scm.com/){target="_blank"} is a version control system that enables you to track changes to your code and collaborate with others. You will be using \index{Git} to manage your documentation website and push your changes to your **GitLab** or **GitHub** cloud repository.
 
 Next, install the `git` command and configure it for Visual Studio Code. The instructions below are for use with both *GitLab* and *GitHub*.
 
@@ -125,7 +125,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
 
 ### Generate and configure ssh keys for Git
 
-Now generate the ssh keys to use for authentication with your GitLab or GitHub account and configure your ssh settings to use these keys. 
+Now generate the \index{ssh keys} to use for authentication with your GitLab or GitHub account and configure your ssh settings to use these keys. 
 
 1. Follow the instructions below to generate a new SSH key pair and add it to your GitLab or GitHub account. It's best practice to use modern, secure `ed25519` keys and create separate ones for GitHub and GitLab.
 
@@ -372,7 +372,7 @@ The features of forking and cloning are complementary. You can fork a repository
 
 You may already have a GitLab or GitHub repository containing a Zensical template provided for you. If you do, you can skip this section and go to the next section to clone the repository locally.
 
-This section forks the repository entirely from your terminal over SSH, using the GitHub CLI (`gh`) or GitLab CLI (`glab`), instead of clicking through the website.
+This section forks the repository entirely from your terminal over SSH, using the \index{GitHub CLI} (`gh`) or \index{GitLab CLI} (`glab`), instead of clicking through the website.
 
 1. Install the command line tool for whichever host your course uses.
 
@@ -457,7 +457,7 @@ If you forked using `glab`/`gh repo fork --clone` above, you already have a loca
 
 ## Install Python and Zensical
 
-Brief instructions for installing Python are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
+Brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
 
 If you already have Python installed, you can check the version by running the following command in your terminal or command prompt:
 
@@ -470,7 +470,7 @@ python --version
 
 The instructions below are for installing Python 3.8 or later. If you have an older version, please update to Python 3.8 or later.
 
-Follow the instructions below to install Python, create a virtual environment, and install Zensical inside it for your operating system.
+Follow the instructions below to install Python, create a \index{virtual environment}, and install Zensical inside it for your operating system.
 
 <div class="grid cards one-column" markdown>
 
@@ -547,7 +547,7 @@ Close VS Code and reopen it in the project folder to ensure that the virtual env
 
 ### Install Zensical Studio and other plugins
 
-Now we'll install the Zensical Studio plugin for Visual Studio Code, which provides a set of tools to help you work with Zensical projects, including commands to build and preview your site. Then we'll install a couple of other useful plugins for working with Markdown and TOML files.
+Now we'll install the \index{Zensical Studio} plugin for Visual Studio Code, which provides a set of tools to help you work with Zensical projects, including commands to build and preview your site. Then we'll install a couple of other useful plugins for working with Markdown and TOML files.
 
 1. Start by opening Visual Studio Code and navigating to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`/`Cmd+Shift+X`.
 1. Install the **Zensical Studio** extension by searching for "Zensical Studio" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.

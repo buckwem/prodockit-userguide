@@ -391,7 +391,7 @@ You can build a glossary of key terms the same way, in its own page - this templ
 
 ### Appendixes
 
-Set `is_appendix: true` in a page's front matter to give its heading letter-based numbering - "Appendix A", "Appendix B", ... - instead of continuing the document's normal numbered sequence, matching the usual academic convention for appendixes. Sub-headings within an appendix page number the same way numbered sections do, just using the letter instead of a chapter number - "A.1", "A.1.1", and so on.
+Set `is_appendix: true` in a page's \index{front matter} to give its heading letter-based numbering - "Appendix A", "Appendix B", ... - instead of continuing the document's normal numbered sequence, matching the usual academic convention for appendixes. Sub-headings within an appendix page number the same way numbered sections do, just using the letter instead of a chapter number - "A.1", "A.1.1", and so on.
 
 ```markdown
 ---
@@ -414,7 +414,7 @@ Appendix pages are lettered in `nav` order - the first `is_appendix: true` page 
 
 ## Customise front page
 
-The cover page (`docs/index.md`) consists of a few independently customisable pieces, described below.
+The \index{cover page} (`docs/index.md`) consists of a few independently customisable pieces, described below.
 
 ### Institution branding
 
@@ -520,7 +520,7 @@ Repo: {{ repo_url }}{% endraw %}
 
 ## Customise PDF generation
 
-Zensical only builds the website, so `build_pdf.py` is this template's own build script, layered on top, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). It renders every page through the same Zensical/prodockit pipeline the website uses (`render_page_html()`), then hands Pandoc the resulting HTML directly - so `\cite{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It also reuses `zensical.toml` settings wherever it can, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
+Zensical only builds the website, so `build_pdf.py` is this template's own build script, layered on top, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). It renders every page through the same Zensical/prodockit pipeline the website uses (`render_page_html()`), then hands \index{Pandoc} the resulting HTML directly - so `\cite{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It also reuses `zensical.toml` settings wherever it can, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
 
 For how to actually run it as part of your day-to-day writing - installing its dependencies, the `python build_pdf.py` command itself, and troubleshooting a failed build - see [Build the PDF](startediting.md#build-the-pdf) in *Start editing*; this section is about customising its output once it's already working.
 
