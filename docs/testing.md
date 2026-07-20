@@ -11,7 +11,7 @@ icon: lucide/book-open
 
 # Testing
 
-Every other page in this section explains how to *use* this template to write your report. This page is different: it documents the test suite in `test/`, which checks that this template's own prodockit-specific features (References, Acronyms, Glossary, Appendix numbering, word-count exclusions, and so on) actually work and haven't regressed - a contributor/maintainer tool, not something you need while writing your assignment.
+Every other page in this section explains how to *use* this template to write your report. This page is different: it documents the \index{Testing!test suite} in `test/`, which checks that this template's own prodockit-specific features (References, Acronyms, Glossary, Appendix numbering, word-count exclusions, and so on) actually work and haven't regressed - a contributor/maintainer tool, not something you need while writing your assignment.
 
 !!! info "Why this exists"
     Every feature and bug fix in this template used to be verified by hand - a one-off script, eyeballed once, then thrown away. Nothing stopped a later change from silently re-breaking something already fixed. The test suite in `test/` replaces that with checks that run automatically, in CI, on every push.
@@ -29,7 +29,7 @@ python test/run_tests.py
 
 `testrequirements.txt` is separate from `requirements.txt` - it's only needed to run the tests (locally or in CI), not to build your own report from this template.
 
-Tests are organised into **batches**, one per `test/test_*.py` file, each reporting its own pass/fail (see [Test batches](#test-batches) below for what each one covers):
+Tests are organised into **\index{Testing!test suite!test batches}**, one per `test/test_*.py` file, each reporting its own pass/fail (see [Test batches](#test-batches) below for what each one covers):
 
 ```bash
 python test/run_tests.py --list            # list available batches
@@ -47,7 +47,7 @@ Shared fixtures live in `test/conftest.py` and cover both the failure-with-a-cle
 
 | Fixture | Gives you |
 | -- | -- |
-| `pdf_doc` | The built PDF, already opened with PyMuPDF (`fitz`) |
+| `pdf_doc` | The built PDF, already opened with \index{Testing!test suite!PyMuPDF} (`fitz`) |
 | `pdf_full_text` | The PDF's text, one string per page |
 | `public_dir` | Path to the built website (`public/`) |
 | `public_html_files` | Every built HTML file, as a sorted list of `Path`s |

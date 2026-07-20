@@ -22,7 +22,7 @@ Most website-wide settings live in `zensical.toml`, in the `[project]` and `[pro
 
 ### Site logo
 
-If the documentation website is part of the university's GitLab service, or the website's location falls under the University of Surrey domain, the build automatically changes the site logo to the University of Surrey logo. Otherwise, the site logo uses the default logos in the `docs/assets/` directory. You can change the default logo by replacing the existing default logo files with your own logo files named `logo_default_black.png` and `logo_default_white.png`.
+If the documentation website is part of the university's GitLab service, or the website's location falls under the University of Surrey domain, the build automatically changes the \index{site logo} to the University of Surrey logo. Otherwise, the site logo uses the default logos in the `docs/assets/` directory. You can change the default logo by replacing the existing default logo files with your own logo files named `logo_default_black.png` and `logo_default_white.png`.
 
 Every build, and `zensical serve`, copies either the Surrey pair or your default pair over `docs/assets/logo_black.png`/`logo_white.png` - the two files `extra.css` actually references for the light/dark logo swap. Don't edit `logo_black.png`/`logo_white.png` directly, since the next build overwrites them.
 
@@ -72,7 +72,7 @@ Set `favicon` in `[project.theme]` to a path (relative to `docs_dir`) for your o
 favicon = "images/favicon.png"
 ```
 
-Left unset, Zensical uses its default favicon.
+Left unset, Zensical uses its default \index{favicon}.
 
 ### Colour Scheme
 
@@ -234,7 +234,7 @@ Keep the numbers in each title sequential as you add, remove, or reorder chapter
 
 ### Section cross-references
 
-This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extensions/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for cross-references: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
+This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extensions/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for \index{cross-references}: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
 
 !!! info "How the PDF handles this"
     Same as citations/glossary below - `build_pdf.py` renders this page through the real Zensical/prodockit pipeline, so `\ref{id}` resolves the same way in both outputs with no separate PDF-side translation.
@@ -260,7 +260,7 @@ This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extens
 
 ### References and bibliography
 
-This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for citations: define a source once, cite it by key anywhere with `\cite{id}`.
+This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\cite{id}`.
 
 !!! info "How the PDF handles this"
     `build_pdf.py` renders every page through the same Zensical/prodockit pipeline the website uses (see `render_page_html()`), so `\cite{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
@@ -326,7 +326,7 @@ This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-e
 
 ### Acronyms and abbreviations
 
-This template uses [`prodockit.glossary`](https://buckwem.github.io/prodockit-extensions/extensions/glossary/) (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations above - see [prodockit-template#87](https://github.com/buckwem/prodockit-template/issues/87)) for acronyms: define a term once, insert it by id with `\gls{id}` - it expands to the term's own text, linked to its definition.
+This template uses [`prodockit.glossary`](https://buckwem.github.io/prodockit-extensions/extensions/glossary/) (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations above - see [prodockit-template#87](https://github.com/buckwem/prodockit-template/issues/87)) for \index{acronyms}: define a term once, insert it by id with `\gls{id}` - it expands to the term's own text, linked to its definition.
 
 !!! info "How the PDF handles this"
     Same as citations above - `build_pdf.py` renders this page through the real Zensical/prodockit pipeline, so `\gls{id}` resolves the same way in both outputs with no separate PDF-side translation.
@@ -354,7 +354,7 @@ This template uses [`prodockit.glossary`](https://buckwem.github.io/prodockit-ex
 
 ### Glossary {: #glossary-page-setup }
 
-You can build a glossary of key terms the same way, in its own page - this template includes one at `docs/glossary.md`, right after the acronyms page in `nav`. Acronym entries and glossary entries share the same `prodockit.glossary` registry - they're the same kind of thing, an id with a short display text - so a `\gls{id}` works identically whichever page defines it.
+You can build a \index{glossary} of key terms the same way, in its own page - this template includes one at `docs/glossary.md`, right after the acronyms page in `nav`. Acronym entries and glossary entries share the same `prodockit.glossary` registry - they're the same kind of thing, an id with a short display text - so a `\gls{id}` works identically whichever page defines it.
 
 !!! info "How the PDF handles this"
     Same as acronyms above - resolved automatically, no separate PDF-side translation.
@@ -391,7 +391,7 @@ You can build a glossary of key terms the same way, in its own page - this templ
 
 ### Appendixes
 
-Set `is_appendix: true` in a page's front matter to give its heading letter-based numbering - "Appendix A", "Appendix B", ... - instead of continuing the document's normal numbered sequence, matching the usual academic convention for appendixes. Sub-headings within an appendix page number the same way numbered sections do, just using the letter instead of a chapter number - "A.1", "A.1.1", and so on.
+Set `is_appendix: true` in a page's \index{front matter} to give its heading letter-based numbering - "Appendix A", "Appendix B", ... - instead of continuing the document's normal numbered sequence, matching the usual academic convention for \index{appendixes}. Sub-headings within an appendix page number the same way numbered sections do, just using the letter instead of a chapter number - "A.1", "A.1.1", and so on.
 
 ```markdown
 ---
@@ -414,7 +414,7 @@ Appendix pages are lettered in `nav` order - the first `is_appendix: true` page 
 
 ## Customise front page
 
-The cover page (`docs/index.md`) consists of a few independently customisable pieces, described below.
+The \index{cover page} (`docs/index.md`) consists of a few independently customisable pieces, described below.
 
 ### Institution branding
 
@@ -436,7 +436,7 @@ A Jinja conditional block wraps the cover page's logo, colours, and introductory
 * Your local Git repository's `origin` remote contains `surrey.ac.uk`.
 * Zensical's own config (e.g. the site URL) contains `surrey.ac.uk`.
 
-If you're not from the University of Surrey, the `{% raw %}{% else %}{% endraw %}` branch is where you customise your own institution or company branding: replace `Crested Eagle Labs`, `University of the World`, and `Research programmes in Cyber Security` with your own text, and point the two `![]()` image lines at your own logo files (see [Site logo](#site-logo) above for the light/dark logo swap).
+If you're not from the University of Surrey, the `{% raw %}{% else %}{% endraw %}` branch is where you customise your own institution or company \index{branding}: replace `Crested Eagle Labs`, `University of the World`, and `Research programmes in Cyber Security` with your own text, and point the two `![]()` image lines at your own logo files (see [Site logo](#site-logo) above for the light/dark logo swap).
 
 !!! tip
     `is_surrey` isn't only used on the cover page - `repo_url`/`repo_name` in [Repository link](#repository-link) above switch the same way. [Install tooling](installtooling.md) and the other guide pages show both the GitLab and GitHub paths side by side instead, since a centrally-hosted guide can't detect which one applies to any given reader.
@@ -462,7 +462,7 @@ Delete both lines if you don't want the site name shown on the cover page.
 
 ### Word count and repository link
 
-Four elements on the cover page use marker classes out of the box: the automated word count, the repository link, the latest release number, and the "Download PDF" button.
+Four elements on the cover page use marker classes out of the box: the automated \index{word count}, the repository link, the latest release number, and the "Download PDF" button.
 
 **Word count**: `.pdf-only`, shows an automated word count of your document's content (excluding the cover page itself and the Table of Contents). To remove it from the PDF, open `docs/index.md` and delete the following line:
 
@@ -520,7 +520,7 @@ Repo: {{ repo_url }}{% endraw %}
 
 ## Customise PDF generation
 
-Zensical only builds the website, so `build_pdf.py` is this template's own build script, layered on top, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). It renders every page through the same Zensical/prodockit pipeline the website uses (`render_page_html()`), then hands Pandoc the resulting HTML directly - so `\cite{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It also reuses `zensical.toml` settings wherever it can, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
+Zensical only builds the website, so `build_pdf.py` is this template's own build script, layered on top, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). It renders every page through the same Zensical/prodockit pipeline the website uses (`render_page_html()`), then hands \index{Pandoc} the resulting HTML directly - so `\cite{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It also reuses `zensical.toml` settings wherever it can, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
 
 For how to actually run it as part of your day-to-day writing - installing its dependencies, the `python build_pdf.py` command itself, and troubleshooting a failed build - see [Build the PDF](startediting.md#build-the-pdf) in *Start editing*; this section is about customising its output once it's already working.
 
@@ -528,7 +528,7 @@ For how to actually run it as part of your day-to-day writing - installing its d
 
 ### Page header
 
-Every page except the cover shows a running header: your project's `site_name` (from `zensical.toml` - see [Site name](#site-name)), left-aligned, with a divider line underneath. There's no separate PDF setting for it - editing `site_name` in `zensical.toml` updates the header everywhere, including the website.
+Every page except the cover shows a \index{running header}: your project's `site_name` (from `zensical.toml` - see [Site name](#site-name)), left-aligned, with a divider line underneath. There's no separate PDF setting for it - editing `site_name` in `zensical.toml` updates the header everywhere, including the website.
 
 The header also shows the current chapter title, right-aligned - starting from the first numbered heading 1, so it's blank on the cover page and the Table of Contents. `build_pdf.py` computes it automatically from each page's heading 1 (including its chapter number), so there's nothing to configure here either.
 
@@ -539,7 +539,7 @@ PDF page header layout
 
 ### Page footer
 
-Every page except the cover also shows a running footer: your `copyright` text (left-aligned - see [Copyright](#copyright)) and a "Page X of Y" counter (right-aligned).
+Every page except the cover also shows a \index{running footer}: your `copyright` text (left-aligned - see [Copyright](#copyright)) and a "Page X of Y" counter (right-aligned).
 
 ![PDF page footer layout: copyright bottom-left, and the Page N of M counter bottom-right](images/pdf-page-footer-layout.png){ width="100%" }
 /// figure-caption
@@ -630,7 +630,7 @@ The caption block always comes *after* the image or table it captions, regardles
 
 ### Screenshots
 
-Every screenshot of an application or website - as opposed to a logo, icon, or diagram - must have both `figure-caption` *and* the `.screenshot` class, which frames it with a subtle border, rounded corners, and a light shadow so it reads as "a picture of your screen" rather than blending into the body text. Add `.screenshot` as an extra attribute alongside `width`:
+Every \index{screenshot} of an application or website - as opposed to a logo, icon, or diagram - must have both `figure-caption` *and* the `.screenshot` class, which frames it with a subtle border, rounded corners, and a light shadow so it reads as "a picture of your screen" rather than blending into the body text. Add `.screenshot` as an extra attribute alongside `width`:
 
 ``` markdown
 ![Initial commit](images/initial-commit.png){ width="40%" .screenshot }
@@ -655,7 +655,7 @@ Delete the first Warning admonition box in `originality.md` - it's a note for yo
 
 ## Directory structure
 
-Now that you've customised the website, the document structure, the cover page, and the PDF layout, it's worth knowing where everything you've just changed actually lives. The listing below is a complete map of the template as delivered: every markdown page under `docs/`, the configuration and build scripts at the project root, the CSS that drives both outputs, and the CI/CD workflows that publish them. Use it as a reference when you're looking for a file mentioned earlier in this section, or deciding where to add a new page.
+Now that you've customised the website, the \index{document structure}, the cover page, and the PDF layout, it's worth knowing where everything you've just changed actually lives. The listing below is a complete map of the template as delivered: every markdown page under `docs/`, the configuration and build scripts at the project root, the CSS that drives both outputs, and the CI/CD workflows that publish them. Use it as a reference when you're looking for a file mentioned earlier in this section, or deciding where to add a new page.
 
 * :material-folder: **docs/** — Holds the documentation source tree.
     * :material-file-document-outline: `index.md` — The cover page of your documentation.

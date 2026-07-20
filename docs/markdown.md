@@ -37,7 +37,7 @@ Add hash signs (#) before your text to create a heading. The number of hashes co
 ###### H6 Heading
 ```
 
-The [`toc`](https://python-markdown.github.io/extensions/toc/){target="_blank"} extension automatically turns every heading into a linkable anchor (the `¶` symbol you can see next to each heading on this page), and generates the sidebar and table of contents from them. The [`attr_list`](https://python-markdown.github.io/extensions/attr_list/){target="_blank"} extension lets you override the generated anchor or add a CSS class, by adding an attribute block after the heading text, for example `## Heading {: #custom-id }`.
+The [`toc`](https://python-markdown.github.io/extensions/toc/){target="_blank"} extension automatically turns every heading into a linkable anchor (the `¶` symbol you can see next to each heading on this page), and generates the sidebar and table of contents from them. The [`attr_list`](https://python-markdown.github.io/extensions/attr_list/){target="_blank"} extension lets you override the generated anchor or add a CSS class, by adding an attribute block after the heading text, for example `## Heading {: #custom-id }`. This lets you \index{Markdown!attr_list} attach IDs, classes, and other HTML attributes almost anywhere in your Markdown.
 
 !!! warning
     As covered in [Customisation](customise.md#customise-doc-structure), each page in this template can contain only one heading 1 (`#`) - it's what drives the automatic chapter/section numbering (e.g. "9.1") across the whole document. Start a new page instead of adding a second heading 1 to this one.
@@ -82,7 +82,7 @@ The [`pymdownx.magiclink`](https://facelessuser.github.io/pymdown-extensions/ext
 
 ## Lists
 
-Markdown handles ordered (numbered), unordered (bulleted), and definition lists.
+Markdown handles \index{Markdown!Lists!ordered} (numbered), \index{Markdown!Lists!unordered} (bulleted), and \index{Markdown!Lists!definition lists}.
 
 ### Unordered lists
 
@@ -122,7 +122,7 @@ Second term
 Markdown is a favourite for developers because of how it handles code snippets. This template uses the [`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/){target="_blank"} extension for fenced code blocks (in place of Python Markdown's more limited built-in [`fenced_code`](https://python-markdown.github.io/extensions/fenced_code_blocks/){target="_blank"}), together with [`pymdownx.highlight`](https://facelessuser.github.io/pymdown-extensions/extensions/highlight/){target="_blank"} and [`pymdownx.inlinehilite`](https://facelessuser.github.io/pymdown-extensions/extensions/inlinehilite/){target="_blank"} for syntax highlighting.
 
 * Inline code: wrap text in backticks: `code`.
-* Code blocks: wrap multiple lines in "fences" using three backticks (```). Add the language name straight after the opening fence for syntax highlighting.
+* \index{Markdown!Fenced code blocks}: wrap multiple lines in "fences" using three backticks (```). Add the language name straight after the opening fence for syntax highlighting.
 
 ````
 ```javascript
@@ -136,7 +136,7 @@ function hello() {
 
 ## Tables
 
-Use pipes `|` and hyphens `-` to create tables. The [`tables`](https://python-markdown.github.io/extensions/tables/){target="_blank"} extension is what enables this - it isn't part of core [Python Markdown](https://python-markdown.github.io/){target="_blank"}. Add colons to the separator row to control column alignment.
+Use pipes `|` and hyphens `-` to create \index{Markdown!tables}. The [`tables`](https://python-markdown.github.io/extensions/tables/){target="_blank"} extension is what enables this - it isn't part of core [Python Markdown](https://python-markdown.github.io/){target="_blank"}. Add colons to the separator row to control column alignment.
 
 ```
 | Left-aligned | Centred | Right-aligned |
@@ -163,7 +163,7 @@ ___
 
 ## Task lists {: #markdown-task-lists }
 
-Task lists aren't part of core [Python Markdown](https://python-markdown.github.io/){target="_blank"} either - they're enabled by the [`pymdownx.tasklist`](https://facelessuser.github.io/pymdown-extensions/extensions/tasklist/){target="_blank"} extension, configured in this template to render as clickable checkboxes rather than plain `[x]`/`[ ]` text.
+\index{Markdown!Task lists} aren't part of core [Python Markdown](https://python-markdown.github.io/){target="_blank"} either - they're enabled by the [`pymdownx.tasklist`](https://facelessuser.github.io/pymdown-extensions/extensions/tasklist/){target="_blank"} extension, configured in this template to render as clickable checkboxes rather than plain `[x]`/`[ ]` text.
 
 ```
 - [x] Completed task
@@ -193,4 +193,4 @@ For structured callouts with an icon and title (notes, warnings, tips), use an a
 
 ## Where to go next {: #markdown-where-to-go-next }
 
-The syntax on this page works in any Markdown file, including plain README files on GitLab or GitHub. Continue to [Zensical basics](zensicalbasics.md) for the extensions that only work in this template's own Zensical-built pages - admonitions, content tabs, diagrams, and more.
+The syntax on this page works in any \index{Markdown} file, including plain README files on GitLab or GitHub. Continue to [Zensical basics](zensicalbasics.md) for the extensions that only work in this template's own Zensical-built pages - admonitions, content tabs, diagrams, and more.

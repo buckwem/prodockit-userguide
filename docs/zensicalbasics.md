@@ -11,7 +11,7 @@ icon: lucide/book-open
 
 # Zensical basics
 
-Zensical is the static site generator that powers this template: it turns the Markdown files under `docs/` into the website you're reading now, and (via `build_pdf.py`) into the single-file PDF version of your document. It reads its configuration from `zensical.toml`, extends Markdown with the authoring features shown below (admonitions, tabs, diagrams, maths, and more), and lets you preview your changes locally with `zensical serve` before publishing.
+\index{Zensical} is the static site generator that powers this template: it turns the Markdown files under `docs/` into the website you're reading now, and (via `build_pdf.py`) into the single-file PDF version of your document. It reads its configuration from `zensical.toml`, extends Markdown with the authoring features shown below (admonitions, tabs, diagrams, maths, and more), and lets you preview your changes locally with `zensical serve` before publishing.
 
 This page is a quick reference for the Markdown extensions you're most likely to use while writing your document, each with a live example. For the underlying, general-purpose Markdown syntax these extensions build on (headings, links, bold/italic text, and so on), see [Markdown basics](markdown.md). For full documentation on Zensical itself, visit [zensical.org](https://zensical.org/docs/).
 
@@ -41,7 +41,7 @@ Markdown supports nested lists by indenting the inner list by four spaces. This 
 
 ### Admonitions
 
-Zensical supports admonitions, that highlight blocks of content to draw attention to important information. Admonitions are available for notes, warnings, tips, and more. For further details, go to the [admonitions documentation](https://zensical.org/docs/authoring/admonitions/).
+Zensical supports \index{Zensical!admonitions}, that highlight blocks of content to draw attention to important information. Admonitions are available for notes, warnings, tips, and more. For further details, go to the [admonitions documentation](https://zensical.org/docs/authoring/admonitions/).
 
 !!! note
 
@@ -79,7 +79,7 @@ You can also highlight code inline: `#!python print("Hello, Python!")`.
 
 ## Content tabs
 
-Zensical supports content tabs, which enables you to present different content in the same space. This is useful for showing code examples in multiple programming languages. For further details, go to the [content tabs documentation](https://zensical.org/docs/authoring/content-tabs/).
+Zensical supports \index{Zensical!content tabs}, which enables you to present different content in the same space. This is useful for showing code examples in multiple programming languages. For further details, go to the [content tabs documentation](https://zensical.org/docs/authoring/content-tabs/).
 
 === "Python"
 
@@ -131,7 +131,7 @@ graph LR
 
 ## Footnotes
 
-Zensical supports footnotes, which enables you to add references or additional information without cluttering the main text. You can create a footnote by using the `[^1]` syntax. For further details, go to the [footnotes documentation](https://zensical.org/docs/authoring/footnotes/).
+Zensical supports \index{Zensical!footnotes}, which enables you to add references or additional information without cluttering the main text. You can create a footnote by using the `[^1]` syntax. For further details, go to the [footnotes documentation](https://zensical.org/docs/authoring/footnotes/).
   
 
 Here's a sentence with a footnote.[^1]
@@ -153,7 +153,7 @@ Zensical supports various formatting options, including bold, italics, and strik
 
 ## Icons, emojis
 
-Zensical supports icons and emojis. You can use the `:icon-name:` syntax to add icons from the [Lucide](https://lucide.dev/){target="_blank"} icon set, or use standard emoji codes. For further details, go to the [icons and emojis documentation](https://zensical.org/docs/authoring/icons-emojis/).
+Zensical supports \index{Zensical!icons and emojis}. You can use the `:icon-name:` syntax to add icons from the [Lucide](https://lucide.dev/){target="_blank"} icon set, or use standard emoji codes. For further details, go to the [icons and emojis documentation](https://zensical.org/docs/authoring/icons-emojis/).
 
 * :sparkles: `:sparkles:`
 * :rocket: `:rocket:`
@@ -170,7 +170,7 @@ $$
 $$
 
 !!! warning "Needs configuration"
-    This page includes MathJax via a `script` tag, but the generated default
+    This page includes \index{Zensical!MathJax} via a `script` tag, but the generated default
     configuration doesn't enable it everywhere, to avoid loading it on pages
     that don't need it. See the documentation for details on how to configure
     it on all your pages if they're more maths-heavy than these simple
@@ -203,7 +203,7 @@ Zensical supports task lists, which allow you to create checklists with checkbox
 
 ## Tooltips
 
-Zensical supports tooltips, which allow you to add additional information that appears when the user hovers over a specific element. You can create a tooltip by using the `[text][example]` syntax. For further details, go to the [tooltips documentation](https://zensical.org/docs/authoring/tooltips/).
+Zensical supports \index{Zensical!tooltips}, which allow you to add additional information that appears when the user hovers over a specific element. You can create a tooltip by using the `[text][example]` syntax. For further details, go to the [tooltips documentation](https://zensical.org/docs/authoring/tooltips/).
 
 [Hover over this text][example]
 

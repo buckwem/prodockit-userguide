@@ -185,7 +185,7 @@ Once your commit reaches the default branch, the [CI/CD pipeline](#automated-bui
 
 ## Build the PDF
 
-`docs/site_documentation.pdf` isn't built by `zensical serve` or `zensical build` - it has its own build script, `build_pdf.py`, a prodockit-specific extension on top of Zensical (see [Customise PDF generation](customise.md#customise-pdf-generation) for what it is and how to customise its output; this section just covers running it).
+`docs/site_documentation.pdf` isn't built by \index{Zensical!`zensical serve`} or \index{Zensical!`zensical build`} - it has its own build script, `build_pdf.py`, a prodockit-specific extension on top of Zensical (see [Customise PDF generation](customise.md#customise-pdf-generation) for what it is and how to customise its output; this section just covers running it).
 
 ### Building it manually
 
@@ -220,7 +220,7 @@ Once you're comfortable with the basic commit-and-push cycle, branches and issue
 
 ### Working with branches
 
-A branch is a parallel, isolated copy of your files where you can work without affecting the "real", published version until you're ready. For anything more than a small tweak - a new section, a bigger restructure - it's worth developing it on its own branch rather than directly on your default branch (usually `main`). That keeps `main` (and therefore the published website and PDF) stable while you're mid-change, and makes an unfinished idea easy to abandon without cleaning up half-done edits.
+A \index{Git!branch} is a parallel, isolated copy of your files where you can work without affecting the "real", published version until you're ready. For anything more than a small tweak - a new section, a bigger restructure - it's worth developing it on its own branch rather than directly on your default branch (usually `main`). That keeps `main` (and therefore the published website and PDF) stable while you're mid-change, and makes an unfinished idea easy to abandon without cleaning up half-done edits.
 
 <div class="grid cards one-column" markdown>
 
@@ -309,7 +309,7 @@ Issues are GitLab's and GitHub's built-in way to track things to do - a missing 
 1. Open the **Issues** section in the left-hand sidebar of your project on the website, and select **New issue**.
 2. Give it a short title (for example, "Add diagram to section 2") and, optionally, a longer description of what's needed.
 
-Both platforms let you create a branch directly from an issue, which links the two together from the start:
+Both platforms let you \index{Git!branch!create a branch} directly from an issue, which links the two together from the start:
 
 * On GitLab, open the issue and use the **Create merge request**{: .bg-blue} button (or the dropdown next to it, for **Create branch** only). This creates a branch named after the issue (for example `12-add-diagram-to-section-2`) and links it back to the issue automatically.
 * On GitHub, open the issue and, in the right-hand sidebar under **Development**, select **Create a branch**. This creates a branch linked to the issue, and offers to check it out for you.
@@ -361,7 +361,7 @@ If `python build_pdf.py` errors out or produces a PDF missing content:
 
 1. Check the error message in the terminal - it usually names the file and the problem directly.
 2. Make sure you've installed the dependencies from `requirements.txt` in your active virtual environment (see [Install Python and Zensical](installtooling.md#install-python-and-zensical)).
-3. If your document uses Mermaid diagrams or maths, make sure you've installed the optional Node tooling too (see [Additional tooling](additionaltooling.md)) - without it, the build silently skips those elements rather than raising an error.
+3. If your document uses \index{Zensical!Mermaid} diagrams or maths, make sure you've installed the optional Node tooling too (see [Additional tooling](additionaltooling.md)) - without it, the build silently skips those elements rather than raising an error.
 
 ### Published site shows old content or a 404
 

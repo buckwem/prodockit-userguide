@@ -2,7 +2,12 @@
 # SPDX-License-Identifier: MIT
 
 zensical
-prodockit>=0.5.0
+# The [index] extra pulls in pymupdf, needed for the back-of-book index
+# (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
+# prodockit.index in zensical.toml. >=0.6.0 since the index feature isn't in
+# the 0.5.0 release yet (prodockit-extensions#55/#57) - bump this once it is,
+# and don't merge this repo's own PR before that release ships.
+prodockit[index]>=0.6.0
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI

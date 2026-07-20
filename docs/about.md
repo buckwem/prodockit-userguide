@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 # About this guide
 
-A docs-as-code workflow makes it easy to publish documentation on a static website. [Markdown](https://www.markdownguide.org/){target=_blank} is a markup language you use to write documentation in text files, which you then store in a Git repository. Hosted Git services such as GitLab or GitHub, together with tooling such as Visual Studio Code, make it easy to maintain and host documentation.
+A \index{docs-as-code} workflow makes it easy to publish documentation on a static website. [Markdown](https://www.markdownguide.org/){target=_blank} is a markup language you use to write documentation in text files, which you then store in a Git repository. Hosted Git services such as GitLab or GitHub, together with tooling such as Visual Studio Code, make it easy to maintain and host documentation.
 
 Adopting a docs-as-code workflow transforms documentation from a chore into an engineering process. By treating your written content with the same rigour as code, you enable a collaborative approach to documentation.
 
@@ -39,9 +39,9 @@ To move from using a word processor or simple website to a scalable and effectiv
 
 `Authoring tool`
 
-: Effective documentation depends on tools that help with content editing and automate quality checks, including spelling, grammar, style and formatting consistency. While there are numerous text editors available, Visual Studio Code stands out as a favoured option due to its extensive ecosystem of extensions. By using Visual Studio Code, writers can take advantage of a variety of extensions that offer real-time quality assurance.
+: Effective documentation depends on tools that help with content editing and automate quality checks, including spelling, grammar, style and formatting consistency. While there are numerous text editors available, \index{VS Code} stands out as a favoured option due to its extensive ecosystem of extensions. By using Visual Studio Code, writers can take advantage of a variety of extensions that offer real-time quality assurance.
 
-`Docs-as-code builder`
+\index{`Docs-as-code builder`}
 
 : Markdown files can serve as a foundation for a static website. However, they often need enhanced formatting options through additional themes and styling. A docs-as-code builder then transforms the Markdown and supplementary instructions into HTML, applying a theme to generate a professional-looking website. Zensical is a fast and reliable docs-as-code builder that processes Markdown files and creates a static documentation website. It lets you view the website locally before publishing, so you can confirm the final output meets your quality standards.
 
@@ -51,7 +51,7 @@ To move from using a word processor or simple website to a scalable and effectiv
 
 !!! note "Why not LaTeX?"
 
-    [LaTeX](https://www.latex-project.org){target=_blank} is a typesetting system widely used in academia and for specialised industrial documentation that requires precise formatting. Although it is not built specifically for web publishing, external tools can convert LaTeX source files into HTML for use on static websites. Markdown is often preferred for general documentation in industry because it integrates more naturally with modern web-based development workflows.
+    \index{<a href="https://www.latex-project.org" target="_blank">LaTeX</a>} is a typesetting system widely used in academia and for specialised industrial documentation that requires precise formatting. Although it is not built specifically for web publishing, external tools can convert LaTeX source files into HTML for use on static websites. Markdown is often preferred for general documentation in industry because it integrates more naturally with modern web-based development workflows.
 
 ## Docs-as-code in production
 
@@ -65,7 +65,7 @@ As a student, you'll follow a simplified workflow, since you won't be handling d
 
 Zensical provides the themes and tools necessary to draft professional documentation in Markdown with instant local previews. Once finalised, you can publish your site by uploading the files to a Git repository. From there, automated pipelines build and deploy the content into a live website.
 
-[Zensical](https://zensical.org/){target="_blank"}, written for speed and reliability using the [Rust programming language](https://rust-lang.org/){target="_blank"}, publishes documentation as a website.
+[Zensical](https://zensical.org/){target="_blank"}, written for speed and reliability using the \index{<a href="https://rust-lang.org/" target="_blank">Rust programming language</a>}, publishes documentation as a website.
 
 [prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"} is a documentation template built on Zensical, available for you to fork and clone into a project that you can use to write your own document or report - [Install tooling](installtooling.md) covers exactly what those two steps mean and how to do them.
 

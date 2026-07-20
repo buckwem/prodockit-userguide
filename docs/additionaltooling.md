@@ -144,11 +144,11 @@ Once you've installed the extension, it needs permission to access your GitLab o
 1. Click the **Extensions** icon in the left-hand Activity Bar (or press `Ctrl+Shift+X` on Windows/Linux, `Cmd+Shift+X` on macOS).
 2. In the search box, type `GitLens`.
 3. Find **GitLens — Git supercharged** (published by GitKraken) in the results and select **Install**.
-4. Once installed, a small annotation appears above the line your cursor is on, showing the last commit that changed it. Hover over it for full details, or select the **GitLens** icon in the Activity Bar for the commit graph and history views.
+4. Once installed, a small annotation appears above the line your cursor is on, showing the last commit that changed it. Hover over it for full details, or select the **\index{VS Code!GitLens}** icon in the Activity Bar for the commit graph and history views.
 
 ### Installing Code Spell Checker for lightweight spell checking
 
-If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below feels like more setup than you need right now, Code Spell Checker is a lighter alternative (or a useful complement to it) that underlines misspelled words directly in the editor as you type, with no configuration files required.
+If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below feels like more setup than you need right now, \index{VS Code!Code Spell Checker} is a lighter alternative (or a useful complement to it) that underlines misspelled words directly in the editor as you type, with no configuration files required.
 
 1. Click the **Extensions** icon in the left-hand Activity Bar (or press `Ctrl+Shift+X` on Windows/Linux, `Cmd+Shift+X` on macOS).
 2. In the search box, type `Code Spell Checker`.
@@ -248,7 +248,7 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
 
     When you open a Markdown file in Visual Studio Code, the Vale extension automatically checks it for grammar, spelling, and style issues based on the rules and styles you configured. View the results in the **Problems** panel: **View > Problems**, or the keyboard shortcut `Ctrl+Shift+M` (`Cmd+Shift+M` on macOS).
 
-    Vale generates a large number of suggestions, some of which aren't relevant to your documentation. You can ignore these and focus on the suggestions that are relevant to your writing style and the requirements of your documentation.
+    \index{VS Code!Vale} generates a large number of suggestions, some of which aren't relevant to your documentation. You can ignore these and focus on the suggestions that are relevant to your writing style and the requirements of your documentation.
 
 5. One of the most prominent suggestions is to change from passive voice to active voice. This is a good suggestion and recommended in business writing, but it can take time to change all instances of passive voice to active voice.
 
@@ -264,7 +264,7 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
 
 You can sign files you submit to a Git repository using DCO (Developer Certificate of Origin) signing. The benefit of signing your commits is that it gives you a way to verify the authenticity of the code and ensure no one has tampered with it. It also helps establish trust between contributors and maintainers, since it gives you a way to verify the identity of the person who made the changes.
 
-Setting up DCO signing in Git is straightforward. Unlike GPG key signing (which uses cryptographic keys to verify your identity), DCO signing is a legal statement asserting that you have the right to submit the code.
+Setting up \index{Git!commit signing} in Git is straightforward. Unlike GPG key signing (which uses cryptographic keys to verify your identity), DCO signing is a legal statement asserting that you have the right to submit the code.
 
 DCO signing simply appends a text line at the bottom of your commit message that looks like this:
 
@@ -349,7 +349,7 @@ replacing `3` with however many recent commits you need to fix.
 
 ## Installing a GUI Git client
 
-VS Code's built-in Source Control view and the command line, covered in [Synchronise your updates](startediting.md#synchronise-your-updates), are enough to work with this template on their own - you don't need anything else. Some people find a dedicated Git application easier for visualising branches and commit history though. Two popular, free options are GitHub Desktop and GitKraken. Install one only if you'd like an alternative to what's already covered.
+VS Code's built-in Source Control view and the command line, covered in [Synchronise your updates](startediting.md#synchronise-your-updates), are enough to work with this template on their own - you don't need anything else. Some people find a dedicated Git application easier for visualising branches and commit history though. Two popular, free options are \index{Git!GitHub Desktop} and \index{Git!GitKraken}. Install one only if you'd like an alternative to what's already covered.
 
 ### Installing GitHub Desktop
 
@@ -422,7 +422,7 @@ If you'd rather compress images from your desktop without opening a browser each
         brew install --cask imageoptim
         ```
 
-        Once installed, drag image files onto the ImageOptim window (or its Dock icon) to compress them in place.
+        Once installed, drag image files onto the \index{Image optimisation!ImageOptim} window (or its Dock icon) to compress them in place.
 
     === "Windows"
 
