@@ -60,7 +60,7 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
 
 ## Install Git with Visual Studio Code
 
-[Git](https://git-scm.com/){target="_blank"} is a version control system that enables you to track changes to your code and collaborate with others. You will be using \index{Git} to manage your documentation website and push your changes to your **GitLab** or **GitHub** cloud repository.
+\index{<a href="https://git-scm.com/" target="_blank">Git</a>} is a version control system that enables you to track changes to your code and collaborate with others. You will be using Git to manage your documentation website and push your changes to your **GitLab** or **GitHub** cloud repository.
 
 Next, install the `git` command and configure it for Visual Studio Code. The instructions below are for use with both *GitLab* and *GitHub*.
 
