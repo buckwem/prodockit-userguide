@@ -4,10 +4,12 @@
 zensical
 # The [index] extra pulls in pymupdf, needed for the back-of-book index
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
-# prodockit.index in zensical.toml. >=0.8.0 for pdf_copyright (see
-# zensical.toml's own [project.extra] comment) and prodockit.bibliography/
-# prodockit.tables, both now registered alongside the rest.
-prodockit[index]>=0.8.0
+# prodockit.index in zensical.toml. >=0.9.0 for pdf_copyright accepting a
+# real HTML fragment with real links (see zensical.toml's own
+# [project.extra] comment and prodockit-extensions#88) and
+# prodockit.bibliography/prodockit.tables, both now registered alongside
+# the rest.
+prodockit[index]>=0.9.0
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI
