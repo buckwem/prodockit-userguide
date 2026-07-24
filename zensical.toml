@@ -108,6 +108,18 @@ example = "fontawesome/solid/flask"
 quote = "fontawesome/solid/quote-left"
 
 [project.extra]
+# Overrides `copyright` for the PDF's own running footer only, leaving the
+# website's copyright text untouched - adds a "Made with Zensical and
+# prodockit" credit line, since the live site's own equivalent credit
+# comes from overrides/partials/copyright.html instead (prodockit has no
+# reach into the website's own Jinja partials). A literal `\A ` forces the
+# line break; must be a TOML *literal* string ('''...'''), not a basic one,
+# or the backslash-escape fails to parse - see "Copyright text" in
+# prodockit-extensions' pdf.md.
+pdf_copyright = '''
+Author: Mark Buckwell and contributors. Licensed under the MIT License.\A Made with Zensical and prodockit.
+'''
+
 # Reference/acronym/glossary list spacing - kept in sync with
 # prodockit-template's own copies so acronyms.md/glossary.md/references.md
 # demonstrate prodockit.citations/prodockit.glossary with the same tight
@@ -177,14 +189,17 @@ custom_checkbox = true
 [project.markdown_extensions.pymdownx.tilde]
 [project.markdown_extensions.tables]
 
-# prodockit.headings/refs/citations/glossary - see prodockit-template's own
-# zensical.toml for the full rationale. Registered the same way here so the
-# live \cite{}/\gls{} examples on the Customisation page actually resolve.
+# Every prodockit extension, registered the same way prodockit-extensions'
+# own docs site registers all of them on itself - prodockit.citations and
+# prodockit.bibliography can coexist with no conflict (\cite{id} vs
+# \citebib{id}), so there's no need to pick just one.
 [project.markdown_extensions."prodockit.headings"]
 numbering = "continuous"
 [project.markdown_extensions."prodockit.refs"]
 [project.markdown_extensions."prodockit.citations"]
 [project.markdown_extensions."prodockit.glossary"]
+[project.markdown_extensions."prodockit.bibliography"]
+[project.markdown_extensions."prodockit.tables"]
 [project.markdown_extensions."prodockit.index"]
 [project.markdown_extensions.pymdownx.snippets]
 [project.markdown_extensions.pymdownx.blocks.caption]

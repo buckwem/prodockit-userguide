@@ -1,0 +1,27 @@
+{#-
+  Copyright (c) 2025-2026 Mark Buckwell and contributors
+  SPDX-License-Identifier: MIT
+
+  Overrides the theme's own copyright.html (bundled version has no
+  "and prodockit" credit - see "Copyright text" in prodockit-extensions'
+  pdf.md) to add a "Made with Zensical and prodockit" line to the site
+  footer, alongside pdf_copyright's own equivalent PDF-only credit in
+  zensical.toml.
+-#}
+<div class="md-copyright">
+  {% if config.copyright %}
+    <div class="md-copyright__highlight">
+      {{ config.copyright }}
+    </div>
+  {% endif %}
+  {% if not config.extra.generator == false %}
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+    and
+    <a href="https://github.com/buckwem/prodockit-extensions" target="_blank" rel="noopener">
+      prodockit
+    </a>
+  {% endif %}
+</div>
