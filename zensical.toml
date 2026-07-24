@@ -112,13 +112,15 @@ quote = "fontawesome/solid/quote-left"
 # website's copyright text untouched - adds a "Made with Zensical and
 # prodockit" credit line, since the live site's own equivalent credit
 # comes from overrides/partials/copyright.html instead (prodockit has no
-# reach into the website's own Jinja partials). A literal `\A ` forces the
-# line break; must be a TOML *literal* string ('''...'''), not a basic one,
-# or the backslash-escape fails to parse - see "Copyright text" in
-# prodockit-extensions' pdf.md.
-pdf_copyright = '''
-Author: Mark Buckwell and contributors. Licensed under the MIT License.\A Made with Zensical and prodockit.
-'''
+# reach into the website's own Jinja partials). A real HTML fragment - a
+# real <br> forces the line break, and the two <a> links render as real,
+# clickable links in the PDF, not flattened to plain text - see
+# "Copyright text" in prodockit-extensions' pdf.md. Requires prodockit
+# >=0.9.0 (unreleased at time of writing - see prodockit-extensions#88):
+# under the previous mechanism (a CSS content string with a literal `\A `
+# escape), this same value would render literally instead of as a line
+# break with real links.
+pdf_copyright = 'Author: Mark Buckwell and contributors. Licensed under the MIT License.<br>Made with <a href="https://zensical.org/">Zensical</a> and <a href="https://buckwem.github.io/prodockit-extensions/">prodockit</a>.'
 
 # Reference/acronym/glossary list spacing - kept in sync with
 # prodockit-template's own copies so acronyms.md/glossary.md/references.md
