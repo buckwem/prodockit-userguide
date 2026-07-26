@@ -1,0 +1,32 @@
+name: Bug report
+description: Report a problem with a page's content, a broken link, or the site itself
+labels: ["bug"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Which page?
+      description: The page URL or path (e.g. https://buckwem.github.io/prodockit-userguide/testing/).
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: What's wrong or missing?
+      description: A clear description of the bug, including any error messages.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, and whether this happens on the website build, the PDF build, or both.
+      placeholder: e.g. macOS 15, Python 3.12, PDF build only
+    validations:
+      required: false
