@@ -193,8 +193,8 @@ custom_checkbox = true
 
 # Every prodockit extension, registered the same way prodockit-extensions'
 # own docs site registers all of them on itself - prodockit.citations and
-# prodockit.bibliography can coexist with no conflict (\cite{id} vs
-# \citebib{id}), so there's no need to pick just one.
+# prodockit.bibliography can coexist with no conflict (\citeref{id} vs
+# \cite{id}), so there's no need to pick just one.
 [project.markdown_extensions."prodockit.headings"]
 numbering = "continuous"
 [project.markdown_extensions."prodockit.refs"]

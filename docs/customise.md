@@ -260,10 +260,10 @@ This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extens
 
 ### References and bibliography
 
-This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\cite{id}`.
+This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\citeref{id}`.
 
 !!! info "How the PDF handles this"
-    `build_pdf.py` renders every page through the same Zensical/prodockit pipeline the website uses (see `render_page_html()`), so `\cite{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
+    `build_pdf.py` renders every page through the same Zensical/prodockit pipeline the website uses (see `render_page_html()`), so `\citeref{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
 
 1. Create a page for your sources (this template includes one at [`docs/references.md`](https://buckwem.github.io/prodockit-template/references/){target="_blank"}). List each source as a paragraph, and give it a short, unique id plus a short display text using [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax on the line directly below it (no heading needed - attr_list works on plain paragraphs too):
 
@@ -275,15 +275,15 @@ This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-e
     Each entry needs a blank line before and after it - attr_list only recognises `{: ... }` as an id (rather than literal visible text) when it's the last line of its own paragraph. Removing the blank lines to save space merges entries into one paragraph and breaks both outputs.
 
 2. Add the page to `nav` in `zensical.toml` so it appears in the sidebar - as a regular numbered chapter, or as a lettered appendix (see [Appendixes](#appendixes) below). This template ships it as an appendix by default.
-3. Cite the source in-text with `\cite{id}`:
+3. Cite the source in-text with `\citeref{id}`:
 
     ``` markdown
-    Git is a tool used to manage version control.\cite{skou2023}
+    Git is a tool used to manage version control.\citeref{skou2023}
     ```
 
-    Which renders as: Git is a tool used to manage version control.\cite{skou2023}
+    Which renders as: Git is a tool used to manage version control.\citeref{skou2023}
 
-    No relative path to work out, regardless of which page cites it - unlike a hand-typed Markdown link, `\cite{id}` resolves the same way from any page, and the `data-cite-text` you set once is reused everywhere the source is cited. Cite more than one source in the same place with a comma: `\cite{skou2023,chacon2014}` renders `\cite{skou2023,chacon2014}`.
+    No relative path to work out, regardless of which page cites it - unlike a hand-typed Markdown link, `\citeref{id}` resolves the same way from any page, and the `data-cite-text` you set once is reused everywhere the source is cited. Cite more than one source in the same place with a comma: `\citeref{skou2023,chacon2014}` renders `\citeref{skou2023,chacon2014}`.
 
     This in-text citation resolves correctly in both outputs - on the website, and as an internal cross-page link jumping straight to the cited entry within the built PDF.
 
@@ -322,7 +322,7 @@ This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-e
     Each accepts any valid CSS length and defaults to the value shown above if left unset. `reference_spacing_european` also controls the [Acronyms](#acronyms-and-abbreviations) and [Glossary](#glossary-page-setup) pages' own list spacing, which share the same tight "european" look but have no "global"-style alternative to switch to.
 
 !!! tip
-    Keep ids short and stable (e.g. `skou2023`, author surname plus year) so citations keep working even if you reorder entries on the references page later. Unlike a hand-typed link, `\cite{id}` needs no adjustment when citing from a page nested in a subdirectory.
+    Keep ids short and stable (e.g. `skou2023`, author surname plus year) so citations keep working even if you reorder entries on the references page later. Unlike a hand-typed link, `\citeref{id}` needs no adjustment when citing from a page nested in a subdirectory.
 
 ### Acronyms and abbreviations
 
@@ -520,7 +520,7 @@ Repo: {{ repo_url }}{% endraw %}
 
 ## Customise PDF generation
 
-Zensical only builds the website, so `build_pdf.py` is this template's own build script, layered on top, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). It renders every page through the same Zensical/prodockit pipeline the website uses (`render_page_html()`), then hands \index{Pandoc} the resulting HTML directly - so `\cite{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It also reuses `zensical.toml` settings wherever it can, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
+Zensical only builds the website, so `build_pdf.py` is this template's own build script, layered on top, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). It renders every page through the same Zensical/prodockit pipeline the website uses (`render_page_html()`), then hands \index{Pandoc} the resulting HTML directly - so `\citeref{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It also reuses `zensical.toml` settings wherever it can, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
 
 For how to actually run it as part of your day-to-day writing - installing its dependencies, the `python build_pdf.py` command itself, and troubleshooting a failed build - see [Build the PDF](startediting.md#build-the-pdf) in *Start editing*; this section is about customising its output once it's already working.
 
