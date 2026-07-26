@@ -13,7 +13,7 @@ is_appendix: true
 
 # References
 
-The following sources support the content presented in this document. `\cite{skou2023}` is also referenced by [Customisation](customise.md)'s live example.
+The following sources support the content presented in this document. `\citeref{skou2023}` is also referenced by [Customisation](customise.md)'s live example.
 
 Chacon, S. and Straub, B. (2014) *Pro Git*. 2nd edn. New York: Apress. Available at: https://git-scm.com/book (Accessed: 18 July 2026).
 {: #chacon2014 .reference data-cite-text="Chacon and Straub, 2014" }
