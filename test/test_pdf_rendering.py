@@ -85,15 +85,37 @@ def test_no_page_contains_literal_tex_source(pdf_page_texts):
     )
 
 
-def test_the_diagrams_section_actually_contains_an_image(pdf_doc):
-    """Counterpart to the literal-source checks above: those alone would
-    still pass if the diagram vanished from the PDF entirely rather than
-    rendering as text."""
+# The node labels of the flowchart in zensicalbasics.md's Diagrams section.
+# mermaid-cli is run with htmlLabels off (WeasyPrint can't render Mermaid's
+# default <foreignObject> labels), so a rendered diagram puts these into the
+# PDF as real SVG <text> - which is what makes them assertable here.
+DIAGRAM_NODE_LABELS = ("Start", "Error?", "Debug", "Yay!")
+
+
+def test_the_diagrams_section_diagram_is_actually_present(pdf_doc):
+    """Counterpart to the literal-source checks above, which on their own
+    would still pass if the diagram vanished from the PDF entirely instead
+    of rendering as text.
+
+    Deliberately not `page.get_images()`: a Mermaid diagram is embedded as
+    an SVG and rasterises to *vector drawings*, not a raster image, so that
+    check passes or fails on whatever unrelated images (emoji, icons) happen
+    to share the page - it would have reported success here even with the
+    diagram missing.
+    """
+    # Located by the diagram's own content rather than by the surrounding
+    # prose: several pages mention "Mermaid" and "Diagrams" (the Markdown
+    # chapter cross-references the section, and it appears in the contents),
+    # so matching on those words finds the wrong page.
     for page in pdf_doc:
-        if "Diagrams" in page.get_text() and "Mermaid" in page.get_text():
-            assert page.get_images(full=True), (
-                "The Diagrams section's page contains no image at all - the Mermaid "
-                "diagram is missing from the PDF rather than merely unrendered"
+        text = page.get_text()
+        if all(label in text for label in DIAGRAM_NODE_LABELS):
+            assert page.get_drawings(), (
+                "The flowchart's node labels are present but the page has no vector "
+                "drawings - its boxes and arrows did not render"
             )
             return
-    pytest.skip("no Diagrams section found in the PDF")
+    pytest.fail(
+        f"No PDF page contains all of the flowchart's node labels {DIAGRAM_NODE_LABELS} - "
+        "the diagram is absent from the PDF rather than merely unrendered"
+    )
