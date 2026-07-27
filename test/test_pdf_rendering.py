@@ -22,14 +22,44 @@ import re
 import pytest
 from prodockit.pdf.config import _find_mmdc_bin, _find_tex2svg_script
 
-# A rendered diagram contributes an image, not text, so any of these
-# appearing at the start of a line in the finished PDF means the fenced
-# ```mermaid block was passed through as a literal code block.
-MERMAID_SOURCE_RE = re.compile(
+# A rendered diagram contributes vector drawings, not text, so a Mermaid
+# diagram-type keyword still present as text means the fenced ```mermaid
+# block was passed through as a literal code block.
+#
+# The keyword alone is not enough to conclude that, though: line breaks in a
+# PDF fall wherever the text happens to wrap, and several of these words are
+# ordinary English. "...adds a visual commit graph and richer history
+# browsing" in additionaltooling.md wrapped so that "graph" began a line,
+# which a bare keyword check read as an unrendered diagram - green locally,
+# failing in CI purely because different fonts there wrapped the line
+# differently.
+#
+# So require a diagram-type keyword *and* Mermaid's own link syntax shortly
+# after it: an unrendered fence dumps the whole block, so the arrows are
+# always there, while prose that happens to start a line with "graph" has
+# nothing resembling them.
+_MERMAID_KEYWORD_RE = re.compile(
     r"^\s*(graph|flowchart|sequenceDiagram|stateDiagram(?:-v2)?|classDiagram|erDiagram|"
     r"gantt|journey|pie|gitGraph|mindmap|timeline)\b",
-    re.MULTILINE,
 )
+_MERMAID_LINK_RE = re.compile(r"--+>|--+\||-\.->|==+>|->>|--\s*$")
+# How far after the keyword line to look for that syntax - a diagram's first
+# link is on the very next line in practice; a few lines of slack covers a
+# declaration or comment in between.
+_MERMAID_LOOKAHEAD_LINES = 6
+
+
+def find_literal_mermaid_source(text):
+    """Returns True if `text` (one PDF page) looks like it contains a
+    Mermaid block that was never rendered."""
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        if not _MERMAID_KEYWORD_RE.match(line):
+            continue
+        window = lines[i : i + 1 + _MERMAID_LOOKAHEAD_LINES]
+        if any(_MERMAID_LINK_RE.search(candidate) for candidate in window):
+            return True
+    return False
 
 # Likewise for maths: rendered output is an image, so a surviving TeX
 # delimiter or command means the formula was never pre-rendered.
@@ -70,7 +100,7 @@ def test_maths_renderer_is_available_when_arithmatex_is_configured(zensical_conf
 
 
 def test_no_page_contains_literal_mermaid_source(pdf_page_texts):
-    offenders = [i for i, text in enumerate(pdf_page_texts) if MERMAID_SOURCE_RE.search(text)]
+    offenders = [i for i, text in enumerate(pdf_page_texts) if find_literal_mermaid_source(text)]
     assert not offenders, (
         f"Literal Mermaid source found on PDF page(s) {offenders} - the diagram was "
         "passed through as a code block instead of being pre-rendered to an image"
@@ -119,3 +149,30 @@ def test_the_diagrams_section_diagram_is_actually_present(pdf_doc):
         f"No PDF page contains all of the flowchart's node labels {DIAGRAM_NODE_LABELS} - "
         "the diagram is absent from the PDF rather than merely unrendered"
     )
+
+
+def test_prose_that_merely_starts_a_line_with_a_diagram_keyword_is_not_flagged():
+    """Regression test for the false positive that broke the first CI run of
+    this suite: additionaltooling.md's "a visual commit graph and richer
+    history browsing" wrapped, in CI's fonts, so that "graph" began a line.
+    A keyword-only check read that as an unrendered diagram - and passed
+    locally, where the same sentence wrapped elsewhere."""
+    wrapped_prose = (
+        "annotations - showing who last changed each line, and when -\n"
+        "directly above your text, along with a visual commit\n"
+        "graph and richer history browsing. It's especially useful once\n"
+        "you're using the branches and issues workflow.\n"
+    )
+    assert not find_literal_mermaid_source(wrapped_prose)
+
+
+def test_a_genuinely_unrendered_block_is_still_flagged():
+    """The other half of the pair above - narrowing the check must not have
+    cost it the failure it exists to catch."""
+    unrendered = (
+        "the page:\n"
+        "graph LR\n"
+        "  A[Start] --> B{Error?};\n"
+        "  B -->|Yes| C[Hmm...];\n"
+    )
+    assert find_literal_mermaid_source(unrendered)
