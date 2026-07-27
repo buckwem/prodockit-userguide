@@ -17,20 +17,54 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      # Only needed so `prodockit pdf` can pre-render ```mermaid fenced code
+      # blocks to static images via mermaid-cli/Puppeteer, and TeX maths
+      # ($...$/$$...$$) to static images via mathjax-full (pure Node, no
+      # browser needed for that one) - WeasyPrint has no JS engine to run
+      # Mermaid.js/MathJax client-side like the live Zensical site does.
+      # Without these, prodockit.pdf silently leaves both unrendered and the
+      # PDF shows raw diagram/LaTeX source instead - see issue #23. Using the
+      # apt-installed Google Chrome below instead of Puppeteer's own bundled
+      # download avoids guessing at headless-Chrome shared-library package
+      # names.
+      #
+      # PUPPETEER_SKIP_DOWNLOAD, not the older
+      # PUPPETEER_SKIP_CHROMIUM_DOWNLOAD - Puppeteer renamed it, and
+      # mermaid-cli ^11.4.2 resolves to puppeteer 25.x, which only honours
+      # the new name. Using the old name silently downloads a full Chrome
+      # build on every run before falling back to the apt one below.
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
     steps:
       - uses: actions/configure-pages@v5
       - uses: actions/checkout@v5
         with:
+          # Full history, not the default shallow clone - `{{ release }}`
+          # comes from `git describe --tags`, which sees no tags at all in a
+          # depth-1 checkout (prodockit-extensions#122).
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - uses: r-lib/actions/setup-pandoc@v2
       - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0
-      - run: pip install -r requirements.txt
+      - run: curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
+      - run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+      - run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
+      - run: npm ci --prefix tools/mermaid
+      - run: npm ci --prefix tools/mathjax
+      - run: pip install -r requirements.txt -r testrequirements.txt
       - run: python sync_repo_icon.py
       - run: prodockit pdf
       - run: zensical build --clean
+      # After the builds, since these tests check the built PDF - they fail
+      # the deploy if a Mermaid diagram or a formula reached it as raw
+      # source instead of a rendered image (see test/ and issue #23).
+      - run: python -m pytest test/ -v
       - uses: actions/upload-pages-artifact@v4
         with:
           path: public

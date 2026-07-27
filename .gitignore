@@ -4,6 +4,15 @@
 # Environments
 .venv
 
+# Node (mermaid-cli, used by `prodockit pdf` to pre-render mermaid diagrams
+# for the PDF - WeasyPrint has no JS engine to run Mermaid.js the way the
+# live site does). Installed with `npm ci --prefix tools/mermaid`.
+tools/mermaid/node_modules
+
+# Node (mathjax-full, used by `prodockit pdf` to pre-render TeX maths for
+# the PDF, same reason). Installed with `npm ci --prefix tools/mathjax`.
+tools/mathjax/node_modules
+
 # Artifacts
 __pycache__
 .pytest_cache

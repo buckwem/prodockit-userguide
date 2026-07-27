@@ -1,0 +1,12 @@
+# Copyright (c) 2025-2026 Mark Buckwell and contributors
+# SPDX-License-Identifier: MIT
+
+# The test suite's own prerequisites (see test/), kept separate from
+# requirements.txt so someone only building the docs never needs them.
+# Install alongside requirements.txt:
+#   pip install -r requirements.txt -r testrequirements.txt
+pytest
+# pymupdf is already pulled in by prodockit[index] in requirements.txt, but
+# the tests import it directly, so it's declared here too rather than
+# relying on that transitively.
+pymupdf
