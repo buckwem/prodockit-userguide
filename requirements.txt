@@ -4,10 +4,12 @@
 zensical
 # The [index] extra pulls in pymupdf, needed for the back-of-book index
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
-# prodockit.index in zensical.toml. >=0.11.0 for prodockit.zensical_macros'
-# own `release` variable (prodockit-extensions#116), which macros.py relies
-# on directly now rather than computing it locally.
-prodockit[index]>=0.11.0
+# prodockit.index in zensical.toml. >=0.15.0 covers everything this project
+# now leans on: prodockit.zensical_macros' `release` variable (0.11.0,
+# prodockit-extensions#116) used by macros.py, the `prodockit sync-repo`
+# command that replaced this project's own sync_repo_icon.py (0.13.0), and
+# prodockit.testing's checks and pytest plugin (0.15.0) - see #27.
+prodockit[index]>=0.15.0
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI
