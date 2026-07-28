@@ -84,17 +84,43 @@ def test_no_page_contains_literal_tex_source(prodockit_pdf_page_texts):
 # PDF as real SVG <text> - which is what makes them assertable here.
 DIAGRAM_NODE_LABELS = ("Start", "Error?", "Debug", "Yay!")
 
+# Mermaid's default node fill (#ECECFF). Every node shape in a rendered
+# diagram is painted with it, and nothing else in this document uses it -
+# confirmed by scanning every page of the real built PDF, where it appears
+# on exactly one page, once per node.
+MERMAID_NODE_FILL = (0.925, 0.925, 1.0)
+FILL_TOLERANCE = 0.02
+
+
+def _mermaid_node_shapes(page):
+    """Vector shapes on `page` painted with Mermaid's node fill."""
+    shapes = []
+    for drawing in page.get_drawings():
+        fill = drawing.get("fill")
+        if fill and all(
+            abs(channel - expected) <= FILL_TOLERANCE
+            for channel, expected in zip(fill, MERMAID_NODE_FILL, strict=False)
+        ):
+            shapes.append(drawing)
+    return shapes
+
 
 def test_the_diagrams_section_diagram_is_actually_present(prodockit_pdf):
     """Counterpart to the literal-source checks above, which on their own
     would still pass if the diagram vanished from the PDF entirely instead
     of rendering as text.
 
+    Two signals, because neither is sufficient alone. The node labels locate
+    the diagram and prove it did not vanish - but they survive as substrings
+    of the raw source too (`A[Start]` contains "Start"), so alone they would
+    also accept an unrendered block. Mermaid's own node fill proves it was
+    actually drawn.
+
     Deliberately not `page.get_images()`: a Mermaid diagram is embedded as
-    an SVG and rasterises to *vector drawings*, not a raster image, so that
-    check passes or fails on whatever unrelated images (emoji, icons) happen
-    to share the page - it would have reported success here even with the
-    diagram missing.
+    an SVG and rasterises to vector drawings, not a raster image, so that
+    check passes or fails on whatever unrelated emoji happen to share the
+    page. Nor `page.get_drawings()` merely being non-empty - every page has
+    vector content, so that passes anywhere.
 
     Located by the diagram's own content rather than by surrounding prose:
     several pages mention "Mermaid" and "Diagrams" without containing it.
@@ -102,9 +128,10 @@ def test_the_diagrams_section_diagram_is_actually_present(prodockit_pdf):
     for page in prodockit_pdf:
         text = page.get_text()
         if all(label in text for label in DIAGRAM_NODE_LABELS):
-            assert page.get_drawings(), (
-                "The flowchart's node labels are present but the page has no vector "
-                "drawings - its boxes and arrows did not render"
+            assert _mermaid_node_shapes(page), (
+                "The flowchart's node labels are on this page but no shape is "
+                "filled with Mermaid's node colour - they are raw source text, "
+                "not a rendered diagram"
             )
             return
     pytest.fail(
