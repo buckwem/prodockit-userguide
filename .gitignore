@@ -31,3 +31,7 @@ docs/.prodockit-pdf-mermaid/
 
 # Local Claude Code config (dev-preview launch config, personal permissions)
 .claude/
+
+# Pandoc/WeasyPrint temp artefacts occasionally left in the project root by
+# an interrupted `prodockit pdf` run - never wanted in the repository.
+toPdfViaTempFile*.pdf

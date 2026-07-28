@@ -12,107 +12,70 @@ failing the build when those aren't found, which is the right default for
 a project that uses neither, but means a project that *does* use them gets
 a quietly broken PDF and no error.
 
-Two layers here: the config-vs-tooling checks fail fast and name the cause
-directly, and the built-output checks catch anything that still slips
-through to the finished PDF.
+The detection itself now comes from `prodockit.testing`, and the fixtures
+from its pytest plugin (issue #27). This file previously carried its own
+copy of both. That copy matched only arrow syntax, so an unrendered
+entity-relationship diagram - whose `||--o{` cardinality syntax has no
+arrowhead at all - would have passed silently; the library version handles
+it. What remains here is the part that is genuinely specific to this
+project: which fences it configures, and the actual diagram on its own
+Diagrams page.
 """
-
-import re
 
 import pytest
 from prodockit.pdf.config import _find_mmdc_bin, _find_tex2svg_script
-
-# A rendered diagram contributes vector drawings, not text, so a Mermaid
-# diagram-type keyword still present as text means the fenced ```mermaid
-# block was passed through as a literal code block.
-#
-# The keyword alone is not enough to conclude that, though: line breaks in a
-# PDF fall wherever the text happens to wrap, and several of these words are
-# ordinary English. "...adds a visual commit graph and richer history
-# browsing" in additionaltooling.md wrapped so that "graph" began a line,
-# which a bare keyword check read as an unrendered diagram - green locally,
-# failing in CI purely because different fonts there wrapped the line
-# differently.
-#
-# So require a diagram-type keyword *and* Mermaid's own link syntax shortly
-# after it: an unrendered fence dumps the whole block, so the arrows are
-# always there, while prose that happens to start a line with "graph" has
-# nothing resembling them.
-_MERMAID_KEYWORD_RE = re.compile(
-    r"^\s*(graph|flowchart|sequenceDiagram|stateDiagram(?:-v2)?|classDiagram|erDiagram|"
-    r"gantt|journey|pie|gitGraph|mindmap|timeline)\b",
+from prodockit.testing import (
+    assert_no_unrendered_mermaid,
+    assert_no_unrendered_tex,
+    contains_unrendered_mermaid,
 )
-_MERMAID_LINK_RE = re.compile(r"--+>|--+\||-\.->|==+>|->>|--\s*$")
-# How far after the keyword line to look for that syntax - a diagram's first
-# link is on the very next line in practice; a few lines of slack covers a
-# declaration or comment in between.
-_MERMAID_LOOKAHEAD_LINES = 6
 
 
-def find_literal_mermaid_source(text):
-    """Returns True if `text` (one PDF page) looks like it contains a
-    Mermaid block that was never rendered."""
-    lines = text.splitlines()
-    for i, line in enumerate(lines):
-        if not _MERMAID_KEYWORD_RE.match(line):
-            continue
-        window = lines[i : i + 1 + _MERMAID_LOOKAHEAD_LINES]
-        if any(_MERMAID_LINK_RE.search(candidate) for candidate in window):
-            return True
-    return False
-
-# Likewise for maths: rendered output is an image, so a surviving TeX
-# delimiter or command means the formula was never pre-rendered.
-TEX_SOURCE_RE = re.compile(r"\\\[|\\\]|\\sum_|\\frac\{|\\infty|\\begin\{")
-
-
-def _fence_is_configured(zensical_config, fence_name):
-    extensions = zensical_config.get("project", {}).get("markdown_extensions", {})
+def _fence_is_configured(config, fence_name):
+    extensions = config.get("project", {}).get("markdown_extensions", {})
     fences = extensions.get("pymdownx", {}).get("superfences", {}).get("custom_fences", [])
     return any(fence.get("name") == fence_name for fence in fences)
 
 
-def _arithmatex_is_configured(zensical_config):
-    extensions = zensical_config.get("project", {}).get("markdown_extensions", {})
+def _arithmatex_is_configured(config):
+    extensions = config.get("project", {}).get("markdown_extensions", {})
     return "arithmatex" in extensions.get("pymdownx", {})
 
 
-def test_mermaid_renderer_is_available_when_the_mermaid_fence_is_configured(zensical_config):
+# --- Config vs tooling: fails fast, and names the cause --------------------
+
+
+def test_mermaid_renderer_is_available_when_the_mermaid_fence_is_configured(prodockit_config):
     """Fails fast, and names the cause, when tools/mermaid isn't installed -
     rather than leaving it to be inferred from odd-looking PDF content."""
-    if not _fence_is_configured(zensical_config, "mermaid"):
+    if not _fence_is_configured(prodockit_config, "mermaid"):
         pytest.skip("no mermaid custom fence configured in zensical.toml")
     assert _find_mmdc_bin(None) is not None, (
         "zensical.toml configures the mermaid fence, but no mmdc binary was found - "
-        "run `npm ci --prefix tools/mermaid`, or Mermaid diagrams will silently "
-        "render as raw source in the PDF (issue #23)"
+        "run `prodockit init-tools` and `npm ci --prefix tools/mermaid`, or Mermaid "
+        "diagrams will silently render as raw source in the PDF (issue #23)"
     )
 
 
-def test_maths_renderer_is_available_when_arithmatex_is_configured(zensical_config):
-    if not _arithmatex_is_configured(zensical_config):
+def test_maths_renderer_is_available_when_arithmatex_is_configured(prodockit_config):
+    if not _arithmatex_is_configured(prodockit_config):
         pytest.skip("pymdownx.arithmatex not configured in zensical.toml")
     assert _find_tex2svg_script(None) is not None, (
         "zensical.toml enables pymdownx.arithmatex, but no tex2svg script was found - "
-        "run `npm ci --prefix tools/mathjax`, or maths will silently render as raw "
-        "LaTeX in the PDF (issue #23)"
+        "run `prodockit init-tools` and `npm ci --prefix tools/mathjax`, or maths will "
+        "silently render as raw LaTeX in the PDF (issue #23)"
     )
 
 
-def test_no_page_contains_literal_mermaid_source(pdf_page_texts):
-    offenders = [i for i, text in enumerate(pdf_page_texts) if find_literal_mermaid_source(text)]
-    assert not offenders, (
-        f"Literal Mermaid source found on PDF page(s) {offenders} - the diagram was "
-        "passed through as a code block instead of being pre-rendered to an image"
-    )
+# --- The built PDF ---------------------------------------------------------
 
 
-def test_no_page_contains_literal_tex_source(pdf_page_texts):
-    offenders = [i for i, text in enumerate(pdf_page_texts) if TEX_SOURCE_RE.search(text)]
-    assert not offenders, (
-        f"Literal TeX source found on PDF page(s) {offenders} - the formula was not "
-        "pre-rendered to an image"
-    )
+def test_no_page_contains_literal_mermaid_source(prodockit_pdf_page_texts):
+    assert_no_unrendered_mermaid(prodockit_pdf_page_texts)
+
+
+def test_no_page_contains_literal_tex_source(prodockit_pdf_page_texts):
+    assert_no_unrendered_tex(prodockit_pdf_page_texts)
 
 
 # The node labels of the flowchart in zensicalbasics.md's Diagrams section.
@@ -122,7 +85,7 @@ def test_no_page_contains_literal_tex_source(pdf_page_texts):
 DIAGRAM_NODE_LABELS = ("Start", "Error?", "Debug", "Yay!")
 
 
-def test_the_diagrams_section_diagram_is_actually_present(pdf_doc):
+def test_the_diagrams_section_diagram_is_actually_present(prodockit_pdf):
     """Counterpart to the literal-source checks above, which on their own
     would still pass if the diagram vanished from the PDF entirely instead
     of rendering as text.
@@ -132,12 +95,11 @@ def test_the_diagrams_section_diagram_is_actually_present(pdf_doc):
     check passes or fails on whatever unrelated images (emoji, icons) happen
     to share the page - it would have reported success here even with the
     diagram missing.
+
+    Located by the diagram's own content rather than by surrounding prose:
+    several pages mention "Mermaid" and "Diagrams" without containing it.
     """
-    # Located by the diagram's own content rather than by the surrounding
-    # prose: several pages mention "Mermaid" and "Diagrams" (the Markdown
-    # chapter cross-references the section, and it appears in the contents),
-    # so matching on those words finds the wrong page.
-    for page in pdf_doc:
+    for page in prodockit_pdf:
         text = page.get_text()
         if all(label in text for label in DIAGRAM_NODE_LABELS):
             assert page.get_drawings(), (
@@ -151,11 +113,16 @@ def test_the_diagrams_section_diagram_is_actually_present(pdf_doc):
     )
 
 
+# --- The false positive that broke a real CI run ---------------------------
+#
+# Kept here rather than left to the library's own suite: it is this
+# project's prose that triggered it, and this project's build that broke.
+
+
 def test_prose_that_merely_starts_a_line_with_a_diagram_keyword_is_not_flagged():
-    """Regression test for the false positive that broke the first CI run of
-    this suite: additionaltooling.md's "a visual commit graph and richer
-    history browsing" wrapped, in CI's fonts, so that "graph" began a line.
-    A keyword-only check read that as an unrendered diagram - and passed
+    """additionaltooling.md's "a visual commit graph and richer history
+    browsing" wrapped, in CI's fonts, so that "graph" began a line. A
+    keyword-only check read that as an unrendered diagram - and passed
     locally, where the same sentence wrapped elsewhere."""
     wrapped_prose = (
         "annotations - showing who last changed each line, and when -\n"
@@ -163,7 +130,7 @@ def test_prose_that_merely_starts_a_line_with_a_diagram_keyword_is_not_flagged()
         "graph and richer history browsing. It's especially useful once\n"
         "you're using the branches and issues workflow.\n"
     )
-    assert not find_literal_mermaid_source(wrapped_prose)
+    assert not contains_unrendered_mermaid(wrapped_prose)
 
 
 def test_a_genuinely_unrendered_block_is_still_flagged():
@@ -175,4 +142,4 @@ def test_a_genuinely_unrendered_block_is_still_flagged():
         "  A[Start] --> B{Error?};\n"
         "  B -->|Yes| C[Hmm...];\n"
     )
-    assert find_literal_mermaid_source(unrendered)
+    assert contains_unrendered_mermaid(unrendered)
