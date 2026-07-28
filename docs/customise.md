@@ -673,7 +673,7 @@ Now that you've customised the website, the \index{document structure}, the cove
         * :material-file-document-outline: `print.css` — PDF-only styles, read only by `build_pdf.py`.
 * :material-file-code-outline: `build_pdf.py` — Builds the single-file PDF version of your document, via the [prodockit](https://github.com/buckwem/prodockit-extensions) package's `prodockit.pdf`.
 * :material-file-code-outline: `macros.py` — This template's own Zensical macro hooks (Surrey detection). Word count, repository link, and heading/reference-style numbering come from `prodockit.zensical_macros` instead - see `zensical.toml`'s `modules = ["prodockit.zensical_macros"]`.
-* :material-folder: **tools/** — Node.js tooling used only by `build_pdf.py`, not the website.
+* :material-folder: **tools/** — Node.js tooling used only by the PDF build, not the website. Scaffolded by `prodockit init-tools` - see [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths).
     * :material-folder: **mermaid/** — `mermaid-cli`, for rendering ` ```mermaid ` diagrams to images in the PDF.
     * :material-folder: **mathjax/** — `mathjax-full`, for rendering `$...$`/`$$...$$` maths to images in the PDF.
 * :material-folder: **test/** — The test suite that checks the built website and PDF for regressions - see [Testing](testing.md).
@@ -690,4 +690,4 @@ Now that you've customised the website, the \index{document structure}, the cove
 
 ## Where to go next {: #customise-where-to-go-next }
 
-Continue to [Additional tooling](additionaltooling.md) for optional extras - VS Code extensions, commit signing, and Vale - or jump straight to [Finalising your document](#finalising-your-document) above once your document itself is ready to submit.
+Continue to [Customise build](customisebuild.md) for how your document is built and published - the two build commands, the tooling that diagrams and maths need in the PDF, and the settings that make publishing behave - or jump straight to [Finalising your document](#finalising-your-document) above once your document itself is ready to submit.
