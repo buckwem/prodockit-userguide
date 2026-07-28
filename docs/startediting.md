@@ -185,16 +185,16 @@ Once your commit reaches the default branch, the [CI/CD pipeline](#automated-bui
 
 ## Build the PDF
 
-`docs/site_documentation.pdf` isn't built by \index{Zensical!`zensical serve`} or \index{Zensical!`zensical build`} - it has its own build script, `build_pdf.py`, a prodockit-specific extension on top of Zensical (see [Customise PDF generation](customise.md#customise-pdf-generation) for what it is and how to customise its output; this section just covers running it).
+`docs/site_documentation.pdf` isn't built by \index{Zensical!`zensical serve`} or \index{Zensical!`zensical build`} - it has its own build command, `prodockit pdf`, provided by the prodockit package on top of Zensical (see [Customise PDF generation](customise.md#customise-pdf-generation) for how to customise its output, and [Customise build](customisebuild.md) for how the two builds fit together; this section just covers running it).
 
 ### Building it manually
 
 1. Make sure you've installed the PDF build's dependencies - see [Install Python and Zensical](installtooling.md#install-python-and-zensical) for `requirements.txt`, and [Additional tooling](additionaltooling.md) if your document uses Mermaid diagrams or maths and you need the optional `tools/mermaid`/`tools/mathjax` Node packages too.
 2. [Open a terminal](#open-a-terminal) with your virtual environment active, in your project's root directory.
-3. Run the build script:
+3. Run the build command:
 
     ```bash
-    python build_pdf.py
+    prodockit pdf
     ```
 
     This can take a little while, especially the first time - it's converting every page into a single PDF, rendering any diagrams and maths along the way.
@@ -208,11 +208,11 @@ Run this again after any change you want reflected in the PDF - it always rebuil
 Both `.gitlab-ci.yml` and `.github/workflows/docs.yml` run this exact sequence automatically on every push to your default branch:
 
 ```bash
-python build_pdf.py
+prodockit pdf
 zensical build --clean
 ```
 
-`build_pdf.py` runs first so `docs/site_documentation.pdf` exists before Zensical builds the site - that's what makes the "Download PDF" button on the cover page work, since the published website includes the PDF as part of itself. `zensical build --clean` then builds the site into the `public/` directory (set by `site_dir` in `zensical.toml`), which GitLab Pages or GitHub Pages then publishes. See [Clean build](#clean-build) in Troubleshooting if you need to force a fresh website build locally.
+`prodockit pdf` runs first so `docs/site_documentation.pdf` exists before Zensical builds the site - that's what makes the "Download PDF" button on the cover page work, since the published website includes the PDF as part of itself. `zensical build --clean` then builds the site into the `public/` directory (set by `site_dir` in `zensical.toml`), which GitLab Pages or GitHub Pages then publishes. See [Clean build](#clean-build) in Troubleshooting if you need to force a fresh website build locally.
 
 ## Managing branches and issues
 
@@ -347,7 +347,7 @@ To do the same locally - useful if the local `public/` folder looks out of date 
 
 ```bash
 rm -rf public
-python build_pdf.py
+prodockit pdf
 zensical build --clean
 ```
 
@@ -357,7 +357,7 @@ If a numbered list in your Markdown restarts at "1." partway through instead of 
 
 ### PDF build fails
 
-If `python build_pdf.py` errors out or produces a PDF missing content:
+If `prodockit pdf` errors out or produces a PDF missing content:
 
 1. Check the error message in the terminal - it usually names the file and the problem directly.
 2. Make sure you've installed the dependencies from `requirements.txt` in your active virtual environment (see [Install Python and Zensical](installtooling.md#install-python-and-zensical)).

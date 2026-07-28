@@ -14,7 +14,7 @@ icon: lucide/book-open
 A small number of files control almost every visible part of this template - the website, the cover page, and the generated PDF: `zensical.toml` for configuration, `macros.py` for build-time logic, and `docs/stylesheets/extra.css`/`print.css` for appearance. This section walks through each of these in turn: customising the website's branding and behaviour, restructuring the document itself, customising the cover page, and adjusting the PDF's page layout. It ends with a full map of the template's directory structure, so you know where everything lives.
 
 !!! info "prodockit-specific features"
-    Where [Zensical basics](zensicalbasics.md) is a quick reference for Zensical's own general-purpose Markdown extensions (the same ones you'd find on any Zensical site), everything on this page is specific to this template: features `macros.py` and `build_pdf.py` add on top of Zensical (heading numbering, the references page pattern, Surrey/generic branding, PDF-only/web-only content, and so on) that only exist here, not in a stock Zensical project.
+    Where [Zensical basics](zensicalbasics.md) is a quick reference for Zensical's own general-purpose Markdown extensions (the same ones you'd find on any Zensical site), everything on this page is specific to this template: features `macros.py` and the prodockit package add on top of Zensical (heading numbering, the references page pattern, Surrey/generic branding, PDF-only/web-only content, and so on) that only exist here, not in a stock Zensical project.
 
 ## Customise the web site
 
@@ -200,7 +200,7 @@ nav = [
 ]
 ```
 
-Each entry is either a plain path to a markdown file, or a `{"Group name" = [...]}` block nesting further entries - top-level groups become tabs, and nested groups become collapsible sections in the sidebar. This same `nav` list, walked in this same order, is also what `build_pdf.py` uses to decide which files go into the PDF and in what order - so reordering, adding, or removing an entry here changes both outputs at once.
+Each entry is either a plain path to a markdown file, or a `{"Group name" = [...]}` block nesting further entries - top-level groups become tabs, and nested groups become collapsible sections in the sidebar. This same `nav` list, walked in this same order, is also what `prodockit pdf` uses to decide which files go into the PDF and in what order - so reordering, adding, or removing an entry here changes both outputs at once.
 
 To add a new page: create the markdown file under `docs/`, then add its path to `nav` wherever you want it to appear (remembering the one-heading-1-per-file rule below).
 
@@ -237,7 +237,7 @@ Keep the numbers in each title sequential as you add, remove, or reorder chapter
 This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extensions/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for \index{cross-references}: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
 
 !!! info "How the PDF handles this"
-    Same as citations/glossary below - `build_pdf.py` renders this page through the real Zensical/prodockit pipeline, so `\ref{id}` resolves the same way in both outputs with no separate PDF-side translation.
+    Same as citations/glossary below - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\ref{id}` resolves the same way in both outputs with no separate PDF-side translation.
 
 1. Every heading already has an id, the same slugified-from-its-text id `toc`'s permalinks use (this section's own "### Changing heading numbering" heading above got `changing-heading-numbering` automatically, with no extra markup needed). Give it an explicit id instead with [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax when you want a short, stable id that won't change if you reword the heading later, or to avoid a collision with another heading elsewhere in the document that slugifies to the same text:
 
@@ -263,7 +263,7 @@ This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extens
 This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\citeref{id}`.
 
 !!! info "How the PDF handles this"
-    `build_pdf.py` renders every page through the same Zensical/prodockit pipeline the website uses (see `render_page_html()`), so `\citeref{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
+    `prodockit pdf` renders every page through the same Zensical/prodockit pipeline the website uses, so `\citeref{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
 
 1. Create a page for your sources (this template includes one at [`docs/references.md`](https://buckwem.github.io/prodockit-template/references/){target="_blank"}). List each source as a paragraph, and give it a short, unique id plus a short display text using [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax on the line directly below it (no heading needed - attr_list works on plain paragraphs too):
 
@@ -329,7 +329,7 @@ This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-e
 This template uses [`prodockit.glossary`](https://buckwem.github.io/prodockit-extensions/extensions/glossary/) (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations above - see [prodockit-template#87](https://github.com/buckwem/prodockit-template/issues/87)) for \index{acronyms}: define a term once, insert it by id with `\gls{id}` - it expands to the term's own text, linked to its definition.
 
 !!! info "How the PDF handles this"
-    Same as citations above - `build_pdf.py` renders this page through the real Zensical/prodockit pipeline, so `\gls{id}` resolves the same way in both outputs with no separate PDF-side translation.
+    Same as citations above - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\gls{id}` resolves the same way in both outputs with no separate PDF-side translation.
 
 1. Create a page for your acronyms (this template includes one at [`docs/acronyms.md`](https://buckwem.github.io/prodockit-template/acronyms/){target="_blank"}). List each acronym as a short paragraph, and give it an id plus a `data-term` attribute (the acronym's own text) using attr_list syntax on the line directly below it:
 
@@ -452,7 +452,7 @@ For static content, just add the relevant class - it looks identical either way,
 
 ### Site name
 
-The cover page also shows your project's `site_name` (from `zensical.toml`), using `{% raw %}{{ site_name }}{% endraw %}`. Unlike the marker-restricted values below, this one doesn't need a `.pdf-only`/`.web-only` pair: `build_pdf.py` substitutes that exact same text directly during the PDF build (rather than a separate `{MARKER}`), so a single line works correctly in both outputs. It appears twice in `docs/index.md`, once in each half of the `is_surrey` block, styled the same way as `module_id - module_name`:
+The cover page also shows your project's `site_name` (from `zensical.toml`), using `{% raw %}{{ site_name }}{% endraw %}`. Unlike the marker-restricted values below, this one doesn't need a `.pdf-only`/`.web-only` pair: `prodockit pdf` substitutes that exact same text directly during the PDF build (rather than a separate `{MARKER}`), so a single line works correctly in both outputs. It appears twice in `docs/index.md`, once in each half of the `is_surrey` block, styled the same way as `module_id - module_name`:
 
 ```markdown
 <p class="title-ctr-b4">{% raw %}{{ site_name }}{% endraw %}</p>
@@ -520,17 +520,17 @@ Repo: {{ repo_url }}{% endraw %}
 
 ## Customise PDF generation
 
-Zensical only builds the website, so `build_pdf.py` is this template's own build script, layered on top, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). It renders every page through the same Zensical/prodockit pipeline the website uses (`render_page_html()`), then hands \index{Pandoc} the resulting HTML directly - so `\citeref{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It also reuses `zensical.toml` settings wherever it can, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
+Zensical only builds the website, so the PDF comes from a separate command, `prodockit pdf`, that turns the same `docs/` content into a single-file PDF via [Pandoc](https://pandoc.org/) and [WeasyPrint](https://weasyprint.org/). This used to be a `build_pdf.py` script owned by the template; it now lives in the [prodockit](https://github.com/buckwem/prodockit-extensions) package, so there is no per-project build code to maintain. It renders every page through the same Zensical/prodockit pipeline the website uses, then hands \index{Pandoc} the resulting HTML directly - so `\citeref{}`/`\gls{}`/`\ref{}`, admonitions, tabs, and captions all resolve exactly the same way in both outputs, with no separate PDF-side translation for any of them. It reads the same `zensical.toml` your website does, so most website customisations (site name, copyright, fonts, and so on) apply to the PDF automatically - the sections below cover the handful of things that are PDF-specific.
 
-For how to actually run it as part of your day-to-day writing - installing its dependencies, the `python build_pdf.py` command itself, and troubleshooting a failed build - see [Build the PDF](startediting.md#build-the-pdf) in *Start editing*; this section is about customising its output once it's already working.
+For how to actually run it as part of your day-to-day writing - installing its dependencies, the `prodockit pdf` command itself, and troubleshooting a failed build - see [Build the PDF](startediting.md#build-the-pdf) in *Start editing* and [Customise build](customisebuild.md); this section is about customising its output once it's already working.
 
-`build_pdf.py` controls most of the generated PDF's page layout - the running header, the footer, the page size, and the fonts - either from `zensical.toml` settings you already use for the website, or (for page size and margins) their own PDF-only `zensical.toml` settings.
+`prodockit pdf` controls most of the generated PDF's page layout - the running header, the footer, the page size, and the fonts - either from `zensical.toml` settings you already use for the website, or (for page size and margins) their own PDF-only `zensical.toml` settings.
 
 ### Page header
 
 Every page except the cover shows a \index{running header}: your project's `site_name` (from `zensical.toml` - see [Site name](#site-name)), left-aligned, with a divider line underneath. There's no separate PDF setting for it - editing `site_name` in `zensical.toml` updates the header everywhere, including the website.
 
-The header also shows the current chapter title, right-aligned - starting from the first numbered heading 1, so it's blank on the cover page and the Table of Contents. `build_pdf.py` computes it automatically from each page's heading 1 (including its chapter number), so there's nothing to configure here either.
+The header also shows the current chapter title, right-aligned - starting from the first numbered heading 1, so it's blank on the cover page and the Table of Contents. It is computed automatically from each page's heading 1 (including its chapter number), so there's nothing to configure here either.
 
 ![PDF page header layout: site_name top-left, the current chapter's H1 top-right](images/pdf-page-header-layout.png){ width="100%" }
 /// figure-caption
@@ -584,7 +584,7 @@ The PDF also reuses your website's theme fonts (body copy, headings, and the hea
 The [attribute list](https://zensical.org/docs/authoring/formatting/#attribute-lists)-based `<figure>`/`<figcaption>` pattern in [Zensical basics](zensicalbasics.md#images) works for images, but this template also enables `pymdownx.blocks.caption`, a `/// caption ... ///` block that captions *either* an image *or* a table, auto-numbers itself, and - unlike the `<figure>` approach - works correctly in the PDF too.
 
 !!! info "How the PDF handles this"
-    `build_pdf.py` renders this page through the real Zensical/pymdownx pipeline, so `pymdownx.blocks.caption`'s own per-page auto-number is already correct by the time Pandoc sees it - a Lua filter (`Figure()` in `build_pdf.py`) just prepends the current chapter number/appendix letter in front of it (e.g. "1." → "8.1."), matching the same `<chapter>.<n>` numbers the website shows via CSS.
+    `prodockit pdf` renders this page through the real Zensical/pymdownx pipeline, so `pymdownx.blocks.caption`'s own per-page auto-number is already correct by the time Pandoc sees it - a Lua filter (`Figure()`, generated by `prodockit.pdf.lua`) just prepends the current chapter number/appendix letter in front of it (e.g. "1." → "8.1."), matching the same `<chapter>.<n>` numbers the website shows via CSS.
 
 This template configures three caption types under `[project.markdown_extensions.pymdownx.blocks.caption]` in `zensical.toml`:
 
@@ -639,7 +639,7 @@ Initial commit
 ///
 ```
 
-`.screenshot` works the same way in both outputs - the underlying CSS rule lives in `docs/stylesheets/extra.css` for the website and the equivalent compiled block in `build_pdf.py` for the PDF, matching every other class this template applies to both.
+`.screenshot` works the same way in both outputs - the underlying CSS rule lives in `docs/stylesheets/extra.css` for the website and the equivalent compiled block generated by `prodockit.pdf` for the PDF, matching every other class this template applies to both.
 
 
 ## Finalising your document
@@ -670,8 +670,7 @@ Now that you've customised the website, the \index{document structure}, the cove
     * :material-folder: **assets/** — Images, logos, and header backgrounds used across the site and the cover page.
     * :material-folder: **stylesheets/** — CSS for the website and the PDF.
         * :material-file-document-outline: `extra.css` — Most of the template's own website customisations (logo swap, header image, cover page styles, `.pdf-only`/`.web-only` markers).
-        * :material-file-document-outline: `print.css` — PDF-only styles, read only by `build_pdf.py`.
-* :material-file-code-outline: `build_pdf.py` — Builds the single-file PDF version of your document, via the [prodockit](https://github.com/buckwem/prodockit-extensions) package's `prodockit.pdf`.
+        * :material-file-document-outline: `print.css` — PDF-only styles, read only by the PDF build.
 * :material-file-code-outline: `macros.py` — This template's own Zensical macro hooks (Surrey detection). Word count, repository link, and heading/reference-style numbering come from `prodockit.zensical_macros` instead - see `zensical.toml`'s `modules = ["prodockit.zensical_macros"]`.
 * :material-folder: **tools/** — Node.js tooling used only by the PDF build, not the website. Scaffolded by `prodockit init-tools` - see [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths).
     * :material-folder: **mermaid/** — `mermaid-cli`, for rendering ` ```mermaid ` diagrams to images in the PDF.
