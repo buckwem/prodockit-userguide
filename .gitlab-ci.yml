@@ -1,0 +1,82 @@
+# Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
+# SPDX-License-Identifier: MIT
+
+# GitLab Pages counterpart of .github/workflows/docs.yml, so this guide can
+# be mirrored to a GitLab instance (including Surrey's, which the is_surrey
+# branding in macros.py detects from CI_SERVER_HOST).
+#
+# Kept deliberately in step with the GitHub workflow - see the User Guide's
+# own build chapter and prodockit's Continuous integration page for why each
+# piece is here.
+
+pages:
+  stage: deploy
+  image: python:latest
+  # Only one deploy at a time. Two pipelines started close together - a
+  # release published shortly after its version-bump push, or two pushes in
+  # quick succession - can otherwise both be publishing at once and leave the
+  # older build live, with nothing failing to indicate it. GitLab's
+  # equivalent of the `concurrency` group in .github/workflows/docs.yml.
+  resource_group: pages
+  variables:
+    # Full history, not GitLab's default shallow clone. The cover page's
+    # "Release: ..." line comes from prodockit.zensical_macros' {{ release }},
+    # which is `git describe --tags --abbrev=0` - a shallow clone fetches no
+    # tags at all, so it would resolve to an empty string and the line would
+    # silently disappear. The GitLab counterpart of `fetch-depth: 0` in the
+    # GitHub workflow.
+    #
+    # Note prodockit-template needs none of this: its cover uses the PDF-only
+    # {RELEASE} marker, resolved from the releases API rather than git tags.
+    GIT_DEPTH: "0"
+    # mermaid-cli drives Chrome through Puppeteer to rasterise diagrams for
+    # the PDF (WeasyPrint has no JS engine to run Mermaid.js the way the live
+    # site does). Point it at the apt-installed Chrome below rather than
+    # letting Puppeteer download its own.
+    #
+    # PUPPETEER_SKIP_DOWNLOAD, not the older
+    # PUPPETEER_SKIP_CHROMIUM_DOWNLOAD - Puppeteer renamed it, and
+    # mermaid-cli ^11.4.2 resolves to puppeteer 25.x, which honours only the
+    # new name. Under the old one the skip silently does nothing and a full
+    # Chrome build is downloaded on every run before being discarded.
+    #
+    # Set here rather than as `export` lines in `script:` so they apply to
+    # the whole job regardless of step order.
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
+  script:
+    - apt-get update
+    - apt-get install -y curl gnupg ca-certificates pandoc
+    # libpango: WeasyPrint needs it at runtime. GitHub's ubuntu-latest image
+    # already carries it; this slimmer Debian-based image does not.
+    #
+    # fonts-inter/fonts-jetbrains-mono: this project's fonts. The website
+    # loads them from a CDN at view time, but WeasyPrint has no such fallback
+    # - it needs the files installed to embed them, and silently substitutes
+    # a generic font rather than erroring if they are missing.
+    - apt-get install -y libpango-1.0-0 fonts-inter fonts-jetbrains-mono
+    - curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+    - apt-get install -y nodejs
+    - curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
+    - echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+    - apt-get update
+    - apt-get install -y google-chrome-stable
+    - npm ci --prefix tools/mermaid
+    - npm ci --prefix tools/mathjax
+    - pip install -r requirements.txt -r testrequirements.txt
+    - python sync_repo_icon.py
+    - prodockit pdf
+    - zensical build --clean
+    # These check the *built* PDF, so they run after both builds - they fail
+    # the pipeline if a Mermaid diagram or a formula reached it as raw source
+    # instead of a rendered image (see test/ and issue #23).
+    - python -m pytest test/ -v
+  pages:
+    publish: public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    # Also rebuild for a tag pipeline, which is what publishing a release
+    # produces. The rule above cannot match one - $CI_COMMIT_BRANCH is empty
+    # there - so without this the release would never reach the site.
+    # Counterpart of `release: [published]` in the GitHub workflow.
+    - if: '$CI_COMMIT_TAG'
