@@ -95,7 +95,7 @@ This guide covers the following sections, in the order you'll work through them.
 
 `Customisation`
 
-: The [*Customisation*](customise.md) section discusses how to configure prodockit-template to give it a different style and layout to meet your specific needs - features `macros.py` and `build_pdf.py` add on top of Zensical (heading numbering, the references page pattern, Surrey/generic branding, and more) that don't exist in a stock Zensical project.
+: The [*Customisation*](customise.md) section discusses how to configure prodockit-template to give it a different style and layout to meet your specific needs - features `macros.py` and the prodockit package add on top of Zensical (heading numbering, the references page pattern, Surrey/generic branding, and more) that don't exist in a stock Zensical project.
 
 `Additional tooling`
 
