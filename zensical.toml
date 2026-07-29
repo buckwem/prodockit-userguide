@@ -33,10 +33,11 @@ nav = [
     {"4. Markdown basics" = "markdown.md"},
     {"5. Zensical basics" = "zensicalbasics.md"},
     {"6. Customisation" = "customise.md"},
-    {"7. Customise build" = "customisebuild.md"},
-    {"8. Additional tooling" = "additionaltooling.md"},
-    {"9. Shell commands" = "shcommands.md"},
-    {"10. Testing" = "testing.md"}
+    {"7. Customise document content" = "customisecontent.md"},
+    {"8. Customise build" = "customisebuild.md"},
+    {"9. Additional tooling" = "additionaltooling.md"},
+    {"10. Shell commands" = "shcommands.md"},
+    {"11. Testing" = "testing.md"}
   ]},
   {"Reference" = [
     {"A. Acronyms" = "acronyms.md"},

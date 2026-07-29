@@ -111,7 +111,7 @@ Image caption
 ///
 ```
 
-See [Captions](customise.md#captions) in Customisation for more detail, including how this same syntax also captions **tables**, and how this template handles it in the PDF.
+See [Captions](customisecontent.md#captions) in Customise document content for more detail, including how this same syntax also captions **tables**, and how this template handles it in the PDF.
 
 ## Diagrams
 
