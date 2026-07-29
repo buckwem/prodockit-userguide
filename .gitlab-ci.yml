@@ -12,6 +12,13 @@
 pages:
   stage: deploy
   image: python:latest
+  # Required for this job to actually be picked up: the University of
+  # Surrey's shared runner is restricted to jobs tagged "pages" (its own
+  # description says as much) - without this, the job sits "pending"
+  # forever, no compatible runner ever claims it, and nothing indicates why.
+  # Matches prodockit-template's own .gitlab-ci.yml.
+  tags:
+    - pages
   # Only one deploy at a time. Two pipelines started close together - a
   # release published shortly after its version-bump push, or two pushes in
   # quick succession - can otherwise both be publishing at once and leave the
