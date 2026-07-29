@@ -11,10 +11,10 @@ icon: lucide/book-open
 
 # Customisation
 
-A small number of files control almost every visible part of this template - the website, the cover page, and the generated PDF: `zensical.toml` for configuration, `macros.py` for build-time logic, and `docs/stylesheets/extra.css`/`print.css` for appearance. This section walks through each of these in turn: customising the website's branding and behaviour, restructuring the document itself, customising the cover page, and adjusting the PDF's page layout. It ends with a full map of the template's directory structure, so you know where everything lives.
+A small number of files control almost every visible part of this template - the website, the cover page, and the generated PDF: `zensical.toml` for configuration, `macros.py` for build-time logic, and `docs/stylesheets/extra.css`/`print.css` for appearance. This section walks through each of these in turn: customising the website's branding and behaviour, changing your document's page structure, customising the cover page, and adjusting the PDF's page layout. It ends with a full map of the template's directory structure, so you know where everything lives.
 
 !!! info "prodockit-specific features"
-    Where [Zensical basics](zensicalbasics.md) is a quick reference for Zensical's own general-purpose Markdown extensions (the same ones you'd find on any Zensical site), everything on this page is specific to this template: features `macros.py` and the prodockit package add on top of Zensical (heading numbering, the references page pattern, Surrey/generic branding, PDF-only/web-only content, and so on) that only exist here, not in a stock Zensical project.
+    Where [Zensical basics](zensicalbasics.md) is a quick reference for Zensical's own general-purpose Markdown extensions (the same ones you'd find on any Zensical site), everything on this page is specific to this template: features `macros.py` and the prodockit package add on top of Zensical (Surrey/generic branding, PDF-only/web-only content, and so on) that only exist here, not in a stock Zensical project. For the prodockit extensions that number, cross-reference, cite, and index your document's actual *content*, see [Customise document content](customisecontent.md) instead.
 
 ## Customise the web site
 
@@ -41,6 +41,15 @@ Copyright &copy; 2026 Your Name
 ```
 
 The PDF build reuses this same setting for its own running footer - see [Page footer](#page-footer).
+
+Set `pdf_copyright` in `[project.extra]` to override this text for the PDF's own footer only, leaving the website's footer untouched:
+
+```toml
+[project.extra]
+pdf_copyright = "Copyright &copy; 2026 Your Name.<br>Made with real, clickable links here too."
+```
+
+Unlike `copyright`, this accepts a real HTML fragment in the PDF - a literal `<br>` forces a line break, and `<a>` links render as actual clickable links rather than flattened plain text. Leave it unset and the PDF simply reuses `copyright` as normal.
 
 ### Repository link
 
@@ -156,6 +165,15 @@ extra_javascript = [
 
 [`docs/stylesheets/extra.css`](https://github.com/buckwem/prodockit-template/blob/main/docs/stylesheets/extra.css){target="_blank"} is where most of this template's own customisations live (the logo swap, header image, cover page title styles, and the `.pdf-only`/`.web-only` markers).
 
+Set `pdf_extra_css` in `[project.extra]` to load additional stylesheets for the PDF only, in the same shape as `extra_css` above:
+
+```toml
+[project.extra]
+pdf_extra_css = ["stylesheets/print.css"]
+```
+
+Use it for a rule that would look wrong on the live website, or one that needs to override something `extra_css` itself sets - `pdf_extra_css` stylesheets load after `extra_css`, so they win the cascade.
+
 ### Social links
 
 Add icons linking to your social profiles or other sites in the footer, by uncommenting and repeating this block in `[project.extra]` in `zensical.toml`:
@@ -166,11 +184,9 @@ icon = "fontawesome/brands/github"
 link = "https://github.com/user/repo"
 ```
 
-## Customise doc structure
+## Navigation structure
 
-The `nav` list in `zensical.toml` and the heading numbering setting below control how your document is broken into pages, the order they appear in, and how they're numbered. Both apply identically to the website's sidebar and the generated PDF.
-
-### Navigation structure
+The `nav` list in `zensical.toml` controls how your document is broken into pages, and the order they appear in. It applies identically to the website's sidebar and the generated PDF.
 
 `nav` (under `[project]` in `zensical.toml`) lists, in order, every page in your document and how they're grouped. Here's the template's own `nav` as delivered, for reference:
 
@@ -202,215 +218,10 @@ nav = [
 
 Each entry is either a plain path to a markdown file, or a `{"Group name" = [...]}` block nesting further entries - top-level groups become tabs, and nested groups become collapsible sections in the sidebar. This same `nav` list, walked in this same order, is also what `prodockit pdf` uses to decide which files go into the PDF and in what order - so reordering, adding, or removing an entry here changes both outputs at once.
 
-To add a new page: create the markdown file under `docs/`, then add its path to `nav` wherever you want it to appear (remembering the one-heading-1-per-file rule below).
-
-### Changing heading numbering
-
-By default, this documentation template enables heading numbering. If you want to disable heading numbering, you can do so by adding the following line to the `[project.extra]` section of the `zensical.toml` file:
-
-```toml
-heading_numbering = false
-```
-
-This will also disable heading numbering in the generated PDF output. If you want to enable heading numbering again, simply set the value to `true`:
-
-```toml
-heading_numbering = true
-```
-
-The top level heading numbering shown in the sidebar isn't generated automatically - it's typed directly into each entry's title in `nav`, matching the pattern of the ones already there, for example:
-
-```toml
-{"6. Case Study" = "casestudy.md"}
-```
-
-Keep the numbers in each title sequential as you add, remove, or reorder chapters - inserting a new entry partway through (as above, right after "5. Section") means renumbering every entry after it, since (unlike the in-page heading numbers) `nav` doesn't renumber these for you.
-
-!!! note
-    Appendix pages are the one exception - see [Appendixes](#appendixes) below - since they're lettered rather than numbered, and don't take a number from this sequence at all.
+To add a new page: create the markdown file under `docs/`, then add its path to `nav` wherever you want it to appear.
 
 !!! warning
-    Each markdown file can contain only one heading 1 (`#`). Zensical numbers headings sequentially across the whole document in `nav` order, starting a new top-level number at each heading 1 - a second heading 1 in the same file breaks that numbering and confuses the table of contents. If you need another top-level heading, create a new markdown file for it and add it to `nav` instead.
-
-### Section cross-references
-
-This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extensions/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for \index{cross-references}: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
-
-!!! info "How the PDF handles this"
-    Same as citations/glossary below - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\ref{id}` resolves the same way in both outputs with no separate PDF-side translation.
-
-1. Every heading already has an id, the same slugified-from-its-text id `toc`'s permalinks use (this section's own "### Changing heading numbering" heading above got `changing-heading-numbering` automatically, with no extra markup needed). Give it an explicit id instead with [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax when you want a short, stable id that won't change if you reword the heading later, or to avoid a collision with another heading elsewhere in the document that slugifies to the same text:
-
-    ``` markdown
-    ## SubSection {: #citations-example }
-    ```
-
-2. Reference it from anywhere in the document with `\ref{id}`:
-
-    ``` markdown
-    As covered in \ref{changing-heading-numbering}, ...
-    ```
-
-    Which renders as: As covered in \ref{changing-heading-numbering}, ...
-
-    No need to track down the section's current number, or update it by hand if the target moves - `\ref{id}` re-resolves on every build. This template's own `docs/section1.md`-`docs/section4.md` cross-reference each other's citation/acronym/glossary/caption examples this way, each using an explicit attr_list id since "SubSection" repeats several times per page.
-
-!!! note
-    A reference to a heading that doesn't exist (a typo in the id, or a heading in a page not yet processed) falls back to `??`, the same way an undefined LaTeX `\ref` shows `??` until a later compilation pass - a quick visual signal something needs fixing.
-
-### References and bibliography
-
-This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\citeref{id}`.
-
-!!! info "How the PDF handles this"
-    `prodockit pdf` renders every page through the same Zensical/prodockit pipeline the website uses, so `\citeref{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
-
-1. Create a page for your sources (this template includes one at [`docs/references.md`](https://buckwem.github.io/prodockit-template/references/){target="_blank"}). List each source as a paragraph, and give it a short, unique id plus a short display text using [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax on the line directly below it (no heading needed - attr_list works on plain paragraphs too):
-
-    ``` markdown
-    Skoulikari, A. (2023) *Learning Git: A Hands-On and Visual Guide to the Basics of Git*. Sebastopol, CA: O'Reilly Media.
-    {: #skou2023 .reference data-cite-text="Skoulikari, 2023" }
-    ```
-
-    Each entry needs a blank line before and after it - attr_list only recognises `{: ... }` as an id (rather than literal visible text) when it's the last line of its own paragraph. Removing the blank lines to save space merges entries into one paragraph and breaks both outputs.
-
-2. Add the page to `nav` in `zensical.toml` so it appears in the sidebar - as a regular numbered chapter, or as a lettered appendix (see [Appendixes](#appendixes) below). This template ships it as an appendix by default.
-3. Cite the source in-text with `\citeref{id}`:
-
-    ``` markdown
-    Git is a tool used to manage version control.\citeref{skou2023}
-    ```
-
-    Which renders as: Git is a tool used to manage version control.\citeref{skou2023}
-
-    No relative path to work out, regardless of which page cites it - unlike a hand-typed Markdown link, `\citeref{id}` resolves the same way from any page, and the `data-cite-text` you set once is reused everywhere the source is cited. Cite more than one source in the same place with a comma: `\citeref{skou2023,chacon2014}` renders `\citeref{skou2023,chacon2014}`.
-
-    This in-text citation resolves correctly in both outputs - on the website, and as an internal cross-page link jumping straight to the cited entry within the built PDF.
-
-4. Consecutive entries get the browser's normal spacing between paragraphs by default - noticeably looser than a typical bibliography. Give each entry's attr_list line a `.reference` class alongside its id and `data-cite-text` (as shown in the code block above) so the template's layout rules - described next - can target them.
-
-5. Set `project.extra.reference_style` in `zensical.toml` to control how `.reference` entries are laid out, on both the website and the PDF build:
-
-    ``` toml
-    [project.extra]
-    reference_style = "european" # or "global"
-    ```
-
-    `"european"` (the default) - single line spacing, no indent, entries close together:
-
-    ![European reference style: single line spacing, no indent, entries close together](images/reference-style-european.png){ width="100%" .screenshot }
-    /// figure-caption
-    European reference style
-    ///
-
-    `"global"` - double spacing between entries, with a 0.5in/1.27cm hanging indent on wrapped lines (the common APA/MLA/Chicago style):
-
-    ![Global reference style: double spacing between entries, with a hanging indent on wrapped lines](images/reference-style-global.png){ width="100%" .screenshot }
-    /// figure-caption
-    Global reference style
-    ///
-
-    Set `project.extra.reference_spacing_european`, `reference_indent_global`, and `reference_spacing_global` in `zensical.toml` to change the spacing/indent values themselves, on both the website and the PDF build:
-
-    ```toml
-    [project.extra]
-    reference_spacing_european = "-0.8em"  # gap between entries, "european" style
-    reference_indent_global = "1.27cm"     # hanging indent on wrapped lines, "global" style
-    reference_spacing_global = "2em"       # gap between entries, "global" style
-    ```
-
-    Each accepts any valid CSS length and defaults to the value shown above if left unset. `reference_spacing_european` also controls the [Acronyms](#acronyms-and-abbreviations) and [Glossary](#glossary-page-setup) pages' own list spacing, which share the same tight "european" look but have no "global"-style alternative to switch to.
-
-!!! tip
-    Keep ids short and stable (e.g. `skou2023`, author surname plus year) so citations keep working even if you reorder entries on the references page later. Unlike a hand-typed link, `\citeref{id}` needs no adjustment when citing from a page nested in a subdirectory.
-
-### Acronyms and abbreviations
-
-This template uses [`prodockit.glossary`](https://buckwem.github.io/prodockit-extensions/extensions/glossary/) (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations above - see [prodockit-template#87](https://github.com/buckwem/prodockit-template/issues/87)) for \index{acronyms}: define a term once, insert it by id with `\gls{id}` - it expands to the term's own text, linked to its definition.
-
-!!! info "How the PDF handles this"
-    Same as citations above - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\gls{id}` resolves the same way in both outputs with no separate PDF-side translation.
-
-1. Create a page for your acronyms (this template includes one at [`docs/acronyms.md`](https://buckwem.github.io/prodockit-template/acronyms/){target="_blank"}). List each acronym as a short paragraph, and give it an id plus a `data-term` attribute (the acronym's own text) using attr_list syntax on the line directly below it:
-
-    ``` markdown
-    **CSS** - Cascading Style Sheets
-    {: #css .acronym data-term="CSS" }
-    ```
-
-    Each entry needs a blank line before and after it, and the `.acronym` class is what keeps consecutive entries close together rather than using the browser's normal, looser paragraph spacing.
-
-2. Add the page to `nav` in `zensical.toml` so it appears in the sidebar - as a regular numbered chapter, or as a lettered appendix (see [Appendixes](#appendixes) below). This template ships it as an appendix by default.
-3. Insert the acronym the first time you use it in a page with `\gls{id}`:
-
-    ``` markdown
-    This template uses \gls{css} to control the website's appearance.
-    ```
-
-    Which renders as: This template uses \gls{css} to control the website's appearance.
-
-!!! tip
-    Keep ids short and lowercase (e.g. `css`, `pdf`) so `\gls{id}` keeps working even if you reorder entries on the acronyms page later.
-
-### Glossary {: #glossary-page-setup }
-
-You can build a \index{glossary} of key terms the same way, in its own page - this template includes one at `docs/glossary.md`, right after the acronyms page in `nav`. Acronym entries and glossary entries share the same `prodockit.glossary` registry - they're the same kind of thing, an id with a short display text - so a `\gls{id}` works identically whichever page defines it.
-
-!!! info "How the PDF handles this"
-    Same as acronyms above - resolved automatically, no separate PDF-side translation.
-
-1. Create a page for your glossary (this template includes one at [`docs/glossary.md`](https://buckwem.github.io/prodockit-template/glossary/){target="_blank"}). List each term as a short paragraph, and give it an id plus a `data-term` attribute using attr_list syntax, the same as an acronym entry:
-
-    ``` markdown
-    **Markdown** - A lightweight markup language for formatting plain text...
-    {: #markdown-def .glossary data-term="Markdown" }
-    ```
-
-    Give glossary entries their own ids, distinct from any acronym ids for the same concept (for example `css-def` rather than `css`) - `prodockit.glossary` shares one id namespace across every page, so two entries sharing an id anywhere in the site would collide.
-
-2. Add the page to `nav` in `zensical.toml` so it appears in the sidebar - as a regular numbered chapter, or as a lettered appendix (see [Appendixes](#appendixes) below). This template ships it as an appendix by default.
-3. Insert the term the first time you use it in a page with `\gls{id}`, the same way as an acronym:
-
-    ``` markdown
-    This document is written in \gls{markdown-def}.
-    ```
-
-    Which renders as: This document is written in \gls{markdown-def}.
-
-4. Cross-link an acronym to its own glossary entry (and vice versa) with a plain Markdown link, **not** `\gls{id}`. A "see also" reference needs to say something like "see the glossary", not repeat the term itself - `\gls{id}` always inserts the term's own registered text instead, so `\gls{css-def}` would read "See Cascading Style Sheets for the expansion" rather than "See the glossary...":
-
-    ``` markdown
-    **CSS** - Cascading Style Sheets. See the [glossary](glossary.md#css-def) for what this means in practice.
-    {: #css .acronym data-term="CSS" }
-    ```
-
-    This template's own `docs/acronyms.md`/`docs/glossary.md` cross-link every entry that has a counterpart on the other page this way - see [prodockit.glossary's own docs](https://buckwem.github.io/prodockit-extensions/extensions/glossary/#cross-links-between-entries-use-a-plain-link-not-glsid) for the full rule of thumb: `\gls{id}` when the term's own name belongs in the sentence, a plain link when the link text needs to say something else entirely.
-
-!!! tip
-    If a term is also one of your acronyms, cross-link the two entries as shown above rather than duplicating the explanation on both pages.
-
-### Appendixes
-
-Set `is_appendix: true` in a page's \index{front matter} to give its heading letter-based numbering - "Appendix A", "Appendix B", ... - instead of continuing the document's normal numbered sequence, matching the usual academic convention for \index{appendixes}. Sub-headings within an appendix page number the same way numbered sections do, just using the letter instead of a chapter number - "A.1", "A.1.1", and so on.
-
-```markdown
----
-icon: lucide/book-open
-is_appendix: true
----
-```
-
-Appendix pages are lettered in `nav` order - the first `is_appendix: true` page becomes Appendix A, the second becomes Appendix B, and so on - regardless of how many numbered chapters come before them, and without taking a number away from that sequence (see the note in [Changing heading numbering](#changing-heading-numbering) above). This template ships `docs/acronyms.md`, `docs/glossary.md`, and `docs/references.md` as appendixes by default, grouped under their own "Appendixes" tab in `nav`.
-
-!!! note
-    Like the numbered chapter titles in `nav` (see [Changing heading numbering](#changing-heading-numbering)), the "Appendix A"/"Appendix B" prefix shown in the sidebar isn't generated automatically - type it directly into each entry's title in `nav`, matching the pattern already there:
-
-    ```toml
-    {"Appendix A. Acronyms" = "acronyms.md"}
-    ```
-
-!!! tip
-    Appendixes conventionally don't count toward a submission's word limit either - pair `is_appendix: true` with `exclude_from_word_count: true` (see [Word count and repository link](#word-count-and-repository-link) above), as this template's own appendix pages already do.
+    Each markdown file can contain only one heading 1 (`#`). Zensical numbers headings sequentially across the whole document in `nav` order, starting a new top-level number at each heading 1 - a second heading 1 in the same file breaks that numbering and confuses the table of contents. If you need another top-level heading, create a new markdown file for it and add it to `nav` instead. See [Changing heading numbering](customisecontent.md#changing-heading-numbering) in [Customise document content](customisecontent.md) for how that numbering itself works.
 
 ## Customise front page
 
@@ -495,19 +306,22 @@ The PDF build replaces the `{REPOURL}` marker with your repository's `origin` re
 <p class="pdf-only">Release: {RELEASE}</p>
 ```
 
-The PDF build fetches the latest release from your repository host's API and replaces the `{RELEASE}` marker with its tag. Unlike word count and repository link, this only happens if a release has actually been published - most forks of this template never publish one, so by default the whole line is dropped rather than showing an empty "Release:" label. There's no website equivalent: the live site already shows the same information in its own header (next to the star/fork counts), fetched by the browser itself, so nothing needs adding to any page for that.
+The PDF build fetches the latest release from your repository host's API and replaces the `{RELEASE}` marker with its tag. This only happens if a release has actually been published - most forks of this template never publish one, so by default the whole line is dropped rather than showing an empty "Release:" label.
 
-**To add the word count or repository link to the website**, add a line like one of the following to any page, for example next to the lines you just deleted on the cover page:
+**To add the word count, repository link, or release tag to the website**, add a line like one of the following to any page, for example next to the lines you just deleted on the cover page:
 
 ```markdown
 {% raw %}Word count: {{ word_count }}
-Repo: {{ repo_url }}{% endraw %}
+Repo: {{ repo_url }}
+Release: {{ release }}{% endraw %}
 ```
 
-`{% raw %}{{ word_count }}{% endraw %}` and `{% raw %}{{ repo_url }}{% endraw %}` are macro variables that Zensical makes available on every page, so you can drop either into any markdown file, not just the cover page.
+`{% raw %}{{ word_count }}{% endraw %}`, `{% raw %}{{ repo_url }}{% endraw %}`, and `{% raw %}{{ release }}{% endraw %}` are macro variables that Zensical makes available on every page, so you can drop any of them into any markdown file, not just the cover page. This template's own `docs/index.md` already uses `{% raw %}{{ release }}{% endraw %}` for the cover page's own "Release:" line.
 
 !!! note
     The PDF and the website calculate the word count slightly differently, so it may not always match exactly. The PDF count reflects the final, built PDF content. The website count is a rough estimate across the pages that `nav` lists in `zensical.toml` (excluding the cover page).
+
+    The website and the PDF also resolve the release tag differently, and can genuinely disagree: `{% raw %}{{ release }}{% endraw %}` reads the latest tag reachable from your local Git history at build time, while `{RELEASE}` queries your repository host's API for the latest *published* release - a tag pushed but not yet turned into a GitHub/GitLab release shows up on the website but not in the PDF.
 
 ### Download PDF button
 
@@ -577,56 +391,31 @@ pdf_margin_left = "2cm"
 The PDF also reuses your website's theme fonts (body copy, headings, and the header/footer) - see [Fonts](#fonts) above for the `zensical.toml` setting.
 
 !!! note
-    The cover page (`docs/index.md`) never shows the running header or footer, and heading numbering (e.g. "11.4") is a separate setting - see [Changing heading numbering](#changing-heading-numbering).
+    The cover page (`docs/index.md`) never shows the running header or footer, and heading numbering (e.g. "11.4") is a separate setting - see [Changing heading numbering](customisecontent.md#changing-heading-numbering) in Customise document content.
 
-### Captions
+### Double-sided (duplex) printing
 
-The [attribute list](https://zensical.org/docs/authoring/formatting/#attribute-lists)-based `<figure>`/`<figcaption>` pattern in [Zensical basics](zensicalbasics.md#images) works for images, but this template also enables `pymdownx.blocks.caption`, a `/// caption ... ///` block that captions *either* an image *or* a table, auto-numbers itself, and - unlike the `<figure>` approach - works correctly in the PDF too.
+Set `pdf_double_sided = true` in `[project.extra]` to mirror the header, footer, and margins between recto (right-hand) and verso (left-hand) pages, and start every chapter on its own recto page - matching the convention of a professionally bound, printed document:
 
-!!! info "How the PDF handles this"
-    `prodockit pdf` renders this page through the real Zensical/pymdownx pipeline, so `pymdownx.blocks.caption`'s own per-page auto-number is already correct by the time Pandoc sees it - a Lua filter (`Figure()`, generated by `prodockit.pdf.lua`) just prepends the current chapter number/appendix letter in front of it (e.g. "1." → "8.1."), matching the same `<chapter>.<n>` numbers the website shows via CSS.
+```toml
+[project.extra]
+pdf_double_sided = true
+pdf_margin_inner = "2.5cm"
+pdf_margin_outer = "1.5cm"
+```
 
-This template configures three caption types under `[project.markdown_extensions.pymdownx.blocks.caption]` in `zensical.toml`:
+`pdf_margin_inner`/`pdf_margin_outer` replace the plain `pdf_margin_left`/`pdf_margin_right` above once duplex printing is on - "inner" is the spine-side margin (left on a recto page, right on a verso page), "outer" is the fore-edge on the opposite side - so one pair of settings covers both without you needing to track which physical side is which for any given page. Every numbered chapter also starts its own recto page automatically, inserting a blank page where needed, just like a printed book. Add `recto_title: "Short Title"` to a page's own front matter to shorten its running-header title from the *next* page onward, for a chapter title too long to comfortably fit.
 
-1. **`caption`** - plain and unnumbered, for an image that doesn't need a "Figure N" label - a decorative image or an institution logo, rather than a screenshot or diagram that's part of the document's actual content:
+### Source-code bundling
 
-    ``` markdown
-    ![Institution logo](images/logo.png)
-    /// caption
-    Institution logo
-    ///
-    ```
+Set `pdf_source_bundle = true` in `[project.extra]` to also produce a `source_bundle.pdf` alongside your main PDF - a separate document containing every one of your repository's own tracked (and not-ignored) text files, one per page:
 
-2. **`figure-caption`** - auto-numbered "Figure `<chapter>.<n>`" (e.g. "Figure 9.1"), attached to the image immediately before it. `<chapter>` is wherever this page ends up in `nav`; `<n>` auto-increments per page - reordering chapters, or adding another figure to the page, never needs a manual renumber:
+```toml
+[project.extra]
+pdf_source_bundle = true
+```
 
-    ``` markdown
-    ![GitLab fork project](images/gitlab-fork-project.png){ width=70% .screenshot }
-    /// figure-caption
-    GitLab fork project
-    ///
-    ```
-
-3. **`table-caption`** - the same auto-numbering, but for a table, shown *below* it by default - just like a figure. Add `| <` after the type name to show it *above* the table instead, genuinely repositioned in both outputs rather than just a CSS visual trick:
-
-    ``` markdown
-    | Feature | Fork | Clone |
-    |----|----|---|
-    | ... |
-    /// table-caption | <
-    Fork and Clone Comparison at a Glance
-    ///
-    ```
-
-    !!! warning "Always add `| <` to `table-caption`"
-        `table-caption` has no setting that makes it default to top-positioned - `| <` isn't optional here, it's part of the syntax every single `table-caption` block needs. This template shows every table caption of its own above its table (see [Fork and cloning the prodockit-template](installtooling.md#fork-and-cloning-the-prodockit-template) for a real example); a `table-caption` block missing `| <` silently falls back to *below* the table instead, breaking that consistency without any warning. There's no `zensical.toml` setting to make this the default and skip typing `| <` each time - see [issue #68](https://github.com/buckwem/prodockit-template/issues/68) if you want to help change that.
-
-The caption block always comes *after* the image or table it captions, regardless of where it's actually shown - `pymdownx.blocks.caption` attaches to whichever element immediately precedes it.
-
-!!! tip
-    Force a specific number instead of the auto-incrementing one with `| 5` (later auto-numbers on the same page continue counting up from there, never going backwards); give a caption a stable custom id instead of the auto-generated one with `| #my-id`; add an extra CSS class with `| #my-id.my-class`. Combine modifiers with spaces, e.g. `/// table-caption | < 5 #my-id`.
-
-!!! note "Caption every image, diagram, and table"
-    Every screenshot, diagram, or other image that's actually part of the document's content gets `figure-caption`, and every table gets `table-caption` - so a reader can cite "Figure 7.2" or "Table 3.1" and mean something specific. Reserve the plain `caption` type for decorative images that aren't part of the content itself, like an institution logo (see the `caption` example above).
+Useful for a submission that requires the underlying source alongside the report itself. Only runs for a full build (`prodockit pdf` with no extra flags), not a single-file preview build.
 
 ### Screenshots
 
@@ -642,17 +431,6 @@ Initial commit
 `.screenshot` works the same way in both outputs - the underlying CSS rule lives in `docs/stylesheets/extra.css` for the website and the equivalent compiled block generated by `prodockit.pdf` for the PDF, matching every other class this template applies to both.
 
 
-## Finalising your document
-
-Before you release your document, work through the following step.
-
-### Remove the Originality warning
-
-Delete the first Warning admonition box in `originality.md` - it's a note for you as the author, explaining what to do on that page, and isn't part of your declaration itself.
-
-!!! note
-    Earlier versions of this template shipped a "START HERE" nav entry and stub page (`docs/starthere.md`) that had to be removed before submitting. The template no longer ships one at all - this User Guide is the only copy of this guidance, so there's nothing left in your own fork to comment out of `nav` or delete.
-
 ## Directory structure
 
 Now that you've customised the website, the \index{document structure}, the cover page, and the PDF layout, it's worth knowing where everything you've just changed actually lives. The listing below is a complete map of the template as delivered: every markdown page under `docs/`, the configuration and build scripts at the project root, the CSS that drives both outputs, and the CI/CD workflows that publish them. Use it as a reference when you're looking for a file mentioned earlier in this section, or deciding where to add a new page.
@@ -660,17 +438,17 @@ Now that you've customised the website, the \index{document structure}, the cove
 * :material-folder: **docs/** — Holds the documentation source tree.
     * :material-file-document-outline: `index.md` — The cover page of your documentation.
     * :material-file-document-outline: `originality.md` — Your declaration of originality and AI use for you to complete.
-    * :material-file-document-outline: `section1.md` — The first section of your documentation for you to edit - ships with worked examples of citations, acronyms, and the glossary (see [References and bibliography](#references-and-bibliography), [Acronyms and abbreviations](#acronyms-and-abbreviations), and [Glossary](#glossary-page-setup)).
-    * :material-file-document-outline: `section2.md` — The second section, with a worked cross-reference example (see [Section cross-references](#section-cross-references)).
-    * :material-file-document-outline: `section3.md` — The third section, with a worked figure-caption example (see [Captions](#captions)).
-    * :material-file-document-outline: `section4.md` — The fourth section, with a worked table-caption example (see [Captions](#captions)).
-    * :material-file-document-outline: `acronyms.md` — Your acronym list, for you to complete - see [Acronyms and abbreviations](#acronyms-and-abbreviations).
-    * :material-file-document-outline: `glossary.md` — Your glossary of key terms, for you to complete - see [Glossary](#glossary-page-setup).
-    * :material-file-document-outline: `references.md` — Your bibliography, for you to complete - see [References and bibliography](#references-and-bibliography).
+    * :material-file-document-outline: `section1.md` — The first section of your documentation for you to edit - ships with worked examples of citations, acronyms, and the glossary (see [References and bibliography](customisecontent.md#references-and-bibliography), [Acronyms and abbreviations](customisecontent.md#acronyms-and-abbreviations), and [Glossary](customisecontent.md#glossary-page-setup) in Customise document content).
+    * :material-file-document-outline: `section2.md` — The second section, with a worked cross-reference example (see [Section cross-references](customisecontent.md#section-cross-references) in Customise document content).
+    * :material-file-document-outline: `section3.md` — The third section, with a worked figure-caption example (see [Captions](customisecontent.md#captions) in Customise document content).
+    * :material-file-document-outline: `section4.md` — The fourth section, with a worked table-caption example (see [Captions](customisecontent.md#captions) in Customise document content).
+    * :material-file-document-outline: `acronyms.md` — Your acronym list, for you to complete - see [Acronyms and abbreviations](customisecontent.md#acronyms-and-abbreviations) in Customise document content.
+    * :material-file-document-outline: `glossary.md` — Your glossary of key terms, for you to complete - see [Glossary](customisecontent.md#glossary-page-setup) in Customise document content.
+    * :material-file-document-outline: `references.md` — Your bibliography, for you to complete - see [References and bibliography](customisecontent.md#references-and-bibliography) in Customise document content.
     * :material-folder: **assets/** — Images, logos, and header backgrounds used across the site and the cover page.
     * :material-folder: **stylesheets/** — CSS for the website and the PDF.
         * :material-file-document-outline: `extra.css` — Most of the template's own website customisations (logo swap, header image, cover page styles, `.pdf-only`/`.web-only` markers).
-        * :material-file-document-outline: `print.css` — PDF-only styles, read only by the PDF build.
+        * :material-file-document-outline: `print.css` — PDF-only styles, read only by the PDF build - see [Extra CSS and JavaScript](#extra-css-and-javascript) for the `pdf_extra_css` setting that loads it.
 * :material-file-code-outline: `macros.py` — This template's own Zensical macro hooks (Surrey detection). Word count, repository link, and heading/reference-style numbering come from `prodockit.zensical_macros` instead - see `zensical.toml`'s `modules = ["prodockit.zensical_macros"]`.
 * :material-folder: **tools/** — Node.js tooling used only by the PDF build, not the website. Scaffolded by `prodockit init-tools` - see [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths).
     * :material-folder: **mermaid/** — `mermaid-cli`, for rendering ` ```mermaid ` diagrams to images in the PDF.
@@ -689,4 +467,4 @@ Now that you've customised the website, the \index{document structure}, the cove
 
 ## Where to go next {: #customise-where-to-go-next }
 
-Continue to [Customise build](customisebuild.md) for how your document is built and published - the two build commands, the tooling that diagrams and maths need in the PDF, and the settings that make publishing behave - or jump straight to [Finalising your document](#finalising-your-document) above once your document itself is ready to submit.
+Continue to [Customise document content](customisecontent.md) for the prodockit extensions that number, cross-reference, cite, and index your document's actual content - or skip ahead to [Customise build](customisebuild.md) for how your document is built and published.

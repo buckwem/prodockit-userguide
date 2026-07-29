@@ -40,7 +40,7 @@ Add hash signs (#) before your text to create a heading. The number of hashes co
 The [`toc`](https://python-markdown.github.io/extensions/toc/){target="_blank"} extension automatically turns every heading into a linkable anchor (the `¶` symbol you can see next to each heading on this page), and generates the sidebar and table of contents from them. The [`attr_list`](https://python-markdown.github.io/extensions/attr_list/){target="_blank"} extension lets you override the generated anchor or add a CSS class, by adding an attribute block after the heading text, for example `## Heading {: #custom-id }`. This lets you \index{Markdown!attr_list} attach IDs, classes, and other HTML attributes almost anywhere in your Markdown.
 
 !!! warning
-    As covered in [Customisation](customise.md#customise-doc-structure), each page in this template can contain only one heading 1 (`#`) - it's what drives the automatic chapter/section numbering (e.g. "9.1") across the whole document. Start a new page instead of adding a second heading 1 to this one.
+    As covered in [Navigation structure](customise.md#navigation-structure) in Customisation, each page in this template can contain only one heading 1 (`#`) - it's what drives the automatic chapter/section numbering (e.g. "9.1") across the whole document. Start a new page instead of adding a second heading 1 to this one.
 
 ## Text formatting
 
