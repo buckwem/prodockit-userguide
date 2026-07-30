@@ -112,6 +112,53 @@ variables:
 !!! tip "Copy a working pipeline rather than assembling one"
     prodockit's own [Continuous integration](https://buckwem.github.io/prodockit-extensions/continuous-integration/){target="_blank"} page has complete, working recipes for both GitHub Actions and GitLab CI, with the reasoning behind each step. This project's two pipeline files are the same recipe in use.
 
+## Mirroring to a second host {: #customisebuild-mirroring }
+
+Both pipelines above assume your code already exists on both hosts. Getting it there in the first place - and keeping it there as you keep writing - is a separate, one-off step: a plain \index{Git!remote} operation, nothing platform-specific. A \index{Git!remote} is just a name pointing at a URL; a repository can have as many as it likes, on as many different hosts as it likes, regardless of which one you originally cloned from.
+
+Add the second host as a new remote (once):
+
+```bash
+git remote add mirror <url-of-the-second-host's-copy-of-this-repo>
+```
+
+Then, whenever you want to bring the mirror up to date with whatever you've pushed to your primary host:
+
+```bash
+git pull origin main    # bring your local main up to date with your primary host
+git push mirror main    # push it up to the mirror
+git push mirror --tags  # and any new release tags, so its own release number stays current
+```
+
+That push is what triggers the mirror's own CI/CD pipeline - see [Publishing](#customisebuild-publishing) above. There's nothing to automate here unless you want to: pushing a fresh copy up before or after a release is a manual step, the same size as any other Git command.
+
+!!! tip "Both hosts need their own SSH key"
+    Use the SSH URL for the mirror remote, not HTTPS, matching [Generate and configure ssh keys for Git](installtooling.md#generate-and-configure-ssh-keys-for-git) in Install tooling - the same guide already covers setting up a separate key per host and picking the right one automatically via `~/.ssh/config`.
+
+### GitHub to GitHub
+
+Mirroring between two GitHub-hosted copies - your own account and an organisation's, say, or two separate GitHub instances - looks like:
+
+```bash
+git remote add mirror git@github.com:your-org/your-repo.git
+git pull origin main
+git push mirror main
+git push mirror --tags
+```
+
+### GitHub to GitLab
+
+Mirroring to a GitLab instance - an institution's own self-hosted instance, or GitLab.com - is exactly the same pattern, just a different host in the URL:
+
+```bash
+git remote add mirror git@gitlab.example.org:your-namespace/your-repo.git
+git pull origin main
+git push mirror main
+git push mirror --tags
+```
+
+Confirm both remotes are set up correctly at any point with `git remote -v`.
+
 ## Checks worth having {: #customisebuild-checks }
 
 Two commands turn the quiet failures above into loud ones:
