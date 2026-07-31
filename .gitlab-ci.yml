@@ -11,7 +11,7 @@
 
 pages:
   stage: deploy
-  image: python:latest
+  image: python:3.13
   # Required for this job to actually be picked up: the University of
   # Surrey's shared runner is restricted to jobs tagged "pages" (its own
   # description says as much) - without this, the job sits "pending"
@@ -54,7 +54,7 @@ pages:
   script:
     - apt-get update
     - apt-get install -y curl gnupg ca-certificates pandoc
-    # libpango: WeasyPrint needs it at runtime. GitHub's ubuntu-latest image
+    # libpango: WeasyPrint needs it at runtime. GitHub's ubuntu-24.04 image
     # already carries it; this slimmer Debian-based image does not.
     #
     # fonts-inter/fonts-jetbrains-mono: this project's fonts. The website

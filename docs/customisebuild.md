@@ -71,6 +71,22 @@ sudo apt-get install -y fonts-inter fonts-jetbrains-mono
 
 Match the packages to the fonts set in `zensical.toml` - see [Fonts](customise.md#fonts).
 
+## Pinning build inputs {: #customisebuild-pinning }
+
+Your document has more inputs than its own content. Zensical renders the site, WeasyPrint lays out the PDF, and whatever runs the pipeline carries its own OS image. Left unpinned, an upgrade to any of them doesn't fail the build - it just quietly publishes a slightly different document, with nothing to indicate anything changed.
+
+`prodockit pins` keeps these declarations - a version in `requirements.txt`, a runner label in a workflow file - in step with each other, wherever they're written down:
+
+```bash
+prodockit pins          # prompt per package; Enter takes the newest release
+prodockit pins --check  # behind, or files disagreeing with each other? exit non-zero
+```
+
+This project pins `zensical`/`weasyprint` in `requirements.txt`, and the runner/image used to build it - `ubuntu-24.04` in `.github/workflows/docs.yml`, `python:3.13` in `.gitlab-ci.yml` - since a runner label or image tag has no package index to check against, only `--set` to a version you choose yourself, e.g. `prodockit pins -p ubuntu --set ubuntu=24.04`.
+
+!!! tip
+    `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. prodockit-extensions' own [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/version-pinning/){target="_blank"} page covers a scheduled job that runs `--check` periodically instead, opening an issue when something's fallen behind - not set up on this project, but worth a look if you want it on your own fork.
+
 ## Publishing {: #customisebuild-publishing }
 
 This project publishes from two pipelines, kept deliberately in step:
@@ -161,14 +177,15 @@ Confirm both remotes are set up correctly at any point with `git remote -v`.
 
 ## Checks worth having {: #customisebuild-checks }
 
-Two commands turn the quiet failures above into loud ones:
+Three commands turn the quiet failures above into loud ones:
 
 ```bash
 prodockit sync-repo --check   # config drifted from your git remote?
+prodockit pins --check        # build inputs behind PyPI, or pinned inconsistently?
 python -m pytest test/        # diagrams, maths and links in the built output
 ```
 
-`prodockit sync-repo --check` writes nothing and exits non-zero if your repository links, header icon or README badges no longer match the remote you are actually publishing from - useful after forking or moving a project. See [Testing](testing.md) for the second.
+`prodockit sync-repo --check` writes nothing and exits non-zero if your repository links, header icon or README badges no longer match the remote you are actually publishing from - useful after forking or moving a project. `prodockit pins --check` does the same for the pins in [Pinning build inputs](#customisebuild-pinning) above. See [Testing](testing.md) for the third.
 
 ## Where to go next {: #customisebuild-where-to-go-next }
 
