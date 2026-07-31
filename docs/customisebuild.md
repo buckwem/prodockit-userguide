@@ -85,7 +85,24 @@ prodockit pins --check  # behind, or files disagreeing with each other? exit non
 This project pins `zensical`/`weasyprint` in `requirements.txt`, and the runner/image used to build it - `ubuntu-24.04` in `.github/workflows/docs.yml`, `python:3.13` in `.gitlab-ci.yml` - since a runner label or image tag has no package index to check against, only `--set` to a version you choose yourself, e.g. `prodockit pins -p ubuntu --set ubuntu=24.04`.
 
 !!! tip
-    `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. prodockit-extensions' own [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/version-pinning/){target="_blank"} page covers a scheduled job that runs `--check` periodically instead, opening an issue when something's fallen behind - not set up on this project, but worth a look if you want it on your own fork.
+    `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. Watching for a newer release *actually mattering* is the next section's job instead.
+
+### Watching for drift {: #customisebuild-drift }
+
+A newer release existing isn't interesting on its own - PyPI already answers that. Whether taking it would *change what gets published* is the thing worth someone looking at, and the only way to answer that is a real build: with the pinned versions, then again with the newest ones, diffed byte for byte.
+
+Both `.github/workflows/drift.yml` and the `drift` job in `.gitlab-ci.yml` do exactly this, weekly:
+
+```
+build (pinned) → build (newest) → diff the PDF and website → report
+```
+
+It reports rather than fails - `allow_failure: true` on GitLab, and the GitHub job skips its own report step entirely once nothing actually changed - and keeps a single open issue updated in place rather than filing a fresh one every week. A build order flip here (`zensical build` after `prodockit pdf`, not before) matters more than it looks: `zensical build` copies the PDF into the published site, so building it first would make every comparison a false positive that looks exactly like drift.
+
+!!! note "The GitLab job needs two things set up once"
+    A weekly [pipeline schedule](https://docs.gitlab.com/ee/ci/pipelines/schedules.html){target="_blank"} pointed at this project (the job's own `rules:` only stop it running on a normal push, they don't create the schedule), and a `DRIFT_TOKEN` CI/CD variable - a project access token with the `api` scope, masked and protected - so the job can open or update an issue. The GitHub workflow needs neither: `schedule:` in the workflow file is the trigger, and the built-in `github.token` already has enough access to open an issue in the same repository.
+
+See prodockit-extensions' own [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/version-pinning/){target="_blank"} page for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
 
 ## Publishing {: #customisebuild-publishing }
 
