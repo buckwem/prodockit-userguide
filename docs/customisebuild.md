@@ -102,7 +102,7 @@ It reports rather than fails - `allow_failure: true` on GitLab, and the GitHub j
 !!! note "The GitLab job needs two things set up once"
     A weekly [pipeline schedule](https://docs.gitlab.com/ee/ci/pipelines/schedules.html){target="_blank"} pointed at this project (the job's own `rules:` only stop it running on a normal push, they don't create the schedule), and a `DRIFT_TOKEN` CI/CD variable - a project access token with the `api` scope, masked and protected - so the job can open or update an issue. The GitHub workflow needs neither: `schedule:` in the workflow file is the trigger, and the built-in `github.token` already has enough access to open an issue in the same repository.
 
-See prodockit-extensions' own [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/version-pinning/){target="_blank"} page for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
+See prodockit-extensions' own [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/continuous-integration/#pinning-version-pinning-and-drift){target="_blank"} section for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
 
 ## Publishing {: #customisebuild-publishing }
 
