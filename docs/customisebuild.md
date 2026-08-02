@@ -119,6 +119,8 @@ install dependencies → prodockit pdf → zensical build → run tests → publ
 
 The tests run *after* both builds because they check the built output - a diagram that reached the PDF as raw source fails the pipeline rather than being published.
 
+The GitHub pipeline has one further step the GitLab one does not: after publishing, it polls the live site and fails the run if the page it fetches doesn't match what was just deployed. A successful deploy is not proof the site is actually serving it - GitHub Pages has, more than once, reported success and quietly kept serving the previous build.
+
 ### Four settings that are easy to get wrong {: #customisebuild-four-settings }
 
 Each of these is invisible when wrong: nothing fails, the site just publishes something incorrect.
