@@ -1,0 +1,33 @@
+# Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
+# SPDX-License-Identifier: MIT
+
+# Cover page's "Release: <tag>" line comes from prodockit.zensical_macros'
+# {{ release }} (`git describe --tags --abbrev=0`), so it can only ever show
+# a tag that already exists at build time - and a release is normally tagged
+# *after* the commit it points at has been pushed, which is what triggers
+# docs.yml's own `push` deploy. Without a redeploy after the release, the
+# site and PDF sit one release behind until something else redeploys them.
+#
+# docs.yml itself no longer triggers on `release:` to do this - a release
+# event runs against `refs/tags/<tag>`, and a Pages deployment built from a
+# tag ref is silently never served (issue #43, same failure as
+# prodockit-extensions#147: nothing fails, the site just never updates).
+# Re-running docs.yml against `main` instead, from here, gives it a branch
+# ref, which does get served.
+name: Redeploy docs after a release
+on:
+  release:
+    types: [published]
+  workflow_dispatch: # so this can be tested without cutting a release
+
+permissions:
+  actions: write # lets GITHUB_TOKEN start another workflow run
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run docs.yml --ref main
