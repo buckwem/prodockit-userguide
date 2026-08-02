@@ -1,17 +1,27 @@
 # Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
 # SPDX-License-Identifier: MIT
 
-zensical
+# Pinned exactly, not left as a bare floor: either one changing output
+# without anything failing is the actual risk `prodockit pins` exists for -
+# Zensical 0.0.52 already redrew this project's own GitHub brand icon on
+# every page, and a WeasyPrint upgrade decides pagination, which page
+# numbers here depend on (the back-of-book index, the table of contents).
+# Keep both in step with `prodockit pins`/`prodockit pins --check` - see
+# "Pinning build inputs" in customisebuild.md - rather than editing the
+# version here by hand.
+zensical==0.0.52
 # The [index] extra pulls in pymupdf, needed for the back-of-book index
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
-# prodockit.index in zensical.toml. >=0.15.0 covers everything this project
+# prodockit.index in zensical.toml. >=0.17.2 covers everything this project
 # now leans on: prodockit.zensical_macros' `release` variable (0.11.0,
 # prodockit-extensions#116) used by macros.py, the `prodockit sync-repo`
-# command that replaced this project's own sync_repo_icon.py (0.13.0), and
-# prodockit.testing's checks and pytest plugin (0.15.0) - see #27.
-prodockit[index]>=0.15.0
+# command that replaced this project's own sync_repo_icon.py (0.13.0),
+# prodockit.testing's checks and pytest plugin (0.15.0 - see #27), and
+# `prodockit pins` itself (0.17.0).
+prodockit[index]>=0.17.2
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI
 # entry point is, so it's listed here rather than assumed pre-installed.
-weasyprint
+# Pinned exactly - see the comment on zensical above for why.
+weasyprint==69.0
