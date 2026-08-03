@@ -12,13 +12,22 @@
 zensical==0.0.52
 # The [index] extra pulls in pymupdf, needed for the back-of-book index
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
-# prodockit.index in zensical.toml. >=0.17.2 covers everything this project
-# now leans on: prodockit.zensical_macros' `release` variable (0.11.0,
-# prodockit-extensions#116) used by macros.py, the `prodockit sync-repo`
-# command that replaced this project's own sync_repo_icon.py (0.13.0),
-# prodockit.testing's checks and pytest plugin (0.15.0 - see #27), and
-# `prodockit pins` itself (0.17.0).
-prodockit[index]>=0.17.2
+# prodockit.index in zensical.toml.
+#
+# Pinned exactly, not left as a floor - see the comment on zensical above
+# for why. prodockit renders this project's PDF and site content directly
+# (headings, refs, citations, glossary, the back-of-book index), so a new
+# release can change published output the same way a zensical or
+# weasyprint upgrade can. Confirmed byte-identical site and PDF against
+# 0.17.2 before taking this pin (see #47).
+#
+# `prodockit pins` could not manage this line before 0.17.5: its matcher
+# expected the version straight after the package name, and the `[index]`
+# extras bracket defeated it, silently reporting "not declared anywhere"
+# rather than failing to parse (prodockit-extensions#156). Needs 0.17.5+
+# installed to pin or check this line - see "Pinning build inputs" in
+# customisebuild.md.
+prodockit[index]==0.17.5
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI

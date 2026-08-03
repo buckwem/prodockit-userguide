@@ -53,6 +53,7 @@ jobs:
           pip install -r requirements.txt -r testrequirements.txt
           echo "PINNED_ZENSICAL=$(pip show zensical | awk '/^Version:/{print $2}')" >> "$GITHUB_ENV"
           echo "PINNED_WEASYPRINT=$(pip show weasyprint | awk '/^Version:/{print $2}')" >> "$GITHUB_ENV"
+          echo "PINNED_PRODOCKIT=$(pip show prodockit | awk '/^Version:/{print $2}')" >> "$GITHUB_ENV"
           prodockit pdf # PDF first ...
           zensical build --clean --strict # ... then the site
           cp -R public /tmp/pinned-site
@@ -60,14 +61,15 @@ jobs:
 
       - name: Build with the newest versions
         run: |
-          pip install -qU zensical weasyprint
+          pip install -qU zensical weasyprint "prodockit[index]"
           echo "LATEST_ZENSICAL=$(pip show zensical | awk '/^Version:/{print $2}')" >> "$GITHUB_ENV"
           echo "LATEST_WEASYPRINT=$(pip show weasyprint | awk '/^Version:/{print $2}')" >> "$GITHUB_ENV"
+          echo "LATEST_PRODOCKIT=$(pip show prodockit | awk '/^Version:/{print $2}')" >> "$GITHUB_ENV"
           prodockit pdf
           zensical build --clean --strict
 
       - name: Compare and report
-        if: env.PINNED_ZENSICAL != env.LATEST_ZENSICAL || env.PINNED_WEASYPRINT != env.LATEST_WEASYPRINT
+        if: env.PINNED_ZENSICAL != env.LATEST_ZENSICAL || env.PINNED_WEASYPRINT != env.LATEST_WEASYPRINT || env.PINNED_PRODOCKIT != env.LATEST_PRODOCKIT
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -78,7 +80,7 @@ jobs:
           fi
           CHANGED_FILES=$(diff -rq /tmp/pinned-site public | wc -l | tr -d ' ')
 
-          BODY="zensical $PINNED_ZENSICAL -> $LATEST_ZENSICAL. weasyprint $PINNED_WEASYPRINT -> $LATEST_WEASYPRINT.
+          BODY="zensical $PINNED_ZENSICAL -> $LATEST_ZENSICAL. weasyprint $PINNED_WEASYPRINT -> $LATEST_WEASYPRINT. prodockit $PINNED_PRODOCKIT -> $LATEST_PRODOCKIT.
 
           PDF: $PDF_RESULT. Website: $CHANGED_FILES files differ.
 
