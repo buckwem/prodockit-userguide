@@ -113,7 +113,19 @@ All three pinned packages are watched, not just Zensical and WeasyPrint - `prodo
 !!! note "The GitLab job needs two things set up once"
     A weekly [pipeline schedule](https://docs.gitlab.com/ee/ci/pipelines/schedules.html){target="_blank"} pointed at this project (the job's own `rules:` only stop it running on a normal push, they don't create the schedule), and a `DRIFT_TOKEN` CI/CD variable - a project access token with the `api` scope, masked and protected - so the job can open or update an issue. The GitHub workflow needs neither: `schedule:` in the workflow file is the trigger, and the built-in `github.token` already has enough access to open an issue in the same repository.
 
-See prodockit-extensions' own [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/continuous-integration/#pinning-version-pinning-and-drift){target="_blank"} section for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
+### Taking an upgrade {: #customisebuild-taking-an-upgrade }
+
+When a drift issue reports something worth having:
+
+```bash
+prodockit pins -p zensical -p weasyprint -p prodockit  # accept the suggested version, or type one
+prodockit pdf                                          # rebuild - PDF first ...
+zensical build --clean                                 # ... then the site
+```
+
+Then diff the built output against the previous version before committing - the same comparison the drift job already made, just with a person deciding rather than reading a report. Repeat for the runner image if that's what moved (`prodockit pins -p ubuntu`, or `-p python` on GitLab), since it isn't upgraded by the same command.
+
+See prodockit-extensions' own [Taking an upgrade](https://buckwem.github.io/prodockit-extensions/continuous-integration/#pinning-taking-an-upgrade){target="_blank"} and [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/continuous-integration/#pinning-version-pinning-and-drift){target="_blank"} sections for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
 
 ## Publishing {: #customisebuild-publishing }
 
