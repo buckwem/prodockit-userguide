@@ -130,21 +130,23 @@ drift:
     - pip install -r requirements.txt -r testrequirements.txt
     - PINNED_ZENSICAL=$(pip show zensical | awk '/^Version:/{print $2}')
     - PINNED_WEASYPRINT=$(pip show weasyprint | awk '/^Version:/{print $2}')
+    - PINNED_PRODOCKIT=$(pip show prodockit | awk '/^Version:/{print $2}')
     - prodockit pdf # PDF first ...
     - zensical build --clean --strict # ... then the site
     - cp -R public /tmp/pinned-site && cp docs/site_documentation.pdf /tmp/pinned.pdf
-    - pip install -qU zensical weasyprint
+    - pip install -qU zensical weasyprint "prodockit[index]"
     - LATEST_ZENSICAL=$(pip show zensical | awk '/^Version:/{print $2}')
     - LATEST_WEASYPRINT=$(pip show weasyprint | awk '/^Version:/{print $2}')
+    - LATEST_PRODOCKIT=$(pip show prodockit | awk '/^Version:/{print $2}')
     - prodockit pdf
     - zensical build --clean --strict
     - |
-      if [ "$PINNED_ZENSICAL" = "$LATEST_ZENSICAL" ] && [ "$PINNED_WEASYPRINT" = "$LATEST_WEASYPRINT" ]; then
+      if [ "$PINNED_ZENSICAL" = "$LATEST_ZENSICAL" ] && [ "$PINNED_WEASYPRINT" = "$LATEST_WEASYPRINT" ] && [ "$PINNED_PRODOCKIT" = "$LATEST_PRODOCKIT" ]; then
         echo "Pins are current."; exit 0
       fi
       CHANGED_FILES=$(diff -rq /tmp/pinned-site public | wc -l | tr -d ' ')
       cmp -s /tmp/pinned.pdf docs/site_documentation.pdf && PDF_RESULT=identical || PDF_RESULT=differs
-      BODY="zensical $PINNED_ZENSICAL -> $LATEST_ZENSICAL. weasyprint $PINNED_WEASYPRINT -> $LATEST_WEASYPRINT.\n\nPDF: $PDF_RESULT. Website: $CHANGED_FILES files differ.\n\nRun \`prodockit pins\` to take the upgrade, rebuild, and review the diff before committing."
+      BODY="zensical $PINNED_ZENSICAL -> $LATEST_ZENSICAL. weasyprint $PINNED_WEASYPRINT -> $LATEST_WEASYPRINT. prodockit $PINNED_PRODOCKIT -> $LATEST_PRODOCKIT.\n\nPDF: $PDF_RESULT. Website: $CHANGED_FILES files differ.\n\nRun \`prodockit pins\` to take the upgrade, rebuild, and review the diff before committing."
       # One open issue at a time, updated in place rather than a fresh one
       # every week.
       EXISTING=$(curl -sf --header "PRIVATE-TOKEN: $DRIFT_TOKEN" \
