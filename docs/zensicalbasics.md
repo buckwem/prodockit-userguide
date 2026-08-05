@@ -169,28 +169,12 @@ $$
 \cos x=\sum_{k=0}^{\infty}\frac{(-1)^k}{(2k)!}x^{2k}
 $$
 
-!!! warning "Needs configuration"
-    This page includes \index{Zensical!MathJax} via a `script` tag, but the generated default
-    configuration doesn't enable it everywhere, to avoid loading it on pages
-    that don't need it. See the documentation for details on how to configure
-    it on all your pages if they're more maths-heavy than these simple
-    starter pages.
-
-<script id="MathJax-script" async src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [["\\(", "\\)"]],
-      displayMath: [["\\[", "\\]"]],
-      processEscapes: true,
-      processEnvironments: true
-    },
-    options: {
-      ignoreHtmlClass: ".*|",
-      processHtmlClass: "arithmatex"
-    }
-  };
-</script>
+!!! tip "Available on every page"
+    \index{Zensical!MathJax} is loaded site-wide from `extra_javascript` in
+    `zensical.toml` - see [Extra CSS and JavaScript](customise.md#extra-css-and-javascript) -
+    so you can write a formula on any page without adding anything to it.
+    The copy it loads is bundled with this project rather than fetched from
+    a CDN, so formulas render with no external request and work offline.
 
 ## Task lists {: #zensicalbasics-task-lists }
 
