@@ -463,11 +463,19 @@ This section forks the repository entirely from your terminal over SSH, using th
 
     === "GitLab"
 
+{% if is_surrey %}
+        ``` bash
+        glab auth login --hostname gitlab.surrey.ac.uk --git-protocol ssh
+        ```
+
+        Use `--hostname gitlab.com` instead if you are working with a project on the public GitLab rather than the University of Surrey instance.
+{% else %}
         ``` bash
         glab auth login --hostname gitlab.com --git-protocol ssh
         ```
 
         Use your own GitLab instance's hostname instead if your course uses a self-hosted GitLab, for example `gitlab.surrey.ac.uk`.
+{% endif %}
 
         The command then asks you a short series of questions:
 
@@ -519,23 +527,23 @@ This section forks the repository entirely from your terminal over SSH, using th
         gh auth status
         ```
 
-1. Fork the repository and clone it in the same step.
-
-{% if is_surrey %}
-    The template to fork is the University of Surrey copy,
-    [https://gitlab.surrey.ac.uk/mb0105/prodockit-template](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank"}.
-{% else %}
-    The template to fork is
-    [https://github.com/buckwem/prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}.
-{% endif %}
+1. Fork the repository and clone it in the same step. Use whichever tab matches the host your course uses.
 
     === "GitLab"
 
+{% if is_surrey %}
         ``` bash
         glab repo fork gitlab.surrey.ac.uk/mb0105/prodockit-template --name cw1-az1234 --path your-group/cw1-az1234 --clone
         ```
 
-        Replace `gitlab.surrey.ac.uk/mb0105/prodockit-template` with the actual GitLab instance and path your course uses, `cw1-az1234` with the project name your course tutor specifies, and `your-group` with the namespace they direct you to fork into (leave `--path` off entirely to fork into your own personal namespace instead).
+        This forks the University of Surrey copy of the template, [https://gitlab.surrey.ac.uk/mb0105/prodockit-template](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank"}. Replace `cw1-az1234` with the project name your course tutor specifies, and `your-group` with the namespace they direct you to fork into (leave `--path` off entirely to fork into your own personal namespace instead).
+{% else %}
+        ``` bash
+        glab repo fork gitlab.com/your-group/prodockit-template --name cw1-az1234 --path your-group/cw1-az1234 --clone
+        ```
+
+        Replace `gitlab.com/your-group/prodockit-template` with the actual GitLab instance and path your course uses, `cw1-az1234` with the project name your course tutor specifies, and `your-group` with the namespace they direct you to fork into (leave `--path` off entirely to fork into your own personal namespace instead).
+{% endif %}
 
         Then open the new project on the website and go to **Settings > General > Visibility, project features, permissions**, and change **Project visibility** to **Private** - `glab` has no command line switch for this yet.
 
@@ -572,17 +580,29 @@ If you forked using `glab`/`gh repo fork --clone` above, you already have a loca
 
 1. Open a terminal (Terminal on macOS/Debian, Git Bash or PowerShell on Windows 11) and navigate to the directory you created in the previous step.
 
-1. Then run the following command to clone the documentation template into your local directory.
+1. Then run the following command to clone the documentation template into your local directory. Use whichever tab matches the host your course uses.
+
+    === "GitLab"
 
 {% if is_surrey %}
-    ``` bash
-    git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
-    ```
+        ``` bash
+        git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
+        ```
+
+        This clones the University of Surrey copy of the template.
 {% else %}
-    ``` bash
-    git clone git@github.com:buckwem/prodockit-template.git
-    ```
+        ``` bash
+        git clone git@gitlab.com:your-group/prodockit-template.git
+        ```
+
+        Replace `your-group` with the namespace your course uses on `gitlab.com`, or swap the whole host for your own self-hosted GitLab.
 {% endif %}
+
+    === "GitHub"
+
+        ``` bash
+        git clone git@github.com:buckwem/prodockit-template.git
+        ```
 
     If you were given your own repository, or forked the template earlier, clone that
     instead - replace the address above with `git@git_website:username/your-repo.git`,
