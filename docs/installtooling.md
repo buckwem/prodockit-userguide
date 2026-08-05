@@ -643,6 +643,138 @@ If you forked using `glab`/`gh repo fork --clone` above, you already have a loca
         or GitHub is unaffected, and so is the `origin` remote inside it - `git push`
         and `git pull` carry on working exactly as before.
 
+### Point your clone at your own repository
+
+Cloning gives you the template's *files*, but the clone still points at the template's
+*repository*. Push now and Git will try to write to the template itself, which you almost
+certainly cannot do - and would not want to if you could. This section repoints it at a
+repository of your own.
+
+!!! info "Skip this if you forked"
+    If you used `glab repo fork` or `gh repo fork` in [Fork the prodockit-template](#fork-the-prodockit-template),
+    `origin` already points at your own copy and there is nothing to do here. This section
+    is for a plain `git clone` of the template.
+
+1. Check what your clone currently points at:
+
+    ``` bash
+    cd your-new-directory
+    git remote -v
+    ```
+
+    A fresh clone has exactly one remote, `origin`, pointing at the template:
+
+    ``` text
+    origin  git@github.com:buckwem/prodockit-template.git (fetch)
+    origin  git@github.com:buckwem/prodockit-template.git (push)
+    ```
+
+    If you added any others of your own - a `gitlab` mirror, say - they will be listed
+    here too, and need removing in step 4 alongside `origin`.
+
+1. **Optional:** start with a fresh commit history. This is your own independent project
+   rather than a fork tracking the template, so carrying the template's entire commit log
+   and branches into it serves little purpose.
+
+    ``` bash
+    rm -rf .git
+    git init -b main
+    git add .
+    git commit -m "Initial commit from prodockit-template"
+    ```
+
+    !!! danger "`rm -rf .git` cannot be undone"
+        This permanently deletes the repository's history from your machine - every commit,
+        branch and tag. There is no undo, and nothing to recover from, because the deleted
+        history is the thing that would have recovered it. Make sure you are in the right
+        directory (`pwd`) and that you have pushed anything you care about somewhere else
+        first.
+
+        Skip this step entirely if you would rather keep the template's history intact -
+        everything after it works either way.
+
+1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a
+   README, `.gitignore` or licence - the template brings its own, and an initial commit on
+   the host side collides with what you are about to push.
+
+    === "GitLab"
+
+        On the website, click **New project > Create blank project**. Name it, set
+        **Visibility Level** to **Private**, and untick **Initialize repository with a
+        README**.
+
+    === "GitHub"
+
+        On the website, click **New repository**. Name it, set it to **Private**, and leave
+        every **Initialize this repository with** option unticked.
+
+1. Point your clone at it. Remove the template's remote first, along with any others you
+   spotted in step 1:
+
+    ``` bash
+    git remote remove origin
+    ```
+
+    Then add your own, using the tab matching your host:
+
+    === "GitLab"
+
+{% if is_surrey %}
+        ``` bash
+        git remote add origin git@gitlab.surrey.ac.uk:your-namespace/your-new-directory-name.git
+        ```
+{% else %}
+        ``` bash
+        git remote add origin git@gitlab.com:your-namespace/your-new-directory-name.git
+        ```
+
+        Replace `gitlab.com` with your own GitLab instance if it is self-hosted.
+{% endif %}
+
+    === "GitHub"
+
+        ``` bash
+        git remote add origin git@github.com:your-username/your-new-directory-name.git
+        ```
+
+    Confirm it took, then push:
+
+    ``` bash
+    git remote -v
+    git push -u origin main
+    ```
+
+1. Sync the repository's own self-references to match. The template's files still name the
+   *template's* repository in several places, and nothing about changing a Git remote
+   updates them:
+
+    ``` bash
+    source .venv/bin/activate
+    prodockit sync-repo
+    ```
+
+    It reports what it changed:
+
+    ``` text
+    Detected GitLab remote (https://gitlab.surrey.ac.uk/az1234/report-az1234); updated: repo_url, repo_name, theme.icon.repo, README badges
+    ```
+
+    This rewrites `repo_url`, `repo_name`, `theme.icon.repo` and `edit_uri` in
+    `zensical.toml`, plus the badge row in your `README.md`, to match the `origin` you just
+    set - so your built site and PDF link to your own repository rather than the template's.
+    Note `theme.icon.repo` in that list: moving from a GitHub template to a GitLab project
+    switches the header's brand icon to match, which is easy to miss by hand. Only the
+    values that actually needed changing are listed, so the set you see may be smaller.
+
+    !!! tip "Check it any time"
+        `prodockit sync-repo --check` writes nothing and exits non-zero if these have drifted
+        from your remote - useful after any later change of host. See
+        [Checks worth having](customisebuild.md#customisebuild-checks).
+
+    You will need the virtual environment from [Install Python and Zensical](#install-python-and-zensical)
+    below before this command exists, so if you have not set that up yet, come back to this
+    step once you have.
+
 ## Install Python and Zensical
 
 Brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
