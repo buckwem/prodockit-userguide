@@ -92,6 +92,38 @@ Leave `zensical serve` running in its terminal while you write - it watches your
 !!! tip
     `zensical serve` only builds the website - it doesn't touch `docs/site_documentation.pdf`. See [Build the PDF](#build-the-pdf) below to preview the PDF output.
 
+### Generate the Source and PDF documents {: #startediting-generate-documents }
+
+You may notice there is no Source or PDF document for download. The two buttons are on
+the front page, but clicking either one gets you nothing - the documents they point at
+are generated rather than stored, so a fresh clone doesn't have them yet. They are also
+deliberately excluded from Git (see `.gitignore`), which keeps large binary files out of
+your repository and stops every rebuild showing up as a change.
+
+You can generate these two documents by running the following commands:
+
+```bash
+# 1. Build both PDFs - the report itself, and the source bundle
+prodockit pdf
+
+# 2. Copy the source bundle in beside the report, so the local preview can find it
+cp source_bundle.pdf docs/
+```
+
+`prodockit pdf` writes the report to `docs/site_documentation.pdf`, which the **PDF**
+button already points at. The **Source** button needs the second command: the source
+bundle is written to your project's root directory rather than `docs/`, so it has to be
+copied across before the preview can serve it. Your published website needs no such
+step - the build pipeline does the same copy for you.
+
+Refresh your browser and both buttons will work.
+
+!!! note "Re-run it after changes you want reflected"
+    Neither document rebuilds itself as you write - unlike the website, which
+    `zensical serve` refreshes automatically. Run `prodockit pdf` again whenever you
+    want the PDF to catch up. See [Build the PDF](#build-the-pdf) for more on the
+    command, including what it needs installed and how the automated builds use it.
+
 ## Synchronise your updates
 
 Whenever you've made a change you want to keep, there are three things to do: **save** the file, **commit** it (record a labelled snapshot of the change in your project's history), and **push** it (upload that snapshot to GitLab or GitHub, where it's backed up and, once it reaches your default branch, published). You can do all three either through Visual Studio Code's Source Control view, or by typing Git commands directly - both do exactly the same thing, so use whichever feels more comfortable.
