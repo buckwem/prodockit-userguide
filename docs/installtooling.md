@@ -13,8 +13,10 @@ SPDX-License-Identifier: MIT
 
 This section takes you through the core installation steps for the tools needed to edit your static website. The instructions are for macOS, Windows 11, and Linux (Ubuntu/Debian). If you are using a different operating system, please refer to the official documentation for that operating system.
 
+<div class="web-only" markdown>
 !!! Tip
     The screenshots below may have small text on your screen. You can click on an image to enlarge it.
+</div>
 
 The install and configuration starts with the setup of Visual Studio Code.
 
@@ -33,6 +35,17 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
 -   :material-clock-fast:{ .lg .middle } __Install Visual Studio Code__
 
     === "macOS using Homebrew"
+
+        !!! note "You need Homebrew first"
+            These instructions use [Homebrew](https://brew.sh){target="_blank"}, the package manager
+            most of the macOS steps in this guide rely on. If you don't have it,
+            install it by following the single command on
+            [brew.sh](https://brew.sh){target="_blank"}.
+
+            **Close and reopen your Terminal after installing it.** The installer
+            adds `brew` to your `PATH`, and a session that was already open won't
+            pick that up - the `brew` command will simply not be found until you
+            start a new one.
 
         1. If you use the Homebrew package manager, run this command in your Terminal:
             ``` bash
@@ -304,7 +317,17 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
             4. Click **Add new key**{: .bg-blue} and fill out the following details:
                 * **Title:** Give it a clear name (e.g., VS Code Extension).
                 * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_gitlab.pub`).
+                * **Expiration date:** GitLab fills this in for you, one year ahead, and
+                  will not let you leave it empty. Set it well into the future - the end
+                  of your course or project, say - or you will be locked out mid-way
+                  through and have to generate and register a new key.
             5. Click **Add key**{: .bg-blue} to save the key.
+
+            !!! warning "An expired key fails confusingly"
+                When the date passes, `git push` and `git pull` stop working with a
+                permission error that looks like a misconfigured key rather than an
+                expired one. If pushing suddenly fails having worked for months, check
+                this date first.
 
         === "GitHub"
 
@@ -315,6 +338,13 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 * **Title:** Give it a clear name (e.g., VS Code Extension).
                 * **Key:** Paste the contents of your public SSH key file (e.g., `~/.ssh/id_ed25519_github.pub`).
             5. Click **Add SSH key**{: .bg-green} to save the key.
+
+            !!! note "No expiry date to set here"
+                Unlike GitLab, GitHub SSH keys have no expiration field - the key
+                stays valid until you delete it, so there is nothing to set. The
+                date that *does* need attention on GitHub is the one on the personal
+                access token you create in
+                [Fork the prodockit-template](#fork-the-prodockit-template) below.
 
     </div>
 
@@ -385,7 +415,51 @@ This section forks the repository entirely from your terminal over SSH, using th
     !!! Tip
         If `gh`/`glab` isn't packaged for your Linux distribution yet, see the [GitHub CLI](https://github.com/cli/cli/blob/trunk/docs/install_linux.md){target="_blank"} or [GitLab CLI](https://gitlab.com/gitlab-org/cli#installation){target="_blank"} install docs for an up-to-date package repository to add.
 
-1. Authenticate the CLI with your account, choosing **SSH** as the Git protocol when prompted - this reuses the same SSH keys you set up in [Generate and configure ssh keys for Git](#generate-and-configure-ssh-keys-for-git).
+1. Generate a personal access token in your browser. The CLI needs one to talk to
+   the host's API - your SSH key covers `git push` and `git pull`, but not creating
+   or configuring a repository.
+
+    === "GitLab"
+
+        1. Log in to your **GitLab** account in a web browser.
+        2. In the top-right corner, click on your **profile avatar** and select **Edit profile**.
+        3. On the left-hand sidebar, select **Access > Access tokens**.
+        4. Click **Add new token**{: .bg-blue} and fill out the following details:
+            * **Token name:** Give it a clear name (e.g., glab CLI).
+            * **Expiration date:** As with your SSH key, set this well into the
+              future - the end of your course or project. GitLab will not let you
+              leave it empty.
+            * **Select scopes:** Tick **api**. This is the one the CLI needs; leave
+              the rest unticked.
+        5. Click **Create personal access token**{: .bg-blue}.
+        6. **Copy the token now.** GitLab shows it exactly once - if you navigate away
+           without copying it, you have to delete it and start again.
+
+    === "GitHub"
+
+        1. Log in to your **GitHub** account in a web browser.
+        2. In the top-right corner, click on your **profile avatar** and select **Settings**.
+        3. On the left-hand sidebar, scroll to the bottom and select **Developer settings**.
+        4. Select **Personal access tokens > Tokens (classic)**, then
+           **Generate new token > Generate new token (classic)**.
+        5. Fill out the following details:
+            * **Note:** Give it a clear name (e.g., gh CLI).
+            * **Expiration:** Set this well into the future - the end of your course
+              or project. Choosing **No expiration** works but GitHub will warn you
+              against it.
+            * **Select scopes:** Tick **repo**, **workflow**, **read:org** and
+              **admin:public_key**. These are what `gh auth login` asks for.
+        6. Click **Generate token**{: .bg-green}.
+        7. **Copy the token now.** GitHub shows it exactly once.
+
+    !!! warning "Treat the token like a password"
+        A personal access token acts as your account. Don't paste it into a
+        document, a chat message, or your repository - if you ever do, delete it on
+        the website straight away and generate a new one.
+
+1. Authenticate the CLI with your account, using the token from the previous step and
+   choosing **SSH** as the Git protocol when prompted - SSH reuses the same keys you
+   set up in [Generate and configure ssh keys for Git](#generate-and-configure-ssh-keys-for-git).
 
     === "GitLab"
 
@@ -395,13 +469,65 @@ This section forks the repository entirely from your terminal over SSH, using th
 
         Use your own GitLab instance's hostname instead if your course uses a self-hosted GitLab, for example `gitlab.surrey.ac.uk`.
 
+        The command then asks you a short series of questions:
+
+        1. **How would you like to login?** Choose **Token**.
+        2. **Paste your authentication token:** Paste the token you copied above.
+           Nothing appears as you paste - that is deliberate, not a failure.
+        3. **Choose default git protocol:** Choose **SSH**.
+        4. **Authenticate Git with your GitLab credentials?** Answer **Yes**.
+
+        You should finish with a confirmation like:
+
+        ``` text
+        ✓ Logged in as your-username
+        ```
+
+        Check it any time with:
+
+        ``` bash
+        glab auth status
+        ```
+
     === "GitHub"
 
         ``` bash
         gh auth login --hostname github.com --git-protocol ssh
         ```
 
+        The command then asks you a short series of questions:
+
+        1. **What account do you want to log into?** Choose **GitHub.com**.
+        2. **What is your preferred protocol for Git operations?** Choose **SSH**.
+        3. **Upload your SSH public key to your GitHub account?** Choose the key you
+           generated earlier (e.g. `~/.ssh/id_ed25519_github.pub`), or **Skip** if you
+           already added it in the previous section.
+        4. **How would you like to authenticate?** Choose
+           **Paste an authentication token**.
+        5. Paste the token you copied above. Nothing appears as you paste - that is
+           deliberate, not a failure.
+
+        You should finish with a confirmation like:
+
+        ``` text
+        ✓ Logged in as your-username
+        ```
+
+        Check it any time with:
+
+        ``` bash
+        gh auth status
+        ```
+
 1. Fork the repository and clone it in the same step.
+
+{% if is_surrey %}
+    The template to fork is the University of Surrey copy,
+    [https://gitlab.surrey.ac.uk/mb0105/prodockit-template](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank"}.
+{% else %}
+    The template to fork is
+    [https://github.com/buckwem/prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}.
+{% endif %}
 
     === "GitLab"
 
@@ -446,14 +572,42 @@ If you forked using `glab`/`gh repo fork --clone` above, you already have a loca
 
 1. Open a terminal (Terminal on macOS/Debian, Git Bash or PowerShell on Windows 11) and navigate to the directory you created in the previous step.
 
-1. Then run the following command to clone the documentation template into your local directory. Replace the `git_website` with the actual GitLab or GitHub website address. For example, `gitlab.com` or `github.organisation.com`. Make sure to replace the `username` with your actual GitLab or GitHub username.
+1. Then run the following command to clone the documentation template into your local directory.
 
+{% if is_surrey %}
     ``` bash
-    git clone git@git_website:username/prodockit-template.git
+    git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
     ```
+{% else %}
+    ``` bash
+    git clone git@github.com:buckwem/prodockit-template.git
+    ```
+{% endif %}
+
+    If you were given your own repository, or forked the template earlier, clone that
+    instead - replace the address above with `git@git_website:username/your-repo.git`,
+    where `git_website` is your host (for example `gitlab.com` or
+    `github.organisation.com`) and `username` is your own account name.
 
     !!! Tip
         You can find your `username` by logging into your GitLab or GitHub account and clicking on your profile picture at the top right corner of the page. On **GitLab** your username is **below** your name in the dropdown menu. On **GitHub** your username is **above** your name in the dropdown menu.
+
+1. Rename the directory to something meaningful for your own report. Cloning leaves you
+   with a folder called `prodockit-template`, which says nothing about whose work it
+   holds - and if you clone a second project later, you will not be able to tell them
+   apart.
+
+    ``` bash
+    mv prodockit-template report-az1234
+    ```
+
+    Replace `report-az1234` with a name that identifies your own work - your username,
+    your coursework code, or whatever your course tutor specifies.
+
+    !!! note "Renaming the folder doesn't rename the repository"
+        This changes only the folder on your own machine. The project's name on GitLab
+        or GitHub is unaffected, and so is the `origin` remote inside it - `git push`
+        and `git pull` carry on working exactly as before.
 
 ## Install Python and Zensical
 
@@ -481,21 +635,37 @@ Follow the instructions below to install Python, create a \index{Python!virtual 
         1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
 
             ``` bash
-            brew install python
+            brew install python3
             ```
 
-        2. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+        2. Install \index{Pandoc} as well. `prodockit pdf` shells out to the `pandoc`
+           command to build your PDF, and it is not a Python package, so `pip` cannot
+           install it for you:
+
+            ``` bash
+            brew install pandoc
+            ```
+
+        3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
 
             ``` bash
             # 1. Create the virtual environment
-            python -m venv .venv
+            /opt/homebrew/bin/python3 -m venv .venv
 
             # 2. Activate it
             source .venv/bin/activate
 
             # 3. Install Zensical
-            pip install -r requirements.txt
+            pip3 install -r requirements.txt
             ```
+
+            !!! note "Why the full path to Python"
+                macOS ships its own older Python, and a plain `python3` may well find
+                that one instead of Homebrew's. Naming
+                `/opt/homebrew/bin/python3` explicitly builds the virtual environment
+                from the version you just installed. On an Intel Mac, Homebrew
+                installs to `/usr/local` instead, so use
+                `/usr/local/bin/python3`.
 
     === "Windows 11 using PowerShell"
 
@@ -550,6 +720,11 @@ Close VS Code and reopen it in the project folder to ensure that the virtual env
 Now we'll install the \index{VS Code!Zensical Studio} plugin for Visual Studio Code, which provides a set of tools to help you work with Zensical projects, including commands to build and preview your site. Then we'll install a couple of other useful plugins for working with Markdown and TOML files.
 
 1. Start by opening Visual Studio Code and navigating to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`/`Cmd+Shift+X`.
+1. Install the **Python** extension (published by Microsoft) by searching for "Python" in the Extensions view and clicking **Install**{: .bg-blue}. As well as Python support, this is what makes VS Code notice the `.venv` folder in your project and activate the virtual environment automatically in every new terminal - so you don't have to run `source .venv/bin/activate` by hand each time you open one.
+
+    !!! Tip
+        Check it worked by opening a new terminal (**Terminal > New Terminal**) - the prompt should start with `(.venv)`. If it doesn't, reopen VS Code in the project folder, then choose **Python: Select Interpreter** from the Command Palette (`Ctrl+Shift+P`/`Cmd+Shift+P`) and pick the one inside `.venv`.
+
 1. Install the **Zensical Studio** extension by searching for "Zensical Studio" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.
 1. Follow the instructions on the Zensical Studio plugin page to configure the extension. Add to the `.vscode/settings.json` file in your project directory the following lines:
 
