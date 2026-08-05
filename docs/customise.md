@@ -158,10 +158,19 @@ The `features` list in `[project.theme]` turns individual website behaviours on 
 ```toml
 extra_css = ["stylesheets/extra.css"]
 extra_javascript = [
-  "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
+  "javascript/vendor/mathjax/tex-svg-full.js",
   "javascript/extra.js"
 ]
 ```
+
+!!! tip "Prefer a bundled copy over a CDN link"
+    An entry can be a full URL as well as a local path, which makes loading a
+    library from a public CDN a one-line change. It costs more than it looks:
+    the version usually floats, so the library can change under you with
+    nothing recorded in your repository; the page depends on someone else's
+    uptime; it won't work offline; and every reader's browser makes a request
+    to a third party. This project keeps its own copy of MathJax for exactly
+    those reasons - see [Maths](zensicalbasics.md#maths).
 
 [`docs/stylesheets/extra.css`](https://github.com/buckwem/prodockit-template/blob/main/docs/stylesheets/extra.css){target="_blank"} is where most of this template's own customisations live (the logo swap, header image, cover page title styles, and the `.pdf-only`/`.web-only` markers).
 

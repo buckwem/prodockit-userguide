@@ -47,8 +47,24 @@ nav = [
 ]
 
 extra_css = ["stylesheets/extra.css"]
+# MathJax is vendored rather than fetched from unpkg - see the note in
+# docs/javascript/vendor/mathjax/README.txt for the full reasoning. In
+# short: the CDN URL was `mathjax@3`, which floats, while `prodockit pdf`
+# renders the PDF through tools/mathjax's exactly-pinned 3.2.2, so the two
+# agreed only by coincidence. This copy comes from that same pinned
+# install, so the website and the PDF provably typeset through one build.
+# It also removes five third-party requests per page carrying a formula
+# (the bundle, plus the four .woff fonts CommonHTML fetched at runtime).
+#
+# If a MathJax *config* file is ever added it must be listed BEFORE the
+# bundle: MathJax reads `window.MathJax` once, at startup, so a config
+# loaded afterwards is ignored. There is no config today - arithmatex's
+# `generic = true` (see markdown_extensions below) already emits explicit
+# \(...\) / \[...\] delimiters, which is exactly what MathJax looks for by
+# default, and its default skipHtmlTags leaves `pre`/`code` alone so the
+# shell examples in these docs are never mistaken for maths.
 extra_javascript = [
-  "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
+  "javascript/vendor/mathjax/tex-svg-full.js",
   "javascript/extra.js"
 ]
 
