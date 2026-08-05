@@ -36,7 +36,18 @@ That second path is the source of most of what follows. **WeasyPrint has no Java
 
 [Diagrams](zensicalbasics.md#diagrams) and [Maths](zensicalbasics.md#maths) work on the website with no setup: Mermaid.js and MathJax run in the reader's browser. The PDF cannot do that, so `prodockit pdf` pre-renders both to images using two Node.js tools.
 
-Set them up once:
+Set them up once. Which commands you need depends on where your project came from:
+
+**From the template**, the `tools/mermaid` and `tools/mathjax` manifests and lockfiles are already tracked, so you only install them:
+
+```bash
+npm ci --prefix tools/mermaid
+npm ci --prefix tools/mathjax
+```
+
+This is the case for most readers, and [Install the diagram and maths tooling](installtooling.md#install-the-diagram-and-maths-tooling) walks through it alongside installing Node.js itself.
+
+**Starting a project from scratch**, you have no `tools/` directory yet, so create it first:
 
 ```bash
 prodockit init-tools
@@ -45,6 +56,9 @@ npm ci --prefix tools/mathjax
 ```
 
 `prodockit init-tools` writes the `tools/mermaid` and `tools/mathjax` directories, then prints the install commands and the settings a CI pipeline needs. Commit the manifests and lockfiles it creates; the `node_modules/` directories are ignored.
+
+!!! tip
+    Running `init-tools` on a copy of the template does no harm - it reports `Kept existing tools/mermaid/package.json` for each file already there and changes nothing - but it has nothing to do, so it is easy to mistake that message for an error.
 
 <!-- Deliberately describes the broken output rather than reproducing it.
      test/test_pdf_rendering.py scans the built PDF for exactly that text,

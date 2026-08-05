@@ -907,6 +907,93 @@ Now we'll install the \index{VS Code!Zensical Studio} plugin for Visual Studio C
 
 There are many other extensions available for Visual Studio Code that can help you with your documentation. You can explore the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/vscode){target="_blank"} to find more extensions that suit your needs.
 
+## Install the diagram and maths tooling
+
+Your PDF needs two more tools, and this is the step most easily skipped - because skipping it doesn't break anything visibly.
+
+\index{Zensical!diagrams} and mathematical notation render on the website by themselves: the reader's browser draws them. The PDF has no browser, so `prodockit pdf` has to convert both into images *before* building the document, and it uses two \index{Node.js} programs to do it.
+
+!!! danger "Without these, the PDF is wrong rather than missing"
+    `prodockit pdf` does **not** fail when they are absent. It leaves the content as it found it, so instead of a flowchart your PDF shows the diagram's own definition text - the `graph LR` line and every node written out beneath it - and instead of a typeset equation, raw LaTeX with all its backslashes and braces.
+
+    Meanwhile the website renders both perfectly. So nothing looks wrong until somebody opens the PDF, which may be well after you have written the document.
+
+### Install Node.js
+
+The two tools are Node.js programs, so install Node.js first. Version 22 or newer - that is what the automated builds use.
+
+<div class="grid cards one-column" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Install Node.js__
+
+    === "macOS using Homebrew"
+
+        ``` bash
+        brew install node
+        ```
+
+    === "Windows 11 using PowerShell"
+
+        ``` powershell
+        winget install OpenJS.NodeJS.LTS
+        ```
+
+        Close and reopen PowerShell afterwards, so it picks up the new `PATH`.
+
+    === "Linux (Ubuntu/Debian) using bash"
+
+        Ubuntu's own `nodejs` package is often several versions behind. Use NodeSource's repository to get a current release:
+
+        ``` bash
+        curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+        sudo apt install -y nodejs
+        ```
+
+</div>
+
+Check it worked:
+
+``` bash
+node --version
+npm --version
+```
+
+### Install the two toolchains
+
+Your cloned template already contains the manifests and lockfiles for both tools, in `tools/mermaid` and `tools/mathjax` - so you only need to install them. From your project's root directory:
+
+``` bash
+npm ci --prefix tools/mermaid
+npm ci --prefix tools/mathjax
+```
+
+`npm ci` installs the exact versions recorded in each lockfile, which is what the automated builds use too - so your PDF is rendered by the same versions as the published one.
+
+This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
+
+!!! note "If npm warns about install scripts"
+    Recent versions of npm print a warning during the Mermaid install and skip the package's own setup step:
+
+    ``` text
+    npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts:
+    npm warn allow-scripts   puppeteer@25.4.0 (postinstall: node install.mjs)
+    ```
+
+    That step is what downloads the headless browser Mermaid draws diagrams with. The install still succeeds, and if the browser is already on your machine from something else, diagrams render fine. If instead a later PDF build reports that it cannot find a browser, approve the step and reinstall:
+
+    ``` bash
+    npm approve-scripts puppeteer --prefix tools/mermaid
+    npm ci --prefix tools/mermaid
+    ```
+
+!!! tip "Starting a project that isn't from the template?"
+    Then you have no `tools/` directory to install from, and need `prodockit init-tools` first to create it. Running it on a copy of the template is harmless but pointless - it will just report `Kept existing tools/mermaid/package.json` for each file it finds. See [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths) for the full picture.
+
+Test the whole thing by building the PDF - see [Generate the Source and PDF documents](startediting.md#startediting-generate-documents) in the next section. If a diagram appears as an image rather than as text, everything is set up correctly.
+
+!!! note "You can skip this if your document has neither"
+    A document with no diagrams and no formulas never calls either tool, so nothing here is required for it. It costs nothing to set up now though, and means the trap above cannot catch you later when you add your first diagram.
+
 ## Where to go next {: #installtooling-where-to-go-next }
 
-You now have Visual Studio Code, Git, and Zensical installed, and your own copy of the documentation template cloned locally. Continue to [Start editing](startediting.md) to preview your changes locally and publish them to GitLab or GitHub.
+You now have Visual Studio Code, Git, Zensical and the diagram and maths tooling installed, and your own copy of the documentation template cloned locally. Continue to [Start editing](startediting.md) to preview your changes locally and publish them to GitLab or GitHub.
