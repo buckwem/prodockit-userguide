@@ -537,15 +537,29 @@ This section forks the repository entirely from your terminal over SSH, using th
         ```
 
         This forks the University of Surrey copy of the template, [https://gitlab.surrey.ac.uk/mb0105/prodockit-template](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank"}. Replace `cw1-az1234` with the project name your course tutor specifies, and `your-group` with the namespace they direct you to fork into (leave `--path` off entirely to fork into your own personal namespace instead).
-{% else %}
-        ``` bash
-        glab repo fork gitlab.com/your-group/prodockit-template --name cw1-az1234 --path your-group/cw1-az1234 --clone
-        ```
-
-        Replace `gitlab.com/your-group/prodockit-template` with the actual GitLab instance and path your course uses, `cw1-az1234` with the project name your course tutor specifies, and `your-group` with the namespace they direct you to fork into (leave `--path` off entirely to fork into your own personal namespace instead).
-{% endif %}
 
         Then open the new project on the website and go to **Settings > General > Visibility, project features, permissions**, and change **Project visibility** to **Private** - `glab` has no command line switch for this yet.
+{% else %}
+        The template lives on GitHub, at [https://github.com/buckwem/prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}, so there is nothing on GitLab to fork - forking only works *within* one host. Copy it across instead: clone it from GitHub, then push it up to a project of your own on GitLab.
+
+        1. Create an empty project on your GitLab. On the website, click **New project > Create blank project**, name it (e.g. `cw1-az1234`), set **Visibility Level** to **Private**, and **untick Initialize repository with a README** - the template brings its own files, and an initial commit here would collide with them.
+        2. Clone the template from GitHub and push it to that new project:
+
+            ``` bash
+            # Clone the template from GitHub, into a folder named for your own work
+            git clone git@github.com:buckwem/prodockit-template.git cw1-az1234
+            cd cw1-az1234
+
+            # Point it at your own GitLab project instead of the template, and push
+            git remote set-url origin git@gitlab.com:your-group/cw1-az1234.git
+            git push -u origin main
+            ```
+
+            Replace `gitlab.com` with your own GitLab instance if it is self-hosted, `your-group` with your namespace, and `cw1-az1234` with the project name your course tutor specifies.
+
+        !!! note "This is a copy, not a fork"
+            GitLab will not show it as a fork of anything, and you cannot open a merge request back to the template - neither of which matters for your own report. The trade-off is that you do not get template updates automatically; see [Mirroring to a second host](customisebuild.md#customisebuild-mirroring) if you ever want to pull them in.
+{% endif %}
 
     === "GitHub"
 
@@ -592,10 +606,10 @@ If you forked using `glab`/`gh repo fork --clone` above, you already have a loca
         This clones the University of Surrey copy of the template.
 {% else %}
         ``` bash
-        git clone git@gitlab.com:your-group/prodockit-template.git
+        git clone git@github.com:buckwem/prodockit-template.git
         ```
 
-        Replace `your-group` with the namespace your course uses on `gitlab.com`, or swap the whole host for your own self-hosted GitLab.
+        The template itself lives on GitHub, so that is where you clone it from even if you intend to publish to GitLab. To publish it as your own GitLab project afterwards, follow the copy-across steps in [Fork the prodockit-template](#fork-the-prodockit-template) above.
 {% endif %}
 
     === "GitHub"
