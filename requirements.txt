@@ -9,7 +9,7 @@
 # Keep both in step with `prodockit pins`/`prodockit pins --check` - see
 # "Pinning build inputs" in customisebuild.md - rather than editing the
 # version here by hand.
-zensical==0.0.52
+zensical==0.0.53
 # The [index] extra pulls in pymupdf, needed for the back-of-book index
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
 # prodockit.index in zensical.toml.
