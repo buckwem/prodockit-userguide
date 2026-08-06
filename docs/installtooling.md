@@ -90,7 +90,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
 
         === "Windows 11 using PowerShell"
 
-            Open up a **PowerShell** window and install `git` using the command, or you can download and install the official git installer from [git-scm.com](https://git-scm.com/download/win){target="_blank"}.
+            Open up a **PowerShell** Administrator window and install `git` using the command, or you can download and install the official git installer from [git-scm.com](https://git-scm.com/download/win){target="_blank"}.
                 
             ``` PowerShell
             winget install Git.Git
@@ -100,6 +100,12 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
                 
             ``` PowerShell
             winget upgrade Git.Git
+            ```
+
+            **Close down PowerShell** and reopen it after installing or updating `git` to ensure that the new version is available in your `PATH`. Check the version of `git` installed by running the following command in **PowerShell**:
+
+            ``` PowerShell
+            git --version
             ```
 
         === "Linux (Ubuntu/Debian) using bash"
@@ -152,6 +158,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
             
                 ``` powershell
+                mkdir $env:USERPROFILE\.ssh -Force
                 ssh-keygen -t ed25519 -C "your.gitxxx.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_gitxxx
                 ```
             3. When prompted, type a strong passphrase.
@@ -252,12 +259,30 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
         === "Windows 11 using PowerShell"
 
-            1. Start the SSH agent in the background and set it to start automatically with Windows. Run this in a PowerShell window opened **as Administrator** (right-click the Start menu, or search for PowerShell, then select **Run as administrator**):
+            1. Set the SSH agent to start automatically with Windows, and then start it. Run these in a PowerShell window opened **as Administrator** (right-click the Start menu, or search for PowerShell, then select **Run as administrator**):
 
                 ``` powershell
-                Start-Service ssh-agent
                 Set-Service -Name ssh-agent -StartupType Automatic
+                Start-Service ssh-agent
                 ```
+
+                !!! warning "Run them in that order"
+                    Windows ships the *OpenSSH Authentication Agent* service **disabled**, and Windows refuses to start a disabled service. Starting it before changing the startup type fails with:
+
+                    ``` text
+                    Start-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be started
+                    due to the following error: Cannot start service ssh-agent on computer '.'.
+                    ```
+
+                    `Set-Service` first takes it out of the disabled state, so `Start-Service` then has something it is allowed to start.
+
+                Check it worked before moving on:
+
+                ``` powershell
+                Get-Service ssh-agent
+                ```
+
+                The **Status** column should read `Running`. If it still says `Stopped`, confirm the PowerShell window really is running as Administrator - the title bar says *Administrator* when it is.
             2. Back in your normal (non-administrator) PowerShell window, add your SSH private keys to the agent, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
 
                 ``` powershell
