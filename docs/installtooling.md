@@ -184,7 +184,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     Host gitlab.surrey.ac.uk
         HostName gitlab.surrey.ac.uk
         User git
-        IdentityFile ~/.ssh/id_ed25519_gitlab    
+        IdentityFile ~/.ssh/id_ed25519_gitlab
 
     # GitLab
     Host gitlab.com
@@ -397,7 +397,7 @@ Start by cloning the template into your own local device.
 
 ### Point your clone at your own repository
 
-If you have cloned a repository that has been given to you to work on and is not a direct copy of the template, you can skip the remaining steps in this section.
+If you have cloned a repository that has been given to you to work on and is not a direct copy of the template, you can skip this section.
 
 Cloning gives you the template's *files*, but the clone still points at the template's *repository*. Push now and Git will try to write to the template itself, which you almost certainly cannot do - and would not want to if you could. This section repoints it at a repository of your own.
 
@@ -433,8 +433,6 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     ``` bash
     rm -rf .git
     git init -b main
-    git add .
-    git commit -m "Initial commit from prodockit-template"
     ```
 
     !!! danger "`rm -rf .git` cannot be undone"
@@ -487,10 +485,148 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     git push -u origin main
     ```
 
+We are not complete with the setup yet, but you now have a local copy of the template that is connected to your own repository on GitLab or GitHub. Do not start editing yet, as the next section installs Python, Zensical and prodockit, which are needed to build your documentation.
+
+## Install Python and Zensical
+
+Here are brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
+
+!!! Note
+    You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
+
+The instructions below are for installing Python 3.12 or later. If you have an older version, please update to Python 3.12 or later.
+
+1. Follow the instructions below to install Python, create a \index{Python!virtual environment}, and install Zensical inside it for your operating system.
+
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
+
+        === "macOS using Homebrew"
+
+            1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
+
+                ``` bash
+                brew install python3
+                ```
+
+            2. Install \index{Pandoc} and \index{Pango} as well. Neither is a Python package, so `pip` cannot install either for you:
+
+                ``` bash
+                brew install pandoc pango
+                ```
+
+                !!! info "What these two are for"
+                    `prodockit pdf` shells out to the `pandoc` command to build your PDF, and Pandoc hands the result to \index{WeasyPrint} to lay out the pages. WeasyPrint is not pure Python either - it draws text through Pango, and will not start without it.
+
+                    Installing `pango` is enough to cover all of it: glib, HarfBuzz and fontconfig come along as its dependencies, and those are the rest of what WeasyPrint loads.
+
+                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+
+            3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+
+                ``` bash
+                # 1. Create the virtual environment
+                /opt/homebrew/bin/python3 -m venv .venv
+
+                # 2. Activate it
+                source .venv/bin/activate
+                ```
+
+                !!! note "Why the full path to Python"
+                    macOS ships its own older Python, and a plain `python3` may well find that one instead of Homebrew's. Naming `/opt/homebrew/bin/python3` explicitly builds the virtual environment from the version you just installed. On an Intel Mac, Homebrew installs to `/usr/local` instead, so use `/usr/local/bin/python3`.
+
+        === "Windows 11 using PowerShell"
+
+            1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
+
+                !!! Critical
+                    Make sure to check the box to add Python to your `PATH` during the installation process. This allows you to run Python from the command line.
+
+            2. Next install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
+
+                ``` powershell
+                winget install Pandoc.Pandoc
+                ```
+
+            3. Install the graphics libraries \index{WeasyPrint} needs. Pandoc hands your document to WeasyPrint to lay out the pages, and WeasyPrint is not pure Python - it draws text through \index{Pango}, which on Windows comes from \index{MSYS2}. Install MSYS2 first:
+
+                ``` powershell
+                winget install --id MSYS2.MSYS2
+                ```
+
+                Then open the **MSYS2 MINGW64** shell from your Start menu (not PowerShell) and run:
+
+                ``` bash
+                pacman -S mingw-w64-x86_64-pango
+                ```
+
+                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect.
+
+                !!! info "Why this is needed"
+                    That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll`. Installing `pango` brings all four in.
+
+                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+
+            4. Then run the following commands to create a virtual environment and install Zensical inside it:
+            
+                ``` powershell
+                # 1. Create the virtual environment
+                python -m venv .venv
+
+                # 2. Activate it (choose the line matching your terminal)
+                .\.venv\Scripts\Activate.ps1     # <-- Use this if you are in PowerShell
+                .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
+                ```
+
+        === "Linux (Ubuntu/Debian) using bash"
+
+            1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, and the graphics libraries \index{WeasyPrint} needs. None of these is a Python package, so `pip` cannot install them for you:
+
+                ``` bash
+                sudo apt update
+                sudo apt install python3 python3-venv python3-pip pandoc \
+                  libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
+                ```
+
+                !!! info "Why the three library packages"
+                    `prodockit pdf` shells out to `pandoc`, and Pandoc hands the result to WeasyPrint to lay out the pages. WeasyPrint is not pure Python - it draws text through \index{Pango}, and will not start without it.
+
+                    `libharfbuzz-subset0` is the one that is easy to miss: on Debian it is a *separate* package from `libharfbuzz0b`, and WeasyPrint needs this one specifically. glib and fontconfig are not listed because `libpango-1.0-0` already depends on them.
+
+                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+
+                !!! warning "Debian 12 or Ubuntu 22.04 and newer"
+                    `libharfbuzz-subset0` does not exist on older releases. On those, upgrade the distribution rather than hunting for a substitute package.
+
+            2. Navigate to your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+
+                ``` bash
+                # 1. Create the virtual environment
+                python3 -m venv .venv
+
+                # 2. Activate it
+                source .venv/bin/activate
+                ```
+    </div>
+
+1. Install Zensical and prodockit inside the virtual environment. The `requirements.txt` file in the template lists the required packages, so you can install them all with a single command (use `pip` if `pip3` is not available):
+
+    ``` bash
+    pip3 install -r requirements.txt
+    ```
+
+1. Check that WeasyPrint can find its graphics libraries. This is the one part of the setup `pip` cannot verify for you, so it is worth confirming now rather than at your first PDF build:
+
+    ``` bash
+    python3 -c "import weasyprint; print(weasyprint.__version__)"
+    ```
+
+    A version number means everything is in place. If instead you get a long error ending in `cannot load library`, the libraries from the step above are missing or cannot be found - go back and install them.
+
 1. Sync the repository's own self-references to match. The template's files still name the *template's* repository in several places, and nothing about changing a Git remote updates them:
 
     ``` bash
-    source .venv/bin/activate
     prodockit sync-repo
     ```
 
@@ -507,111 +643,14 @@ Cloning gives you the template's *files*, but the clone still points at the temp
         from your remote - useful after any later change of host. See
         [Checks worth having](customisebuild.md#customisebuild-checks).
 
-    You will need the virtual environment from [Install Python and Zensical](#install-python-and-zensical) below before this command exists, so if you have not set that up yet, come back to this step once you have.
+1. Lets now commit the changes to your own repository. Run the following commands to commit and push the changes:
 
-## Install Python and Zensical
+    ``` bash
+    git add .
+    git commit -m "Initial commit with Zensical and prodockit installed"
+    git push -u origin main
+    ```
 
-Brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
-
-If you already have Python installed, you can check the version by running the following command in your terminal or command prompt:
-
-```bash
-python --version
-```
-
-!!! Note
-    You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
-
-The instructions below are for installing Python 3.12 or later. If you have an older version, please update to Python 3.12 or later.
-
-Follow the instructions below to install Python, create a \index{Python!virtual environment}, and install Zensical inside it for your operating system.
-
-<div class="grid cards one-column" markdown>
-
--   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
-
-    === "macOS using Homebrew"
-
-        1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
-
-            ``` bash
-            brew install python3
-            ```
-
-        2. Install \index{Pandoc} as well. `prodockit pdf` shells out to the `pandoc`
-           command to build your PDF, and it is not a Python package, so `pip` cannot
-           install it for you:
-
-            ``` bash
-            brew install pandoc
-            ```
-
-        3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
-
-            ``` bash
-            # 1. Create the virtual environment
-            /opt/homebrew/bin/python3 -m venv .venv
-
-            # 2. Activate it
-            source .venv/bin/activate
-
-            # 3. Install Zensical
-            pip3 install -r requirements.txt
-            ```
-
-            !!! note "Why the full path to Python"
-                macOS ships its own older Python, and a plain `python3` may well find
-                that one instead of Homebrew's. Naming
-                `/opt/homebrew/bin/python3` explicitly builds the virtual environment
-                from the version you just installed. On an Intel Mac, Homebrew
-                installs to `/usr/local` instead, so use
-                `/usr/local/bin/python3`.
-
-    === "Windows 11 using PowerShell"
-
-        1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
-
-           !!! Critical
-                Make sure to check the box to add Python to your `PATH` during the installation process. This allows you to run Python from the command line.
-
-        2. Open **PowerShell** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
-            
-
-            ``` powershell
-            # 1. Create the virtual environment
-            python -m venv .venv
-
-            # 2. Activate it (choose the line matching your terminal)
-            .\.venv\Scripts\Activate.ps1     # <-- Use this if you are in PowerShell
-            .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
-
-            # 3. Install Zensical inside the environment
-            pip install -r requirements.txt
-            ```
-
-    === "Linux (Ubuntu/Debian) using bash"
-
-        1. Open a terminal and run the following command to install Python and the `venv` module:
-
-            ``` bash
-            sudo apt update
-            sudo apt install python3 python3-venv python3-pip
-            ```
-
-        2. Navigate to your project folder and run the following commands to create a virtual environment and install Zensical inside it:
-
-            ``` bash
-            # 1. Create the virtual environment
-            python3 -m venv .venv
-
-            # 2. Activate it
-            source .venv/bin/activate
-
-            # 3. Install Zensical
-            pip3 install -r requirements.txt
-            ```
-
-</div>
 
 ### Install Zensical Studio and other plugins
 
