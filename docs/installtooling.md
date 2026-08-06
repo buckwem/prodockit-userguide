@@ -519,7 +519,7 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     origin  git@github.com:buckwem/prodockit-template.git (push)
     ```
 
-    If you added any others of your own - a `gitlab` mirror, say - they will be listed here too, and need removing in step 4 alongside `origin`.
+    If you added any others of your own - a `gitlab` mirror, say - they will be listed here too. You do not need to remove any of them by hand: the next step deletes the repository's entire `.git` directory, which takes every remote with it.
 
 1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
 
@@ -563,13 +563,20 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
         On the GitHub website, click **New repository**. Name it, set it to **Private**, and leave every **Initialize this repository with** option unticked.
 
-1. Remove the template's remote first, along with any others you spotted in step 1:
+1. Point your clone at your own repository, using the tab matching your host:
 
-    ``` bash
-    git remote remove origin
-    ```
+    !!! note "There is nothing to remove first"
+        Deleting `.git` in step 3 took the template's `origin` with it, along
+        with any other remotes you saw in step 2 - `git init` starts a
+        repository with none at all. If you run `git remote remove origin`
+        out of habit, Git tells you so:
 
-    Then add your own, using the tab matching your host:
+        ``` text
+        error: No such remote: 'origin'
+        ```
+
+        That message means the previous step did its job, not that anything
+        is wrong.
 
     === "GitLab"
 
@@ -593,12 +600,28 @@ Cloning gives you the template's *files*, but the clone still points at the temp
         git remote add origin git@github.com:your-username/your-new-directory-name.git
         ```
 
-    Confirm it took, then push:
+    Confirm it took:
 
     ``` bash
     git remote -v
+    ```
+
+1. Make the first commit, and push it. Step 3 left you with an empty repository - the template's files are all still there, but Git is not yet tracking any of them, and there is nothing to push until it does.
+
+    ``` bash
+    git add .
+    git commit -m "Initial commit from prodockit-template"
     git push -u origin main
     ```
+
+    !!! note "If `git push` says `src refspec main does not match any`"
+        That means the commit above did not happen, so the `main` branch
+        does not exist yet - a branch in Git is a pointer to a commit, and
+        there is nothing yet for it to point at. Run `git status` to see
+        what stopped it. The usual cause is `git commit` refusing because
+        `user.name` and `user.email` were never set; if so, set them as in
+        [Install and configure Git](#install-and-configure-git) and commit
+        again.
 
 We are not complete with the setup yet, but you now have a local copy of the template that is connected to your own repository on GitLab or GitHub. Do not start editing yet, as the next section installs Python, Zensical and prodockit, which are needed to build your documentation.
 
