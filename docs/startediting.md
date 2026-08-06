@@ -395,9 +395,9 @@ If `prodockit pdf` errors out or produces a PDF missing content:
 2. Make sure you've installed the dependencies from `requirements.txt` in your active virtual environment (see [Install Python and Zensical](installtooling.md#install-python-and-zensical)).
 3. If your document uses \index{Zensical!Mermaid} diagrams or maths, make sure you've installed the optional Node tooling too (see [Additional tooling](additionaltooling.md)) - without it, the build silently skips those elements rather than raising an error.
 
-#### `pandoc exited with status 43` {: #startediting-pandoc-status-43 }
+### WeasyPrint cannot start (status 43) {: #startediting-pandoc-status-43 }
 
-Worth calling out separately, because the number is the only clue and it points somewhere unexpected:
+A specific case of the above, worth its own entry because the number is the only clue and it points somewhere unexpected:
 
 ``` text
 Building PDF from zensical.toml...
