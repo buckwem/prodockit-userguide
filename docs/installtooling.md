@@ -681,8 +681,20 @@ The instructions below are for installing Python 3.12 or later. If you have an o
             2. Next install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
 
                 ``` powershell
-                winget install Pandoc.Pandoc
+                winget install --id JohnMacFarlane.Pandoc
                 ```
+
+                !!! note "The package is under its author's name, not `Pandoc`"
+                    winget identifies packages as `Publisher.Package`, and
+                    Pandoc's publisher is its author, John MacFarlane. There
+                    is no `Pandoc.Pandoc`, so guessing that gives:
+
+                    ``` text
+                    No package found matching input criteria.
+                    ```
+
+                    `winget search pandoc` lists the real identifier if you
+                    ever need to check it.
 
             3. Install the graphics libraries \index{WeasyPrint} needs. Pandoc hands your document to WeasyPrint to lay out the pages, and WeasyPrint is not pure Python - it draws text through \index{Pango}, which on Windows comes from \index{MSYS2}. Install MSYS2 first:
 
