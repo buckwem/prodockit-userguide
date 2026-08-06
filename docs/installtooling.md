@@ -721,7 +721,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
                 ```
 
-                Answer `Y` when it asks you to confirm.
+                Depending on your PowerShell version it may ask you to confirm the change; answer `Y` if it does. Often it simply returns to the prompt, which means it worked.
 
                 !!! info "What this changes, and why it is needed"
                     Without it, activating the virtual environment fails with:
