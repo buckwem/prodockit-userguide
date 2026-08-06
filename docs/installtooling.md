@@ -221,7 +221,45 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     ```
 {% endif %}
 
-    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano). On Windows, you can use `Notepad` or any text editor to create the `config` file in the `.ssh` directory.
+    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano).
+
+    On **Windows 11**, create the file from PowerShell first and then open it, rather than creating it from inside an editor:
+
+    ``` powershell
+    New-Item -ItemType File -Path $env:USERPROFILE\.ssh\config -Force
+    code $env:USERPROFILE\.ssh\config
+    ```
+
+    (Use `notepad` in place of `code` if you would rather not use VS Code.)
+
+    !!! warning "The file must be called `config`, with no extension"
+        This is the single most common thing to go wrong here. Notepad adds
+        `.txt` to a new file unless you explicitly prevent it, and Windows
+        hides known extensions in File Explorer - so `config.txt` looks
+        exactly like `config` when you go back to check.
+
+        SSH reads a file named `config` and nothing else. With a `.txt` on
+        the end your `IdentityFile` lines are silently ignored, no key is
+        ever offered, and a `git clone` falls through to asking for a
+        password that will never be accepted:
+
+        ``` text
+        git@gitlab.surrey.ac.uk's password:
+        ```
+
+        Creating the file with `New-Item` first avoids this, because the
+        editor is then saving an existing file rather than naming a new
+        one. To check what you actually have:
+
+        ``` powershell
+        Get-ChildItem $env:USERPROFILE\.ssh
+        ```
+
+        If it lists `config.txt`, rename it:
+
+        ``` powershell
+        Rename-Item $env:USERPROFILE\.ssh\config.txt config
+        ```
 
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
