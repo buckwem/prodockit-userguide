@@ -606,22 +606,19 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     git remote -v
     ```
 
-1. Make the first commit, and push it. Step 3 left you with an empty repository - the template's files are all still there, but Git is not yet tracking any of them, and there is nothing to push until it does.
+    !!! note "Don't commit or push yet"
+        Step 3 left you with an empty repository - the template's files are
+        all still there, but Git is tracking none of them yet.
 
-    ``` bash
-    git add .
-    git commit -m "Initial commit from prodockit-template"
-    git push -u origin main
-    ```
+        Resist committing them now. The template's files still name the
+        *template's* repository in several places, and `prodockit sync-repo`
+        in the next section is what repoints them at yours. Committing first
+        would put those stale references into your project's very first
+        commit, and you would then be correcting them in the second.
 
-    !!! note "If `git push` says `src refspec main does not match any`"
-        That means the commit above did not happen, so the `main` branch
-        does not exist yet - a branch in Git is a pointer to a commit, and
-        there is nothing yet for it to point at. Run `git status` to see
-        what stopped it. The usual cause is `git commit` refusing because
-        `user.name` and `user.email` were never set; if so, set them as in
-        [Install and configure Git](#install-and-configure-git) and commit
-        again.
+        [Install Python and Zensical](#install-python-and-zensical) ends
+        with the `git add`, `git commit` and `git push` that publish
+        everything in one go, once there is something correct to publish.
 
 We are not complete with the setup yet, but you now have a local copy of the template that is connected to your own repository on GitLab or GitHub. Do not start editing yet, as the next section installs Python, Zensical and prodockit, which are needed to build your documentation.
 
