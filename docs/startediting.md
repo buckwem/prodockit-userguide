@@ -391,9 +391,63 @@ If a numbered list in your Markdown restarts at "1." partway through instead of 
 
 If `prodockit pdf` errors out or produces a PDF missing content:
 
-1. Check the error message in the terminal - it usually names the file and the problem directly.
+1. Check the error message in the terminal - it usually names the file and the problem directly, and anything the underlying tool printed appears beneath it.
 2. Make sure you've installed the dependencies from `requirements.txt` in your active virtual environment (see [Install Python and Zensical](installtooling.md#install-python-and-zensical)).
 3. If your document uses \index{Zensical!Mermaid} diagrams or maths, make sure you've installed the optional Node tooling too (see [Additional tooling](additionaltooling.md)) - without it, the build silently skips those elements rather than raising an error.
+
+#### `pandoc exited with status 43` {: #startediting-pandoc-status-43 }
+
+Worth calling out separately, because the number is the only clue and it points somewhere unexpected:
+
+``` text
+Building PDF from zensical.toml...
+Error: pandoc exited with status 43 building 'docs/site_documentation.pdf' (only pass)
+```
+
+Status 43 means \index{Pandoc} ran perfectly well, then handed your document to \index{WeasyPrint}, which could not start. **It is not a problem with your document.** Nothing you write in Markdown causes it, and no amount of editing your content will clear it.
+
+WeasyPrint is not a pure Python package. It draws every page through \index{Pango} and a few related graphics libraries, and `pip install -r requirements.txt` cannot install those - they belong to your operating system rather than to Python. If they are missing, WeasyPrint stops before laying out a single page.
+
+The give-away is in the output beneath the error, which contains a line like:
+
+``` text
+OSError: cannot load library 'libgobject-2.0-0'
+```
+
+Install the libraries for your platform - the same step as in [Install Python and Zensical](installtooling.md#install-python-and-zensical):
+
+=== "macOS"
+
+    ``` bash
+    brew install pango
+    ```
+
+=== "Windows 11"
+
+    In the **MSYS2 MINGW64** shell:
+
+    ``` bash
+    pacman -S mingw-w64-x86_64-pango
+    ```
+
+    Then confirm `C:\msys64\mingw64\bin` is on your user `PATH`, and open a new PowerShell window.
+
+=== "Linux (Ubuntu/Debian)"
+
+    ``` bash
+    sudo apt install libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
+    ```
+
+Then check before building again:
+
+``` bash
+python3 -c "import weasyprint; print(weasyprint.__version__)"
+```
+
+A version number means you are ready. The same long error means the libraries still are not being found.
+
+!!! note "On macOS, if it still fails after installing Pango"
+    macOS only looks in Homebrew's folder for libraries if the Python you are using was itself installed by Homebrew. That is why [Install tooling](installtooling.md#install-python-and-zensical) has you create the virtual environment with the full path `/opt/homebrew/bin/python3` rather than a plain `python3`. If you created it another way, the quickest fix is to delete `.venv` and make it again, following those steps exactly.
 
 ### Published site shows old content or a 404
 
