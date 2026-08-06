@@ -466,9 +466,23 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Rename the directory to something meaningful for your own report. Cloning leaves you with a folder called `prodockit-template`, which says nothing about whose work it holds - and if you clone a second project later, you will not be able to tell them apart.
 
-    ``` bash
-    mv prodockit-template report-az1234
-    ```
+    === "macOS"
+
+        ``` bash
+        mv prodockit-template report-az1234
+        ```
+
+    === "Windows 11 using PowerShell"
+
+        ``` powershell
+        Rename-Item prodockit-template report-az1234
+        ```
+
+    === "Linux (Ubuntu/Debian)"
+
+        ``` bash
+        mv prodockit-template report-az1234
+        ```
 
     Replace `report-az1234` with a name that identifies your own work - your username, your coursework code, or whatever your course tutor specifies.
 
@@ -477,10 +491,26 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Check what your clone currently points at:
 
-    ``` bash
-    cd report-az1234
-    git remote -v
-    ```
+    === "macOS"
+
+        ``` bash
+        cd report-az1234
+        git remote -v
+        ```
+
+    === "Windows 11 using PowerShell"
+
+        ``` powershell
+        cd report-az1234
+        git remote -v
+        ```
+
+    === "Linux (Ubuntu/Debian)"
+
+        ``` bash
+        cd report-az1234
+        git remote -v
+        ```
 
     A fresh clone has exactly one remote, `origin`, pointing at the template:
 
@@ -493,13 +523,35 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
 
-    ``` bash
-    rm -rf .git
-    git init -b main
-    ```
+    === "macOS"
 
-    !!! danger "`rm -rf .git` cannot be undone"
-        This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        ``` bash
+        rm -rf .git
+        git init -b main
+        ```
+
+        !!! danger "`rm -rf .git` cannot be undone"
+            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+
+    === "Windows 11 using PowerShell"
+
+        ``` powershell
+        Remove-Item -Recurse -Force .git
+        git init -b main
+        ```
+
+        !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
+            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+
+    === "Linux (Ubuntu/Debian)"
+
+        ``` bash
+        rm -rf .git
+        git init -b main
+        ```
+
+        !!! danger "`rm -rf .git` cannot be undone"
+            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
 1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a README, `.gitignore` or licence - the template brings its own, and an initial commit on the host side collides with what you are about to push.
 
