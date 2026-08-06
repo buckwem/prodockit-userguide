@@ -81,13 +81,33 @@ pages:
     - python -m pytest test/ -v
   pages:
     publish: public
+  # Only the default branch. Deliberately *no* `$CI_COMMIT_TAG` rule, though
+  # there used to be one, to rebuild the cover page's "Release: ..." line when
+  # a release was published.
+  #
+  # A tag pipeline builds whatever the tag points at, which is not necessarily
+  # what `main` points at. Sync the mirror after a release that has since been
+  # overtaken by new commits and the tag build runs *after* the branch build,
+  # publishing the older tree over the newer one - successfully, with nothing
+  # to indicate the site just went backwards (#58).
+  #
+  # `resource_group: pages` above serialises the two but does not order them:
+  # its process mode is GitLab's default, `unordered`, which explicitly does
+  # not guarantee which queued job runs first. So push order cannot be relied
+  # on to fix this either.
+  #
+  # Nothing is lost by dropping it. Push tags *before* the branch (see
+  # "Mirroring to a second host" in customisebuild.md) and the new tag is
+  # already on the remote when this job checks out - GIT_DEPTH: "0" above
+  # means `git describe --tags` finds it, so this build carries the correct
+  # release number by itself. The tag pipeline was only ever producing a
+  # second copy of a result this one already gets right.
+  #
+  # The GitHub workflow reached the same place by a different route: see the
+  # `release:` comment in .github/workflows/docs.yml, where a tag-ref
+  # deployment was silently never served at all (#43).
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    # Also rebuild for a tag pipeline, which is what publishing a release
-    # produces. The rule above cannot match one - $CI_COMMIT_BRANCH is empty
-    # there - so without this the release would never reach the site.
-    # Counterpart of `release: [published]` in the GitHub workflow.
-    - if: '$CI_COMMIT_TAG'
 
 # GitLab counterpart of .github/workflows/drift.yml - watches for drift
 # between the pinned build inputs (requirements.txt - see "Pinning build

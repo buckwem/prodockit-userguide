@@ -247,7 +247,11 @@ variables:
   GIT_DEPTH: "0"
 ```
 
-**Rebuild when a release is published.** A release is normally tagged *after* the commit is pushed - and that push is what triggers the deploy. So the first deploy after a release still shows the *previous* version. Both pipelines therefore also trigger on a release, via `release: [published]` on GitHub and an `if: $CI_COMMIT_TAG` rule on GitLab.
+**Rebuild when a release is published - but not from the tag.** A release is normally tagged *after* the commit is pushed, and that push is what triggers the deploy, so the first deploy after a release still shows the *previous* version. Something has to rebuild once the tag exists.
+
+The obvious answer - trigger the deploy on the tag as well - is the wrong one, and fails quietly on both hosts. On GitHub, a Pages deployment carrying a tag ref is accepted, reported successful, and then never served (issue #43). On GitLab it *is* served, but it publishes whatever the tag points at, which is older than `main` whenever a release has been overtaken by newer commits (issue #58).
+
+So neither pipeline builds tags. GitHub rebuilds against `main` from a separate `redeploy-after-release.yml` workflow; the GitLab mirror gets the same result from pushing tags before the branch, as in [Mirroring to a second host](#customisebuild-mirroring) below.
 
 **One deploy at a time.** Publishing a release shortly after merging its version bump starts two deploys at once, and they race. The one that finishes last does not necessarily win - so the site can end up serving the older build, with nothing reporting a problem. GitHub uses a `concurrency` group; GitLab uses `resource_group`.
 
@@ -270,11 +274,24 @@ Then, whenever you want to bring the mirror up to date with whatever you've push
 
 ```bash
 git pull origin main    # bring your local main up to date with your primary host
-git push mirror main    # push it up to the mirror
-git push mirror --tags  # and any new release tags, so its own release number stays current
+git push mirror --tags  # release tags first, so the build below can see them
+git push mirror main    # then the branch - this is the push that publishes
 ```
 
-That push is what triggers the mirror's own CI/CD pipeline - see [Publishing](#customisebuild-publishing) above. There's nothing to automate here unless you want to: pushing a fresh copy up before or after a release is a manual step, the same size as any other Git command.
+That last push is what triggers the mirror's own CI/CD pipeline - see [Publishing](#customisebuild-publishing) above. There's nothing to automate here unless you want to: pushing a fresh copy up before or after a release is a manual step, the same size as any other Git command.
+
+!!! warning "Push the tags first, not last"
+    The order matters, and getting it wrong is invisible. The cover page's release number comes from `git describe --tags`, which can only find a tag that is already on the mirror when the build runs. Push the branch first and its build sees the *previous* tag, so the mirror publishes with a release number one behind - correctly built, quietly wrong.
+
+    Tags first, and the branch build resolves the new release by itself.
+
+!!! tip "Fetch tags before you push them"
+    A release created through the host's web interface or `gh release create` makes the tag *on the server*, not in your local clone - so `git push mirror --tags` has nothing new to send and silently pushes nothing. Refresh first:
+
+    ```bash
+    git fetch origin --tags
+    git describe --tags --abbrev=0   # should show the release you just made
+    ```
 
 !!! tip "Both hosts need their own SSH key"
     Use the SSH URL for the mirror remote, not HTTPS, matching [Generate and configure ssh keys for Git](installtooling.md#generate-and-configure-ssh-keys-for-git) in Install tooling - the same guide already covers setting up a separate key per host and picking the right one automatically via `~/.ssh/config`.
@@ -286,8 +303,9 @@ Mirroring between two GitHub-hosted copies - your own account and an organisatio
 ```bash
 git remote add mirror git@github.com:your-org/your-repo.git
 git pull origin main
-git push mirror main
+git fetch origin --tags
 git push mirror --tags
+git push mirror main
 ```
 
 ### GitHub to GitLab
@@ -297,11 +315,15 @@ Mirroring to a GitLab instance - an institution's own self-hosted instance, or G
 ```bash
 git remote add mirror git@gitlab.example.org:your-namespace/your-repo.git
 git pull origin main
-git push mirror main
+git fetch origin --tags
 git push mirror --tags
+git push mirror main
 ```
 
 Confirm both remotes are set up correctly at any point with `git remote -v`.
+
+!!! note "Why the GitLab pipeline doesn't build tags"
+    `.gitlab-ci.yml`'s `pages` job runs on the default branch only. A tag build would publish whatever the tag points at, which is older than `main` whenever a release has been overtaken by newer commits - so syncing after such a release would republish the older site over the newer one, successfully and silently. With tags pushed first, the branch build already resolves the right release number, so building tags separately gains nothing. See [prodockit-userguide#58](https://github.com/buckwem/prodockit-userguide/issues/58).
 
 ## Checks worth having {: #customisebuild-checks }
 
