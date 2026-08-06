@@ -77,13 +77,85 @@ A project using neither diagrams nor maths can skip this section entirely.
 
 Your website loads its fonts from a CDN when a reader opens the page. The PDF cannot: WeasyPrint has to embed the actual font files, so they must be installed on whatever machine builds the PDF.
 
-If they are missing, **WeasyPrint substitutes a default font without warning**. The PDF builds, publishes, and simply looks wrong. On a Debian or Ubuntu machine:
+If they are missing, **WeasyPrint substitutes a default font without warning**. The PDF builds, publishes, and simply looks wrong.
+
+The fonts to install are whichever ones `zensical.toml` names - see [Fonts](customise.md#fonts) for that setting. Left unset, they are \index{Fonts!Inter} **Inter** for body text and \index{Fonts!JetBrains Mono} **JetBrains Mono** for code, which is what the examples below use.
+
+### What format to install {: #customisebuild-fonts-format }
+
+Install the **desktop** font files - `.ttf` (TrueType) or `.otf` (OpenType). Both work equally well.
+
+!!! warning "`.woff`/`.woff2` will not do"
+    Those are web delivery formats. A browser reads them over HTTP, but they are not what your operating system's font system indexes, so WeasyPrint will not find them and will substitute silently - the exact failure this section exists to avoid. If a font is offered as a "web font" download, look for the desktop or "static" download instead.
+
+### Where to install them {: #customisebuild-fonts-install }
+
+<div class="grid cards one-column" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Install the document fonts__
+
+    === "macOS using Homebrew"
+
+        ``` bash
+        brew install --cask font-inter font-jetbrains-mono
+        ```
+
+        Homebrew puts them in `~/Library/Fonts`, which is the per-user font folder - no further step needed. To install a font you downloaded yourself instead, double-click the file and click **Install Font**, or copy the `.otf`/`.ttf` files into `~/Library/Fonts` directly.
+
+    === "Windows 11 using PowerShell"
+
+        Download the desktop font files, then select them all, right-click, and choose **Install for all users**.
+
+        Installing for all users matters if a scheduled task or service builds your PDF, since those do not run as you - a font installed only for your own account is invisible to them.
+
+    === "Linux (Ubuntu/Debian) using bash"
+
+        Where a distribution packages the font, use that - it handles the font cache for you:
+
+        ``` bash
+        sudo apt-get install -y fonts-inter fonts-jetbrains-mono
+        ```
+
+        For a font with no package, copy the files in by hand and rebuild the cache:
+
+        ``` bash
+        mkdir -p ~/.local/share/fonts
+        cp *.ttf *.otf ~/.local/share/fonts/
+        fc-cache -f
+        ```
+
+        Use `/usr/share/fonts` instead of `~/.local/share/fonts` to install for every user on the machine.
+
+</div>
+
+Your CI runner needs them too, and starts from a bare image every run - see the `fonts-inter fonts-jetbrains-mono` line in [Publishing](#customisebuild-publishing) below.
+
+### Check they were actually used {: #customisebuild-fonts-check }
+
+Since a missing font produces a PDF rather than an error, the only reliable check is to look at what the finished document actually embedded:
 
 ```bash
-sudo apt-get install -y fonts-inter fonts-jetbrains-mono
+python -c "
+import pymupdf
+d = pymupdf.open('docs/site_documentation.pdf')
+print(sorted({f[3].split('+')[-1] for p in d for f in p.get_fonts()}))
+"
 ```
 
-Match the packages to the fonts set in `zensical.toml` - see [Fonts](customise.md#fonts).
+`pymupdf` is already installed - it comes with the `[index]` extra in `requirements.txt`. Run against this guide's own PDF, it prints:
+
+```text
+['Inter', 'Inter-Bold', 'Inter-Italic', 'Inter-Ultra-Bold',
+ 'JetBrains-Mono', 'JetBrains-Mono-Bold', 'Trebuchet-MS']
+```
+
+The configured fonts, in whichever weights the document happens to use. A name you did not configure appearing there is the substitution happening - a PDF built without Inter installed shows a default serif or sans face in its place instead.
+
+!!! tip "The `ABCDEF+` prefix"
+    Embedded fonts normally carry a random six-letter tag, as in `LNXIQZ+Inter`, marking the file as a *subset* containing only the glyphs this document actually uses. The `.split('+')[-1]` above strips it so the names read cleanly; it says nothing about whether the font is correct.
+
+!!! note "Mermaid diagrams bring their own font"
+    You will also see `Trebuchet-MS` if your document contains a \index{Zensical!diagrams} Mermaid diagram. That is not a substitution: Mermaid renders its diagrams to SVG with its own stylesheet, which asks for Trebuchet MS, and that travels into the PDF with the image. It applies only to text *inside* diagrams, and needs no action - your body text and code are unaffected.
 
 ## Pinning build inputs {: #customisebuild-pinning }
 
