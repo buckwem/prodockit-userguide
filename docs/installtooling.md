@@ -715,8 +715,36 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                     Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
 
-            4. Then run the following commands to create a virtual environment and install Zensical inside it:
-            
+            4. Allow PowerShell to run scripts. Windows blocks all of them by default, and activating a virtual environment *is* a script, so this has to be done once before the next step will work:
+
+                ``` powershell
+                Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+                ```
+
+                Answer `Y` when it asks you to confirm.
+
+                !!! info "What this changes, and why it is needed"
+                    Without it, activating the virtual environment fails with:
+
+                    ``` text
+                    .\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is
+                    disabled on this system.
+                    ```
+
+                    `RemoteSigned` lets scripts you wrote or created locally run, while still
+                    requiring a digital signature on anything downloaded from the internet.
+                    `-Scope CurrentUser` applies it to your account only, which is why it needs
+                    no Administrator window and changes nothing for anyone else using the
+                    machine.
+
+                    You only need to do this once per user account, not per project.
+
+                    If you would rather not change it at all, use **classic CMD** instead of
+                    PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat`
+                    files are not covered by execution policy.
+
+            5. Then run the following commands to create a virtual environment and install Zensical inside it:
+
                 ``` powershell
                 # 1. Create the virtual environment
                 python -m venv .venv
