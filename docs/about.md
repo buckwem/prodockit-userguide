@@ -35,19 +35,24 @@ Docs-as-code means using the same tools and workflows for documentation as you d
 
 ## The docs-as-code stack
 
-To move from using a word processor or simple website to a scalable and effective documentation tool set needs a stack of tools:
+To move from using a word processor or simple website to a scalable and effective documentation tool set needs a stack of tools, as shown in the diagram below. The stack is made up of three layers: the authoring tool, the docs-as-code builder, and the code repository and management system.
 
 `Authoring tool`
 
-: Effective documentation depends on tools that help with content editing and automate quality checks, including spelling, grammar, style and formatting consistency. While there are numerous text editors available, \index{VS Code} stands out as a favoured option due to its extensive ecosystem of extensions. By using Visual Studio Code, writers can take advantage of a variety of extensions that offer real-time quality assurance.
+: Effective documentation depends on tools that help with content editing and automate quality checks, including spelling, grammar, style and formatting consistency. While there are numerous text editors available, \index{VS Code} stands out as a favoured option due to its extensive ecosystem of extensions. By using Visual Studio Code, writers can take advantage of a variety of extensions that offer real-time quality assurance. Some of the extensions available for VS Code include spell checkers, grammar checkers, and linters that enforce style guides. These tools help ensure that the documentation is clear, consistent, and professional. We are suggest using Python, Zensical Studio, Even better TOML and LTeX+.
 
 \index{`Docs-as-code builder`}
 
-: Markdown files can serve as a foundation for a static website. However, they often need enhanced formatting options through additional themes and styling. A docs-as-code builder then transforms the Markdown and supplementary instructions into HTML, applying a theme to generate a professional-looking website. Zensical is a fast and reliable docs-as-code builder that processes Markdown files and creates a static documentation website. It lets you view the website locally before publishing, so you can confirm the final output meets your quality standards.
+: Markdown files can serve as a foundation for a static website. However, they often need enhanced formatting options through additional themes and styling. A docs-as-code builder then transforms the Markdown and supplementary instructions into HTML, applying a theme to generate a professional-looking website. Zensical is a fast and reliable docs-as-code builder that processes Markdown files and creates a static documentation website. It lets you view the website locally before publishing, so you can confirm the final output meets your quality standards. Additional extensions, such as the prodockit package, can be added to Zensical to provide extra features like heading numbering, a references page and a pdf document with an index.
 
 `Code Repository and Management`
 
-: By connecting directly to a Git repository, this integrated environment establishes a secure, centralised vault that tracks the history of project files. It records each modification as a distinct commit, letting users audit changes or revert to earlier versions if errors arise. Before finalising any work, a pull request triggers a peer-review process, where collaborators comment on, test, and approve the updates. This workflow ensures that only vetted, high-quality content reaches final publication.
+: By connecting directly to a Git repository, this integrated environment establishes a secure, centralised vault that tracks the history of project files. It records each modification as a distinct commit, letting users audit changes or revert to earlier versions if errors arise. Before finalising any work, a pull request triggers a peer-review process, where collaborators comment on, test, and approve the updates. This workflow ensures that only vetted, high-quality content reaches final publication. GitLab and GitHub are popular platforms that provide these capabilities, along with additional features like issue tracking, project management, and continuous integration.
+
+![Diagram of Docs as code stack](assets/docs-as-code-stack.png){width="60%"}
+/// figure-caption
+Docs as code stack
+///
 
 !!! note "Why not LaTeX?"
 
@@ -65,21 +70,23 @@ As a student, you'll follow a simplified workflow, since you won't be handling d
 
 Zensical provides the themes and tools necessary to draft professional documentation in Markdown with instant local previews. Once finalised, you can publish your site by uploading the files to a Git repository. From there, automated pipelines build and deploy the content into a live website.
 
-[Zensical](https://zensical.org/){target="_blank"}, written for speed and reliability using the \index{<a href="https://rust-lang.org/" target="_blank">Rust programming language</a>}, publishes documentation as a website.
+[Zensical](https://zensical.org/){target="_blank"}, written for speed and reliability using the \index{<a href="https://rust-lang.org/" target="_blank">Rust programming language</a>} and Python, publishes documentation as a website.
 
-[prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"} is a documentation template built on Zensical, available for you to fork and clone into a project that you can use to write your own document or report - [Install tooling](installtooling.md) covers exactly what those two steps mean and how to do them.
+We have provided an additional extension, the [prodockit](https://github.com/buckwem/prodockit-extensions){target="_blank"} package, which adds extra features to Zensical enabling you to create a professional-looking documentation website, together with a PDF version of the report.
+
+[prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"} is a documentation template built on Zensical and prodockit, available for you to fork and clone into a project that you can use to write your own document or report.
 
 !!! tip
 
-    Zensical processes these Markdown-formatted instructions into this site. To view the structure of Markdown files, go to this Git repository, linked at the top right of this page.
+    Zensical processes these Markdown-formatted instructions into this site. To view the structure of this site by examining the Markdown files, go to this Git repository, linked at the top right of this page.
 
 ## Guide structure
 
-This guide covers the following sections, in the order you'll work through them.
+This guide continues by presenting the following sections, in the order you'll need them for the development of your documentation.
 
 `Install tooling`
 
-: The [*Install tooling*](installtooling.md) section describes how to install the core prerequisite tools and create a fork of the document template. By the end of this section you will have an environment ready to develop your own coursework or documentation. The instructions are available for macOS, Windows 11, and Ubuntu/Debian Linux.
+: The [*Install tooling*](installtooling.md) section describes how to install the core prerequisite tools and create a fork of the document template. By the end of this section you will have an environment ready to develop your own professional or academic documentation. The instructions are available for macOS, Windows 11, and Ubuntu/Debian Linux.
 
 `Start editing`
 
