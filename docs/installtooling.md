@@ -90,7 +90,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
 
         === "Windows 11 using PowerShell"
 
-            Open up a **PowerShell** window and install `git` using the command, or you can download and install the official git installer from [git-scm.com](https://git-scm.com/download/win){target="_blank"}.
+            Open up a **PowerShell** Administrator window and install `git` using the command, or you can download and install the official git installer from [git-scm.com](https://git-scm.com/download/win){target="_blank"}.
                 
             ``` PowerShell
             winget install Git.Git
@@ -100,6 +100,12 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
                 
             ``` PowerShell
             winget upgrade Git.Git
+            ```
+
+            **Close down PowerShell** and reopen it after installing or updating `git` to ensure that the new version is available in your `PATH`. Check the version of `git` installed by running the following command in **PowerShell**:
+
+            ``` PowerShell
+            git --version
             ```
 
         === "Linux (Ubuntu/Debian) using bash"
@@ -152,6 +158,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
             
                 ``` powershell
+                mkdir $env:USERPROFILE\.ssh -Force
                 ssh-keygen -t ed25519 -C "your.gitxxx.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_gitxxx
                 ```
             3. When prompted, type a strong passphrase.
@@ -184,7 +191,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     Host gitlab.surrey.ac.uk
         HostName gitlab.surrey.ac.uk
         User git
-        IdentityFile ~/.ssh/id_ed25519_gitlab    
+        IdentityFile ~/.ssh/id_ed25519_gitlab
 
     # GitLab
     Host gitlab.com
@@ -214,7 +221,45 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     ```
 {% endif %}
 
-    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano). On Windows, you can use `Notepad` or any text editor to create the `config` file in the `.ssh` directory.
+    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano).
+
+    On **Windows 11**, create the file from PowerShell first and then open it, rather than creating it from inside an editor:
+
+    ``` powershell
+    New-Item -ItemType File -Path $env:USERPROFILE\.ssh\config -Force
+    code $env:USERPROFILE\.ssh\config
+    ```
+
+    (Use `notepad` in place of `code` if you would rather not use VS Code.)
+
+    !!! warning "The file must be called `config`, with no extension"
+        This is the single most common thing to go wrong here. Notepad adds
+        `.txt` to a new file unless you explicitly prevent it, and Windows
+        hides known extensions in File Explorer - so `config.txt` looks
+        exactly like `config` when you go back to check.
+
+        SSH reads a file named `config` and nothing else. With a `.txt` on
+        the end your `IdentityFile` lines are silently ignored, no key is
+        ever offered, and a `git clone` falls through to asking for a
+        password that will never be accepted:
+
+        ``` text
+        git@gitlab.surrey.ac.uk's password:
+        ```
+
+        Creating the file with `New-Item` first avoids this, because the
+        editor is then saving an existing file rather than naming a new
+        one. To check what you actually have:
+
+        ``` powershell
+        Get-ChildItem $env:USERPROFILE\.ssh
+        ```
+
+        If it lists `config.txt`, rename it:
+
+        ``` powershell
+        Rename-Item $env:USERPROFILE\.ssh\config.txt config
+        ```
 
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
@@ -252,12 +297,30 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
         === "Windows 11 using PowerShell"
 
-            1. Start the SSH agent in the background and set it to start automatically with Windows. Run this in a PowerShell window opened **as Administrator** (right-click the Start menu, or search for PowerShell, then select **Run as administrator**):
+            1. Set the SSH agent to start automatically with Windows, and then start it. Run these in a PowerShell window opened **as Administrator** (right-click the Start menu, or search for PowerShell, then select **Run as administrator**):
 
                 ``` powershell
-                Start-Service ssh-agent
                 Set-Service -Name ssh-agent -StartupType Automatic
+                Start-Service ssh-agent
                 ```
+
+                !!! warning "Run them in that order"
+                    Windows ships the *OpenSSH Authentication Agent* service **disabled**, and Windows refuses to start a disabled service. Starting it before changing the startup type fails with:
+
+                    ``` text
+                    Start-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be started
+                    due to the following error: Cannot start service ssh-agent on computer '.'.
+                    ```
+
+                    `Set-Service` first takes it out of the disabled state, so `Start-Service` then has something it is allowed to start.
+
+                Check it worked before moving on:
+
+                ``` powershell
+                Get-Service ssh-agent
+                ```
+
+                The **Status** column should read `Running`. If it still says `Stopped`, confirm the PowerShell window really is running as Administrator - the title bar says *Administrator* when it is.
             2. Back in your normal (non-administrator) PowerShell window, add your SSH private keys to the agent, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
 
                 ``` powershell
@@ -397,15 +460,29 @@ Start by cloning the template into your own local device.
 
 ### Point your clone at your own repository
 
-If you have cloned a repository that has been given to you to work on and is not a direct copy of the template, you can skip the remaining steps in this section.
+If you have cloned a repository that has been given to you to work on and is not a direct copy of the template, you can skip this section.
 
 Cloning gives you the template's *files*, but the clone still points at the template's *repository*. Push now and Git will try to write to the template itself, which you almost certainly cannot do - and would not want to if you could. This section repoints it at a repository of your own.
 
 1. Rename the directory to something meaningful for your own report. Cloning leaves you with a folder called `prodockit-template`, which says nothing about whose work it holds - and if you clone a second project later, you will not be able to tell them apart.
 
-    ``` bash
-    mv prodockit-template report-az1234
-    ```
+    === "macOS"
+
+        ``` bash
+        mv prodockit-template report-az1234
+        ```
+
+    === "Windows 11 using PowerShell"
+
+        ``` powershell
+        Rename-Item prodockit-template report-az1234
+        ```
+
+    === "Linux (Ubuntu/Debian)"
+
+        ``` bash
+        mv prodockit-template report-az1234
+        ```
 
     Replace `report-az1234` with a name that identifies your own work - your username, your coursework code, or whatever your course tutor specifies.
 
@@ -414,10 +491,26 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Check what your clone currently points at:
 
-    ``` bash
-    cd report-az1234
-    git remote -v
-    ```
+    === "macOS"
+
+        ``` bash
+        cd report-az1234
+        git remote -v
+        ```
+
+    === "Windows 11 using PowerShell"
+
+        ``` powershell
+        cd report-az1234
+        git remote -v
+        ```
+
+    === "Linux (Ubuntu/Debian)"
+
+        ``` bash
+        cd report-az1234
+        git remote -v
+        ```
 
     A fresh clone has exactly one remote, `origin`, pointing at the template:
 
@@ -426,19 +519,39 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     origin  git@github.com:buckwem/prodockit-template.git (push)
     ```
 
-    If you added any others of your own - a `gitlab` mirror, say - they will be listed here too, and need removing in step 4 alongside `origin`.
+    If you added any others of your own - a `gitlab` mirror, say - they will be listed here too. You do not need to remove any of them by hand: the next step deletes the repository's entire `.git` directory, which takes every remote with it.
 
 1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
 
-    ``` bash
-    rm -rf .git
-    git init -b main
-    git add .
-    git commit -m "Initial commit from prodockit-template"
-    ```
+    === "macOS"
 
-    !!! danger "`rm -rf .git` cannot be undone"
-        This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        ``` bash
+        rm -rf .git
+        git init -b main
+        ```
+
+        !!! danger "`rm -rf .git` cannot be undone"
+            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+
+    === "Windows 11 using PowerShell"
+
+        ``` powershell
+        Remove-Item -Recurse -Force .git
+        git init -b main
+        ```
+
+        !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
+            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+
+    === "Linux (Ubuntu/Debian)"
+
+        ``` bash
+        rm -rf .git
+        git init -b main
+        ```
+
+        !!! danger "`rm -rf .git` cannot be undone"
+            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
 1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a README, `.gitignore` or licence - the template brings its own, and an initial commit on the host side collides with what you are about to push.
 
@@ -450,13 +563,20 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
         On the GitHub website, click **New repository**. Name it, set it to **Private**, and leave every **Initialize this repository with** option unticked.
 
-1. Remove the template's remote first, along with any others you spotted in step 1:
+1. Point your clone at your own repository, using the tab matching your host:
 
-    ``` bash
-    git remote remove origin
-    ```
+    !!! note "There is nothing to remove first"
+        Deleting `.git` in step 3 took the template's `origin` with it, along
+        with any other remotes you saw in step 2 - `git init` starts a
+        repository with none at all. If you run `git remote remove origin`
+        out of habit, Git tells you so:
 
-    Then add your own, using the tab matching your host:
+        ``` text
+        error: No such remote: 'origin'
+        ```
+
+        That message means the previous step did its job, not that anything
+        is wrong.
 
     === "GitLab"
 
@@ -480,17 +600,208 @@ Cloning gives you the template's *files*, but the clone still points at the temp
         git remote add origin git@github.com:your-username/your-new-directory-name.git
         ```
 
-    Confirm it took, then push:
+    Confirm it took:
 
     ``` bash
     git remote -v
-    git push -u origin main
     ```
+
+    !!! note "Don't commit or push yet"
+        Step 3 left you with an empty repository - the template's files are
+        all still there, but Git is tracking none of them yet.
+
+        Resist committing them now. The template's files still name the
+        *template's* repository in several places, and `prodockit sync-repo`
+        in the next section is what repoints them at yours. Committing first
+        would put those stale references into your project's very first
+        commit, and you would then be correcting them in the second.
+
+        [Install Python and Zensical](#install-python-and-zensical) ends
+        with the `git add`, `git commit` and `git push` that publish
+        everything in one go, once there is something correct to publish.
+
+We are not complete with the setup yet, but you now have a local copy of the template that is connected to your own repository on GitLab or GitHub. Do not start editing yet, as the next section installs Python, Zensical and prodockit, which are needed to build your documentation.
+
+## Install Python and Zensical
+
+Here are brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
+
+!!! Note
+    You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
+
+The instructions below are for installing Python 3.12 or later. If you have an older version, please update to Python 3.12 or later.
+
+1. Follow the instructions below to install Python, create a \index{Python!virtual environment}, and install Zensical inside it for your operating system.
+
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
+
+        === "macOS using Homebrew"
+
+            1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
+
+                ``` bash
+                brew install python3
+                ```
+
+            2. Install \index{Pandoc} and \index{Pango} as well. Neither is a Python package, so `pip` cannot install either for you:
+
+                ``` bash
+                brew install pandoc pango
+                ```
+
+                !!! info "What these two are for"
+                    `prodockit pdf` shells out to the `pandoc` command to build your PDF, and Pandoc hands the result to \index{WeasyPrint} to lay out the pages. WeasyPrint is not pure Python either - it draws text through Pango, and will not start without it.
+
+                    Installing `pango` is enough to cover all of it: glib, HarfBuzz and fontconfig come along as its dependencies, and those are the rest of what WeasyPrint loads.
+
+                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+
+            3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+
+                ``` bash
+                # 1. Create the virtual environment
+                /opt/homebrew/bin/python3 -m venv .venv
+
+                # 2. Activate it
+                source .venv/bin/activate
+                ```
+
+                !!! note "Why the full path to Python"
+                    macOS ships its own older Python, and a plain `python3` may well find that one instead of Homebrew's. Naming `/opt/homebrew/bin/python3` explicitly builds the virtual environment from the version you just installed. On an Intel Mac, Homebrew installs to `/usr/local` instead, so use `/usr/local/bin/python3`.
+
+        === "Windows 11 using PowerShell"
+
+            1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
+
+                !!! Critical
+                    Make sure to check the box to add Python to your `PATH` during the installation process. This allows you to run Python from the command line.
+
+            2. Next install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
+
+                ``` powershell
+                winget install --id JohnMacFarlane.Pandoc
+                ```
+
+                !!! note "The package is under its author's name, not `Pandoc`"
+                    winget identifies packages as `Publisher.Package`, and
+                    Pandoc's publisher is its author, John MacFarlane. There
+                    is no `Pandoc.Pandoc`, so guessing that gives:
+
+                    ``` text
+                    No package found matching input criteria.
+                    ```
+
+                    `winget search pandoc` lists the real identifier if you
+                    ever need to check it.
+
+            3. Install the graphics libraries \index{WeasyPrint} needs. Pandoc hands your document to WeasyPrint to lay out the pages, and WeasyPrint is not pure Python - it draws text through \index{Pango}, which on Windows comes from \index{MSYS2}. Install MSYS2 first:
+
+                ``` powershell
+                winget install --id MSYS2.MSYS2
+                ```
+
+                Then open the **MSYS2 MINGW64** shell from your Start menu (not PowerShell) and run:
+
+                ``` bash
+                pacman -S mingw-w64-x86_64-pango
+                ```
+
+                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect.
+
+                !!! info "Why this is needed"
+                    That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll`. Installing `pango` brings all four in.
+
+                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+
+            4. Allow PowerShell to run scripts. Windows blocks all of them by default, and activating a virtual environment *is* a script, so this has to be done once before the next step will work:
+
+                ``` powershell
+                Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+                ```
+
+                Depending on your PowerShell version it may ask you to confirm the change; answer `Y` if it does. Often it simply returns to the prompt, which means it worked.
+
+                !!! info "What this changes, and why it is needed"
+                    Without it, activating the virtual environment fails with:
+
+                    ``` text
+                    .\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is
+                    disabled on this system.
+                    ```
+
+                    `RemoteSigned` lets scripts you wrote or created locally run, while still
+                    requiring a digital signature on anything downloaded from the internet.
+                    `-Scope CurrentUser` applies it to your account only, which is why it needs
+                    no Administrator window and changes nothing for anyone else using the
+                    machine.
+
+                    You only need to do this once per user account, not per project.
+
+                    If you would rather not change it at all, use **classic CMD** instead of
+                    PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat`
+                    files are not covered by execution policy.
+
+            5. Then run the following commands to create a virtual environment and install Zensical inside it:
+
+                ``` powershell
+                # 1. Create the virtual environment
+                python -m venv .venv
+
+                # 2. Activate it (choose the line matching your terminal)
+                .\.venv\Scripts\Activate.ps1     # <-- Use this if you are in PowerShell
+                .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
+                ```
+
+        === "Linux (Ubuntu/Debian) using bash"
+
+            1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, and the graphics libraries \index{WeasyPrint} needs. None of these is a Python package, so `pip` cannot install them for you:
+
+                ``` bash
+                sudo apt update
+                sudo apt install python3 python3-venv python3-pip pandoc \
+                  libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
+                ```
+
+                !!! info "Why the three library packages"
+                    `prodockit pdf` shells out to `pandoc`, and Pandoc hands the result to WeasyPrint to lay out the pages. WeasyPrint is not pure Python - it draws text through \index{Pango}, and will not start without it.
+
+                    `libharfbuzz-subset0` is the one that is easy to miss: on Debian it is a *separate* package from `libharfbuzz0b`, and WeasyPrint needs this one specifically. glib and fontconfig are not listed because `libpango-1.0-0` already depends on them.
+
+                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+
+                !!! warning "Debian 12 or Ubuntu 22.04 and newer"
+                    `libharfbuzz-subset0` does not exist on older releases. On those, upgrade the distribution rather than hunting for a substitute package.
+
+            2. Navigate to your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+
+                ``` bash
+                # 1. Create the virtual environment
+                python3 -m venv .venv
+
+                # 2. Activate it
+                source .venv/bin/activate
+                ```
+    </div>
+
+1. Install Zensical and prodockit inside the virtual environment. The `requirements.txt` file in the template lists the required packages, so you can install them all with a single command (use `pip` if `pip3` is not available):
+
+    ``` bash
+    pip3 install -r requirements.txt
+    ```
+
+1. Check that WeasyPrint can find its graphics libraries. This is the one part of the setup `pip` cannot verify for you, so it is worth confirming now rather than at your first PDF build:
+
+    ``` bash
+    python3 -c "import weasyprint; print(weasyprint.__version__)"
+    ```
+
+    A version number means everything is in place. If instead you get a long error ending in `cannot load library`, the libraries from the step above are missing or cannot be found - go back and install them.
 
 1. Sync the repository's own self-references to match. The template's files still name the *template's* repository in several places, and nothing about changing a Git remote updates them:
 
     ``` bash
-    source .venv/bin/activate
     prodockit sync-repo
     ```
 
@@ -507,111 +818,14 @@ Cloning gives you the template's *files*, but the clone still points at the temp
         from your remote - useful after any later change of host. See
         [Checks worth having](customisebuild.md#customisebuild-checks).
 
-    You will need the virtual environment from [Install Python and Zensical](#install-python-and-zensical) below before this command exists, so if you have not set that up yet, come back to this step once you have.
+1. Lets now commit the changes to your own repository. Run the following commands to commit and push the changes:
 
-## Install Python and Zensical
+    ``` bash
+    git add .
+    git commit -m "Initial commit with Zensical and prodockit installed"
+    git push -u origin main
+    ```
 
-Brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
-
-If you already have Python installed, you can check the version by running the following command in your terminal or command prompt:
-
-```bash
-python --version
-```
-
-!!! Note
-    You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
-
-The instructions below are for installing Python 3.12 or later. If you have an older version, please update to Python 3.12 or later.
-
-Follow the instructions below to install Python, create a \index{Python!virtual environment}, and install Zensical inside it for your operating system.
-
-<div class="grid cards one-column" markdown>
-
--   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
-
-    === "macOS using Homebrew"
-
-        1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
-
-            ``` bash
-            brew install python3
-            ```
-
-        2. Install \index{Pandoc} as well. `prodockit pdf` shells out to the `pandoc`
-           command to build your PDF, and it is not a Python package, so `pip` cannot
-           install it for you:
-
-            ``` bash
-            brew install pandoc
-            ```
-
-        3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
-
-            ``` bash
-            # 1. Create the virtual environment
-            /opt/homebrew/bin/python3 -m venv .venv
-
-            # 2. Activate it
-            source .venv/bin/activate
-
-            # 3. Install Zensical
-            pip3 install -r requirements.txt
-            ```
-
-            !!! note "Why the full path to Python"
-                macOS ships its own older Python, and a plain `python3` may well find
-                that one instead of Homebrew's. Naming
-                `/opt/homebrew/bin/python3` explicitly builds the virtual environment
-                from the version you just installed. On an Intel Mac, Homebrew
-                installs to `/usr/local` instead, so use
-                `/usr/local/bin/python3`.
-
-    === "Windows 11 using PowerShell"
-
-        1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
-
-           !!! Critical
-                Make sure to check the box to add Python to your `PATH` during the installation process. This allows you to run Python from the command line.
-
-        2. Open **PowerShell** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
-            
-
-            ``` powershell
-            # 1. Create the virtual environment
-            python -m venv .venv
-
-            # 2. Activate it (choose the line matching your terminal)
-            .\.venv\Scripts\Activate.ps1     # <-- Use this if you are in PowerShell
-            .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
-
-            # 3. Install Zensical inside the environment
-            pip install -r requirements.txt
-            ```
-
-    === "Linux (Ubuntu/Debian) using bash"
-
-        1. Open a terminal and run the following command to install Python and the `venv` module:
-
-            ``` bash
-            sudo apt update
-            sudo apt install python3 python3-venv python3-pip
-            ```
-
-        2. Navigate to your project folder and run the following commands to create a virtual environment and install Zensical inside it:
-
-            ``` bash
-            # 1. Create the virtual environment
-            python3 -m venv .venv
-
-            # 2. Activate it
-            source .venv/bin/activate
-
-            # 3. Install Zensical
-            pip3 install -r requirements.txt
-            ```
-
-</div>
 
 ### Install Zensical Studio and other plugins
 
