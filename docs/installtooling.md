@@ -314,6 +314,25 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
                     `Set-Service` first takes it out of the disabled state, so `Start-Service` then has something it is allowed to start.
 
+                !!! warning "`Access is denied` means the window is not an Administrator one"
+                    Changing a Windows service needs elevation, and an ordinary
+                    PowerShell window fails on the first command:
+
+                    ``` text
+                    Set-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be
+                    configured due to the following error: Access is denied
+                    ```
+
+                    The second command then fails too, with the "cannot be started"
+                    message above - not for its own reason, but because the first
+                    one never took effect and the service is still disabled.
+
+                    The quickest way to tell the two kinds of window apart is where
+                    they open: an Administrator PowerShell starts in
+                    `C:\WINDOWS\system32`, an ordinary one in your home directory
+                    such as `C:\Users\yourname`. The title bar also says
+                    *Administrator*.
+
                 Check it worked before moving on:
 
                 ``` powershell
