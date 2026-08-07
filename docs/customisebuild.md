@@ -339,4 +339,4 @@ python -m pytest test/        # diagrams, maths and links in the built output
 
 ## Where to go next {: #customisebuild-where-to-go-next }
 
-Continue to [Additional tooling](additionaltooling.md) for optional extras - VS Code extensions, commit signing, and Vale - or see [Testing](testing.md) for the checks that guard the failures described above.
+Continue to [Additional tooling](additionaltooling.md) for optional extras - VS Code extensions, GitLens, and Vale - or see [Testing](testing.md) for the checks that guard the failures described above.

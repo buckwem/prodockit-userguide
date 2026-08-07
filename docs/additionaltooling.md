@@ -11,7 +11,7 @@ icon: lucide/book-open
 
 # Additional tooling
 
-This page covers optional tooling you can add on top of the core Zensical workflow covered in [Install tooling](installtooling.md) and [Start editing](startediting.md): Visual Studio Code extensions that connect the editor directly to GitLab or GitHub, view Git history, and check your writing; signing your Git commits; a visual alternative to VS Code's built-in Git tools; and keeping your document's images small. You don't need any of this to write or publish your document - add whichever pieces are useful to you, and skip the rest. Each section below assumes no prior Linux or command-line experience, and spells out every step.
+This page covers optional tooling you can add on top of the core Zensical workflow covered in [Install tooling](installtooling.md) and [Start editing](startediting.md): Visual Studio Code extensions that connect the editor directly to GitLab or GitHub, view Git history, and check your writing; and keeping your document's images small. You don't need any of this to write or publish your document - add whichever pieces are useful to you, and skip the rest. Each section below assumes no prior Linux or command-line experience, and spells out every step.
 
 ## Installing Visual Studio Code extensions
 
@@ -34,8 +34,8 @@ VS Code doesn't require any extensions to work with GitLab or GitHub, but instal
 
         1. Open VS Code.
         2. Click the **Extensions** icon in the left-hand Activity Bar (or press `Ctrl+Shift+X` on Windows/Linux, `Cmd+Shift+X` on macOS).
-        3. In the search box at the top of the Extensions view, type `GitLab Workflow`.
-        4. Find **GitLab Workflow** (published by GitLab) in the results and select **Install**.
+        3. In the search box at the top of the Extensions view, type `GitLab`.
+        4. Find **GitLab** (published by GitLab) in the results and select **Install**.
         5. Wait for the installation to finish - VS Code shows a notification once it's ready.
 
     === "GitHub"
@@ -259,150 +259,6 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
     * [University of York](https://subjectguides.york.ac.uk/academic-language/voice){target="_blank"}
 
     You can also change the `Microsoft.Passive` rule in the `.vale.ini` file to `NO` if you find it too difficult to change all instances of passive voice to active voice.
-
-## Setup for signing git commits
-
-You can sign files you submit to a Git repository using DCO (Developer Certificate of Origin) signing. The benefit of signing your commits is that it gives you a way to verify the authenticity of the code and ensure no one has tampered with it. It also helps establish trust between contributors and maintainers, since it gives you a way to verify the identity of the person who made the changes.
-
-Setting up \index{Git!commit signing} in Git is straightforward. Unlike GPG key signing (which uses cryptographic keys to verify your identity), DCO signing is a legal statement asserting that you have the right to submit the code.
-
-DCO signing simply appends a text line at the bottom of your commit message that looks like this:
-
-```
-Signed-off-by: Your Name <your.email@example.com>
-```
-
-You will have already configured your Git environment with your name and email (see [Install and configure Git](installtooling.md#install-and-configure-git)). Here is how to set up DCO signing globally, automate it in VS Code, and fix any commits you forgot to sign.
-
-### Signing all Git commits globally
-
-Modern versions of Git let you turn on automatic DCO signing globally. This means you can run your usual `git commit -m "your message"` command, and Git silently adds the signature for you.
-
-[Open a terminal](startediting.md#open-a-terminal) and run this command:
-
-```bash
-git config --global commit.signoff true
-```
-
-This turns on DCO signing for every repository on your computer, not just this one.
-
-### Manually signing a single commit
-
-If you'd rather sign commits one at a time instead of turning it on globally, [open a terminal](startediting.md#open-a-terminal) and add the `-s` (or `--signoff`) option when you commit. For example:
-
-```bash
-git commit -s -m "Your commit message"
-```
-
-### Setting up VS Code to automatically sign commits
-
-If you are using Visual Studio Code, you can configure it to automatically sign your commits, using whichever of the two methods below you find easier.
-
-<div class="grid cards one-column" markdown>
-
--   :material-clock-fast:{ .lg .middle } __Enable commit signing in VS Code__
-
-    === "Using the Settings UI"
-
-        1. Open the **Settings** panel: click the gear icon in the bottom-left corner of VS Code and select **Settings**, or press `Ctrl+,` (`Cmd+,` on macOS).
-        2. In the search box, type `commit signing`.
-        3. Check the box for **Git: Enable Commit Signing**.
-        4. Check the box for **Git: Signoff**.
-
-    === "Editing settings.json directly"
-
-        1. Open the **Command Palette**:
-            * For **macOS**, press `Cmd+Shift+P`.
-            * For **Windows** or **Linux**, press `Ctrl+Shift+P`.
-        2. Type `Preferences: Open User Settings (JSON)` and press `Enter`.
-        3. Add the following two lines inside the outermost `{ }` braces, then save the file (`Ctrl+S` / `Cmd+S`):
-
-            ```json
-            "git.enableCommitSigning": true,
-            "git.signoff": true
-            ```
-
-</div>
-
-### Fixing a commit you forgot to sign
-
-If you've already made a commit without signing it, you can fix it without redoing your work.
-
-For the most recent commit only, [open a terminal](startediting.md#open-a-terminal) and run:
-
-```bash
-git commit --amend --signoff --no-edit
-```
-
-This adds the `Signed-off-by` line to your last commit without changing its message or content.
-
-To fix several recent commits at once, run:
-
-```bash
-git rebase --signoff HEAD~3
-```
-
-replacing `3` with however many recent commits you need to fix.
-
-!!! warning
-    Both commands rewrite commit history, so only do this if you haven't already pushed those commits - or if you have, and you're the only one working on the branch. If someone else has already pulled or built on the commits you're rewriting, coordinate with them first, and you'll need `git push --force-with-lease` to update the remote afterwards.
-
-## Installing a GUI Git client
-
-VS Code's built-in Source Control view and the command line, covered in [Synchronise your updates](startediting.md#synchronise-your-updates), are enough to work with this template on their own - you don't need anything else. Some people find a dedicated Git application easier for visualising branches and commit history though. Two popular, free options are \index{Git!GitHub Desktop} and \index{Git!GitKraken}. Install one only if you'd like an alternative to what's already covered.
-
-### Installing GitHub Desktop
-
-[GitHub Desktop](https://desktop.github.com/){target="_blank"} is a free visual Git client from GitHub. Despite the name, it works with GitLab repositories as well as GitHub ones.
-
-<div class="grid cards one-column" markdown>
-
--   :material-clock-fast:{ .lg .middle } __Install GitHub Desktop__
-
-    === "macOS using Homebrew"
-
-        ``` bash
-        brew install --cask github-desktop
-        ```
-
-    === "Windows 11 using winget"
-
-        ``` powershell
-        winget install --id GitHub.GitHubDesktop
-        ```
-
-</div>
-
-!!! note
-    GitHub Desktop doesn't officially support Linux. Linux users should install GitKraken instead (see below), or look at the [community-maintained Linux build](https://github.com/shiftkey/desktop){target="_blank"}, which isn't produced or supported by GitHub itself.
-
-### Installing GitKraken
-
-[GitKraken](https://www.gitkraken.com/){target="_blank"} is a free (for public repositories) visual Git client that works with GitLab, GitHub, and any other Git remote, and runs on macOS, Windows, and Linux.
-
-<div class="grid cards one-column" markdown>
-
--   :material-clock-fast:{ .lg .middle } __Install GitKraken__
-
-    === "macOS using Homebrew"
-
-        ``` bash
-        brew install --cask gitkraken
-        ```
-
-    === "Windows 11 using winget"
-
-        ``` powershell
-        winget install --id Axosoft.GitKraken
-        ```
-
-    === "Linux (Ubuntu/Debian) using snap"
-
-        ``` bash
-        sudo snap install gitkraken --classic
-        ```
-
-</div>
 
 ## Optimising images before committing
 

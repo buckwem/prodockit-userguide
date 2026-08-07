@@ -314,6 +314,25 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
                     `Set-Service` first takes it out of the disabled state, so `Start-Service` then has something it is allowed to start.
 
+                !!! warning "`Access is denied` means the window is not an Administrator one"
+                    Changing a Windows service needs elevation, and an ordinary
+                    PowerShell window fails on the first command:
+
+                    ``` text
+                    Set-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be
+                    configured due to the following error: Access is denied
+                    ```
+
+                    The second command then fails too, with the "cannot be started"
+                    message above - not for its own reason, but because the first
+                    one never took effect and the service is still disabled.
+
+                    The quickest way to tell the two kinds of window apart is where
+                    they open: an Administrator PowerShell starts in
+                    `C:\WINDOWS\system32`, an ordinary one in your home directory
+                    such as `C:\Users\yourname`. The title bar also says
+                    *Administrator*.
+
                 Check it worked before moving on:
 
                 ``` powershell
@@ -668,6 +687,18 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 source .venv/bin/activate
                 ```
 
+                Your prompt gains a `(.venv)` prefix, which is how you know the
+                virtual environment is active:
+
+                ``` text
+                (.venv) yourname@Mac your-project %
+                ```
+
+                It disappears when you close the terminal, and every new one
+                needs activating again - or let VS Code do it, which the
+                [Python extension](#install-zensical-studio-and-other-plugins)
+                below handles for you.
+
                 !!! note "Why the full path to Python"
                     macOS ships its own older Python, and a plain `python3` may well find that one instead of Homebrew's. Naming `/opt/homebrew/bin/python3` explicitly builds the virtual environment from the version you just installed. On an Intel Mac, Homebrew installs to `/usr/local` instead, so use `/usr/local/bin/python3`.
 
@@ -708,7 +739,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 pacman -S mingw-w64-x86_64-pango
                 ```
 
-                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect.
+                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect, then `cd` back to your project and run `.\.venv\Scripts\Activate.ps1` again - a new window has neither.
 
                 !!! info "Why this is needed"
                     That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll`. Installing `pango` brings all four in.
@@ -743,7 +774,25 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                     PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat`
                     files are not covered by execution policy.
 
-            5. Then run the following commands to create a virtual environment and install Zensical inside it:
+            5. Change into your project folder, then create a virtual environment and install Zensical inside it:
+
+                ``` powershell
+                cd C:\path\to\your-project
+                ```
+
+                !!! warning "Check where you are first"
+                    The steps above will have moved you. The SSH agent needed an
+                    Administrator window, which opens in `C:\WINDOWS\system32`, and
+                    every "close and reopen PowerShell" leaves you in your home
+                    directory, `C:\Users\yourname`.
+
+                    `python -m venv .venv` does not object to either. It creates a
+                    perfectly good virtual environment in the wrong place, and the
+                    mistake only shows up a step later when `pip install -r
+                    requirements.txt` cannot find a file that is sitting in your
+                    project folder all along.
+
+                    `pwd` prints where you are.
 
                 ``` powershell
                 # 1. Create the virtual environment
@@ -753,6 +802,18 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 .\.venv\Scripts\Activate.ps1     # <-- Use this if you are in PowerShell
                 .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
                 ```
+
+                Your prompt gains a `(.venv)` prefix, which is how you know the
+                virtual environment is active:
+
+                ``` text
+                (.venv) PS C:\path\to\your-project>
+                ```
+
+                It disappears when you close the terminal, and every new one
+                needs activating again - or let VS Code do it, which the
+                [Python extension](#install-zensical-studio-and-other-plugins)
+                below handles for you.
 
         === "Linux (Ubuntu/Debian) using bash"
 
@@ -783,6 +844,18 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 # 2. Activate it
                 source .venv/bin/activate
                 ```
+
+                Your prompt gains a `(.venv)` prefix, which is how you know the
+                virtual environment is active:
+
+                ``` text
+                (.venv) yourname@host:~/your-project$
+                ```
+
+                It disappears when you close the terminal, and every new one
+                needs activating again - or let VS Code do it, which the
+                [Python extension](#install-zensical-studio-and-other-plugins)
+                below handles for you.
     </div>
 
 1. Install Zensical and prodockit inside the virtual environment. The `requirements.txt` file in the template lists the required packages, so you can install them all with a single command (use `pip` if `pip3` is not available):
@@ -855,9 +928,9 @@ There are many other extensions available for Visual Studio Code that can help y
 
 ## Install the diagram and maths tooling
 
-Your PDF needs two more tools, and this is the step most easily skipped - because skipping it doesn't break anything visibly.
+Two things your document can contain - \index{Zensical!diagrams} and mathematical notation - need tooling that none of the steps so far has installed.
 
-\index{Zensical!diagrams} and mathematical notation render on the website by themselves: the reader's browser draws them. The PDF has no browser, so `prodockit pdf` has to convert both into images *before* building the document, and it uses two \index{Node.js} programs to do it.
+On the website they look after themselves: the reader's browser draws them as the page loads. A PDF has no browser, so `prodockit pdf` converts both into images *before* building the document, using two \index{Node.js} programs to do it.
 
 !!! danger "Without these, the PDF is wrong rather than missing"
     `prodockit pdf` does **not** fail when they are absent. It leaves the content as it found it, so instead of a flowchart your PDF shows the diagram's own definition text - the `graph LR` line and every node written out beneath it - and instead of a typeset equation, raw LaTeX with all its backslashes and braces.
@@ -884,7 +957,14 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
         winget install OpenJS.NodeJS.LTS
         ```
 
-        Close and reopen PowerShell afterwards, so it picks up the new `PATH`. Make sure you return to the repo working directory before continuing.
+        Close and reopen PowerShell afterwards, so it picks up the new `PATH`. The new window starts in `C:\Users\yourname` with the virtual environment inactive, so get back to where you were before continuing:
+
+        ``` powershell
+        cd C:\path\to\your-project
+        .\.venv\Scripts\Activate.ps1
+        ```
+
+        Check the prompt starts with `(.venv)` again. The next step's `npm ci` commands are relative to your project folder, and every `prodockit` command after it lives inside the virtual environment - outside it, PowerShell reports `The term 'prodockit' is not recognized`.
 
     === "Linux (Ubuntu/Debian) using bash"
 
