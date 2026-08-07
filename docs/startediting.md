@@ -501,4 +501,4 @@ Before you submit your report, remove the "Start Here" stub page so it isn't par
 Continue to [Markdown basics](markdown.md) and [Zensical basics](zensicalbasics.md) to learn the syntax you'll actually use to write your document. Once you're comfortable writing content, come back to these later chapters when you need them:
 
 * [Customisation](customise.md) - branding, the cover page, PDF layout, and the document's directory structure.
-* [Additional tooling](additionaltooling.md) - signing Git commits, GitLab/GitHub VS Code extensions, and Vale for spelling/grammar/style checking.
+* [Additional tooling](additionaltooling.md) - GitLab/GitHub VS Code extensions, and Vale for spelling/grammar/style checking.
