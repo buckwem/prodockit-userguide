@@ -34,8 +34,8 @@ VS Code doesn't require any extensions to work with GitLab or GitHub, but instal
 
         1. Open VS Code.
         2. Click the **Extensions** icon in the left-hand Activity Bar (or press `Ctrl+Shift+X` on Windows/Linux, `Cmd+Shift+X` on macOS).
-        3. In the search box at the top of the Extensions view, type `GitLab Workflow`.
-        4. Find **GitLab Workflow** (published by GitLab) in the results and select **Install**.
+        3. In the search box at the top of the Extensions view, type `GitLab`.
+        4. Find **GitLab** (published by GitLab) in the results and select **Install**.
         5. Wait for the installation to finish - VS Code shows a notification once it's ready.
 
     === "GitHub"
