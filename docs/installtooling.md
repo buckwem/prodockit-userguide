@@ -928,9 +928,9 @@ There are many other extensions available for Visual Studio Code that can help y
 
 ## Install the diagram and maths tooling
 
-Your PDF needs two more tools, and this is the step most easily skipped - because skipping it doesn't break anything visibly.
+Two things your document can contain - \index{Zensical!diagrams} and mathematical notation - need tooling that none of the steps so far has installed.
 
-\index{Zensical!diagrams} and mathematical notation render on the website by themselves: the reader's browser draws them. The PDF has no browser, so `prodockit pdf` has to convert both into images *before* building the document, and it uses two \index{Node.js} programs to do it.
+On the website they look after themselves: the reader's browser draws them as the page loads. A PDF has no browser, so `prodockit pdf` converts both into images *before* building the document, using two \index{Node.js} programs to do it.
 
 !!! danger "Without these, the PDF is wrong rather than missing"
     `prodockit pdf` does **not** fail when they are absent. It leaves the content as it found it, so instead of a flowchart your PDF shows the diagram's own definition text - the `graph LR` line and every node written out beneath it - and instead of a typeset equation, raw LaTeX with all its backslashes and braces.
