@@ -739,7 +739,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 pacman -S mingw-w64-x86_64-pango
                 ```
 
-                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect.
+                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect, then `cd` back to your project and run `.\.venv\Scripts\Activate.ps1` again - a new window has neither.
 
                 !!! info "Why this is needed"
                     That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll`. Installing `pango` brings all four in.
@@ -957,7 +957,14 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
         winget install OpenJS.NodeJS.LTS
         ```
 
-        Close and reopen PowerShell afterwards, so it picks up the new `PATH`. Make sure you return to the repo working directory before continuing.
+        Close and reopen PowerShell afterwards, so it picks up the new `PATH`. The new window starts in `C:\Users\yourname` with the virtual environment inactive, so get back to where you were before continuing:
+
+        ``` powershell
+        cd C:\path\to\your-project
+        .\.venv\Scripts\Activate.ps1
+        ```
+
+        Check the prompt starts with `(.venv)` again. The next step's `npm ci` commands are relative to your project folder, and every `prodockit` command after it lives inside the virtual environment - outside it, PowerShell reports `The term 'prodockit' is not recognized`.
 
     === "Linux (Ubuntu/Debian) using bash"
 

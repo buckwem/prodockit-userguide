@@ -358,6 +358,33 @@ Using `Closes #12`, `Fixes #12`, or `Resolves #12` instead of just `#12` - in th
 
 Common problems you might hit while working on your document, and how to fix them.
 
+### `prodockit` or `zensical` is not recognized
+
+``` text
+prodockit : The term 'prodockit' is not recognized as the name of a cmdlet,
+function, script file, or operable program.
+```
+
+Both commands are installed *inside* the virtual environment, not system-wide, so they only exist in a terminal where it is active. A new terminal window never has it - activation lasts for that window only.
+
+=== "macOS / Linux"
+
+    ``` bash
+    cd path/to/your-project
+    source .venv/bin/activate
+    ```
+
+=== "Windows PowerShell"
+
+    ``` powershell
+    cd C:\path\to\your-project
+    .\.venv\Scripts\Activate.ps1
+    ```
+
+The prompt gains a `(.venv)` prefix when it works. This bites most often after a step that told you to close and reopen your terminal to pick up a `PATH` change - the new window has lost the virtual environment as well.
+
+If activating makes no difference, the virtual environment itself may be in the wrong place: `.venv` created somewhere other than your project folder still activates perfectly happily. `pwd` tells you where you are.
+
 ### Local preview isn't updating
 
 If you save a change and the browser doesn't refresh, or the page looks stuck:
@@ -430,7 +457,12 @@ Install the libraries for your platform - the same step as in [Install Python an
     pacman -S mingw-w64-x86_64-pango
     ```
 
-    Then confirm `C:\msys64\mingw64\bin` is on your user `PATH`, and open a new PowerShell window.
+    Then confirm `C:\msys64\mingw64\bin` is on your user `PATH`, and open a new PowerShell window. It has neither your project folder nor the virtual environment, so restore both before building again:
+
+    ``` powershell
+    cd C:\path\to\your-project
+    .\.venv\Scripts\Activate.ps1
+    ```
 
 === "Linux (Ubuntu/Debian)"
 
