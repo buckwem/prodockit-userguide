@@ -762,7 +762,25 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                     PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat`
                     files are not covered by execution policy.
 
-            5. Then run the following commands to create a virtual environment and install Zensical inside it:
+            5. Change into your project folder, then create a virtual environment and install Zensical inside it:
+
+                ``` powershell
+                cd C:\path\to\your-project
+                ```
+
+                !!! warning "Check where you are first"
+                    The steps above will have moved you. The SSH agent needed an
+                    Administrator window, which opens in `C:\WINDOWS\system32`, and
+                    every "close and reopen PowerShell" leaves you in your home
+                    directory, `C:\Users\yourname`.
+
+                    `python -m venv .venv` does not object to either. It creates a
+                    perfectly good virtual environment in the wrong place, and the
+                    mistake only shows up a step later when `pip install -r
+                    requirements.txt` cannot find a file that is sitting in your
+                    project folder all along.
+
+                    `pwd` prints where you are.
 
                 ``` powershell
                 # 1. Create the virtual environment
