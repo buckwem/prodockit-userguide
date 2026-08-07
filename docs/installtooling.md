@@ -891,18 +891,38 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
         Ubuntu's own `nodejs` package is often several versions behind. Use NodeSource's repository to get a current release:
 
         ``` bash
+        sudo apt update
+        sudo apt install -y curl
+
         curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
         sudo apt install -y nodejs
         ```
 
+        !!! warning "Don't skip the `curl` line"
+            A clean Ubuntu install does not necessarily have `curl`. Without it the first command fails with `Command 'curl' not found` - and the failure does not stop there, because the `apt install` on the next line still **succeeds**, quietly fitting Ubuntu's own older Node.js instead of NodeSource's.
+
+            You then have a `node` that looks installed but no `npm` at all, and the toolchain commands in the next section fail for what appears to be an unrelated reason. If you have already hit this, install `curl` and run the two NodeSource lines again - the correct package replaces the wrong one.
+
 </div>
 
-Check it worked:
+Check it worked - **both** commands, not just the first:
 
 ``` bash
 node --version
 npm --version
 ```
+
+You should get two version numbers, with `node` at 22 or above:
+
+``` text
+v22.14.0
+10.9.2
+```
+
+!!! failure "`node` answers but `npm` is not found"
+    That is the signature of the NodeSource step not having run - the most likely cause on Linux being the missing `curl` described above. Node came from your distribution's own package instead, which does not always bring `npm` with it.
+
+    Fix the earlier step and run it again rather than installing `npm` separately, so both come from the same source and stay in step.
 
 ### Install the two toolchains
 
