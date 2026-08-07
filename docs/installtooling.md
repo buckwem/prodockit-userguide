@@ -884,7 +884,7 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
         winget install OpenJS.NodeJS.LTS
         ```
 
-        Close and reopen PowerShell afterwards, so it picks up the new `PATH`.
+        Close and reopen PowerShell afterwards, so it picks up the new `PATH`. Make sure you return to the repo working directory before continuing.
 
     === "Linux (Ubuntu/Debian) using bash"
 
