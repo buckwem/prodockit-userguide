@@ -687,6 +687,18 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 source .venv/bin/activate
                 ```
 
+                Your prompt gains a `(.venv)` prefix, which is how you know the
+                virtual environment is active:
+
+                ``` text
+                (.venv) yourname@Mac your-project %
+                ```
+
+                It disappears when you close the terminal, and every new one
+                needs activating again - or let VS Code do it, which the
+                [Python extension](#install-zensical-studio-and-other-plugins)
+                below handles for you.
+
                 !!! note "Why the full path to Python"
                     macOS ships its own older Python, and a plain `python3` may well find that one instead of Homebrew's. Naming `/opt/homebrew/bin/python3` explicitly builds the virtual environment from the version you just installed. On an Intel Mac, Homebrew installs to `/usr/local` instead, so use `/usr/local/bin/python3`.
 
@@ -791,6 +803,18 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
                 ```
 
+                Your prompt gains a `(.venv)` prefix, which is how you know the
+                virtual environment is active:
+
+                ``` text
+                (.venv) PS C:\path\to\your-project>
+                ```
+
+                It disappears when you close the terminal, and every new one
+                needs activating again - or let VS Code do it, which the
+                [Python extension](#install-zensical-studio-and-other-plugins)
+                below handles for you.
+
         === "Linux (Ubuntu/Debian) using bash"
 
             1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, and the graphics libraries \index{WeasyPrint} needs. None of these is a Python package, so `pip` cannot install them for you:
@@ -820,6 +844,18 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 # 2. Activate it
                 source .venv/bin/activate
                 ```
+
+                Your prompt gains a `(.venv)` prefix, which is how you know the
+                virtual environment is active:
+
+                ``` text
+                (.venv) yourname@host:~/your-project$
+                ```
+
+                It disappears when you close the terminal, and every new one
+                needs activating again - or let VS Code do it, which the
+                [Python extension](#install-zensical-studio-and-other-plugins)
+                below handles for you.
     </div>
 
 1. Install Zensical and prodockit inside the virtual environment. The `requirements.txt` file in the template lists the required packages, so you can install them all with a single command (use `pip` if `pip3` is not available):
