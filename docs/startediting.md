@@ -244,7 +244,13 @@ Once your commit reaches the default branch, the [CI/CD pipeline](#automated-bui
 
     This can take a little while, especially the first time - it's converting every page into a single PDF, rendering any diagrams and maths along the way.
 
-4. Once it finishes, open `docs/site_documentation.pdf` (in the `docs` folder) to check the result.
+    If `pdf_source_bundle` is set in your `zensical.toml`, this same command also writes `source_bundle.pdf` - a separate document containing every one of your repository's own tracked text files, one per page (see [Source-code bundling](customise.md#source-code-bundling)). It's written to your project's root directory rather than `docs/`; copy it across if you want the website's own **Source** download button to find it in your local preview too:
+
+    ```bash
+    cp source_bundle.pdf docs/
+    ```
+
+4. Once it finishes, open `docs/site_documentation.pdf` (in the `docs` folder) to check the result - and `source_bundle.pdf`, if you built one.
 
 Run this again after any change you want reflected in the PDF - it always rebuilds the whole document from scratch, so there's no separate "clean" step needed for it, unlike the website build below.
 
