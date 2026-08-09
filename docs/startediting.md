@@ -460,34 +460,7 @@ The give-away is in the output beneath the error, which contains a line like:
 OSError: cannot load library 'libgobject-2.0-0'
 ```
 
-Install the libraries for your platform - the same step as in [Install Python and Zensical](installtooling.md#install-python-and-zensical):
-
-=== "macOS"
-
-    ``` bash
-    brew install pango
-    ```
-
-=== "Windows 11"
-
-    In the **MSYS2 MINGW64** shell:
-
-    ``` bash
-    pacman -S mingw-w64-x86_64-pango
-    ```
-
-    Then confirm `C:\msys64\mingw64\bin` is on your user `PATH`, and open a new PowerShell window. It has neither your project folder nor the virtual environment, so restore both before building again:
-
-    ``` powershell
-    cd C:\path\to\your-project
-    .\.venv\Scripts\Activate.ps1
-    ```
-
-=== "Linux (Ubuntu/Debian)"
-
-    ``` bash
-    sudo apt install libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
-    ```
+Install the libraries for your platform, following the per-OS instructions already in [Install Python and Zensical](installtooling.md#install-python-and-zensical) - `brew install pandoc pango` on macOS, the MSYS2 `pacman` step on Windows, or the `apt install` line on Linux. If you followed that page when setting up, you already ran this and something else is missing; re-running it is harmless either way.
 
 Then check before building again:
 
