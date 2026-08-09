@@ -34,7 +34,7 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
     
 -   :material-clock-fast:{ .lg .middle } __Install Visual Studio Code__
 
-    === "macOS using Homebrew"
+    === ":material-apple: macOS"
 
         1. Open the **Terminal** application.
         1. You are likely to already have [Homebrew](https://brew.sh){target="_blank"} installed, but if not, follow the instructions on [brew.sh](https://brew.sh){target="_blank"} to install it.  **Close and reopen your Terminal after installing it.** As the installer adds `brew` to your `PATH`, and a session that was already open won't pick that up.
@@ -45,12 +45,12 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
             brew install --cask visual-studio-code
             ```
 
-    === "Windows 11 using PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         1. Download the VS Code User setup for Windows from the [official website](https://code.visualstudio.com/download){target="_blank"}.
         2. Run the installer, `VSCodeUserSetup-{version}.exe`. By default the User setup installs Visual Studio Code to your user profile directory. You can change the install location if you want to install it for all users.
          
-    === "Linux (Ubuntu/Debian) using bash"
+    === ":material-linux: Linux (Ubuntu)"
 
         1. Download the `.deb` package from the [official website](https://code.visualstudio.com/).
         2. Open a terminal and navigate to the directory where you downloaded the `.deb` package.
@@ -80,7 +80,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
     
     -   :material-clock-fast:{ .lg .middle } __Install Git__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             Use the Homebrew package manager to install or update `git` to the latest stable version:
                 
@@ -88,7 +88,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
             brew install git
             ```
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             Open up a **PowerShell** Administrator window and install `git` using the command, or you can download and install the official git installer from [git-scm.com](https://git-scm.com/download/win){target="_blank"}.
                 
@@ -108,7 +108,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
             git --version
             ```
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             Open a terminal and run the following command to install or update `git` to the latest stable version:
             
@@ -142,7 +142,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     
     -   :material-clock-fast:{ .lg .middle } __Generate SSH keys__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             1. Open the **Terminal** application.
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
@@ -152,7 +152,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
             3. When prompted, type a strong passphrase.
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             1. Open the **PowerShell** application.
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
@@ -163,7 +163,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
             3. When prompted, type a strong passphrase.
             
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             1. Open the **Terminal** application.
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
@@ -181,7 +181,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
     -   :material-clock-fast:{ .lg .middle } __Edit the SSH config file__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             Open the file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) - for example with `nano`:
 
@@ -191,7 +191,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
             Paste in the configuration below, then save and close (`Ctrl+O` to save, `Ctrl+X` to exit, in nano).
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             Create the file from PowerShell first, then open it - creating it directly inside an editor risks Notepad naming it `config.txt` instead of `config`:
 
@@ -210,7 +210,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 Rename-Item $env:USERPROFILE\.ssh\config.txt config   # only if the first command lists config.txt
                 ```
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             Open the file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) - for example with `nano`:
 
@@ -280,7 +280,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     
     -   :material-clock-fast:{ .lg .middle } __Adding SSH keys__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             1. macOS normally starts an SSH agent for you automatically. Add your SSH private keys to it, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
 
@@ -294,7 +294,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 eval "$(ssh-agent -s)"
                 ```
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             1. Set the SSH agent to start automatically with Windows, and then start it. Run these in a PowerShell window opened **as Administrator** (right-click the Start menu, or search for PowerShell, then select **Run as administrator**):
 
@@ -321,7 +321,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ssh-add $env:USERPROFILE\.ssh\id_ed25519_gitxxx
                 ```
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             1. Add your SSH private keys to the running SSH agent, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
 
@@ -470,19 +470,19 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
     -   :material-clock-fast:{ .lg .middle } __Rename the project folder__
 
-        === "macOS"
+        === ":material-apple: macOS"
 
             ``` bash
             mv prodockit-template report-az1234
             ```
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             ``` powershell
             Rename-Item prodockit-template report-az1234
             ```
 
-        === "Linux (Ubuntu/Debian)"
+        === ":material-linux: Linux (Ubuntu)"
 
             ``` bash
             mv prodockit-template report-az1234
@@ -501,21 +501,21 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
     -   :material-clock-fast:{ .lg .middle } __Check the current remote__
 
-        === "macOS"
+        === ":material-apple: macOS"
 
             ``` bash
             cd report-az1234
             git remote -v
             ```
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             ``` powershell
             cd report-az1234
             git remote -v
             ```
 
-        === "Linux (Ubuntu/Debian)"
+        === ":material-linux: Linux (Ubuntu)"
 
             ``` bash
             cd report-az1234
@@ -539,7 +539,7 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
     -   :material-clock-fast:{ .lg .middle } __Reset the repository history__
 
-        === "macOS"
+        === ":material-apple: macOS"
 
             ``` bash
             rm -rf .git
@@ -549,7 +549,7 @@ Cloning gives you the template's *files*, but the clone still points at the temp
             !!! danger "`rm -rf .git` cannot be undone"
                 This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             ``` powershell
             Remove-Item -Recurse -Force .git
@@ -559,7 +559,7 @@ Cloning gives you the template's *files*, but the clone still points at the temp
             !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
                 This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
-        === "Linux (Ubuntu/Debian)"
+        === ":material-linux: Linux (Ubuntu)"
 
             ``` bash
             rm -rf .git
@@ -667,7 +667,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
     -   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
 
@@ -709,7 +709,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 !!! note "Why the full path to Python"
                     macOS ships its own older Python, and a plain `python3` may well find that one instead of Homebrew's. Naming `/opt/homebrew/bin/python3` explicitly builds the virtual environment from the version you just installed. On an Intel Mac, Homebrew installs to `/usr/local` instead, so use `/usr/local/bin/python3`.
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
 
@@ -805,7 +805,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 [Python extension](#install-zensical-studio-and-other-plugins)
                 below handles for you.
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, and the graphics libraries \index{WeasyPrint} needs. None of these is a Python package, so `pip` cannot install them for you:
 
@@ -931,13 +931,13 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
 
 -   :material-clock-fast:{ .lg .middle } __Install Node.js__
 
-    === "macOS using Homebrew"
+    === ":material-apple: macOS"
 
         ``` bash
         brew install node
         ```
 
-    === "Windows 11 using PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         ``` powershell
         winget install OpenJS.NodeJS.LTS
@@ -952,7 +952,7 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
 
         Check the prompt starts with `(.venv)` again. The next step's `npm ci` commands are relative to your project folder, and every `prodockit` command after it lives inside the virtual environment - outside it, PowerShell reports `The term 'prodockit' is not recognized`.
 
-    === "Linux (Ubuntu/Debian) using bash"
+    === ":material-linux: Linux (Ubuntu)"
 
         Ubuntu's own `nodejs` package is often several versions behind. Use NodeSource's repository to get a current release:
 

@@ -38,11 +38,9 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
 -   :material-clock-fast:{ .lg .middle } __Activate the virtual environment manually__
 
-    === "macOS/Linux Terminal"
+    === ":material-apple: macOS"
 
-        1. Open a terminal application:
-            * **macOS:** press `Cmd+Space` to open Spotlight, type `Terminal`, and press `Enter`.
-            * **Linux:** look for **Terminal** in your applications menu.
+        1. Open a terminal application: press `Cmd+Space` to open Spotlight, type `Terminal`, and press `Enter`.
         2. Navigate to your project folder using the `cd` (change directory) command - replace the path below with wherever you cloned your project:
 
             ```bash
@@ -57,7 +55,7 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
             Your prompt now starts with `(.venv)`, confirming it's active.
 
-    === "Windows PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         1. Open PowerShell: press the `Windows` key, type `PowerShell`, and press `Enter`.
         2. Navigate to your project folder using the `cd` command:
@@ -70,6 +68,23 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
             ```powershell
             .\.venv\Scripts\Activate.ps1
+            ```
+
+            Your prompt now starts with `(.venv)`, confirming it's active.
+
+    === ":material-linux: Linux (Ubuntu)"
+
+        1. Open a terminal application: look for **Terminal** in your applications menu.
+        2. Navigate to your project folder using the `cd` (change directory) command - replace the path below with wherever you cloned your project:
+
+            ```bash
+            cd path/to/your/project
+            ```
+
+        3. Activate the virtual environment:
+
+            ```bash
+            source .venv/bin/activate
             ```
 
             Your prompt now starts with `(.venv)`, confirming it's active.
@@ -396,18 +411,25 @@ Both commands are installed *inside* the virtual environment, not system-wide, s
 
 -   :material-clock-fast:{ .lg .middle } __Activate the virtual environment__
 
-    === "macOS / Linux"
+    === ":material-apple: macOS"
 
         ``` bash
         cd path/to/your-project
         source .venv/bin/activate
         ```
 
-    === "Windows PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         ``` powershell
         cd C:\path\to\your-project
         .\.venv\Scripts\Activate.ps1
+        ```
+
+    === ":material-linux: Linux (Ubuntu)"
+
+        ``` bash
+        cd path/to/your-project
+        source .venv/bin/activate
         ```
 
 </div>

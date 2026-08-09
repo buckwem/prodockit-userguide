@@ -165,7 +165,7 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
 
     -   :material-clock-fast:{ .lg .middle } __Install Vale__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             1. If you don't already have Homebrew installed, install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}, or by running:
 
@@ -179,7 +179,7 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
                 brew install vale
                 ```
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             1. Open PowerShell as an administrator: press the `Windows` key, type `PowerShell`, then either press `Ctrl+Shift+Enter`, or right-click **Windows PowerShell** in the results and select **Run as administrator**.
             2. Use the Microsoft Windows Package Manager (winget) to install Vale:
@@ -188,7 +188,7 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
                 winget install --id errata-ai.Vale
                 ```
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             1. If you don't already have `snapd` installed, install it:
 
@@ -272,7 +272,7 @@ If you'd rather compress images from your desktop without opening a browser each
 
 -   :material-clock-fast:{ .lg .middle } __Install an image optimiser__
 
-    === "macOS using Homebrew"
+    === ":material-apple: macOS"
 
         ``` bash
         brew install --cask imageoptim
@@ -280,11 +280,11 @@ If you'd rather compress images from your desktop without opening a browser each
 
         Once installed, drag image files onto the \index{Image optimisation!ImageOptim} window (or its Dock icon) to compress them in place.
 
-    === "Windows"
+    === ":fontawesome-brands-windows: Windows"
 
         Download and run the installer for [FileOptimizer](https://nikkhokkho.sourceforge.io/?page=FileOptimizer){target="_blank"} - there's no reliable single winget package for it. Once installed, drag image files onto the FileOptimizer window to compress them in place.
 
-    === "Linux (Ubuntu/Debian) using bash"
+    === ":material-linux: Linux (Ubuntu)"
 
         ``` bash
         sudo apt update
