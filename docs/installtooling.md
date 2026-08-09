@@ -574,6 +574,9 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     graph LR
       L[Your local clone] -->|origin| T[prodockit-template]
     ```
+    /// figure-caption
+    Right after cloning: `origin` points at the template
+    ///
 
     If you added any others of your own - a `gitlab` mirror, say - they will be listed here too. You do not need to remove any of them by hand: the next step deletes the repository's entire `.git` directory, which takes every remote with it.
 
@@ -621,6 +624,9 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     graph LR
       L[Your local clone - no remotes]
     ```
+    /// figure-caption
+    After resetting the history: no remotes at all
+    ///
 
     Run `git remote -v` at this point and it prints nothing.
 
@@ -693,6 +699,9 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     graph LR
       L[Your local clone] -->|origin| R[Your own repository]
     ```
+    /// figure-caption
+    After repointing: `origin` points at your own repository
+    ///
 
     `origin` now points at your own repository rather than the template's - compare this against the first diagram in this section, where it pointed at `prodockit-template` instead.
 
@@ -773,8 +782,10 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
             1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
 
-                !!! Critical
-                    Make sure to check the box to add Python to your `PATH` during the installation process. This allows you to run Python from the command line.
+                !!! Critical "Three things to get right during install"
+                    - Check **Add python.exe to PATH** on the first screen. This is what lets you run `python` from the command line at all, and also puts `pip` and every command it installs on your `PATH`.
+                    - Once installation finishes, a final screen offers **Disable path length limit** - click it. Windows historically caps a full file path at 260 characters, and this project's own dependencies nest deep enough (`.venv\Lib\site-packages\...`, `tools\mermaid\node_modules\...`) to hit that limit without it.
+                    - Make sure you are running the installer you just downloaded, not Windows' own placeholder. Typing `python` in a terminal with no real Python installed opens the Microsoft Store instead of running anything - if that still happens *after* installing, search **Manage app execution aliases** and turn off the **App Installer** entries for `python.exe`/`python3.exe`, which take priority over the one you just installed.
 
             2. Next install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
 
