@@ -167,17 +167,9 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
 
         === ":material-apple: macOS"
 
-            1. If you don't already have Homebrew installed, install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}, or by running:
-
-                ``` bash
-                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-                ```
-
-            2. Once you've installed Homebrew, install Vale:
-
-                ``` bash
-                brew install vale
-                ```
+            ``` bash
+            brew install vale
+            ```
 
         === ":fontawesome-brands-windows: Windows"
 
@@ -233,7 +225,13 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
 
 3. Create a `styles` directory in the top-level directory of your project. In VS Code, right-click your project's root folder in the Explorer pane and select **New Folder...**, then name it `styles`.
 
-    Then, in a terminal opened at your project's root, synchronise the styles specified in `.vale.ini`:
+    Then synchronise the styles specified in `.vale.ini`. Open a new terminal (or PowerShell) for this, and make sure it's actually sitting in your project's root directory first:
+
+    ```bash
+    cd path/to/your-project
+    ```
+
+    Then run:
 
     ```bash
     vale sync

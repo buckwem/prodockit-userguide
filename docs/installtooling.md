@@ -118,10 +118,15 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
             ```
     </div>
 
-1. Before connecting to any cloud provider, open your terminal (Terminal on macOS/Debian, Git Bash or PowerShell on Windows 11) and set your global username and email. This is the identity stamped onto your commits. Make sure you use the same email address that you used to register for your GitLab or GitHub account.
+1. Before connecting to any cloud provider, open your terminal (Terminal on macOS/Debian, Git Bash or PowerShell on Windows 11) and set your global username. This is the identity stamped onto your commits.
 
     ``` bash
     git config --global user.name "Your Name"
+    ```
+
+    Then set the email address to go with it. Make sure it's the same one you used to register for your GitLab or GitHub account.
+
+    ``` bash
     git config --global user.email "your.email@example.com"
     ```
 
@@ -155,13 +160,19 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         === ":fontawesome-brands-windows: Windows"
 
             1. Open the **PowerShell** application.
-            2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
-            
+            2. Create the `.ssh` folder, if it doesn't already exist:
+
                 ``` powershell
                 mkdir $env:USERPROFILE\.ssh -Force
+                ```
+
+            3. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
+
+                ``` powershell
                 ssh-keygen -t ed25519 -C "your.gitxxx.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_gitxxx
                 ```
-            3. When prompted, type a strong passphrase.
+
+            4. When prompted, type a strong passphrase.
             
         === ":material-linux: Linux (Ubuntu)"
 
@@ -335,6 +346,34 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 eval "$(ssh-agent -s)"
                 ```
     </div>
+
+1. Display your **public** key, so you can copy it - the next section needs it pasted into your GitLab and GitHub accounts. Only the public key goes there; never paste the private one (the file with no `.pub` extension).
+
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Display the public key__
+
+        === ":material-apple: macOS"
+
+            ``` bash
+            cat ~/.ssh/id_ed25519_gitxxx.pub
+            ```
+
+        === ":fontawesome-brands-windows: Windows"
+
+            ``` powershell
+            Get-Content $env:USERPROFILE\.ssh\id_ed25519_gitxxx.pub
+            ```
+
+        === ":material-linux: Linux (Ubuntu)"
+
+            ``` bash
+            cat ~/.ssh/id_ed25519_gitxxx.pub
+            ```
+
+    </div>
+
+    Substitute `gitxxx` as before, and run it once for each key you generated. Select the entire line it prints - starting with `ssh-ed25519` and ending with the email address you gave it - and copy it.
 
 ### Integrate Visual Studio Code with Git
 
@@ -531,6 +570,14 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     origin  git@github.com:buckwem/prodockit-template.git (push)
     ```
 
+    ``` mermaid
+    graph LR
+      L[Your local clone] -->|origin| T[prodockit-template]
+    ```
+    /// figure-caption
+    Right after cloning: `origin` points at the template
+    ///
+
     If you added any others of your own - a `gitlab` mirror, say - they will be listed here too. You do not need to remove any of them by hand: the next step deletes the repository's entire `.git` directory, which takes every remote with it.
 
 1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
@@ -570,6 +617,18 @@ Cloning gives you the template's *files*, but the clone still points at the temp
                 This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
     </div>
+
+    `rm -rf .git`/`Remove-Item -Recurse -Force .git` deletes the whole repository, remotes included, and `git init` starts a brand new one with none at all:
+
+    ``` mermaid
+    graph LR
+      L[Your local clone - no remotes]
+    ```
+    /// figure-caption
+    After resetting the history: no remotes at all
+    ///
+
+    Run `git remote -v` at this point and it prints nothing.
 
 1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a README, `.gitignore` or licence - the template brings its own, and an initial commit on the host side collides with what you are about to push.
 
@@ -635,6 +694,16 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     ``` bash
     git remote -v
     ```
+
+    ``` mermaid
+    graph LR
+      L[Your local clone] -->|origin| R[Your own repository]
+    ```
+    /// figure-caption
+    After repointing: `origin` points at your own repository
+    ///
+
+    `origin` now points at your own repository rather than the template's - compare this against the first diagram in this section, where it pointed at `prodockit-template` instead.
 
     !!! note "Don't commit or push yet"
         Step 3 left you with an empty repository - the template's files are
@@ -713,8 +782,10 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
             1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
 
-                !!! Critical
-                    Make sure to check the box to add Python to your `PATH` during the installation process. This allows you to run Python from the command line.
+                !!! Critical "Three things to get right during install"
+                    - Check **Add python.exe to PATH** on the first screen. This is what lets you run `python` from the command line at all, and also puts `pip` and every command it installs on your `PATH`.
+                    - Once installation finishes, a final screen offers **Disable path length limit** - click it. Windows historically caps a full file path at 260 characters, and this project's own dependencies nest deep enough (`.venv\Lib\site-packages\...`, `tools\mermaid\node_modules\...`) to hit that limit without it.
+                    - Make sure you are running the installer you just downloaded, not Windows' own placeholder. Typing `python` in a terminal with no real Python installed opens the Microsoft Store instead of running anything - if that still happens *after* installing, search **Manage app execution aliases** and turn off the **App Installer** entries for `python.exe`/`python3.exe`, which take priority over the one you just installed.
 
             2. Next install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
 
@@ -745,6 +816,8 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 ``` bash
                 pacman -S mingw-w64-x86_64-pango
                 ```
+
+                If that fails partway through with a download error, just run it again - MSYS2's mirrors are occasionally flaky, and a second attempt usually goes through cleanly.
 
                 Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect - the next two steps continue in that new window.
 
@@ -995,7 +1068,15 @@ v22.14.0
 
 ### Install the two toolchains
 
-Your cloned template already contains the manifests and lockfiles for both tools, in `tools/mermaid` and `tools/mathjax` - so you only need to install them. From your project's root directory:
+Your cloned template already contains the manifests and lockfiles for both tools, in `tools/mermaid` and `tools/mathjax` - so you only need to install them.
+
+Open a new terminal for this step, and make sure it's actually sitting in your project's root directory first - the `--prefix` paths below are relative to wherever you run them from:
+
+``` bash
+cd path/to/your-project
+```
+
+Then install both:
 
 ``` bash
 npm ci --prefix tools/mermaid
@@ -1006,8 +1087,18 @@ npm ci --prefix tools/mathjax
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
 
-!!! note "If npm warns about `allow-scripts`"
-    Recent npm versions skip Puppeteer's own setup step, which downloads the headless browser Mermaid draws diagrams with. The install still succeeds - if a later PDF build reports it cannot find a browser, approve the step and reinstall:
+!!! note "If npm reports vulnerabilities or an `allow-scripts` warning"
+    Both are normal here, not a sign anything went wrong:
+
+    ``` text
+    Run `npm audit` for details.
+    npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts:
+    npm warn allow-scripts   puppeteer@25.3.0 (postinstall: node install.mjs)
+    ```
+
+    The vulnerability count comes from `npm audit` scanning the whole dependency tree Puppeteer pulls in for known advisories, most of which don't apply to how this project uses it - a locally-run PDF build, not a public-facing server. There's nothing to fix here; running `npm audit fix` is more likely to break the pinned versions the lockfile records than to help.
+
+    The `allow-scripts` warning is different: recent npm versions skip Puppeteer's own setup step, which downloads the headless browser Mermaid draws diagrams with. The install still succeeds - if a later PDF build reports it cannot find a browser, approve the step and reinstall:
 
     ``` bash
     npm approve-scripts puppeteer --prefix tools/mermaid
