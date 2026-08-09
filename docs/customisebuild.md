@@ -159,7 +159,7 @@ The configured fonts, in whichever weights the document happens to use. A name y
 
 ## Pinning build inputs {: #customisebuild-pinning }
 
-Your document has more inputs than its own content. Zensical renders the site, WeasyPrint lays out the PDF, and whatever runs the pipeline carries its own OS image. Left unpinned, an upgrade to any of them doesn't fail the build - it just quietly publishes a slightly different document, with nothing to indicate anything changed.
+Your document has more inputs than its own content. Zensical renders the site, Pandoc and WeasyPrint lay out the PDF, and whatever runs the pipeline carries its own OS image. Left unpinned, an upgrade to any of them doesn't fail the build - it just quietly publishes a slightly different document, with nothing to indicate anything changed.
 
 `prodockit pins` keeps these declarations - a version in `requirements.txt`, a runner label in a workflow file - in step with each other, wherever they're written down:
 
@@ -175,6 +175,13 @@ This project pins `zensical`/`weasyprint` in `requirements.txt`, and the runner/
 ```bash
 prodockit pins --check -p zensical -p weasyprint -p prodockit
 ```
+
+!!! warning "Pandoc is the input `prodockit pins` cannot see"
+    Pandoc is the fourth build input, and the one that has actually caught this project family out. It arrives from your CI image or a setup action rather than `requirements.txt`, so nothing in `prodockit pins` manages it and it drifts silently.
+
+    Pandoc 3.10 stopped treating a syntax-highlighted `<pre><code>` as a code block. On that version every fenced code block in the PDF lost its preformatting and reflowed as justified prose - while the build reported success, exactly the failure this section opens by describing. The published PDFs stayed correct only because CI happened to be installing an older pandoc than anyone's laptop.
+
+    Pin it explicitly in your pipeline, the way this project pins its runner image, so a pandoc change arrives as a version bump you can bisect rather than one morning's mystery. [Pandoc version drift](https://buckwem.github.io/prodockit-extensions/devcons/continuous-integration/#ci-pandoc-version){target="_blank"} covers the how, and prodockit's [limitations](https://buckwem.github.io/prodockit-extensions/devcons/limitations/){target="_blank"} page records the episode in full.
 
 !!! tip
     `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. Watching for a newer release *actually mattering* is the next section's job instead.
