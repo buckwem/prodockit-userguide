@@ -35,6 +35,20 @@ permissions:
   contents: read
   pages: write
   id-token: write
+# Pandoc comes from the CI image or a setup action rather than
+# requirements.txt, so `prodockit pins` cannot see it and it drifts
+# silently. That is not hypothetical: pandoc 3.1.3 accepted `<pre><code>`
+# containing element markup as a code block and 3.10 does not, so every
+# fenced code block in the PDF reflowed as justified prose on a current
+# pandoc while the build reported success
+# (prodockit-extensions#207). This project was only unaffected because
+# setup-pandoc happened to be installing 3.8.3.
+#
+# Pinned to the same version as prodockit-extensions and
+# prodockit-template, so the family builds its PDFs with one pandoc.
+env:
+  PANDOC_VERSION: "3.10.1"
+
 jobs:
   deploy:
     environment:
@@ -79,6 +93,8 @@ jobs:
         with:
           node-version: "22"
       - uses: r-lib/actions/setup-pandoc@v2
+        with:
+          pandoc-version: ${{ env.PANDOC_VERSION }}
       - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0
       - run: curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
       - run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list

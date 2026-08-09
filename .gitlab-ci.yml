@@ -49,11 +49,15 @@ pages:
     #
     # Set here rather than as `export` lines in `script:` so they apply to
     # the whole job regardless of step order.
+    PANDOC_VERSION: "3.10.1"   # not the image's - see the comment in .github/workflows/docs.yml
     PUPPETEER_SKIP_DOWNLOAD: "true"
     PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
   script:
     - apt-get update
-    - apt-get install -y curl gnupg ca-certificates pandoc
+    - apt-get install -y curl gnupg ca-certificates
+    # Upstream release rather than the image's - see PANDOC_VERSION.
+    - curl -fsSL -o /tmp/pandoc.deb "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-amd64.deb"
+    - apt-get install -y /tmp/pandoc.deb
     # libpango: WeasyPrint needs it at runtime. GitHub's ubuntu-24.04 image
     # already carries it; this slimmer Debian-based image does not.
     #
@@ -132,11 +136,15 @@ drift:
   allow_failure: true # the job's purpose is the issue it opens, not its own exit status
   variables:
     GIT_DEPTH: "0"
+    PANDOC_VERSION: "3.10.1"   # not the image's - see the comment in .github/workflows/docs.yml
     PUPPETEER_SKIP_DOWNLOAD: "true"
     PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
   before_script:
     - apt-get update
-    - apt-get install -y curl gnupg ca-certificates pandoc jq
+    - apt-get install -y curl gnupg ca-certificates jq
+    # Upstream release rather than the image's - see PANDOC_VERSION.
+    - curl -fsSL -o /tmp/pandoc.deb "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-amd64.deb"
+    - apt-get install -y /tmp/pandoc.deb
     - apt-get install -y libpango-1.0-0 fonts-inter fonts-jetbrains-mono
     - curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
     - apt-get install -y nodejs
