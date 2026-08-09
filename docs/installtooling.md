@@ -420,34 +420,40 @@ Start by cloning the template into your own local device.
 
 1. Then run the following command to clone the documentation template into your local directory. Use whichever tab matches the host you use.
 
-    === "GitLab"
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Clone the template__
+
+        === "GitLab"
 
 {% if is_surrey %}
-        If you have been given a repository to work on, clone that instead of the template. For example, if your tutor has given you a repository called `report-az1234` in the namespace `comm058-2026`, run the following command:
+            If you have been given a repository to work on, clone that instead of the template. For example, if your tutor has given you a repository called `report-az1234` in the namespace `comm058-2026`, run the following command:
 
-        ``` bash
-        git clone git@gitlab.surrey.ac.uk:comm058-2026/report-az1234.git
-        ```
-        
-        If you have not been given a repository, clone the University of Surrey copy of the template:
-        
-        ``` bash
-        git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
-        ```
+            ``` bash
+            git clone git@gitlab.surrey.ac.uk:comm058-2026/report-az1234.git
+            ```
+
+            If you have not been given a repository, clone the University of Surrey copy of the template:
+
+            ``` bash
+            git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
+            ```
 
 {% else %}
-        ``` bash
-        git clone git@github.com:buckwem/prodockit-template.git
-        ```
+            ``` bash
+            git clone git@github.com:buckwem/prodockit-template.git
+            ```
 
-        The template itself lives on GitHub, so that is where you clone it from even if you intend to publish to GitLab.
+            The template itself lives on GitHub, so that is where you clone it from even if you intend to publish to GitLab.
 {% endif %}
 
-    === "GitHub"
+        === "GitHub"
 
-        ``` bash
-        git clone git@github.com:buckwem/prodockit-template.git
-        ```
+            ``` bash
+            git clone git@github.com:buckwem/prodockit-template.git
+            ```
+
+    </div>
 
     !!! Tip
         You can find your `username` by logging into your GitLab or GitHub account and clicking on your profile picture at the top right corner of the page. On **GitLab** your username is **below** your name in the dropdown menu. On **GitHub** your username is **above** your name in the dropdown menu.
@@ -460,23 +466,29 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Rename the directory to something meaningful for your own report. Cloning leaves you with a folder called `prodockit-template`, which says nothing about whose work it holds - and if you clone a second project later, you will not be able to tell them apart.
 
-    === "macOS"
+    <div class="grid cards one-column" markdown>
 
-        ``` bash
-        mv prodockit-template report-az1234
-        ```
+    -   :material-clock-fast:{ .lg .middle } __Rename the project folder__
 
-    === "Windows 11 using PowerShell"
+        === "macOS"
 
-        ``` powershell
-        Rename-Item prodockit-template report-az1234
-        ```
+            ``` bash
+            mv prodockit-template report-az1234
+            ```
 
-    === "Linux (Ubuntu/Debian)"
+        === "Windows 11 using PowerShell"
 
-        ``` bash
-        mv prodockit-template report-az1234
-        ```
+            ``` powershell
+            Rename-Item prodockit-template report-az1234
+            ```
+
+        === "Linux (Ubuntu/Debian)"
+
+            ``` bash
+            mv prodockit-template report-az1234
+            ```
+
+    </div>
 
     Replace `report-az1234` with a name that identifies your own work - your username, your coursework code, or whatever your course tutor specifies.
 
@@ -485,26 +497,32 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Check what your clone currently points at:
 
-    === "macOS"
+    <div class="grid cards one-column" markdown>
 
-        ``` bash
-        cd report-az1234
-        git remote -v
-        ```
+    -   :material-clock-fast:{ .lg .middle } __Check the current remote__
 
-    === "Windows 11 using PowerShell"
+        === "macOS"
 
-        ``` powershell
-        cd report-az1234
-        git remote -v
-        ```
+            ``` bash
+            cd report-az1234
+            git remote -v
+            ```
 
-    === "Linux (Ubuntu/Debian)"
+        === "Windows 11 using PowerShell"
 
-        ``` bash
-        cd report-az1234
-        git remote -v
-        ```
+            ``` powershell
+            cd report-az1234
+            git remote -v
+            ```
+
+        === "Linux (Ubuntu/Debian)"
+
+            ``` bash
+            cd report-az1234
+            git remote -v
+            ```
+
+    </div>
 
     A fresh clone has exactly one remote, `origin`, pointing at the template:
 
@@ -517,45 +535,57 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
 
-    === "macOS"
+    <div class="grid cards one-column" markdown>
 
-        ``` bash
-        rm -rf .git
-        git init -b main
-        ```
+    -   :material-clock-fast:{ .lg .middle } __Reset the repository history__
 
-        !!! danger "`rm -rf .git` cannot be undone"
-            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        === "macOS"
 
-    === "Windows 11 using PowerShell"
+            ``` bash
+            rm -rf .git
+            git init -b main
+            ```
 
-        ``` powershell
-        Remove-Item -Recurse -Force .git
-        git init -b main
-        ```
+            !!! danger "`rm -rf .git` cannot be undone"
+                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
-        !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
-            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        === "Windows 11 using PowerShell"
 
-    === "Linux (Ubuntu/Debian)"
+            ``` powershell
+            Remove-Item -Recurse -Force .git
+            git init -b main
+            ```
 
-        ``` bash
-        rm -rf .git
-        git init -b main
-        ```
+            !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
+                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
-        !!! danger "`rm -rf .git` cannot be undone"
-            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        === "Linux (Ubuntu/Debian)"
+
+            ``` bash
+            rm -rf .git
+            git init -b main
+            ```
+
+            !!! danger "`rm -rf .git` cannot be undone"
+                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+
+    </div>
 
 1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a README, `.gitignore` or licence - the template brings its own, and an initial commit on the host side collides with what you are about to push.
 
-    === "GitLab"
+    <div class="grid cards one-column" markdown>
 
-        On the GitLab website, click **New project > Create blank project**. Name it, set **Visibility Level** to **Private**, and untick **Initialize repository with a README**.
+    -   :material-clock-fast:{ .lg .middle } __Create the empty repository__
 
-    === "GitHub"
+        === "GitLab"
 
-        On the GitHub website, click **New repository**. Name it, set it to **Private**, and leave every **Initialize this repository with** option unticked.
+            On the GitLab website, click **New project > Create blank project**. Name it, set **Visibility Level** to **Private**, and untick **Initialize repository with a README**.
+
+        === "GitHub"
+
+            On the GitHub website, click **New repository**. Name it, set it to **Private**, and leave every **Initialize this repository with** option unticked.
+
+    </div>
 
 1. Point your clone at your own repository, using the tab matching your host:
 
@@ -572,27 +602,33 @@ Cloning gives you the template's *files*, but the clone still points at the temp
         That message means the previous step did its job, not that anything
         is wrong.
 
-    === "GitLab"
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Point the clone at your repository__
+
+        === "GitLab"
 
 {% if is_surrey %}
-        ``` bash
-        git remote add origin git@gitlab.surrey.ac.uk:comm058-2026/your-new-directory-name.git
-        ```
+            ``` bash
+            git remote add origin git@gitlab.surrey.ac.uk:comm058-2026/your-new-directory-name.git
+            ```
 
-        Where your-new-directory-name is the name of the repository you created on GitLab, such as `report-az1234`. Replace `comm058-2026` with your own namespace if it is different.
+            Where your-new-directory-name is the name of the repository you created on GitLab, such as `report-az1234`. Replace `comm058-2026` with your own namespace if it is different.
 {% else %}
-        ``` bash
-        git remote add origin git@gitlab.com:your-namespace/your-new-directory-name.git
-        ```
+            ``` bash
+            git remote add origin git@gitlab.com:your-namespace/your-new-directory-name.git
+            ```
 
-        Replace `gitlab.com` with your own GitLab instance if it is self-hosted.
+            Replace `gitlab.com` with your own GitLab instance if it is self-hosted.
 {% endif %}
 
-    === "GitHub"
+        === "GitHub"
 
-        ``` bash
-        git remote add origin git@github.com:your-username/your-new-directory-name.git
-        ```
+            ``` bash
+            git remote add origin git@github.com:your-username/your-new-directory-name.git
+            ```
+
+    </div>
 
     Confirm it took:
 
