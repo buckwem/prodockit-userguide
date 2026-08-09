@@ -233,38 +233,17 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     (Use `notepad` in place of `code` if you would rather not use VS Code.)
 
     !!! warning "The file must be called `config`, with no extension"
-        This is the single most common thing to go wrong here. Notepad adds
-        `.txt` to a new file unless you explicitly prevent it, and Windows
-        hides known extensions in File Explorer - so `config.txt` looks
-        exactly like `config` when you go back to check.
-
-        SSH reads a file named `config` and nothing else. With a `.txt` on
-        the end your `IdentityFile` lines are silently ignored, no key is
-        ever offered, and a `git clone` falls through to asking for a
-        password that will never be accepted:
-
-        ``` text
-        git@gitlab.surrey.ac.uk's password:
-        ```
-
-        Creating the file with `New-Item` first avoids this, because the
-        editor is then saving an existing file rather than naming a new
-        one. To check what you actually have:
+        Notepad silently appends `.txt` unless you prevent it, and Windows hides known extensions in File Explorer, so `config.txt` looks identical to `config`. SSH reads only a file named exactly `config` - a misnamed one is ignored entirely, and `git clone` falls back to asking for a password that will never be accepted. Creating the file with `New-Item` first avoids this. To check, and fix it if needed:
 
         ``` powershell
         Get-ChildItem $env:USERPROFILE\.ssh
-        ```
-
-        If it lists `config.txt`, rename it:
-
-        ``` powershell
-        Rename-Item $env:USERPROFILE\.ssh\config.txt config
+        Rename-Item $env:USERPROFILE\.ssh\config.txt config   # only if the first command lists config.txt
         ```
 
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
-    !!! Tip
-        You can use the same SSH key for multiple GitLab/GitHub accounts, but it's recommended to use separate keys for each account for better security and management. If you do use the same key, make sure to add the public key to each account separately as documented in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below.
+    !!! tip
+        Separate keys per account are safer, but if you reuse one, add its public key to each account separately in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below.
 
 1. Set the correct permissions for the SSH config file and the private keys to ensure they're secure. If you are using macOS or Linux, run the following commands in your terminal, substituting `gitxxx` and paths to your SSH keys if you used different names or locations:
 
@@ -304,34 +283,10 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 Start-Service ssh-agent
                 ```
 
-                !!! warning "Run them in that order"
-                    Windows ships the *OpenSSH Authentication Agent* service **disabled**, and Windows refuses to start a disabled service. Starting it before changing the startup type fails with:
+                !!! warning "Run in that order, in an Administrator window"
+                    Windows ships this service **disabled**, so `Set-Service` has to take it out of that state before `Start-Service` has anything it's allowed to start - reversed, the first command fails with `Cannot start service ssh-agent`. Both commands also need elevation: an ordinary window fails with `Access is denied`, which then makes the second command fail too, for the same underlying reason.
 
-                    ``` text
-                    Start-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be started
-                    due to the following error: Cannot start service ssh-agent on computer '.'.
-                    ```
-
-                    `Set-Service` first takes it out of the disabled state, so `Start-Service` then has something it is allowed to start.
-
-                !!! warning "`Access is denied` means the window is not an Administrator one"
-                    Changing a Windows service needs elevation, and an ordinary
-                    PowerShell window fails on the first command:
-
-                    ``` text
-                    Set-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be
-                    configured due to the following error: Access is denied
-                    ```
-
-                    The second command then fails too, with the "cannot be started"
-                    message above - not for its own reason, but because the first
-                    one never took effect and the service is still disabled.
-
-                    The quickest way to tell the two kinds of window apart is where
-                    they open: an Administrator PowerShell starts in
-                    `C:\WINDOWS\system32`, an ordinary one in your home directory
-                    such as `C:\Users\yourname`. The title bar also says
-                    *Administrator*.
+                    An Administrator PowerShell opens in `C:\WINDOWS\system32` (an ordinary one opens in `C:\Users\yourname`), and its title bar says *Administrator*.
 
                 Check it worked before moving on:
 
@@ -671,11 +626,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 ```
 
                 !!! info "What these two are for"
-                    `prodockit pdf` shells out to the `pandoc` command to build your PDF, and Pandoc hands the result to \index{WeasyPrint} to lay out the pages. WeasyPrint is not pure Python either - it draws text through Pango, and will not start without it.
-
-                    Installing `pango` is enough to cover all of it: glib, HarfBuzz and fontconfig come along as its dependencies, and those are the rest of what WeasyPrint loads.
-
-                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+                    `prodockit pdf` shells out to `pandoc`, which hands the result to \index{WeasyPrint} to lay out the pages - and WeasyPrint draws text through Pango, so `pango` alone is enough (glib, HarfBuzz and fontconfig come along as its dependencies). Skipping this still looks fine right up until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
             3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
 
@@ -742,9 +693,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect, then `cd` back to your project and run `.\.venv\Scripts\Activate.ps1` again - a new window has neither.
 
                 !!! info "Why this is needed"
-                    That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll`. Installing `pango` brings all four in.
-
-                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+                    That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll` - installing `pango` brings all four in. Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
             4. Allow PowerShell to run scripts. Windows blocks all of them by default, and activating a virtual environment *is* a script, so this has to be done once before the next step will work:
 
@@ -754,25 +703,10 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                 Depending on your PowerShell version it may ask you to confirm the change; answer `Y` if it does. Often it simply returns to the prompt, which means it worked.
 
-                !!! info "What this changes, and why it is needed"
-                    Without it, activating the virtual environment fails with:
+                !!! info "What this changes"
+                    Without it, activating the venv fails with `... cannot be loaded because running scripts is disabled on this system`. `RemoteSigned` allows locally-written scripts while still requiring signed ones from the internet; `-Scope CurrentUser` limits that to your account, so it needs no Administrator window and is a one-time, per-account change.
 
-                    ``` text
-                    .\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is
-                    disabled on this system.
-                    ```
-
-                    `RemoteSigned` lets scripts you wrote or created locally run, while still
-                    requiring a digital signature on anything downloaded from the internet.
-                    `-Scope CurrentUser` applies it to your account only, which is why it needs
-                    no Administrator window and changes nothing for anyone else using the
-                    machine.
-
-                    You only need to do this once per user account, not per project.
-
-                    If you would rather not change it at all, use **classic CMD** instead of
-                    PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat`
-                    files are not covered by execution policy.
+                    Would rather not change it at all? Use **classic CMD** instead of PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat` files aren't covered by execution policy.
 
             5. Change into your project folder, then create a virtual environment and install Zensical inside it:
 
@@ -826,11 +760,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 ```
 
                 !!! info "Why the three library packages"
-                    `prodockit pdf` shells out to `pandoc`, and Pandoc hands the result to WeasyPrint to lay out the pages. WeasyPrint is not pure Python - it draws text through \index{Pango}, and will not start without it.
-
-                    `libharfbuzz-subset0` is the one that is easy to miss: on Debian it is a *separate* package from `libharfbuzz0b`, and WeasyPrint needs this one specifically. glib and fontconfig are not listed because `libpango-1.0-0` already depends on them.
-
-                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+                    Pandoc hands the result to WeasyPrint, which draws text through \index{Pango} and won't start without it. `libharfbuzz-subset0` is easy to miss - on Debian it's a *separate* package from `libharfbuzz0b`, and WeasyPrint needs this one specifically (glib and fontconfig aren't listed, since `libpango-1.0-0` already depends on them). Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
                 !!! warning "Debian 12 or Ubuntu 22.04 and newer"
                     `libharfbuzz-subset0` does not exist on older releases. On those, upgrade the distribution rather than hunting for a substitute package.
@@ -1017,15 +947,8 @@ npm ci --prefix tools/mathjax
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
 
-!!! note "If npm warns about install scripts"
-    Recent versions of npm print a warning during the Mermaid install and skip the package's own setup step:
-
-    ``` text
-    npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts:
-    npm warn allow-scripts   puppeteer@25.4.0 (postinstall: node install.mjs)
-    ```
-
-    That step is what downloads the headless browser Mermaid draws diagrams with. The install still succeeds, and if the browser is already on your machine from something else, diagrams render fine. If instead a later PDF build reports that it cannot find a browser, approve the step and reinstall:
+!!! note "If npm warns about `allow-scripts`"
+    Recent npm versions skip Puppeteer's own setup step, which downloads the headless browser Mermaid draws diagrams with. The install still succeeds - if a later PDF build reports it cannot find a browser, approve the step and reinstall:
 
     ``` bash
     npm approve-scripts puppeteer --prefix tools/mermaid
@@ -1035,10 +958,7 @@ This creates a `node_modules` folder inside each, which is deliberately not comm
 !!! tip "Starting a project that isn't from the template?"
     Then you have no `tools/` directory to install from, and need `prodockit init-tools` first to create it. Running it on a copy of the template is harmless but pointless - it will just report `Kept existing tools/mermaid/package.json` for each file it finds. See [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths) for the full picture.
 
-Test the whole thing by building the PDF - see [Generate the Source and PDF documents](startediting.md#startediting-generate-documents) in the next section. If a diagram appears as an image rather than as text, everything is set up correctly.
-
-!!! note "You can skip this if your document has neither"
-    A document with no diagrams and no formulas never calls either tool, so nothing here is required for it. It costs nothing to set up now though, and means the trap above cannot catch you later when you add your first diagram.
+Test the whole thing by building the PDF - see [Generate the Source and PDF documents](startediting.md#startediting-generate-documents) in the next section. If a diagram appears as an image rather than as text, everything is set up correctly. None of this is required if your document has no diagrams or formulas, but setting it up now costs nothing and means the trap above can't catch you later when you add your first one.
 
 ## Where to go next {: #installtooling-where-to-go-next }
 
