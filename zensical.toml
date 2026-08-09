@@ -6,7 +6,7 @@
 site_name = "prodockit User Guide"
 site_description = "Full setup, authoring, customisation, and testing guide for prodockit-template and other prodockit-based Zensical projects."
 site_author = "Mark Buckwell"
-site_url = "https://github.com/buckwem/prodockit-userguide/"
+site_url = "https://buckwem.github.io/prodockit-userguide/"
 site_dir = "public"
 
 repo_url = "https://github.com/buckwem/prodockit-userguide"
