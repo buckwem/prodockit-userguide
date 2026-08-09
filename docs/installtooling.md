@@ -175,15 +175,54 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     
     </div>
 
-1. Then configure the SSH Config file to use the correct SSH key for each service. Open the SSH config file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) and add the following lines:
+1. Then configure the SSH config file to use the correct key for each service.
 
-    For example using `nano` on macOS or Linux:
+    <div class="grid cards one-column" markdown>
 
-    ```bash
-    nano ~/.ssh/config
-    ```
-    
-    paste the relevant configuration into the config file:
+    -   :material-clock-fast:{ .lg .middle } __Edit the SSH config file__
+
+        === "macOS using Homebrew"
+
+            Open the file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) - for example with `nano`:
+
+            ```bash
+            nano ~/.ssh/config
+            ```
+
+            Paste in the configuration below, then save and close (`Ctrl+O` to save, `Ctrl+X` to exit, in nano).
+
+        === "Windows 11 using PowerShell"
+
+            Create the file from PowerShell first, then open it - creating it directly inside an editor risks Notepad naming it `config.txt` instead of `config`:
+
+            ``` powershell
+            New-Item -ItemType File -Path $env:USERPROFILE\.ssh\config -Force
+            code $env:USERPROFILE\.ssh\config
+            ```
+
+            (Use `notepad` in place of `code` if you'd rather not use VS Code.) Paste in the configuration below, then save.
+
+            !!! warning "The file must be called `config`, with no extension"
+                Notepad silently appends `.txt` unless you prevent it, and Windows hides known extensions in File Explorer, so `config.txt` looks identical to `config`. SSH reads only a file named exactly `config` - a misnamed one is ignored entirely, and `git clone` falls back to asking for a password that will never be accepted. Creating the file with `New-Item` first avoids this. To check, and fix it if needed:
+
+                ``` powershell
+                Get-ChildItem $env:USERPROFILE\.ssh
+                Rename-Item $env:USERPROFILE\.ssh\config.txt config   # only if the first command lists config.txt
+                ```
+
+        === "Linux (Ubuntu/Debian) using bash"
+
+            Open the file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) - for example with `nano`:
+
+            ```bash
+            nano ~/.ssh/config
+            ```
+
+            Paste in the configuration below, then save and close (`Ctrl+O` to save, `Ctrl+X` to exit, in nano).
+
+    </div>
+
+    The configuration to paste in:
 
 {% if is_surrey %}
     ```text
@@ -220,25 +259,6 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         IdentityFile ~/.ssh/id_ed25519_github
     ```
 {% endif %}
-
-    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano).
-
-    On **Windows 11**, create the file from PowerShell first and then open it, rather than creating it from inside an editor:
-
-    ``` powershell
-    New-Item -ItemType File -Path $env:USERPROFILE\.ssh\config -Force
-    code $env:USERPROFILE\.ssh\config
-    ```
-
-    (Use `notepad` in place of `code` if you would rather not use VS Code.)
-
-    !!! warning "The file must be called `config`, with no extension"
-        Notepad silently appends `.txt` unless you prevent it, and Windows hides known extensions in File Explorer, so `config.txt` looks identical to `config`. SSH reads only a file named exactly `config` - a misnamed one is ignored entirely, and `git clone` falls back to asking for a password that will never be accepted. Creating the file with `New-Item` first avoids this. To check, and fix it if needed:
-
-        ``` powershell
-        Get-ChildItem $env:USERPROFILE\.ssh
-        Rename-Item $env:USERPROFILE\.ssh\config.txt config   # only if the first command lists config.txt
-        ```
 
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
