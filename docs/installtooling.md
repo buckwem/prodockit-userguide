@@ -150,12 +150,19 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         === ":material-apple: macOS"
 
             1. Open the **Terminal** application.
-            2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
-            
+            2. Generate the key for **GitHub**. Only the email address needs changing - the rest of the command is complete as written:
+
                 ``` bash
-                ssh-keygen -t ed25519 -C "your.gitxxx.email@example.com" -f ~/.ssh/id_ed25519_gitxxx
+                ssh-keygen -t ed25519 -C "your.github.email@example.com" -f ~/.ssh/id_ed25519_github
                 ```
-            3. When prompted, type a strong passphrase.
+
+            3. Then generate a **separate** key for **GitLab**:
+
+                ``` bash
+                ssh-keygen -t ed25519 -C "your.gitlab.email@example.com" -f ~/.ssh/id_ed25519_gitlab
+                ```
+
+            4. When prompted, type a strong passphrase. You are asked once per key, so this happens twice.
 
         === ":fontawesome-brands-windows: Windows"
 
@@ -166,25 +173,44 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 mkdir $env:USERPROFILE\.ssh -Force
                 ```
 
-            3. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
+            3. Generate the key for **GitHub**. Only the email address needs changing - the rest of the command is complete as written:
 
                 ``` powershell
-                ssh-keygen -t ed25519 -C "your.gitxxx.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_gitxxx
+                ssh-keygen -t ed25519 -C "your.github.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_github
                 ```
 
-            4. When prompted, type a strong passphrase.
+            4. Then generate a **separate** key for **GitLab**:
+
+                ``` powershell
+                ssh-keygen -t ed25519 -C "your.gitlab.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_gitlab
+                ```
+
+            5. When prompted, type a strong passphrase. You are asked once per key, so this happens twice.
             
         === ":material-linux: Linux (Ubuntu)"
 
             1. Open the **Terminal** application.
-            2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
-            
+            2. Generate the key for **GitHub**. Only the email address needs changing - the rest of the command is complete as written:
+
                 ``` bash
-                ssh-keygen -t ed25519 -C "your.gitxxx.email@example.com" -f ~/.ssh/id_ed25519_gitxxx
+                ssh-keygen -t ed25519 -C "your.github.email@example.com" -f ~/.ssh/id_ed25519_github
                 ```
-            3. When prompted, type a strong passphrase.
+
+            3. Then generate a **separate** key for **GitLab**:
+
+                ``` bash
+                ssh-keygen -t ed25519 -C "your.gitlab.email@example.com" -f ~/.ssh/id_ed25519_gitlab
+                ```
+
+            4. When prompted, type a strong passphrase. You are asked once per key, so this happens twice.
     
     </div>
+
+    !!! note "`gitxxx` in the steps that follow"
+        You now have two key files, `id_ed25519_github` and
+        `id_ed25519_gitlab`. The remaining steps are written once, with
+        `gitxxx` standing for whichever of the two you are working on -
+        so run them twice, substituting `github` and then `gitlab`.
 
 1. Then configure the SSH config file to use the correct key for each service.
 
