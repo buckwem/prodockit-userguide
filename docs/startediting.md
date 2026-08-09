@@ -507,6 +507,39 @@ A version number means you are ready. The same long error means the libraries st
 !!! note "On macOS, if it still fails after installing Pango"
     macOS only looks in Homebrew's folder for libraries if the Python you are using was itself installed by Homebrew. That is why [Install tooling](installtooling.md#install-python-and-zensical) has you create the virtual environment with the full path `/opt/homebrew/bin/python3` rather than a plain `python3`. If you created it another way, the quickest fix is to delete `.venv` and make it again, following those steps exactly.
 
+### Mermaid render fails on ARM64 Linux {: #startediting-arm64-mermaid }
+
+Another specific case of "PDF build fails" above, this one showing up only on an ARM64 machine - an Apple Silicon Linux VM, an AWS Graviton instance, a Raspberry Pi:
+
+``` text
+⚠️  Mermaid render failed for diagram 1:
+Error: Failed to launch the browser process:  Code: 2
+
+stderr:
+.../chrome-headless-shell: 1: ELF: not found
+.../chrome-headless-shell: 3: Syntax error: Unterminated quoted string
+```
+
+That garbled output is the giveaway: it's a binary being misread as a shell script. `npm ci --prefix tools/mermaid` downloads Chrome for whichever architecture Puppeteer defaults to, and on some ARM64 Linux setups that's still an x86_64 build. Linux can't execute a binary built for the wrong architecture, falls back to interpreting it as a script, and the first few bytes of a Chrome binary aren't valid shell - hence `ELF: not found` and an "unterminated quoted string" a few lines further down.
+
+Install a native ARM64 Chromium and point Puppeteer at it instead of its own download:
+
+``` bash
+sudo apt update
+sudo apt install -y chromium-browser
+which chromium-browser || which chromium
+```
+
+The second command should print a path such as `/usr/bin/chromium-browser` or `/usr/bin/chromium` - that's what the next step needs. Point `prodockit pdf` at it for this session, then make it permanent so every future session picks it up too:
+
+``` bash
+export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)
+echo 'export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Then run `prodockit pdf` again.
+
 ### Published site shows old content or a 404
 
 1. Check the pipeline (GitLab **CI/CD > Pipelines**) or workflow (GitHub **Actions** tab) actually ran, and succeeded, for your latest commit - if it's still running, or failed, the old version stays published.
