@@ -194,26 +194,39 @@ Whenever you've made a change you want to keep, there are three things to do: **
 
 Once your commit reaches the default branch, the [CI/CD pipeline](#automated-builds) rebuilds and republishes the website (and the PDF) automatically - there's nothing extra to trigger.
 
-=== "GitLab (University of Surrey)"
+!!! warning "The first build takes longer than you'd expect"
+    Every build installs the whole toolchain from scratch - Node.js, Chrome, Pandoc, the Python environment - so even a routine rebuild takes several minutes, and the very first one on a fresh project can easily run into the mid-teens. A blank page or a 404 on your first visit almost always means the build simply hasn't finished yet, not that something is broken.
 
-    1. Go to your GitLab Pages address, in the form `https://`*namespace*`.pages.surrey.ac.uk/`*repository-name*. This template's own site is at [http://mb0105.pages.surrey.ac.uk/prodockit-template](http://mb0105.pages.surrey.ac.uk/prodockit-template){target="_blank"}.
-    2. The first time you visit, GitLab prompts you to authorise GitLab Pages access to your project:
+    Check first, rather than refreshing a page that hasn't been built yet: **Build > Pipelines** in the sidebar on GitLab, or the **Actions** tab on GitHub. A running pipeline or workflow shows a spinner or a yellow dot; wait for it to turn green.
+
+=== "GitLab"
+
+    The simplest way to find your site is from the project itself, rather than working out the URL by hand: open your project on the GitLab website and look for the **GitLab Pages** link, shown on the project overview page once Pages has deployed at least once (also always available under **Deploy > Pages** in the sidebar). Click it.
+
+    1. The first time you visit, GitLab prompts you to authorise GitLab Pages access to your project:
 
         ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="40%" .screenshot }
         /// figure-caption
         Authorise GitLab Pages
         ///
 
-    3. Your browser redirects to a URL with an extra, unique key added, such as [https://prodockit-template-4f75ad.pages.surrey.ac.uk/](https://prodockit-template-4f75ad.pages.surrey.ac.uk/){target="_blank"}. This confirms that you (specifically, someone with access to the underlying GitLab project) can view the page - University of Surrey GitLab Pages sites aren't public by default.
+    2. Your browser redirects to a URL with an extra, unique key added, such as [https://prodockit-template-4f75ad.pages.surrey.ac.uk/](https://prodockit-template-4f75ad.pages.surrey.ac.uk/){target="_blank"}. This confirms that you (specifically, someone with access to the underlying GitLab project) can view the page - GitLab Pages sites aren't public by default.
+
+    This works the same way on the University of Surrey GitLab and on gitlab.com or another self-hosted instance.
+
+{% if is_surrey %}
+    !!! note "Working out the address yourself"
+        If you'd rather not click through, University of Surrey Pages addresses follow the form `https://`*namespace*`.pages.surrey.ac.uk/`*repository-name*. This template's own site is at [http://mb0105.pages.surrey.ac.uk/prodockit-template](http://mb0105.pages.surrey.ac.uk/prodockit-template){target="_blank"}.
+{% else %}
+    !!! note "Working out the address yourself"
+        If you'd rather not click through, most GitLab Pages addresses follow the form `https://`*namespace*`.gitlab.io/`*repository-name*, though a self-hosted instance may use its own domain - check **Settings > Pages** on your project for the exact one.
+{% endif %}
 
 === "GitHub"
 
     1. Go to your GitHub Pages address, in the form `https://`*username*`.github.io/`*repository-name*. This template's own site is at [https://buckwem.github.io/prodockit-template](https://buckwem.github.io/prodockit-template){target="_blank"}.
     2. Unlike GitLab Pages, GitHub Pages sites are publicly accessible by default, even when the source repository is private - so no separate authorisation step is normally needed to view a GitHub Pages site once it's built.
     3. If your organisation has restricted Pages visibility (available on GitHub Enterprise), GitHub will ask you to sign in with an account that has access to the repository before the site loads.
-
-!!! warning
-    The very first deployment can take a few minutes to build. If you get a 404, wait a little and refresh before assuming something's broken - check the pipeline/workflow run for errors first.
 
 ## Build the PDF
 
