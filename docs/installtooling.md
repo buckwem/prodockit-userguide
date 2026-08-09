@@ -746,7 +746,10 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 pacman -S mingw-w64-x86_64-pango
                 ```
 
-                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect, then `cd` back to your project and run `.\.venv\Scripts\Activate.ps1` again - a new window has neither.
+                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect - the next two steps continue in that new window.
+
+                !!! note "No virtual environment to reactivate yet"
+                    Unlike other "close and reopen PowerShell" steps on this page, there's nothing to `cd` back to or activate here. The virtual environment isn't created until step 5 below - reopening PowerShell now just gets the `PATH` change into a fresh window before continuing.
 
                 !!! info "Why this is needed"
                     That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll` - installing `pango` brings all four in. Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
