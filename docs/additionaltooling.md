@@ -225,7 +225,13 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
 
 3. Create a `styles` directory in the top-level directory of your project. In VS Code, right-click your project's root folder in the Explorer pane and select **New Folder...**, then name it `styles`.
 
-    Then, in a terminal opened at your project's root, synchronise the styles specified in `.vale.ini`:
+    Then synchronise the styles specified in `.vale.ini`. Open a new terminal (or PowerShell) for this, and make sure it's actually sitting in your project's root directory first:
+
+    ```bash
+    cd path/to/your-project
+    ```
+
+    Then run:
 
     ```bash
     vale sync

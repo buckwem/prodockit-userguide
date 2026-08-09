@@ -817,6 +817,8 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 pacman -S mingw-w64-x86_64-pango
                 ```
 
+                If that fails partway through with a download error, just run it again - MSYS2's mirrors are occasionally flaky, and a second attempt usually goes through cleanly.
+
                 Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect - the next two steps continue in that new window.
 
                 !!! note "No virtual environment to reactivate yet"
@@ -1066,7 +1068,15 @@ v22.14.0
 
 ### Install the two toolchains
 
-Your cloned template already contains the manifests and lockfiles for both tools, in `tools/mermaid` and `tools/mathjax` - so you only need to install them. From your project's root directory:
+Your cloned template already contains the manifests and lockfiles for both tools, in `tools/mermaid` and `tools/mathjax` - so you only need to install them.
+
+Open a new terminal for this step, and make sure it's actually sitting in your project's root directory first - the `--prefix` paths below are relative to wherever you run them from:
+
+``` bash
+cd path/to/your-project
+```
+
+Then install both:
 
 ``` bash
 npm ci --prefix tools/mermaid
@@ -1077,8 +1087,18 @@ npm ci --prefix tools/mathjax
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
 
-!!! note "If npm warns about `allow-scripts`"
-    Recent npm versions skip Puppeteer's own setup step, which downloads the headless browser Mermaid draws diagrams with. The install still succeeds - if a later PDF build reports it cannot find a browser, approve the step and reinstall:
+!!! note "If npm reports vulnerabilities or an `allow-scripts` warning"
+    Both are normal here, not a sign anything went wrong:
+
+    ``` text
+    Run `npm audit` for details.
+    npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts:
+    npm warn allow-scripts   puppeteer@25.3.0 (postinstall: node install.mjs)
+    ```
+
+    The vulnerability count comes from `npm audit` scanning the whole dependency tree Puppeteer pulls in for known advisories, most of which don't apply to how this project uses it - a locally-run PDF build, not a public-facing server. There's nothing to fix here; running `npm audit fix` is more likely to break the pinned versions the lockfile records than to help.
+
+    The `allow-scripts` warning is different: recent npm versions skip Puppeteer's own setup step, which downloads the headless browser Mermaid draws diagrams with. The install still succeeds - if a later PDF build reports it cannot find a browser, approve the step and reinstall:
 
     ``` bash
     npm approve-scripts puppeteer --prefix tools/mermaid
