@@ -118,10 +118,15 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
             ```
     </div>
 
-1. Before connecting to any cloud provider, open your terminal (Terminal on macOS/Debian, Git Bash or PowerShell on Windows 11) and set your global username and email. This is the identity stamped onto your commits. Make sure you use the same email address that you used to register for your GitLab or GitHub account.
+1. Before connecting to any cloud provider, open your terminal (Terminal on macOS/Debian, Git Bash or PowerShell on Windows 11) and set your global username. This is the identity stamped onto your commits.
 
     ``` bash
     git config --global user.name "Your Name"
+    ```
+
+    Then set the email address to go with it. Make sure it's the same one you used to register for your GitLab or GitHub account.
+
+    ``` bash
     git config --global user.email "your.email@example.com"
     ```
 
@@ -155,13 +160,19 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         === ":fontawesome-brands-windows: Windows"
 
             1. Open the **PowerShell** application.
-            2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
-            
+            2. Create the `.ssh` folder, if it doesn't already exist:
+
                 ``` powershell
                 mkdir $env:USERPROFILE\.ssh -Force
+                ```
+
+            3. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
+
+                ``` powershell
                 ssh-keygen -t ed25519 -C "your.gitxxx.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_gitxxx
                 ```
-            3. When prompted, type a strong passphrase.
+
+            4. When prompted, type a strong passphrase.
             
         === ":material-linux: Linux (Ubuntu)"
 
@@ -335,6 +346,34 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 eval "$(ssh-agent -s)"
                 ```
     </div>
+
+1. Display your **public** key, so you can copy it - the next section needs it pasted into your GitLab and GitHub accounts. Only the public key goes there; never paste the private one (the file with no `.pub` extension).
+
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Display the public key__
+
+        === ":material-apple: macOS"
+
+            ``` bash
+            cat ~/.ssh/id_ed25519_gitxxx.pub
+            ```
+
+        === ":fontawesome-brands-windows: Windows"
+
+            ``` powershell
+            Get-Content $env:USERPROFILE\.ssh\id_ed25519_gitxxx.pub
+            ```
+
+        === ":material-linux: Linux (Ubuntu)"
+
+            ``` bash
+            cat ~/.ssh/id_ed25519_gitxxx.pub
+            ```
+
+    </div>
+
+    Substitute `gitxxx` as before, and run it once for each key you generated. Select the entire line it prints - starting with `ssh-ed25519` and ending with the email address you gave it - and copy it.
 
 ### Integrate Visual Studio Code with Git
 
@@ -531,6 +570,11 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     origin  git@github.com:buckwem/prodockit-template.git (push)
     ```
 
+    ``` mermaid
+    graph LR
+      L[Your local clone] -->|origin| T[prodockit-template]
+    ```
+
     If you added any others of your own - a `gitlab` mirror, say - they will be listed here too. You do not need to remove any of them by hand: the next step deletes the repository's entire `.git` directory, which takes every remote with it.
 
 1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
@@ -570,6 +614,15 @@ Cloning gives you the template's *files*, but the clone still points at the temp
                 This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
     </div>
+
+    `rm -rf .git`/`Remove-Item -Recurse -Force .git` deletes the whole repository, remotes included, and `git init` starts a brand new one with none at all:
+
+    ``` mermaid
+    graph LR
+      L[Your local clone - no remotes]
+    ```
+
+    Run `git remote -v` at this point and it prints nothing.
 
 1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a README, `.gitignore` or licence - the template brings its own, and an initial commit on the host side collides with what you are about to push.
 
@@ -635,6 +688,13 @@ Cloning gives you the template's *files*, but the clone still points at the temp
     ``` bash
     git remote -v
     ```
+
+    ``` mermaid
+    graph LR
+      L[Your local clone] -->|origin| R[Your own repository]
+    ```
+
+    `origin` now points at your own repository rather than the template's - compare this against the first diagram in this section, where it pointed at `prodockit-template` instead.
 
     !!! note "Don't commit or push yet"
         Step 3 left you with an empty repository - the template's files are

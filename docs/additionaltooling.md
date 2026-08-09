@@ -167,17 +167,9 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
 
         === ":material-apple: macOS"
 
-            1. If you don't already have Homebrew installed, install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}, or by running:
-
-                ``` bash
-                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-                ```
-
-            2. Once you've installed Homebrew, install Vale:
-
-                ``` bash
-                brew install vale
-                ```
+            ``` bash
+            brew install vale
+            ```
 
         === ":fontawesome-brands-windows: Windows"
 
