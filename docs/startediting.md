@@ -38,11 +38,9 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
 -   :material-clock-fast:{ .lg .middle } __Activate the virtual environment manually__
 
-    === "macOS/Linux Terminal"
+    === ":material-apple: macOS"
 
-        1. Open a terminal application:
-            * **macOS:** press `Cmd+Space` to open Spotlight, type `Terminal`, and press `Enter`.
-            * **Linux:** look for **Terminal** in your applications menu.
+        1. Open a terminal application: press `Cmd+Space` to open Spotlight, type `Terminal`, and press `Enter`.
         2. Navigate to your project folder using the `cd` (change directory) command - replace the path below with wherever you cloned your project:
 
             ```bash
@@ -57,7 +55,7 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
             Your prompt now starts with `(.venv)`, confirming it's active.
 
-    === "Windows PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         1. Open PowerShell: press the `Windows` key, type `PowerShell`, and press `Enter`.
         2. Navigate to your project folder using the `cd` command:
@@ -70,6 +68,23 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
             ```powershell
             .\.venv\Scripts\Activate.ps1
+            ```
+
+            Your prompt now starts with `(.venv)`, confirming it's active.
+
+    === ":material-linux: Linux (Ubuntu)"
+
+        1. Open a terminal application: look for **Terminal** in your applications menu.
+        2. Navigate to your project folder using the `cd` (change directory) command - replace the path below with wherever you cloned your project:
+
+            ```bash
+            cd path/to/your/project
+            ```
+
+        3. Activate the virtual environment:
+
+            ```bash
+            source .venv/bin/activate
             ```
 
             Your prompt now starts with `(.venv)`, confirming it's active.
@@ -194,26 +209,45 @@ Whenever you've made a change you want to keep, there are three things to do: **
 
 Once your commit reaches the default branch, the [CI/CD pipeline](#automated-builds) rebuilds and republishes the website (and the PDF) automatically - there's nothing extra to trigger.
 
-=== "GitLab (University of Surrey)"
+!!! warning "The first build takes longer than you'd expect"
+    Every build installs the whole toolchain from scratch - Node.js, Chrome, Pandoc, the Python environment - so even a routine rebuild takes several minutes, and the very first one on a fresh project can easily run into the mid-teens. A blank page or a 404 on your first visit almost always means the build simply hasn't finished yet, not that something is broken.
 
-    1. Go to your GitLab Pages address, in the form `https://`*namespace*`.pages.surrey.ac.uk/`*repository-name*. This template's own site is at [http://mb0105.pages.surrey.ac.uk/prodockit-template](http://mb0105.pages.surrey.ac.uk/prodockit-template){target="_blank"}.
-    2. The first time you visit, GitLab prompts you to authorise GitLab Pages access to your project:
+    Check first, rather than refreshing a page that hasn't been built yet: **Build > Pipelines** in the sidebar on GitLab, or the **Actions** tab on GitHub. A running pipeline or workflow shows a spinner or a yellow dot; wait for it to turn green.
 
-        ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="40%" .screenshot }
-        /// figure-caption
-        Authorise GitLab Pages
-        ///
+<div class="grid cards one-column" markdown>
 
-    3. Your browser redirects to a URL with an extra, unique key added, such as [https://prodockit-template-4f75ad.pages.surrey.ac.uk/](https://prodockit-template-4f75ad.pages.surrey.ac.uk/){target="_blank"}. This confirms that you (specifically, someone with access to the underlying GitLab project) can view the page - University of Surrey GitLab Pages sites aren't public by default.
+-   :material-clock-fast:{ .lg .middle } __Find your published site__
 
-=== "GitHub"
+    === "GitLab"
 
-    1. Go to your GitHub Pages address, in the form `https://`*username*`.github.io/`*repository-name*. This template's own site is at [https://buckwem.github.io/prodockit-template](https://buckwem.github.io/prodockit-template){target="_blank"}.
-    2. Unlike GitLab Pages, GitHub Pages sites are publicly accessible by default, even when the source repository is private - so no separate authorisation step is normally needed to view a GitHub Pages site once it's built.
-    3. If your organisation has restricted Pages visibility (available on GitHub Enterprise), GitHub will ask you to sign in with an account that has access to the repository before the site loads.
+        The simplest way to find your site is from the project itself, rather than working out the URL by hand: open your project on the GitLab website and look for the **GitLab Pages** link, shown on the project overview page once Pages has deployed at least once (also always available under **Deploy > Pages** in the sidebar). Click it.
 
-!!! warning
-    The very first deployment can take a few minutes to build. If you get a 404, wait a little and refresh before assuming something's broken - check the pipeline/workflow run for errors first.
+        1. The first time you visit, GitLab prompts you to authorise GitLab Pages access to your project:
+
+            ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="40%" .screenshot }
+            /// figure-caption
+            Authorise GitLab Pages
+            ///
+
+        2. Your browser redirects to a URL with an extra, unique key added, such as [https://prodockit-template-4f75ad.pages.surrey.ac.uk/](https://prodockit-template-4f75ad.pages.surrey.ac.uk/){target="_blank"}. This confirms that you (specifically, someone with access to the underlying GitLab project) can view the page - GitLab Pages sites aren't public by default.
+
+        This works the same way on the University of Surrey GitLab and on gitlab.com or another self-hosted instance.
+
+{% if is_surrey %}
+        !!! note "Working out the address yourself"
+            If you'd rather not click through, University of Surrey Pages addresses follow the form `https://`*namespace*`.pages.surrey.ac.uk/`*repository-name*. This template's own site is at [http://mb0105.pages.surrey.ac.uk/prodockit-template](http://mb0105.pages.surrey.ac.uk/prodockit-template){target="_blank"}.
+{% else %}
+        !!! note "Working out the address yourself"
+            If you'd rather not click through, most GitLab Pages addresses follow the form `https://`*namespace*`.gitlab.io/`*repository-name*, though a self-hosted instance may use its own domain - check **Settings > Pages** on your project for the exact one.
+{% endif %}
+
+    === "GitHub"
+
+        1. Go to your GitHub Pages address, in the form `https://`*username*`.github.io/`*repository-name*. This template's own site is at [https://buckwem.github.io/prodockit-template](https://buckwem.github.io/prodockit-template){target="_blank"}.
+        2. Unlike GitLab Pages, GitHub Pages sites are publicly accessible by default, even when the source repository is private - so no separate authorisation step is normally needed to view a GitHub Pages site once it's built.
+        3. If your organisation has restricted Pages visibility (available on GitHub Enterprise), GitHub will ask you to sign in with an account that has access to the repository before the site loads.
+
+</div>
 
 ## Build the PDF
 
@@ -231,7 +265,13 @@ Once your commit reaches the default branch, the [CI/CD pipeline](#automated-bui
 
     This can take a little while, especially the first time - it's converting every page into a single PDF, rendering any diagrams and maths along the way.
 
-4. Once it finishes, open `docs/site_documentation.pdf` (in the `docs` folder) to check the result.
+    If `pdf_source_bundle` is set in your `zensical.toml`, this same command also writes `source_bundle.pdf` - a separate document containing every one of your repository's own tracked text files, one per page (see [Source-code bundling](customise.md#source-code-bundling)). It's written to your project's root directory rather than `docs/`; copy it across if you want the website's own **Source** download button to find it in your local preview too:
+
+    ```bash
+    cp source_bundle.pdf docs/
+    ```
+
+4. Once it finishes, open `docs/site_documentation.pdf` (in the `docs` folder) to check the result - and `source_bundle.pdf`, if you built one.
 
 Run this again after any change you want reflected in the PDF - it always rebuilds the whole document from scratch, so there's no separate "clean" step needed for it, unlike the website build below.
 
@@ -367,19 +407,32 @@ function, script file, or operable program.
 
 Both commands are installed *inside* the virtual environment, not system-wide, so they only exist in a terminal where it is active. A new terminal window never has it - activation lasts for that window only.
 
-=== "macOS / Linux"
+<div class="grid cards one-column" markdown>
 
-    ``` bash
-    cd path/to/your-project
-    source .venv/bin/activate
-    ```
+-   :material-clock-fast:{ .lg .middle } __Activate the virtual environment__
 
-=== "Windows PowerShell"
+    === ":material-apple: macOS"
 
-    ``` powershell
-    cd C:\path\to\your-project
-    .\.venv\Scripts\Activate.ps1
-    ```
+        ``` bash
+        cd path/to/your-project
+        source .venv/bin/activate
+        ```
+
+    === ":fontawesome-brands-windows: Windows"
+
+        ``` powershell
+        cd C:\path\to\your-project
+        .\.venv\Scripts\Activate.ps1
+        ```
+
+    === ":material-linux: Linux (Ubuntu)"
+
+        ``` bash
+        cd path/to/your-project
+        source .venv/bin/activate
+        ```
+
+</div>
 
 The prompt gains a `(.venv)` prefix when it works. This bites most often after a step that told you to close and reopen your terminal to pick up a `PATH` change - the new window has lost the virtual environment as well.
 
@@ -441,34 +494,7 @@ The give-away is in the output beneath the error, which contains a line like:
 OSError: cannot load library 'libgobject-2.0-0'
 ```
 
-Install the libraries for your platform - the same step as in [Install Python and Zensical](installtooling.md#install-python-and-zensical):
-
-=== "macOS"
-
-    ``` bash
-    brew install pango
-    ```
-
-=== "Windows 11"
-
-    In the **MSYS2 MINGW64** shell:
-
-    ``` bash
-    pacman -S mingw-w64-x86_64-pango
-    ```
-
-    Then confirm `C:\msys64\mingw64\bin` is on your user `PATH`, and open a new PowerShell window. It has neither your project folder nor the virtual environment, so restore both before building again:
-
-    ``` powershell
-    cd C:\path\to\your-project
-    .\.venv\Scripts\Activate.ps1
-    ```
-
-=== "Linux (Ubuntu/Debian)"
-
-    ``` bash
-    sudo apt install libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
-    ```
+Install the libraries for your platform, following the per-OS instructions already in [Install Python and Zensical](installtooling.md#install-python-and-zensical) - `brew install pandoc pango` on macOS, the MSYS2 `pacman` step on Windows, or the `apt install` line on Linux. If you followed that page when setting up, you already ran this and something else is missing; re-running it is harmless either way.
 
 Then check before building again:
 
@@ -480,6 +506,39 @@ A version number means you are ready. The same long error means the libraries st
 
 !!! note "On macOS, if it still fails after installing Pango"
     macOS only looks in Homebrew's folder for libraries if the Python you are using was itself installed by Homebrew. That is why [Install tooling](installtooling.md#install-python-and-zensical) has you create the virtual environment with the full path `/opt/homebrew/bin/python3` rather than a plain `python3`. If you created it another way, the quickest fix is to delete `.venv` and make it again, following those steps exactly.
+
+### Mermaid render fails on ARM64 Linux {: #startediting-arm64-mermaid }
+
+Another specific case of "PDF build fails" above, this one showing up only on an ARM64 machine - an Apple Silicon Linux VM, an AWS Graviton instance, a Raspberry Pi:
+
+``` text
+⚠️  Mermaid render failed for diagram 1:
+Error: Failed to launch the browser process:  Code: 2
+
+stderr:
+.../chrome-headless-shell: 1: ELF: not found
+.../chrome-headless-shell: 3: Syntax error: Unterminated quoted string
+```
+
+That garbled output is the giveaway: it's a binary being misread as a shell script. `npm ci --prefix tools/mermaid` downloads Chrome for whichever architecture Puppeteer defaults to, and on some ARM64 Linux setups that's still an x86_64 build. Linux can't execute a binary built for the wrong architecture, falls back to interpreting it as a script, and the first few bytes of a Chrome binary aren't valid shell - hence `ELF: not found` and an "unterminated quoted string" a few lines further down.
+
+Install a native ARM64 Chromium and point Puppeteer at it instead of its own download:
+
+``` bash
+sudo apt update
+sudo apt install -y chromium-browser
+which chromium-browser || which chromium
+```
+
+The second command should print a path such as `/usr/bin/chromium-browser` or `/usr/bin/chromium` - that's what the next step needs. Point `prodockit pdf` at it for this session, then make it permanent so every future session picks it up too:
+
+``` bash
+export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)
+echo 'export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Then run `prodockit pdf` again.
 
 ### Published site shows old content or a 404
 

@@ -34,7 +34,7 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
     
 -   :material-clock-fast:{ .lg .middle } __Install Visual Studio Code__
 
-    === "macOS using Homebrew"
+    === ":material-apple: macOS"
 
         1. Open the **Terminal** application.
         1. You are likely to already have [Homebrew](https://brew.sh){target="_blank"} installed, but if not, follow the instructions on [brew.sh](https://brew.sh){target="_blank"} to install it.  **Close and reopen your Terminal after installing it.** As the installer adds `brew` to your `PATH`, and a session that was already open won't pick that up.
@@ -45,12 +45,12 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
             brew install --cask visual-studio-code
             ```
 
-    === "Windows 11 using PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         1. Download the VS Code User setup for Windows from the [official website](https://code.visualstudio.com/download){target="_blank"}.
         2. Run the installer, `VSCodeUserSetup-{version}.exe`. By default the User setup installs Visual Studio Code to your user profile directory. You can change the install location if you want to install it for all users.
          
-    === "Linux (Ubuntu/Debian) using bash"
+    === ":material-linux: Linux (Ubuntu)"
 
         1. Download the `.deb` package from the [official website](https://code.visualstudio.com/).
         2. Open a terminal and navigate to the directory where you downloaded the `.deb` package.
@@ -80,7 +80,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
     
     -   :material-clock-fast:{ .lg .middle } __Install Git__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             Use the Homebrew package manager to install or update `git` to the latest stable version:
                 
@@ -88,7 +88,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
             brew install git
             ```
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             Open up a **PowerShell** Administrator window and install `git` using the command, or you can download and install the official git installer from [git-scm.com](https://git-scm.com/download/win){target="_blank"}.
                 
@@ -108,7 +108,7 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
             git --version
             ```
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             Open a terminal and run the following command to install or update `git` to the latest stable version:
             
@@ -142,7 +142,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     
     -   :material-clock-fast:{ .lg .middle } __Generate SSH keys__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             1. Open the **Terminal** application.
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
@@ -152,7 +152,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
             3. When prompted, type a strong passphrase.
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             1. Open the **PowerShell** application.
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
@@ -163,7 +163,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
             3. When prompted, type a strong passphrase.
             
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             1. Open the **Terminal** application.
             2. Run the following command to generate a new SSH key pair for GitHub and GitLab. Make sure to replace `your.gitxxx.email@example.com` with your actual email address and `gitxxx` with either `github` or `gitlab` depending on which service you are generating the key for:
@@ -175,15 +175,54 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     
     </div>
 
-1. Then configure the SSH Config file to use the correct SSH key for each service. Open the SSH config file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) and add the following lines:
+1. Then configure the SSH config file to use the correct key for each service.
 
-    For example using `nano` on macOS or Linux:
+    <div class="grid cards one-column" markdown>
 
-    ```bash
-    nano ~/.ssh/config
-    ```
-    
-    paste the relevant configuration into the config file:
+    -   :material-clock-fast:{ .lg .middle } __Edit the SSH config file__
+
+        === ":material-apple: macOS"
+
+            Open the file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) - for example with `nano`:
+
+            ```bash
+            nano ~/.ssh/config
+            ```
+
+            Paste in the configuration below, then save and close (`Ctrl+O` to save, `Ctrl+X` to exit, in nano).
+
+        === ":fontawesome-brands-windows: Windows"
+
+            Create the file from PowerShell first, then open it - creating it directly inside an editor risks Notepad naming it `config.txt` instead of `config`:
+
+            ``` powershell
+            New-Item -ItemType File -Path $env:USERPROFILE\.ssh\config -Force
+            code $env:USERPROFILE\.ssh\config
+            ```
+
+            (Use `notepad` in place of `code` if you'd rather not use VS Code.) Paste in the configuration below, then save.
+
+            !!! warning "The file must be called `config`, with no extension"
+                Notepad silently appends `.txt` unless you prevent it, and Windows hides known extensions in File Explorer, so `config.txt` looks identical to `config`. SSH reads only a file named exactly `config` - a misnamed one is ignored entirely, and `git clone` falls back to asking for a password that will never be accepted. Creating the file with `New-Item` first avoids this. To check, and fix it if needed:
+
+                ``` powershell
+                Get-ChildItem $env:USERPROFILE\.ssh
+                Rename-Item $env:USERPROFILE\.ssh\config.txt config   # only if the first command lists config.txt
+                ```
+
+        === ":material-linux: Linux (Ubuntu)"
+
+            Open the file in your preferred [text editor](shcommands.md#editing-files) (create it if it doesn't exist) - for example with `nano`:
+
+            ```bash
+            nano ~/.ssh/config
+            ```
+
+            Paste in the configuration below, then save and close (`Ctrl+O` to save, `Ctrl+X` to exit, in nano).
+
+    </div>
+
+    The configuration to paste in:
 
 {% if is_surrey %}
     ```text
@@ -221,50 +260,10 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     ```
 {% endif %}
 
-    Then save and close the file (`Ctrl+O` to save and `Ctrl+X` to exit in nano).
-
-    On **Windows 11**, create the file from PowerShell first and then open it, rather than creating it from inside an editor:
-
-    ``` powershell
-    New-Item -ItemType File -Path $env:USERPROFILE\.ssh\config -Force
-    code $env:USERPROFILE\.ssh\config
-    ```
-
-    (Use `notepad` in place of `code` if you would rather not use VS Code.)
-
-    !!! warning "The file must be called `config`, with no extension"
-        This is the single most common thing to go wrong here. Notepad adds
-        `.txt` to a new file unless you explicitly prevent it, and Windows
-        hides known extensions in File Explorer - so `config.txt` looks
-        exactly like `config` when you go back to check.
-
-        SSH reads a file named `config` and nothing else. With a `.txt` on
-        the end your `IdentityFile` lines are silently ignored, no key is
-        ever offered, and a `git clone` falls through to asking for a
-        password that will never be accepted:
-
-        ``` text
-        git@gitlab.surrey.ac.uk's password:
-        ```
-
-        Creating the file with `New-Item` first avoids this, because the
-        editor is then saving an existing file rather than naming a new
-        one. To check what you actually have:
-
-        ``` powershell
-        Get-ChildItem $env:USERPROFILE\.ssh
-        ```
-
-        If it lists `config.txt`, rename it:
-
-        ``` powershell
-        Rename-Item $env:USERPROFILE\.ssh\config.txt config
-        ```
-
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
-    !!! Tip
-        You can use the same SSH key for multiple GitLab/GitHub accounts, but it's recommended to use separate keys for each account for better security and management. If you do use the same key, make sure to add the public key to each account separately as documented in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below.
+    !!! tip
+        Separate keys per account are safer, but if you reuse one, add its public key to each account separately in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below.
 
 1. Set the correct permissions for the SSH config file and the private keys to ensure they're secure. If you are using macOS or Linux, run the following commands in your terminal, substituting `gitxxx` and paths to your SSH keys if you used different names or locations:
 
@@ -281,7 +280,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     
     -   :material-clock-fast:{ .lg .middle } __Adding SSH keys__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             1. macOS normally starts an SSH agent for you automatically. Add your SSH private keys to it, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
 
@@ -295,7 +294,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 eval "$(ssh-agent -s)"
                 ```
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             1. Set the SSH agent to start automatically with Windows, and then start it. Run these in a PowerShell window opened **as Administrator** (right-click the Start menu, or search for PowerShell, then select **Run as administrator**):
 
@@ -304,34 +303,10 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 Start-Service ssh-agent
                 ```
 
-                !!! warning "Run them in that order"
-                    Windows ships the *OpenSSH Authentication Agent* service **disabled**, and Windows refuses to start a disabled service. Starting it before changing the startup type fails with:
+                !!! warning "Run in that order, in an Administrator window"
+                    Windows ships this service **disabled**, so `Set-Service` has to take it out of that state before `Start-Service` has anything it's allowed to start - reversed, the first command fails with `Cannot start service ssh-agent`. Both commands also need elevation: an ordinary window fails with `Access is denied`, which then makes the second command fail too, for the same underlying reason.
 
-                    ``` text
-                    Start-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be started
-                    due to the following error: Cannot start service ssh-agent on computer '.'.
-                    ```
-
-                    `Set-Service` first takes it out of the disabled state, so `Start-Service` then has something it is allowed to start.
-
-                !!! warning "`Access is denied` means the window is not an Administrator one"
-                    Changing a Windows service needs elevation, and an ordinary
-                    PowerShell window fails on the first command:
-
-                    ``` text
-                    Set-Service : Service 'OpenSSH Authentication Agent (ssh-agent)' cannot be
-                    configured due to the following error: Access is denied
-                    ```
-
-                    The second command then fails too, with the "cannot be started"
-                    message above - not for its own reason, but because the first
-                    one never took effect and the service is still disabled.
-
-                    The quickest way to tell the two kinds of window apart is where
-                    they open: an Administrator PowerShell starts in
-                    `C:\WINDOWS\system32`, an ordinary one in your home directory
-                    such as `C:\Users\yourname`. The title bar also says
-                    *Administrator*.
+                    An Administrator PowerShell opens in `C:\WINDOWS\system32` (an ordinary one opens in `C:\Users\yourname`), and its title bar says *Administrator*.
 
                 Check it worked before moving on:
 
@@ -346,7 +321,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ssh-add $env:USERPROFILE\.ssh\id_ed25519_gitxxx
                 ```
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             1. Add your SSH private keys to the running SSH agent, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
 
@@ -445,34 +420,40 @@ Start by cloning the template into your own local device.
 
 1. Then run the following command to clone the documentation template into your local directory. Use whichever tab matches the host you use.
 
-    === "GitLab"
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Clone the template__
+
+        === "GitLab"
 
 {% if is_surrey %}
-        If you have been given a repository to work on, clone that instead of the template. For example, if your tutor has given you a repository called `report-az1234` in the namespace `comm058-2026`, run the following command:
+            If you have been given a repository to work on, clone that instead of the template. For example, if your tutor has given you a repository called `report-az1234` in the namespace `comm058-2026`, run the following command:
 
-        ``` bash
-        git clone git@gitlab.surrey.ac.uk:comm058-2026/report-az1234.git
-        ```
-        
-        If you have not been given a repository, clone the University of Surrey copy of the template:
-        
-        ``` bash
-        git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
-        ```
+            ``` bash
+            git clone git@gitlab.surrey.ac.uk:comm058-2026/report-az1234.git
+            ```
+
+            If you have not been given a repository, clone the University of Surrey copy of the template:
+
+            ``` bash
+            git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
+            ```
 
 {% else %}
-        ``` bash
-        git clone git@github.com:buckwem/prodockit-template.git
-        ```
+            ``` bash
+            git clone git@github.com:buckwem/prodockit-template.git
+            ```
 
-        The template itself lives on GitHub, so that is where you clone it from even if you intend to publish to GitLab.
+            The template itself lives on GitHub, so that is where you clone it from even if you intend to publish to GitLab.
 {% endif %}
 
-    === "GitHub"
+        === "GitHub"
 
-        ``` bash
-        git clone git@github.com:buckwem/prodockit-template.git
-        ```
+            ``` bash
+            git clone git@github.com:buckwem/prodockit-template.git
+            ```
+
+    </div>
 
     !!! Tip
         You can find your `username` by logging into your GitLab or GitHub account and clicking on your profile picture at the top right corner of the page. On **GitLab** your username is **below** your name in the dropdown menu. On **GitHub** your username is **above** your name in the dropdown menu.
@@ -485,23 +466,29 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Rename the directory to something meaningful for your own report. Cloning leaves you with a folder called `prodockit-template`, which says nothing about whose work it holds - and if you clone a second project later, you will not be able to tell them apart.
 
-    === "macOS"
+    <div class="grid cards one-column" markdown>
 
-        ``` bash
-        mv prodockit-template report-az1234
-        ```
+    -   :material-clock-fast:{ .lg .middle } __Rename the project folder__
 
-    === "Windows 11 using PowerShell"
+        === ":material-apple: macOS"
 
-        ``` powershell
-        Rename-Item prodockit-template report-az1234
-        ```
+            ``` bash
+            mv prodockit-template report-az1234
+            ```
 
-    === "Linux (Ubuntu/Debian)"
+        === ":fontawesome-brands-windows: Windows"
 
-        ``` bash
-        mv prodockit-template report-az1234
-        ```
+            ``` powershell
+            Rename-Item prodockit-template report-az1234
+            ```
+
+        === ":material-linux: Linux (Ubuntu)"
+
+            ``` bash
+            mv prodockit-template report-az1234
+            ```
+
+    </div>
 
     Replace `report-az1234` with a name that identifies your own work - your username, your coursework code, or whatever your course tutor specifies.
 
@@ -510,26 +497,32 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Check what your clone currently points at:
 
-    === "macOS"
+    <div class="grid cards one-column" markdown>
 
-        ``` bash
-        cd report-az1234
-        git remote -v
-        ```
+    -   :material-clock-fast:{ .lg .middle } __Check the current remote__
 
-    === "Windows 11 using PowerShell"
+        === ":material-apple: macOS"
 
-        ``` powershell
-        cd report-az1234
-        git remote -v
-        ```
+            ``` bash
+            cd report-az1234
+            git remote -v
+            ```
 
-    === "Linux (Ubuntu/Debian)"
+        === ":fontawesome-brands-windows: Windows"
 
-        ``` bash
-        cd report-az1234
-        git remote -v
-        ```
+            ``` powershell
+            cd report-az1234
+            git remote -v
+            ```
+
+        === ":material-linux: Linux (Ubuntu)"
+
+            ``` bash
+            cd report-az1234
+            git remote -v
+            ```
+
+    </div>
 
     A fresh clone has exactly one remote, `origin`, pointing at the template:
 
@@ -542,45 +535,57 @@ Cloning gives you the template's *files*, but the clone still points at the temp
 
 1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
 
-    === "macOS"
+    <div class="grid cards one-column" markdown>
 
-        ``` bash
-        rm -rf .git
-        git init -b main
-        ```
+    -   :material-clock-fast:{ .lg .middle } __Reset the repository history__
 
-        !!! danger "`rm -rf .git` cannot be undone"
-            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        === ":material-apple: macOS"
 
-    === "Windows 11 using PowerShell"
+            ``` bash
+            rm -rf .git
+            git init -b main
+            ```
 
-        ``` powershell
-        Remove-Item -Recurse -Force .git
-        git init -b main
-        ```
+            !!! danger "`rm -rf .git` cannot be undone"
+                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
-        !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
-            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        === ":fontawesome-brands-windows: Windows"
 
-    === "Linux (Ubuntu/Debian)"
+            ``` powershell
+            Remove-Item -Recurse -Force .git
+            git init -b main
+            ```
 
-        ``` bash
-        rm -rf .git
-        git init -b main
-        ```
+            !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
+                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
-        !!! danger "`rm -rf .git` cannot be undone"
-            This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+        === ":material-linux: Linux (Ubuntu)"
+
+            ``` bash
+            rm -rf .git
+            git init -b main
+            ```
+
+            !!! danger "`rm -rf .git` cannot be undone"
+                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
+
+    </div>
 
 1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a README, `.gitignore` or licence - the template brings its own, and an initial commit on the host side collides with what you are about to push.
 
-    === "GitLab"
+    <div class="grid cards one-column" markdown>
 
-        On the GitLab website, click **New project > Create blank project**. Name it, set **Visibility Level** to **Private**, and untick **Initialize repository with a README**.
+    -   :material-clock-fast:{ .lg .middle } __Create the empty repository__
 
-    === "GitHub"
+        === "GitLab"
 
-        On the GitHub website, click **New repository**. Name it, set it to **Private**, and leave every **Initialize this repository with** option unticked.
+            On the GitLab website, click **New project > Create blank project**. Name it, set **Visibility Level** to **Private**, and untick **Initialize repository with a README**.
+
+        === "GitHub"
+
+            On the GitHub website, click **New repository**. Name it, set it to **Private**, and leave every **Initialize this repository with** option unticked.
+
+    </div>
 
 1. Point your clone at your own repository, using the tab matching your host:
 
@@ -597,27 +602,33 @@ Cloning gives you the template's *files*, but the clone still points at the temp
         That message means the previous step did its job, not that anything
         is wrong.
 
-    === "GitLab"
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Point the clone at your repository__
+
+        === "GitLab"
 
 {% if is_surrey %}
-        ``` bash
-        git remote add origin git@gitlab.surrey.ac.uk:comm058-2026/your-new-directory-name.git
-        ```
+            ``` bash
+            git remote add origin git@gitlab.surrey.ac.uk:comm058-2026/your-new-directory-name.git
+            ```
 
-        Where your-new-directory-name is the name of the repository you created on GitLab, such as `report-az1234`. Replace `comm058-2026` with your own namespace if it is different.
+            Where your-new-directory-name is the name of the repository you created on GitLab, such as `report-az1234`. Replace `comm058-2026` with your own namespace if it is different.
 {% else %}
-        ``` bash
-        git remote add origin git@gitlab.com:your-namespace/your-new-directory-name.git
-        ```
+            ``` bash
+            git remote add origin git@gitlab.com:your-namespace/your-new-directory-name.git
+            ```
 
-        Replace `gitlab.com` with your own GitLab instance if it is self-hosted.
+            Replace `gitlab.com` with your own GitLab instance if it is self-hosted.
 {% endif %}
 
-    === "GitHub"
+        === "GitHub"
 
-        ``` bash
-        git remote add origin git@github.com:your-username/your-new-directory-name.git
-        ```
+            ``` bash
+            git remote add origin git@github.com:your-username/your-new-directory-name.git
+            ```
+
+    </div>
 
     Confirm it took:
 
@@ -656,7 +667,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
     -   :material-clock-fast:{ .lg .middle } __Install Python, Zensical and prodockit__
 
-        === "macOS using Homebrew"
+        === ":material-apple: macOS"
 
             1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
 
@@ -671,11 +682,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 ```
 
                 !!! info "What these two are for"
-                    `prodockit pdf` shells out to the `pandoc` command to build your PDF, and Pandoc hands the result to \index{WeasyPrint} to lay out the pages. WeasyPrint is not pure Python either - it draws text through Pango, and will not start without it.
-
-                    Installing `pango` is enough to cover all of it: glib, HarfBuzz and fontconfig come along as its dependencies, and those are the rest of what WeasyPrint loads.
-
-                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+                    `prodockit pdf` shells out to `pandoc`, which hands the result to \index{WeasyPrint} to lay out the pages - and WeasyPrint draws text through Pango, so `pango` alone is enough (glib, HarfBuzz and fontconfig come along as its dependencies). Skipping this still looks fine right up until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
             3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
 
@@ -702,7 +709,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 !!! note "Why the full path to Python"
                     macOS ships its own older Python, and a plain `python3` may well find that one instead of Homebrew's. Naming `/opt/homebrew/bin/python3` explicitly builds the virtual environment from the version you just installed. On an Intel Mac, Homebrew installs to `/usr/local` instead, so use `/usr/local/bin/python3`.
 
-        === "Windows 11 using PowerShell"
+        === ":fontawesome-brands-windows: Windows"
 
             1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
 
@@ -739,12 +746,13 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 pacman -S mingw-w64-x86_64-pango
                 ```
 
-                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect, then `cd` back to your project and run `.\.venv\Scripts\Activate.ps1` again - a new window has neither.
+                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect - the next two steps continue in that new window.
+
+                !!! note "No virtual environment to reactivate yet"
+                    Unlike other "close and reopen PowerShell" steps on this page, there's nothing to `cd` back to or activate here. The virtual environment isn't created until step 5 below - reopening PowerShell now just gets the `PATH` change into a fresh window before continuing.
 
                 !!! info "Why this is needed"
-                    That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll`. Installing `pango` brings all four in.
-
-                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+                    That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll` - installing `pango` brings all four in. Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
             4. Allow PowerShell to run scripts. Windows blocks all of them by default, and activating a virtual environment *is* a script, so this has to be done once before the next step will work:
 
@@ -754,25 +762,10 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                 Depending on your PowerShell version it may ask you to confirm the change; answer `Y` if it does. Often it simply returns to the prompt, which means it worked.
 
-                !!! info "What this changes, and why it is needed"
-                    Without it, activating the virtual environment fails with:
+                !!! info "What this changes"
+                    Without it, activating the venv fails with `... cannot be loaded because running scripts is disabled on this system`. `RemoteSigned` allows locally-written scripts while still requiring signed ones from the internet; `-Scope CurrentUser` limits that to your account, so it needs no Administrator window and is a one-time, per-account change.
 
-                    ``` text
-                    .\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is
-                    disabled on this system.
-                    ```
-
-                    `RemoteSigned` lets scripts you wrote or created locally run, while still
-                    requiring a digital signature on anything downloaded from the internet.
-                    `-Scope CurrentUser` applies it to your account only, which is why it needs
-                    no Administrator window and changes nothing for anyone else using the
-                    machine.
-
-                    You only need to do this once per user account, not per project.
-
-                    If you would rather not change it at all, use **classic CMD** instead of
-                    PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat`
-                    files are not covered by execution policy.
+                    Would rather not change it at all? Use **classic CMD** instead of PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat` files aren't covered by execution policy.
 
             5. Change into your project folder, then create a virtual environment and install Zensical inside it:
 
@@ -815,7 +808,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 [Python extension](#install-zensical-studio-and-other-plugins)
                 below handles for you.
 
-        === "Linux (Ubuntu/Debian) using bash"
+        === ":material-linux: Linux (Ubuntu)"
 
             1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, and the graphics libraries \index{WeasyPrint} needs. None of these is a Python package, so `pip` cannot install them for you:
 
@@ -826,11 +819,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 ```
 
                 !!! info "Why the three library packages"
-                    `prodockit pdf` shells out to `pandoc`, and Pandoc hands the result to WeasyPrint to lay out the pages. WeasyPrint is not pure Python - it draws text through \index{Pango}, and will not start without it.
-
-                    `libharfbuzz-subset0` is the one that is easy to miss: on Debian it is a *separate* package from `libharfbuzz0b`, and WeasyPrint needs this one specifically. glib and fontconfig are not listed because `libpango-1.0-0` already depends on them.
-
-                    Skip this and everything still *looks* fine - Zensical installs, the website builds and previews normally - right up until `prodockit pdf`, which stops with `pandoc exited with status 43`.
+                    Pandoc hands the result to WeasyPrint, which draws text through \index{Pango} and won't start without it. `libharfbuzz-subset0` is easy to miss - on Debian it's a *separate* package from `libharfbuzz0b`, and WeasyPrint needs this one specifically (glib and fontconfig aren't listed, since `libpango-1.0-0` already depends on them). Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
                 !!! warning "Debian 12 or Ubuntu 22.04 and newer"
                     `libharfbuzz-subset0` does not exist on older releases. On those, upgrade the distribution rather than hunting for a substitute package.
@@ -945,13 +934,13 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
 
 -   :material-clock-fast:{ .lg .middle } __Install Node.js__
 
-    === "macOS using Homebrew"
+    === ":material-apple: macOS"
 
         ``` bash
         brew install node
         ```
 
-    === "Windows 11 using PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         ``` powershell
         winget install OpenJS.NodeJS.LTS
@@ -966,7 +955,7 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
 
         Check the prompt starts with `(.venv)` again. The next step's `npm ci` commands are relative to your project folder, and every `prodockit` command after it lives inside the virtual environment - outside it, PowerShell reports `The term 'prodockit' is not recognized`.
 
-    === "Linux (Ubuntu/Debian) using bash"
+    === ":material-linux: Linux (Ubuntu)"
 
         Ubuntu's own `nodejs` package is often several versions behind. Use NodeSource's repository to get a current release:
 
@@ -1017,15 +1006,8 @@ npm ci --prefix tools/mathjax
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
 
-!!! note "If npm warns about install scripts"
-    Recent versions of npm print a warning during the Mermaid install and skip the package's own setup step:
-
-    ``` text
-    npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts:
-    npm warn allow-scripts   puppeteer@25.4.0 (postinstall: node install.mjs)
-    ```
-
-    That step is what downloads the headless browser Mermaid draws diagrams with. The install still succeeds, and if the browser is already on your machine from something else, diagrams render fine. If instead a later PDF build reports that it cannot find a browser, approve the step and reinstall:
+!!! note "If npm warns about `allow-scripts`"
+    Recent npm versions skip Puppeteer's own setup step, which downloads the headless browser Mermaid draws diagrams with. The install still succeeds - if a later PDF build reports it cannot find a browser, approve the step and reinstall:
 
     ``` bash
     npm approve-scripts puppeteer --prefix tools/mermaid
@@ -1035,10 +1017,7 @@ This creates a `node_modules` folder inside each, which is deliberately not comm
 !!! tip "Starting a project that isn't from the template?"
     Then you have no `tools/` directory to install from, and need `prodockit init-tools` first to create it. Running it on a copy of the template is harmless but pointless - it will just report `Kept existing tools/mermaid/package.json` for each file it finds. See [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths) for the full picture.
 
-Test the whole thing by building the PDF - see [Generate the Source and PDF documents](startediting.md#startediting-generate-documents) in the next section. If a diagram appears as an image rather than as text, everything is set up correctly.
-
-!!! note "You can skip this if your document has neither"
-    A document with no diagrams and no formulas never calls either tool, so nothing here is required for it. It costs nothing to set up now though, and means the trap above cannot catch you later when you add your first diagram.
+Test the whole thing by building the PDF - see [Generate the Source and PDF documents](startediting.md#startediting-generate-documents) in the next section. If a diagram appears as an image rather than as text, everything is set up correctly. None of this is required if your document has no diagrams or formulas, but setting it up now costs nothing and means the trap above can't catch you later when you add your first one.
 
 ## Where to go next {: #installtooling-where-to-go-next }
 

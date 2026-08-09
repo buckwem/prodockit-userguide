@@ -94,7 +94,7 @@ Install the **desktop** font files - `.ttf` (TrueType) or `.otf` (OpenType). Bot
 
 -   :material-clock-fast:{ .lg .middle } __Install the document fonts__
 
-    === "macOS using Homebrew"
+    === ":material-apple: macOS"
 
         ``` bash
         brew install --cask font-inter font-jetbrains-mono
@@ -102,13 +102,13 @@ Install the **desktop** font files - `.ttf` (TrueType) or `.otf` (OpenType). Bot
 
         Homebrew puts them in `~/Library/Fonts`, which is the per-user font folder - no further step needed. To install a font you downloaded yourself instead, double-click the file and click **Install Font**, or copy the `.otf`/`.ttf` files into `~/Library/Fonts` directly.
 
-    === "Windows 11 using PowerShell"
+    === ":fontawesome-brands-windows: Windows"
 
         Download the desktop font files, then select them all, right-click, and choose **Install for all users**.
 
         Installing for all users matters if a scheduled task or service builds your PDF, since those do not run as you - a font installed only for your own account is invisible to them.
 
-    === "Linux (Ubuntu/Debian) using bash"
+    === ":material-linux: Linux (Ubuntu)"
 
         Where a distribution packages the font, use that - it handles the font cache for you:
 
