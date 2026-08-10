@@ -139,9 +139,13 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
 
 ### Generate and configure ssh keys for Git
 
+{% if is_surrey %}
+Now generate the \index{Git!ssh keys} to use for authentication with your GitLab account and configure your ssh settings to use it. Your coursework lives on the University of Surrey's GitLab, so that's the only account you need a key for here.
+{% else %}
 Now generate the \index{Git!ssh keys} to use for authentication with your GitLab or GitHub account and configure your ssh settings to use these keys. 
+{% endif %}
 
-1. Follow the instructions below to generate a new SSH key pair and add it to your GitLab or GitHub account. It's best practice to use modern, secure `ed25519` keys and create separate ones for GitHub and GitLab.
+1. Follow the instructions below to generate a new SSH key pair and add it to your account. It's best practice to use a modern, secure `ed25519` key.
 
     <div class="grid cards one-column" markdown>
     
@@ -150,6 +154,15 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         === ":material-apple: macOS"
 
             1. Open the **Terminal** application.
+{% if is_surrey %}
+            2. Generate the key. Only the email address needs changing - the rest of the command is complete as written:
+
+                ``` bash
+                ssh-keygen -t ed25519 -C "your.email@example.com" -f ~/.ssh/id_ed25519_gitlab
+                ```
+
+            3. When prompted, type a strong passphrase.
+{% else %}
             2. Generate the key for **GitHub**. Only the email address needs changing - the rest of the command is complete as written:
 
                 ``` bash
@@ -163,6 +176,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
 
             4. When prompted, type a strong passphrase. You are asked once per key, so this happens twice.
+{% endif %}
 
         === ":fontawesome-brands-windows: Windows"
 
@@ -173,6 +187,15 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 mkdir $env:USERPROFILE\.ssh -Force
                 ```
 
+{% if is_surrey %}
+            3. Generate the key. Only the email address needs changing - the rest of the command is complete as written:
+
+                ``` powershell
+                ssh-keygen -t ed25519 -C "your.email@example.com" -f $env:USERPROFILE\.ssh\id_ed25519_gitlab
+                ```
+
+            4. When prompted, type a strong passphrase.
+{% else %}
             3. Generate the key for **GitHub**. Only the email address needs changing - the rest of the command is complete as written:
 
                 ``` powershell
@@ -186,10 +209,20 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
 
             5. When prompted, type a strong passphrase. You are asked once per key, so this happens twice.
-            
+{% endif %}
+
         === ":material-linux: Linux (Ubuntu)"
 
             1. Open the **Terminal** application.
+{% if is_surrey %}
+            2. Generate the key. Only the email address needs changing - the rest of the command is complete as written:
+
+                ``` bash
+                ssh-keygen -t ed25519 -C "your.email@example.com" -f ~/.ssh/id_ed25519_gitlab
+                ```
+
+            3. When prompted, type a strong passphrase.
+{% else %}
             2. Generate the key for **GitHub**. Only the email address needs changing - the rest of the command is complete as written:
 
                 ``` bash
@@ -203,14 +236,20 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
 
             4. When prompted, type a strong passphrase. You are asked once per key, so this happens twice.
+{% endif %}
     
     </div>
 
+{% if is_surrey %}
+    !!! tip "Also want a personal GitHub account?"
+        Everything below is written for your one GitLab key. To add a GitHub account too - for personal projects, say - generate a second key the same way, naming it `id_ed25519_github` instead, then repeat each remaining step for it as well, adding a matching `Host github.com` entry to the ssh config below.
+{% else %}
     !!! note "`gitxxx` in the steps that follow"
         You now have two key files, `id_ed25519_github` and
         `id_ed25519_gitlab`. The remaining steps are written once, with
         `gitxxx` standing for whichever of the two you are working on -
         so run them twice, substituting `github` and then `gitlab`.
+{% endif %}
 
 1. Then configure the SSH config file to use the correct key for each service.
 
@@ -274,12 +313,6 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         HostName gitlab.com
         User git
         IdentityFile ~/.ssh/id_ed25519_gitlab
-
-    # GitHub
-    Host github.com
-        HostName github.com
-        User git
-        IdentityFile ~/.ssh/id_ed25519_github
     ```
 {% else %}
     ```text
@@ -299,17 +332,26 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
     Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
 
+{% if not is_surrey %}
     !!! tip
         Separate keys per account are safer, but if you reuse one, add its public key to each account separately in [Integrate Visual Studio Code with Git](#integrate-visual-studio-code-with-git) below.
+{% endif %}
 
-1. Set the correct permissions for the SSH config file and the private keys to ensure they're secure. If you are using macOS or Linux, run the following commands in your terminal, substituting `gitxxx` and paths to your SSH keys if you used different names or locations:
+1. Set the correct permissions for the SSH config file and the private key(s) to ensure they're secure. If you are using macOS or Linux, run the following commands in your terminal{% if not is_surrey %}, substituting `gitxxx` and paths to your SSH keys if you used different names or locations{% endif %}:
 
+{% if is_surrey %}
+    ```bash
+    chmod 600 ~/.ssh/config
+    chmod 600 ~/.ssh/id_ed25519_gitlab
+    ```
+{% else %}
     ```bash
     chmod 600 ~/.ssh/config
     chmod 600 ~/.ssh/id_ed25519_gitxxx
     ```
+{% endif %}
 
-    Windows handles permissions differently and are normally set to only allow access to the user, but ensure that the private keys aren't accessible to other users.
+    Windows handles permissions differently and are normally set to only allow access to the user, but ensure that the private key(s) aren't accessible to other users.
 
 1. You've set a passphrase for the SSH keys, so you'll need to enter it every time you use a key. To avoid this, you can use an SSH agent to cache your passphrase. Follow the instructions below to start the SSH agent and add your keys.
 
@@ -319,11 +361,17 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
         === ":material-apple: macOS"
 
-            1. macOS normally starts an SSH agent for you automatically. Add your SSH private keys to it, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
+            1. macOS normally starts an SSH agent for you automatically. Add your SSH private key{% if not is_surrey %}s{% endif %} to it{% if not is_surrey %}, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for{% endif %}:
 
+{% if is_surrey %}
+                ``` bash
+                ssh-add ~/.ssh/id_ed25519_gitlab
+                ```
+{% else %}
                 ``` bash
                 ssh-add ~/.ssh/id_ed25519_gitxxx
                 ```
+{% endif %}
 
                 If this fails with an error about not being able to connect to the agent, start one first, then repeat the command above:
 
@@ -352,19 +400,31 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
 
                 The **Status** column should read `Running`. If it still says `Stopped`, confirm the PowerShell window really is running as Administrator - the title bar says *Administrator* when it is.
-            2. Back in your normal (non-administrator) PowerShell window, add your SSH private keys to the agent, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
+            2. Back in your normal (non-administrator) PowerShell window, add your SSH private key{% if not is_surrey %}s{% endif %} to the agent{% if not is_surrey %}, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for{% endif %}:
 
+{% if is_surrey %}
+                ``` powershell
+                ssh-add $env:USERPROFILE\.ssh\id_ed25519_gitlab
+                ```
+{% else %}
                 ``` powershell
                 ssh-add $env:USERPROFILE\.ssh\id_ed25519_gitxxx
                 ```
+{% endif %}
 
         === ":material-linux: Linux (Ubuntu)"
 
-            1. Add your SSH private keys to the running SSH agent, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for:
+            1. Add your SSH private key{% if not is_surrey %}s{% endif %} to the running SSH agent{% if not is_surrey %}, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for{% endif %}:
 
+{% if is_surrey %}
+                ``` bash
+                ssh-add ~/.ssh/id_ed25519_gitlab
+                ```
+{% else %}
                 ``` bash
                 ssh-add ~/.ssh/id_ed25519_gitxxx
                 ```
+{% endif %}
 
                 Unlike macOS, Linux doesn't always start an SSH agent automatically. If the command above fails with an error about not being able to connect to the agent, start one first, then repeat the command above:
 
@@ -373,7 +433,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 ```
     </div>
 
-1. Display your **public** key, so you can copy it - the next section needs it pasted into your GitLab and GitHub accounts. Only the public key goes there; never paste the private one (the file with no `.pub` extension).
+1. Display your **public** key, so you can copy it - the next section needs it pasted into your {% if is_surrey %}GitLab account{% else %}GitLab and GitHub accounts{% endif %}. Only the public key goes there; never paste the private one (the file with no `.pub` extension).
 
     <div class="grid cards one-column" markdown>
 
@@ -381,29 +441,47 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
         === ":material-apple: macOS"
 
+{% if is_surrey %}
+            ``` bash
+            cat ~/.ssh/id_ed25519_gitlab.pub
+            ```
+{% else %}
             ``` bash
             cat ~/.ssh/id_ed25519_gitxxx.pub
             ```
+{% endif %}
 
         === ":fontawesome-brands-windows: Windows"
 
+{% if is_surrey %}
+            ``` powershell
+            Get-Content $env:USERPROFILE\.ssh\id_ed25519_gitlab.pub
+            ```
+{% else %}
             ``` powershell
             Get-Content $env:USERPROFILE\.ssh\id_ed25519_gitxxx.pub
             ```
+{% endif %}
 
         === ":material-linux: Linux (Ubuntu)"
 
+{% if is_surrey %}
+            ``` bash
+            cat ~/.ssh/id_ed25519_gitlab.pub
+            ```
+{% else %}
             ``` bash
             cat ~/.ssh/id_ed25519_gitxxx.pub
             ```
+{% endif %}
 
     </div>
 
-    Substitute `gitxxx` as before, and run it once for each key you generated. Select the entire line it prints - starting with `ssh-ed25519` and ending with the email address you gave it - and copy it.
+    {% if is_surrey %}Select the entire line it prints - starting with `ssh-ed25519` and ending with the email address you gave it - and copy it.{% else %}Substitute `gitxxx` as before, and run it once for each key you generated. Select the entire line it prints - starting with `ssh-ed25519` and ending with the email address you gave it - and copy it.{% endif %}
 
 ### Integrate Visual Studio Code with Git
 
-1. Now that you've generated your keys and finished the configuration, add them to your GitHub and GitLab accounts using the instructions below.
+1. Now that you've generated your keys and finished the configuration, add {% if is_surrey %}it to your GitLab account{% else %}them to your GitHub and GitLab accounts{% endif %} using the instructions below.
 
     <div class="grid cards one-column" markdown>
     
@@ -428,7 +506,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
                 permission error that looks like a misconfigured key rather than an
                 expired one. If pushing suddenly fails having worked for months, check
                 this date first.
-
+{% if not is_surrey %}
         === "GitHub"
 
             1. Log in to your **GitHub** account in a web browser.
@@ -442,22 +520,27 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
             !!! note "No expiry date to set here"
                 Unlike GitLab, GitHub SSH keys have no expiration field - the key
                 stays valid until you delete it, so there is nothing to set.
-
+{% endif %}
     </div>
 
+{% if is_surrey %}
+1. Test the SSH connection to GitLab to ensure that the key is working correctly. Run the following command in your terminal:
+
+    ```bash
+    ssh -T git@gitlab.surrey.ac.uk
+    ```
+
+    If successful, you will see a greeting like:
+
+    ```text
+    Welcome to GitLab, @username!
+    ```
+{% else %}
 1. Test the SSH connection to GitHub and GitLab to ensure that the keys are working correctly. Run the following commands in your terminal:
 
     ```bash
     ssh -T git@gitxxx.com
     ```
-
-{% if is_surrey %}
-    If you're using the University of Surrey GitLab, test that connection too:
-
-    ```bash
-    ssh -T git@gitlab.surrey.ac.uk
-    ```
-{% endif %}
 
     If successful, you will see greetings like:
 
@@ -465,6 +548,7 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     Hi username! You've successfully authenticated, but GitHub does not provide shell access.
     Welcome to GitLab, @username!
     ```
+{% endif %}
 
 ## Cloning the prodockit-template
 
