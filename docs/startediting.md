@@ -494,7 +494,7 @@ The give-away is in the output beneath the error, which contains a line like:
 OSError: cannot load library 'libgobject-2.0-0'
 ```
 
-Install the libraries for your platform, following the per-OS instructions already in [Install Python and Zensical](installtooling.md#install-python-and-zensical) - `brew install pandoc pango` on macOS, the MSYS2 `pacman` step on Windows, or the `apt install` line on Linux. If you followed that page when setting up, you already ran this and something else is missing; re-running it is harmless either way.
+Install the libraries for your platform, following the per-OS instructions already in [Install Python and Zensical](installtooling.md#install-python-and-zensical) - `brew install pango` plus the pinned pandoc download on macOS, the MSYS2 `pacman` step on Windows, or the `apt install` line plus the pinned pandoc `.deb` on Linux. If you followed that page when setting up, you already ran this and something else is missing; re-running it is harmless either way.
 
 Then check before building again:
 

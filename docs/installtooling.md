@@ -617,6 +617,7 @@ Cloning gives you the template's *files*, but the clone still points at the temp
             ``` bash
             rm -rf .git
             git init -b main
+            git config core.fileMode false
             ```
 
             !!! danger "`rm -rf .git` cannot be undone"
@@ -627,6 +628,7 @@ Cloning gives you the template's *files*, but the clone still points at the temp
             ``` powershell
             Remove-Item -Recurse -Force .git
             git init -b main
+            git config core.fileMode false
             ```
 
             !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
@@ -637,12 +639,27 @@ Cloning gives you the template's *files*, but the clone still points at the temp
             ``` bash
             rm -rf .git
             git init -b main
+            git config core.fileMode false
             ```
 
             !!! danger "`rm -rf .git` cannot be undone"
                 This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
 
     </div>
+
+    !!! note "Why `core.fileMode false`"
+        Git records whether a file is executable, and treats a change to
+        that bit as a change to the file. Cloud-sync clients - OneDrive in
+        particular - rewrite those bits as they sync, so a folder that syncs
+        can show every file in the project as modified when not one byte of
+        content has changed. Turning it off tells git to ignore the
+        executable bit entirely.
+
+        It is set per repository and is not committed, so it has to be
+        repeated on each machine and after each fresh clone. If you keep
+        all your work in a synced folder, `git config --global
+        core.fileMode false` saves repeating it - though `git init` and
+        `git clone` each write their own local setting, which still wins.
 
     `rm -rf .git`/`Remove-Item -Recurse -Force .git` deletes the whole repository, remotes included, and `git init` starts a brand new one with none at all:
 
@@ -770,16 +787,25 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 brew install python3
                 ```
 
-            2. Install \index{Pandoc} and \index{Pango} as well. Neither is a Python package, so `pip` cannot install either for you:
+            2. Install \index{Pango}, which is not a Python package, so `pip` cannot install it for you:
 
                 ``` bash
-                brew install pandoc pango
+                brew install pango
                 ```
 
-                !!! info "What these two are for"
-                    `prodockit pdf` shells out to `pandoc`, which hands the result to \index{WeasyPrint} to lay out the pages - and WeasyPrint draws text through Pango, so `pango` alone is enough (glib, HarfBuzz and fontconfig come along as its dependencies). Skipping this still looks fine right up until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
+            3. Install \index{Pandoc} at the version this project builds with. Homebrew always installs the newest release, which is why it is not used here - see [Which pandoc version](#which-pandoc-version) below:
 
-            3. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+                ``` bash
+                curl -fsSL -o /tmp/pandoc.pkg "https://github.com/jgm/pandoc/releases/download/3.10.1/pandoc-3.10.1-arm64-macOS.pkg"
+                sudo installer -pkg /tmp/pandoc.pkg -target /
+                ```
+
+                On an Intel Mac, use `pandoc-3.10.1-x86_64-macOS.pkg` instead.
+
+                !!! info "Why Pango but a fixed Pandoc"
+                    `prodockit pdf` shells out to `pandoc`, which hands the result to \index{WeasyPrint} to lay out the pages - and WeasyPrint draws text through Pango, so `pango` alone is enough (glib, HarfBuzz and fontconfig come along as its dependencies). Skipping either still looks fine right up until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
+
+            4. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
 
                 ``` bash
                 # 1. Create the virtual environment
@@ -816,7 +842,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
             2. Next install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
 
                 ``` powershell
-                winget install --id JohnMacFarlane.Pandoc
+                winget install --id JohnMacFarlane.Pandoc --version 3.10.1
                 ```
 
                 !!! note "The package is under its author's name, not `Pandoc`"
@@ -913,8 +939,15 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                 ``` bash
                 sudo apt update
-                sudo apt install python3 python3-venv python3-pip pandoc \
+                sudo apt install python3 python3-venv python3-pip curl \
                   libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
+                ```
+
+                Ubuntu's own `pandoc` package is several major versions behind, far enough to change how the PDF renders, so install the pinned release directly - see [Which pandoc version](#which-pandoc-version) below:
+
+                ``` bash
+                curl -fsSL -o /tmp/pandoc.deb "https://github.com/jgm/pandoc/releases/download/3.10.1/pandoc-3.10.1-1-amd64.deb"
+                sudo apt install -y /tmp/pandoc.deb
                 ```
 
                 !!! info "Why the three library packages"
@@ -945,6 +978,28 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 [Python extension](#install-zensical-studio-and-other-plugins)
                 below handles for you.
     </div>
+
+    ### Which pandoc version {: #which-pandoc-version }
+
+    Every command above installs pandoc **3.10.1** specifically, rather than
+    whatever your package manager considers current. This project is built
+    and tested against that version, and pandoc is not always compatible
+    with itself across releases: 3.10 changed how it reads highlighted code
+    in HTML, in a way that broke every fenced code block in the PDF while
+    the build still reported success - see [Pandoc version
+    drift](https://buckwem.github.io/prodockit-extensions/devcons/continuous-integration/#ci-pandoc-version){target="_blank"}
+    for what that looked like.
+
+    Confirm which version you actually have:
+
+    ``` bash
+    pandoc --version
+    ```
+
+    The first line should read `pandoc 3.10.1`. If it doesn't - a
+    Homebrew upgrade, a distribution update, or `winget upgrade` run
+    without thinking about it will all move this - repeat the pandoc
+    install step above for your platform to bring it back.
 
 1. Install Zensical and prodockit inside the virtual environment. The `requirements.txt` file in the template lists the required packages, so you can install them all with a single command (use `pip` if `pip3` is not available):
 
