@@ -145,6 +145,34 @@ bib_file = "references.bib"
 csl_style = "harvard-cite-them-right.csl"
 ```
 
+The template enables this by default, pointing at `harvard-cite-them-right.csl` - but that file isn't part of the clone. Like the pinned pandoc download in [Install tooling](installtooling.md#which-pandoc-version), a citation style is fetched rather than committed, so `zensical serve`/`zensical build` fails outright until it's in place. Fetch it once, from the project root:
+
+<div class="grid cards one-column" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Fetch the citation style__
+
+    === ":material-apple: macOS"
+
+        ``` bash
+        curl -fsSL -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-them-right"
+        ```
+
+    === ":fontawesome-brands-windows: Windows"
+
+        ``` powershell
+        Invoke-WebRequest -Uri "https://www.zotero.org/styles/harvard-cite-them-right" -OutFile harvard-cite-them-right.csl
+        ```
+
+    === ":material-linux: Linux (Ubuntu)"
+
+        ``` bash
+        curl -fsSL -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-them-right"
+        ```
+
+</div>
+
+Using a different CSL style instead? Find it on the [Zotero Style Repository](https://www.zotero.org/styles){target="_blank"}, then fetch it the same way and point `csl_style` at its filename.
+
 Cite a source with `\cite{id}` (note the different marker, distinct from `\citeref{id}` above), and put a bare `\bibliography` marker on its own paragraph wherever you want the formatted reference list to appear:
 
 ``` markdown
