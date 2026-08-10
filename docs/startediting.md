@@ -118,18 +118,20 @@ your repository and stops every rebuild showing up as a change.
 You can generate these two documents by running the following commands:
 
 ```bash
-# 1. Build both PDFs - the report itself, and the source bundle
-prodockit pdf
-
-# 2. Copy the source bundle in beside the report, so the local preview can find it
-cp source_bundle.pdf docs/
+prodockit pdf              # the report itself
+prodockit source-bundle    # your Markdown content and zensical.toml, one file per page
 ```
 
 `prodockit pdf` writes the report to `docs/site_documentation.pdf`, which the **PDF**
-button already points at. The **Source** button needs the second command: the source
-bundle is written to your project's root directory rather than `docs/`, so it has to be
-copied across before the preview can serve it. Your published website needs no such
-step - the build pipeline does the same copy for you.
+button already points at. `prodockit source-bundle` writes `docs/source_bundle.pdf` the
+same way, which the **Source** button points at - both land directly in `docs/`, so
+there's nothing to copy anywhere before the preview can serve them.
+
+!!! note "Only your Markdown and config, not your whole repository"
+    `prodockit source-bundle` bundles every `.md` file plus `zensical.toml` - your
+    documentation's own source, not the template's build tooling. See
+    [Source-code bundling](customise.md#source-code-bundling) if your submission needs
+    the whole repository bundled instead.
 
 Refresh your browser and both buttons will work.
 
@@ -265,13 +267,15 @@ Once your commit reaches the default branch, the [CI/CD pipeline](#automated-bui
 
     This can take a little while, especially the first time - it's converting every page into a single PDF, rendering any diagrams and maths along the way.
 
-    If `pdf_source_bundle` is set in your `zensical.toml`, this same command also writes `source_bundle.pdf` - a separate document containing every one of your repository's own tracked text files, one per page (see [Source-code bundling](customise.md#source-code-bundling)). It's written to your project's root directory rather than `docs/`; copy it across if you want the website's own **Source** download button to find it in your local preview too:
+4. If your project wants a source bundle too - see [Source-code bundling](customise.md#source-code-bundling) - build it with a second command:
 
     ```bash
-    cp source_bundle.pdf docs/
+    prodockit source-bundle
     ```
 
-4. Once it finishes, open `docs/site_documentation.pdf` (in the `docs` folder) to check the result - and `source_bundle.pdf`, if you built one.
+    This writes `docs/source_bundle.pdf` directly - nothing to copy anywhere, and refreshing your browser is enough for the website's own **Source** download button to find it in your local preview.
+
+5. Once it finishes, open `docs/site_documentation.pdf` (in the `docs` folder) to check the result - and `docs/source_bundle.pdf`, if you built one.
 
 Run this again after any change you want reflected in the PDF - it always rebuilds the whole document from scratch, so there's no separate "clean" step needed for it, unlike the website build below.
 
