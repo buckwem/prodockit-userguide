@@ -417,14 +417,20 @@ pdf_margin_outer = "1.5cm"
 
 ### Source-code bundling
 
-Set `pdf_source_bundle = true` in `[project.extra]` to also produce a `source_bundle.pdf` alongside your main PDF - a separate document containing every one of your repository's own tracked (and not-ignored) text files, one per page:
+Run `prodockit source-bundle` alongside `prodockit pdf` to also produce a `source_bundle.pdf` - a separate document containing your Markdown content and `zensical.toml`, one file per page:
 
-```toml
-[project.extra]
-pdf_source_bundle = true
+```bash
+prodockit source-bundle
 ```
 
-Useful for a submission that requires the underlying source alongside the report itself. Only runs for a full build (`prodockit pdf` with no extra flags), not a single-file preview build.
+Useful for a submission that requires the underlying source alongside the report itself. A separate command rather than a `zensical.toml` setting, so a project that wants only the rendered document doesn't build the source bundle on every run too.
+
+Written into `docs_dir`, alongside `site_documentation.pdf`, so the website's own **Source** download button finds it with no extra step.
+
+!!! note "Only your Markdown and config, not your whole repository"
+    Earlier versions of this feature bundled every one of your repository's own tracked (and not-ignored) files - Python, CSS, tests, everything. `prodockit source-bundle` bundles your documentation's own source: every `.md` file, plus `zensical.toml`. For most coursework this is what you actually want - your own written content, not the template's build tooling.
+
+    If your submission needs the *whole* repository bundled - for example, an originality declaration covering custom code you wrote yourself, not just prose - that's still possible, just not from this command. See [`prodockit.pdf.source_bundle`](https://buckwem.github.io/prodockit-extensions/pdf/#prodockitpdfsource_bundle) in the prodockit-extensions docs for calling `build_source_bundle()` directly.
 
 ### Screenshots
 
