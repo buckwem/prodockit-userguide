@@ -1027,10 +1027,10 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                   libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
                 ```
 
-                Ubuntu's own `pandoc` package is several major versions behind, far enough to change how the PDF renders, so install the pinned release directly - see [Which pandoc version](#which-pandoc-version) below:
+                Ubuntu's own `pandoc` package is several major versions behind, far enough to change how the PDF renders, so install the pinned release directly - see [Which pandoc version](#which-pandoc-version) below. This picks the `amd64` or `arm64` package to match your CPU, so it also works on Ubuntu running under an Apple Silicon Mac:
 
                 ``` bash
-                curl -fsSL -o /tmp/pandoc.deb "https://github.com/jgm/pandoc/releases/download/3.10.1/pandoc-3.10.1-1-amd64.deb"
+                curl -fsSL -o /tmp/pandoc.deb "https://github.com/jgm/pandoc/releases/download/3.10.1/pandoc-3.10.1-1-$(dpkg --print-architecture).deb"
                 sudo apt install -y /tmp/pandoc.deb
                 ```
 
