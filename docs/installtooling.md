@@ -1252,6 +1252,22 @@ npm ci --prefix tools/mathjax
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
 
+If you're on Linux, also install a native Chromium and point Puppeteer at it, rather than relying on the Chrome that `tools/mermaid`'s `npm ci` downloaded for it - which is not guaranteed to match your CPU's architecture. This matters most on ARM64 machines (an Apple Silicon Linux VM, an AWS Graviton instance, a Raspberry Pi), where the mismatch otherwise goes unnoticed until a PDF build fails, but it costs nothing to do on any Ubuntu install:
+
+``` bash
+sudo apt update
+sudo apt install -y chromium-browser
+which chromium-browser || which chromium
+```
+
+The second command should print a path such as `/usr/bin/chromium-browser` or `/usr/bin/chromium` - that's what the next step needs. Point `prodockit pdf` at it for this session, then make it permanent so every future session picks it up too:
+
+``` bash
+export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)
+echo 'export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)' >> ~/.bashrc
+source ~/.bashrc
+```
+
 !!! note "If npm reports vulnerabilities or an `allow-scripts` warning"
     Both are normal here, not a sign anything went wrong:
 
