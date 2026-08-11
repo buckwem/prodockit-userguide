@@ -15,8 +15,28 @@ For anything beyond a small fix (typos, broken links), please open an issue firs
 
 1. Fork the repository and clone your fork.
 2. Install the Python prerequisites: `pip install -r requirements.txt`.
-3. Preview the site locally: `zensical serve`.
-4. If your change affects the PDF build, also run `prodockit pdf` - see [Install tooling](https://buckwem.github.io/prodockit-userguide/installtooling/) for the full setup. The one Mermaid diagram in [Diagrams](https://buckwem.github.io/prodockit-userguide/zensicalbasics/#diagrams) only renders as an image in the PDF if `mermaid-cli` (`mmdc`) is available on your `PATH`; without it, the PDF build silently skips it rather than failing.
+3. Install the MathJax bundle the *website* needs - not committed (it's third-party code; see [Extra CSS and JavaScript](https://buckwem.github.io/prodockit-userguide/customise/#extra-css-and-javascript)), so `zensical serve` shows every formula as raw TeX until this has run once:
+
+   ```bash
+   npm ci --prefix tools/mathjax
+   mkdir -p docs/javascripts/vendor/mathjax
+   cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js docs/javascripts/vendor/mathjax/
+   cp tools/mathjax/node_modules/mathjax-full/LICENSE docs/javascripts/vendor/mathjax/
+   cat > docs/javascripts/mathjax.js <<'MATHJAX'
+   window.MathJax = {
+     tex: {
+       processEscapes: true,
+       processEnvironments: true,
+     },
+     options: {
+       ignoreHtmlClass: ".*|",
+       processHtmlClass: "arithmatex",
+     },
+   };
+   MATHJAX
+   ```
+4. Preview the site locally: `zensical serve`.
+5. If your change affects the PDF build, also run `prodockit pdf` - see [Install tooling](https://buckwem.github.io/prodockit-userguide/installtooling/) for the full setup. The one Mermaid diagram in [Diagrams](https://buckwem.github.io/prodockit-userguide/zensicalbasics/#diagrams) only renders as an image in the PDF if `mermaid-cli` (`mmdc`) is available on your `PATH`; without it, the PDF build silently skips it rather than failing.
 
 ## Making a change
 

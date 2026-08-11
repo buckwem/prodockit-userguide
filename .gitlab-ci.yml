@@ -74,6 +74,31 @@ pages:
     - apt-get install -y google-chrome-stable
     - npm ci --prefix tools/mermaid
     - npm ci --prefix tools/mathjax
+    # MathJax for the *website*, from the very install above. Neither file
+    # is committed - the bundle is third-party code, and both are written
+    # by `prodockit bootstrap` on a developer's machine
+    # (prodockit-extensions#263) - so CI has to install them the same way.
+    # Without this the site builds with a dangling script reference and
+    # shows raw TeX where an equation should be.
+    - mkdir -p docs/javascripts/vendor/mathjax
+    - cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js docs/javascripts/vendor/mathjax/
+    - cp tools/mathjax/node_modules/mathjax-full/LICENSE docs/javascripts/vendor/mathjax/
+    - |
+      cat > docs/javascripts/mathjax.js <<'MATHJAX'
+      // Written by CI, matching what `prodockit bootstrap` writes. Loaded
+      // *before* the MathJax bundle: MathJax reads `window.MathJax` once at
+      // startup, so a config arriving afterwards is ignored.
+      window.MathJax = {
+        tex: {
+          processEscapes: true,
+          processEnvironments: true,
+        },
+        options: {
+          ignoreHtmlClass: ".*|",
+          processHtmlClass: "arithmatex",
+        },
+      };
+      MATHJAX
     - pip install -r requirements.txt -r testrequirements.txt
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
@@ -154,6 +179,23 @@ drift:
     - apt-get install -y google-chrome-stable
     - npm ci --prefix tools/mermaid
     - npm ci --prefix tools/mathjax
+    # See the identical, commented step in the `pages` job above.
+    - mkdir -p docs/javascripts/vendor/mathjax
+    - cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js docs/javascripts/vendor/mathjax/
+    - cp tools/mathjax/node_modules/mathjax-full/LICENSE docs/javascripts/vendor/mathjax/
+    - |
+      cat > docs/javascripts/mathjax.js <<'MATHJAX'
+      window.MathJax = {
+        tex: {
+          processEscapes: true,
+          processEnvironments: true,
+        },
+        options: {
+          ignoreHtmlClass: ".*|",
+          processHtmlClass: "arithmatex",
+        },
+      };
+      MATHJAX
   script:
     - pip install -r requirements.txt -r testrequirements.txt
     - PINNED_ZENSICAL=$(pip show zensical | awk '/^Version:/{print $2}')
