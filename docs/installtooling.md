@@ -310,12 +310,14 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         HostName gitlab.surrey.ac.uk
         User git
         IdentityFile ~/.ssh/id_ed25519_gitlab
+        AddKeysToAgent yes
 
     # GitLab
     Host gitlab.com
         HostName gitlab.com
         User git
         IdentityFile ~/.ssh/id_ed25519_gitlab
+        AddKeysToAgent yes
     ```
 {% else %}
     ```text
@@ -324,16 +326,21 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
         HostName gitlab.com
         User git
         IdentityFile ~/.ssh/id_ed25519_gitlab
+        AddKeysToAgent yes
 
     # GitHub
     Host github.com
         HostName github.com
         User git
         IdentityFile ~/.ssh/id_ed25519_github
+        AddKeysToAgent yes
     ```
 {% endif %}
 
-    Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations.
+    Make sure to replace the paths with the correct paths to your SSH keys if you used different names or locations. `AddKeysToAgent yes` is what makes the key-loading step below self-healing - without it, the key you add to the agent today is gone the next time the agent restarts (a reboot, a logout, on some setups just time), and SSH fails with a permission error that looks like a rejected key rather than a missing one, since the *public* half still authenticates fine and only the signing step - which needs the private half - actually fails.
+
+    !!! tip "On macOS, add one more line"
+        Add `UseKeychain yes` too, in each `Host` block above, so macOS can supply the passphrase from your login keychain instead of asking every time - paired with `--apple-use-keychain` on `ssh-add` below. This directive is Apple-specific: **don't** add it on Windows or Linux, where it isn't recognised and breaks every `ssh` command that reads this file with `Bad configuration option: usekeychain`.
 
 {% if not is_surrey %}
     !!! tip
@@ -364,15 +371,15 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
 
         === ":material-apple: macOS"
 
-            1. macOS normally starts an SSH agent for you automatically. Add your SSH private key{% if not is_surrey %}s{% endif %} to it{% if not is_surrey %}, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for{% endif %}:
+            1. macOS normally starts an SSH agent for you automatically. Add your SSH private key{% if not is_surrey %}s{% endif %} to it{% if not is_surrey %}, substituting `gitxxx` with either `github` or `gitlab` depending on which service you are adding the key for{% endif %} - `--apple-use-keychain` stores the passphrase in your login keychain, so the key survives a reboot instead of silently dropping out of the agent:
 
 {% if is_surrey %}
                 ``` bash
-                ssh-add ~/.ssh/id_ed25519_gitlab
+                ssh-add --apple-use-keychain ~/.ssh/id_ed25519_gitlab
                 ```
 {% else %}
                 ``` bash
-                ssh-add ~/.ssh/id_ed25519_gitxxx
+                ssh-add --apple-use-keychain ~/.ssh/id_ed25519_gitxxx
                 ```
 {% endif %}
 
