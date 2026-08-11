@@ -161,27 +161,44 @@ The configured fonts, in whichever weights the document happens to use. A name y
 
 Your document has more inputs than its own content. Zensical renders the site, Pandoc and WeasyPrint lay out the PDF, and whatever runs the pipeline carries its own OS image. Left unpinned, an upgrade to any of them doesn't fail the build - it just quietly publishes a slightly different document, with nothing to indicate anything changed.
 
-`prodockit pins` keeps these declarations - a version in `requirements.txt`, a runner label in a workflow file - in step with each other, wherever they're written down:
+`prodockit pins` keeps these declarations - a version in `requirements.txt`, a `PANDOC_VERSION` in a workflow file, a runner label - in step with each other, wherever they're written down:
 
 ```bash
 prodockit pins          # prompt per package; Enter takes the newest release
 prodockit pins --check  # behind, or files disagreeing with each other? exit non-zero
 ```
 
-This project pins `zensical`/`weasyprint` in `requirements.txt`, and the runner/image used to build it - `ubuntu-24.04` in `.github/workflows/docs.yml`, `python:3.13` in `.gitlab-ci.yml` - since a runner label or image tag has no package index to check against, only `--set` to a version you choose yourself, e.g. `prodockit pins -p ubuntu --set ubuntu=24.04`.
+With no `-p` flags, both commands cover five packages by default: `zensical`, `weasyprint`, `markdown`, `pymdown-extensions`, and **pandoc** - Pandoc is the fourth build input alongside Zensical and WeasyPrint, and the one that has actually caught this project family out. Pandoc 3.10 stopped treating a syntax-highlighted `<pre><code>` as a code block; on that version every fenced code block in the PDF lost its preformatting and reflowed as justified prose, while the build reported success. The published PDFs stayed correct only because CI happened to be installing an older pandoc than anyone's laptop - exactly the silent drift this section exists to catch. [Pandoc version drift](https://buckwem.github.io/prodockit-extensions/devcons/continuous-integration/#ci-pandoc-version){target="_blank"} covers the how, and prodockit's [limitations](https://buckwem.github.io/prodockit-extensions/devcons/limitations/){target="_blank"} page records the episode in full.
 
-`prodockit` itself is pinned exactly too - it renders this project's own site and PDF content directly (headings, refs, citations, glossary, the back-of-book index), so a new release can change published output the same way a Zensical or WeasyPrint upgrade can. It isn't one of `prodockit pins`' two default packages, so managing or checking it needs naming explicitly:
+This project pins `zensical`/`weasyprint` in `requirements.txt`, and pandoc as `PANDOC_VERSION` in both `.github/workflows/docs.yml` and `.gitlab-ci.yml`:
+
+```bash
+$ prodockit pins --check
+zensical
+  requirements.txt:12  zensical==0.0.53
+  newest on PyPI: 0.0.53
+...
+pandoc
+  .gitlab-ci.yml:52  PANDOC_VERSION: "3.10.1
+  .gitlab-ci.yml:139  PANDOC_VERSION: "3.10.1
+  .github/workflows/docs.yml:50  PANDOC_VERSION: "3.10.1
+  not on PyPI - set the version yourself
+Every managed package is current and consistent.
+```
+
+"Not on PyPI" is the one way pandoc's entry differs from the rest: it isn't a Python package, so there's no release index to check against or take "newest" from - `prodockit pins` (no `--check`) still prompts for it like any other package, but you type the version rather than pressing Enter for the newest. `--set` works exactly the same as anywhere else:
+
+```bash
+prodockit pins --set pandoc=3.10.1
+```
+
+This project also pins the runner/image used to build it - `ubuntu-24.04` in `.github/workflows/docs.yml`, `python:3.13` in `.gitlab-ci.yml` - since a runner label or image tag has no package index either, only `--set` to a version you choose yourself, e.g. `prodockit pins -p ubuntu --set ubuntu=24.04`.
+
+`prodockit` itself is pinned exactly too - it renders this project's own site and PDF content directly (headings, refs, citations, glossary, the back-of-book index), so a new release can change published output the same way a Zensical or WeasyPrint upgrade can. It isn't one of `prodockit pins`' five default packages, so managing or checking it needs naming explicitly:
 
 ```bash
 prodockit pins --check -p zensical -p weasyprint -p prodockit
 ```
-
-!!! warning "Pandoc is the input `prodockit pins` cannot see"
-    Pandoc is the fourth build input, and the one that has actually caught this project family out. It arrives from your CI image or a setup action rather than `requirements.txt`, so nothing in `prodockit pins` manages it and it drifts silently.
-
-    Pandoc 3.10 stopped treating a syntax-highlighted `<pre><code>` as a code block. On that version every fenced code block in the PDF lost its preformatting and reflowed as justified prose - while the build reported success, exactly the failure this section opens by describing. The published PDFs stayed correct only because CI happened to be installing an older pandoc than anyone's laptop.
-
-    Pin it explicitly in your pipeline, the way this project pins its runner image, so a pandoc change arrives as a version bump you can bisect rather than one morning's mystery. [Pandoc version drift](https://buckwem.github.io/prodockit-extensions/devcons/continuous-integration/#ci-pandoc-version){target="_blank"} covers the how, and prodockit's [limitations](https://buckwem.github.io/prodockit-extensions/devcons/limitations/){target="_blank"} page records the episode in full.
 
 !!! tip
     `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. Watching for a newer release *actually mattering* is the next section's job instead.
