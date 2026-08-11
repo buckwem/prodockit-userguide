@@ -47,25 +47,34 @@ nav = [
 ]
 
 extra_css = ["stylesheets/extra.css"]
-# MathJax is vendored rather than fetched from unpkg - see the note in
-# docs/javascript/vendor/mathjax/README.txt for the full reasoning. In
-# short: the CDN URL was `mathjax@3`, which floats, while `prodockit pdf`
-# renders the PDF through tools/mathjax's exactly-pinned 3.2.2, so the two
-# agreed only by coincidence. This copy comes from that same pinned
-# install, so the website and the PDF provably typeset through one build.
-# It also removes five third-party requests per page carrying a formula
-# (the bundle, plus the four .woff fonts CommonHTML fetched at runtime).
+# MathJax is installed rather than fetched from unpkg - the CDN URL was
+# `mathjax@3`, which floats, while `prodockit pdf` renders the PDF through
+# tools/mathjax's exactly-pinned 3.2.2, so the two agreed only by
+# coincidence. This copy comes from that same pinned install, so the
+# website and the PDF provably typeset through one build. It also removes
+# five third-party requests per page carrying a formula (the bundle, plus
+# the four .woff fonts CommonHTML fetched at runtime).
 #
-# If a MathJax *config* file is ever added it must be listed BEFORE the
-# bundle: MathJax reads `window.MathJax` once, at startup, so a config
-# loaded afterwards is ignored. There is no config today - arithmatex's
-# `generic = true` (see markdown_extensions below) already emits explicit
-# \(...\) / \[...\] delimiters, which is exactly what MathJax looks for by
-# default, and its default skipHtmlTags leaves `pre`/`code` alone so the
-# shell examples in these docs are never mistaken for maths.
+# Neither file is committed - both are third-party code/generated
+# configuration, and a repository is redistribution. `prodockit bootstrap`
+# writes them on a developer's machine; CI installs them the same way (see
+# .github/workflows/docs.yml, .gitlab-ci.yml) - see docs/customise.md's
+# "Extra CSS and JavaScript" for the full reasoning
+# (prodockit-extensions#263).
+#
+# javascripts/mathjax.js MUST be listed BEFORE the bundle: MathJax reads
+# `window.MathJax` once, at startup, so a config loaded afterwards is
+# ignored. prodockit-extensions#263 hit exactly this in prodockit-template
+# - arithmatex's `generic = true` (see markdown_extensions below) wraps
+# every formula in a `<div>`/`<span class="arithmatex">`, and without an
+# explicit config MathJax's own defaults are not guaranteed to look
+# inside it, rendering raw TeX with the build reporting success. This
+# config matches the fix there, so the two projects stay in step even
+# though this page's own formula was not observed to fail without it.
 extra_javascript = [
-  "javascript/vendor/mathjax/tex-svg-full.js",
-  "javascript/extra.js"
+  "javascripts/mathjax.js",
+  "javascripts/vendor/mathjax/tex-svg-full.js",
+  "javascripts/extra.js"
 ]
 
 [project.theme]

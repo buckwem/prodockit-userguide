@@ -13,6 +13,15 @@ tools/mermaid/node_modules
 # the PDF, same reason). Installed with `npm ci --prefix tools/mathjax`.
 tools/mathjax/node_modules
 
+# MathJax bundle for the *website* - third-party code and generated
+# configuration, neither of which belongs in this repository. Copied from
+# tools/mathjax's pinned install so the site and the PDF typeset through
+# the same MathJax (prodockit-extensions#263). `prodockit bootstrap` writes
+# these on a developer's machine; CI installs them the same way (see
+# .github/workflows/docs.yml, .gitlab-ci.yml).
+docs/javascripts/vendor/
+docs/javascripts/mathjax.js
+
 # Artifacts
 __pycache__
 .pytest_cache
