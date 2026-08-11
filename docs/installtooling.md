@@ -889,7 +889,16 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 !!! info "Why Pango but a fixed Pandoc"
                     `prodockit pdf` shells out to `pandoc`, which hands the result to \index{WeasyPrint} to lay out the pages - and WeasyPrint draws text through Pango, so `pango` alone is enough (glib, HarfBuzz and fontconfig come along as its dependencies). Skipping either still looks fine right up until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
-            4. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+            4. Install the desktop font files this template's PDF uses by default - **Inter** and **JetBrains Mono**:
+
+                ``` bash
+                brew install --cask font-inter font-jetbrains-mono
+                ```
+
+                !!! info "Why this early"
+                    The website loads its fonts from a CDN at view time, but the PDF has no such fallback - WeasyPrint has to embed the actual font files, and silently substitutes a fallback font instead of erroring if they are missing. See [Fonts](customisebuild.md#customisebuild-fonts) for the full picture, including how to check the right fonts actually made it into a built PDF.
+
+            5. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
 
                 ``` bash
                 # 1. Create the virtual environment
@@ -963,7 +972,12 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 !!! info "Why this is needed"
                     That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll` - installing `pango` brings all four in. Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
 
-            4. Allow PowerShell to run scripts. Windows blocks all of them by default, and activating a virtual environment *is* a script, so this has to be done once before the next step will work:
+            4. Install the desktop font files this template's PDF uses by default - **Inter** and **JetBrains Mono**. Download the desktop (`.ttf`/`.otf`) files for each - [Inter](https://fonts.google.com/specimen/Inter){target="_blank"}, [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono){target="_blank"} - then select them all, right-click, and choose **Install for all users**.
+
+                !!! info "Why this early"
+                    The website loads its fonts from a CDN at view time, but the PDF has no such fallback - WeasyPrint has to embed the actual font files, and silently substitutes a fallback font instead of erroring if they are missing. See [Fonts](customisebuild.md#customisebuild-fonts) for the full picture, including why a `.woff`/`.woff2` download will not do, and how to check the right fonts actually made it into a built PDF.
+
+            5. Allow PowerShell to run scripts. Windows blocks all of them by default, and activating a virtual environment *is* a script, so this has to be done once before the next step will work:
 
                 ``` powershell
                 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
@@ -976,7 +990,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                     Would rather not change it at all? Use **classic CMD** instead of PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat` files aren't covered by execution policy.
 
-            5. Change into your project folder, then create a virtual environment and install Zensical inside it:
+            6. Change into your project folder, then create a virtual environment and install Zensical inside it:
 
                 ``` powershell
                 cd C:\path\to\your-project
@@ -1019,12 +1033,13 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
         === ":material-linux: Linux (Ubuntu)"
 
-            1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, and the graphics libraries \index{WeasyPrint} needs. None of these is a Python package, so `pip` cannot install them for you:
+            1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, the graphics libraries \index{WeasyPrint} needs, and the fonts this template's PDF uses by default. None of these is a Python package, so `pip` cannot install them for you:
 
                 ``` bash
                 sudo apt update
                 sudo apt install python3 python3-venv python3-pip curl \
-                  libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
+                  libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
+                  fonts-inter fonts-jetbrains-mono
                 ```
 
                 Ubuntu's own `pandoc` package is several major versions behind, far enough to change how the PDF renders, so install the pinned release directly - see [Which pandoc version](#which-pandoc-version) below. This picks the `amd64` or `arm64` package to match your CPU, so it also works on Ubuntu running under an Apple Silicon Mac:
@@ -1039,6 +1054,9 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                 !!! warning "Debian 12 or Ubuntu 22.04 and newer"
                     `libharfbuzz-subset0` does not exist on older releases. On those, upgrade the distribution rather than hunting for a substitute package.
+
+                !!! info "Why the fonts, this early"
+                    The website loads its fonts from a CDN at view time, but the PDF has no such fallback - WeasyPrint has to embed the actual font files, and silently substitutes a fallback font instead of erroring if they are missing. Skipping this still looks fine right up until your first `prodockit pdf`, whose test suite (if you run one - see [Testing](testing.md)) then fails with `No 'Inter' font found anywhere in the compiled PDF`. See [Fonts](customisebuild.md#customisebuild-fonts) for the full picture, including how to check the right fonts actually made it into a built PDF.
 
             2. Navigate to your project folder and run the following commands to create a virtual environment and install Zensical inside it:
 
@@ -1098,6 +1116,34 @@ The instructions below are for installing Python 3.12 or later. If you have an o
     ```
 
     A version number means everything is in place. If instead you get a long error ending in `cannot load library`, the libraries from the step above are missing or cannot be found - go back and install them.
+
+1. Fetch the citation style your first build needs. The template enables `prodockit.bibliography` by default, pointing `csl_style` at `harvard-cite-them-right.csl` - but that file isn't part of the clone, so `zensical serve`/`zensical build`/`prodockit pdf` all fail outright until it's in place. Fetch it once, from your project root:
+
+    <div class="grid cards one-column" markdown>
+
+    -   :material-clock-fast:{ .lg .middle } __Fetch the citation style__
+
+        === ":material-apple: macOS"
+
+            ``` bash
+            curl -fsSL -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-them-right"
+            ```
+
+        === ":fontawesome-brands-windows: Windows"
+
+            ``` powershell
+            Invoke-WebRequest -Uri "https://www.zotero.org/styles/harvard-cite-them-right" -OutFile harvard-cite-them-right.csl
+            ```
+
+        === ":material-linux: Linux (Ubuntu)"
+
+            ``` bash
+            curl -fsSL -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-them-right"
+            ```
+
+    </div>
+
+    See [An alternative: prodockit.bibliography](customisecontent.md#an-alternative-prodockitbibliography) for what this feature does, and how to fetch a different CSL style instead.
 
 1. Sync the repository's own self-references to match. The template's files still name the *template's* repository in several places, and nothing about changing a Git remote updates them:
 
@@ -1235,7 +1281,25 @@ v22.14.0
 
 Your cloned template already contains the manifests and lockfiles for both tools, in `tools/mermaid` and `tools/mathjax` - so you only need to install them.
 
-Open a new terminal for this step, and make sure it's actually sitting in your project's root directory first - the `--prefix` paths below are relative to wherever you run them from:
+If you're on Linux, install a native Chromium and point Puppeteer at it **before** running `npm ci` below, rather than letting `tools/mermaid`'s own `npm ci` download one for you - Puppeteer's download is not guaranteed to match your CPU's architecture. This matters most on ARM64 machines (an Apple Silicon Linux VM, an AWS Graviton instance, a Raspberry Pi), where `npm ci` would otherwise silently fetch an x86_64 Chrome build it can never run, but it costs nothing to do on any Ubuntu install:
+
+``` bash
+sudo apt update
+sudo apt install -y chromium-browser
+which chromium-browser || which chromium
+```
+
+The second command should print a path such as `/usr/bin/chromium-browser` or `/usr/bin/chromium` - that's what the next step needs. Point Puppeteer at it, and skip its own download entirely, for this session, then make both permanent so every future session picks them up too:
+
+``` bash
+export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)
+export PUPPETEER_SKIP_DOWNLOAD=true
+echo 'export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)' >> ~/.bashrc
+echo 'export PUPPETEER_SKIP_DOWNLOAD=true' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Open a new terminal for this step (it picks up the exports above from `~/.bashrc` automatically), and make sure it's actually sitting in your project's root directory first - the `--prefix` paths below are relative to wherever you run them from:
 
 ``` bash
 cd path/to/your-project
@@ -1251,22 +1315,6 @@ npm ci --prefix tools/mathjax
 `npm ci` installs the exact versions recorded in each lockfile, which is what the automated builds use too - so your PDF is rendered by the same versions as the published one.
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
-
-If you're on Linux, also install a native Chromium and point Puppeteer at it, rather than relying on the Chrome that `tools/mermaid`'s `npm ci` downloaded for it - which is not guaranteed to match your CPU's architecture. This matters most on ARM64 machines (an Apple Silicon Linux VM, an AWS Graviton instance, a Raspberry Pi), where the mismatch otherwise goes unnoticed until a PDF build fails, but it costs nothing to do on any Ubuntu install:
-
-``` bash
-sudo apt update
-sudo apt install -y chromium-browser
-which chromium-browser || which chromium
-```
-
-The second command should print a path such as `/usr/bin/chromium-browser` or `/usr/bin/chromium` - that's what the next step needs. Point `prodockit pdf` at it for this session, then make it permanent so every future session picks it up too:
-
-``` bash
-export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)
-echo 'export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium)' >> ~/.bashrc
-source ~/.bashrc
-```
 
 !!! note "If npm reports vulnerabilities or an `allow-scripts` warning"
     Both are normal here, not a sign anything went wrong:
