@@ -1330,6 +1330,31 @@ npm ci --prefix tools/mathjax
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
 
+Install the MathJax bundle the *website* itself needs, from the `tools/mathjax` install you just ran. It isn't committed - it's third-party code, and a repository is redistribution - so this step is what makes formulas render at all until you run it, on every machine that needs to see them, including CI (see [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths)):
+
+``` bash
+mkdir -p docs/javascripts/vendor/mathjax
+cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js docs/javascripts/vendor/mathjax/
+cp tools/mathjax/node_modules/mathjax-full/LICENSE docs/javascripts/vendor/mathjax/
+```
+
+Then write the config MathJax needs to actually process the formulas your document contains - without it, every equation renders as raw TeX, with nothing in the build to say why:
+
+``` bash
+cat > docs/javascripts/mathjax.js <<'MATHJAX'
+window.MathJax = {
+  tex: {
+    processEscapes: true,
+    processEnvironments: true,
+  },
+  options: {
+    ignoreHtmlClass: ".*|",
+    processHtmlClass: "arithmatex",
+  },
+};
+MATHJAX
+```
+
 !!! note "If npm reports vulnerabilities or an `allow-scripts` warning"
     Both are normal here, not a sign anything went wrong:
 

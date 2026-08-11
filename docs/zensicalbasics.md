@@ -173,8 +173,10 @@ $$
     \index{Zensical!MathJax} is loaded site-wide from `extra_javascript` in
     `zensical.toml` - see [Extra CSS and JavaScript](customise.md#extra-css-and-javascript) -
     so you can write a formula on any page without adding anything to it.
-    The copy it loads is bundled with this project rather than fetched from
-    a CDN, so formulas render with no external request and work offline.
+    The copy it loads is installed for this project rather than fetched from
+    a CDN, so formulas render with no external request and work offline - see
+    [Install the diagram and maths tooling](installtooling.md#install-the-diagram-and-maths-tooling)
+    for the one-time setup this needs.
 
 ## Task lists {: #zensicalbasics-task-lists }
 
