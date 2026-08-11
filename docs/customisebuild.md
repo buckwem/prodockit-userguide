@@ -34,7 +34,7 @@ That second path is the source of most of what follows. **WeasyPrint has no Java
 
 ## Diagrams and maths {: #customisebuild-diagrams-and-maths }
 
-[Diagrams](zensicalbasics.md#diagrams) and [Maths](zensicalbasics.md#maths) work on the website with no setup: Mermaid.js and MathJax run in the reader's browser. The PDF cannot do that, so `prodockit pdf` pre-renders both to images using two Node.js tools.
+[Diagrams](zensicalbasics.md#diagrams) work on the website with no setup: Mermaid.js is part of Zensical's own bundle, and runs in the reader's browser. [Maths](zensicalbasics.md#maths) does not - MathJax is installed, not committed (it's third-party code, and a repository is redistribution), so a formula renders as raw TeX on the website too until it's been installed once. Neither works in the PDF at all: WeasyPrint has no JavaScript engine, so `prodockit pdf` pre-renders both to images using two Node.js tools.
 
 Set them up once. Which commands you need depends on where your project came from:
 
@@ -45,7 +45,7 @@ npm ci --prefix tools/mermaid
 npm ci --prefix tools/mathjax
 ```
 
-This is the case for most readers, and [Install the diagram and maths tooling](installtooling.md#install-the-diagram-and-maths-tooling) walks through it alongside installing Node.js itself.
+This is the case for most readers, and [Install the diagram and maths tooling](installtooling.md#install-the-diagram-and-maths-tooling) walks through it alongside installing Node.js itself - including the extra step Maths needs afterwards, to install the MathJax bundle and config the *website* uses (not just the PDF pre-render above).
 
 **Starting a project from scratch**, you have no `tools/` directory yet, so create it first:
 
@@ -55,10 +55,13 @@ npm ci --prefix tools/mermaid
 npm ci --prefix tools/mathjax
 ```
 
-`prodockit init-tools` writes the `tools/mermaid` and `tools/mathjax` directories, then prints the install commands and the settings a CI pipeline needs. Commit the manifests and lockfiles it creates; the `node_modules/` directories are ignored.
+`prodockit init-tools` writes the `tools/mermaid` and `tools/mathjax` directories, then prints the install commands and the settings a CI pipeline needs. Commit the manifests and lockfiles it creates; the `node_modules/` directories are ignored. Still install the MathJax bundle itself afterwards, the same way.
 
 !!! tip
     Running `init-tools` on a copy of the template does no harm - it reports `Kept existing tools/mermaid/package.json` for each file already there and changes nothing - but it has nothing to do, so it is easy to mistake that message for an error.
+
+!!! warning "CI needs this too, and starts from nothing every run"
+    Neither the MathJax bundle nor its config is committed, so a CI pipeline that builds the website - not just the PDF - needs the same install step this project's own `.github/workflows/docs.yml` and `.gitlab-ci.yml` run, right after `npm ci --prefix tools/mathjax`. Skip it and the pipeline succeeds while publishing a site where every formula is raw TeX - the same silent failure the box below describes, just reaching the website instead of stopping at the PDF.
 
 <!-- Deliberately describes the broken output rather than reproducing it.
      test/test_pdf_rendering.py scans the built PDF for exactly that text,
@@ -67,7 +70,7 @@ npm ci --prefix tools/mathjax
      A realistic sample here fails the build. -->
 
 !!! danger "This is the quiet one"
-    If those tools are missing, `prodockit pdf` does **not** fail. It leaves the content exactly as it found it - so instead of a flowchart, your PDF shows the diagram's own definition text, the `graph LR` line and every node and connector written out beneath it. Instead of a typeset equation, it shows the raw LaTeX, backslashes and braces and all. The website, meanwhile, renders both perfectly.
+    If these tools are missing, `prodockit pdf` does **not** fail. It leaves the content exactly as it found it - so instead of a flowchart, your PDF shows the diagram's own definition text, the `graph LR` line and every node and connector written out beneath it. Instead of a typeset equation, it shows the raw LaTeX, backslashes and braces and all. The website renders diagrams perfectly regardless - Mermaid.js needs nothing from `tools/`, only Zensical itself - but a formula is only as reliable there as the MathJax install above; skip it and the website shows exactly the same raw TeX the PDF would.
 
     That is the right default for a document using neither feature - nobody should have to install Node.js to build a PDF with no diagrams in it. It is a trap for a document that *does* use them. Since prodockit 0.12.0 the build prints a warning naming the missing tool, and this project's [test suite](testing.md) fails if either reaches the PDF unrendered.
 

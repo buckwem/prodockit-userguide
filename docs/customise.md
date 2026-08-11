@@ -158,19 +158,25 @@ The `features` list in `[project.theme]` turns individual website behaviours on 
 ```toml
 extra_css = ["stylesheets/extra.css"]
 extra_javascript = [
-  "javascript/vendor/mathjax/tex-svg-full.js",
-  "javascript/extra.js"
+  "javascripts/mathjax.js",                      # config - must load first
+  "javascripts/vendor/mathjax/tex-svg-full.js",   # the library itself
+  "javascripts/extra.js"
 ]
 ```
 
-!!! tip "Prefer a bundled copy over a CDN link"
+The config has to come before the library it configures: MathJax reads `window.MathJax` once, at startup, so a config file listed after it is ignored - see [Maths](zensicalbasics.md#maths) for what happens without one.
+
+!!! tip "Prefer an installed copy over a CDN link"
     An entry can be a full URL as well as a local path, which makes loading a
     library from a public CDN a one-line change. It costs more than it looks:
     the version usually floats, so the library can change under you with
     nothing recorded in your repository; the page depends on someone else's
     uptime; it won't work offline; and every reader's browser makes a request
-    to a third party. This project keeps its own copy of MathJax for exactly
-    those reasons - see [Maths](zensicalbasics.md#maths).
+    to a third party. This project installs its own copy of MathJax for
+    exactly those reasons - see [Maths](zensicalbasics.md#maths) - but doesn't
+    *commit* it: the bundle is third-party code, and a repository is
+    redistribution. `prodockit bootstrap` installs it on a developer's
+    machine; CI installs it the same way for a published build.
 
 [`docs/stylesheets/extra.css`](https://github.com/buckwem/prodockit-template/blob/main/docs/stylesheets/extra.css){target="_blank"} is where most of this template's own customisations live (the logo swap, header image, cover page title styles, and the `.pdf-only`/`.web-only` markers).
 
