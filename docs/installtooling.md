@@ -130,6 +130,9 @@ Start by installing Git and configuring it for Visual Studio Code. The instructi
     git config --global user.email "your.email@example.com"
     ```
 
+    !!! tip "Already use Git for other projects?"
+        `--global` applies everywhere, on this project and every other one on your machine - the only option available right now, since you haven't cloned anything yet to scope it to. If you already have a Git identity set up for your own projects, run both commands again with `--local` instead once you've cloned the template below, so this project's commits use these details without changing your identity anywhere else.
+
 1. Register for an account on the public [**GitLab**](https://gitlab.com){target="_blank"} or [**GitHub**](https://github.com){target="_blank"} cloud instance you will use. If you have already registered, you can skip this step.
 
 {% if is_surrey %}
@@ -1109,6 +1112,14 @@ The instructions below are for installing Python 3.12 or later. If you have an o
     pip3 install -r requirements.txt
     ```
 
+1. Check that the `prodockit` command actually resolves to the one you just installed:
+
+    ``` bash
+    prodockit --version
+    ```
+
+    `pip` exiting without an error only means the package landed in `.venv` - it doesn't prove your shell finds it there first. An older, separately-installed `prodockit` earlier on your `PATH` shadows it silently, and every command in this guide from here on would run against that instead.
+
 1. Check that WeasyPrint can find its graphics libraries. This is the one part of the setup `pip` cannot verify for you, so it is worth confirming now rather than at your first PDF build:
 
     ``` bash
@@ -1195,7 +1206,10 @@ Now we'll install the \index{VS Code!Zensical Studio} plugin for Visual Studio C
     ```
 
 1. Install the **Even Better TOML** extensiuon for Visual Studio Code by searching for "Even Better TOML" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides syntax highlighting and other features for working with TOML files, which are used for configuration in Zensical projects.
-1. Install the **LTeX+ – LanguageTool grammar/spell checking** plugin for Visual Studio Code by searching for "LTeX+" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} to enable spelling and grammar checking for Markdown. Configure the plugin in the settings to use the *language* `en-GB`.
+1. Install the **LTeX+ – LanguageTool grammar/spell checking** plugin for Visual Studio Code by searching for "LTeX+" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} to enable spelling and grammar checking for Markdown. Configure the plugin's *language* setting to whichever English (or other language LTeX+ supports) you're actually writing in{% if is_surrey %} - `en-GB` for British English, which is what Surrey coursework expects{% endif %}.
+
+    !!! warning "Get this right, or corrections are confidently wrong"
+        Set to the wrong variety, LTeX+ still checks every sentence - it just checks it against the wrong rules, and offers "corrections" for perfectly correct spelling and phrasing in the variety you're actually using. That's worse than no checking at all, since a wrong suggestion looks exactly as confident as a right one.
 
 There are many other extensions available for Visual Studio Code that can help you with your documentation. You can explore the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/vscode){target="_blank"} to find more extensions that suit your needs.
 
