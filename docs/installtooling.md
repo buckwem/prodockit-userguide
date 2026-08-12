@@ -621,7 +621,14 @@ Start by cloning the template into your own local device.
 
 If you have cloned a repository that has been given to you to work on and is not a direct copy of the template, you can skip this section.
 
-Cloning gives you the template's *files*, but the clone still points at the template's *repository*. Push now and Git will try to write to the template itself, which you almost certainly cannot do - and would not want to if you could. This section repoints it at a repository of your own.
+Cloning gives you the template's *files*, but the clone still points at the template's *repository*. This section repoints it at a repository of your own - and is not a step to skip or leave for later, whichever of the two ways it goes wrong if you do:
+
+!!! danger "Skipping this doesn't fail safely for everyone"
+    If you don't have write access to the template, `git push` fails with a permission error - confusing the first time you see it, but harmless, and the fix is this section.
+
+    **If you do have write access** - a maintainer, a contributor, anyone who has ever been given push rights - `git push` **succeeds**, silently, straight into the template repository itself. That repository is public, and every future reader clones it. There is no error to notice and no prompt to confirm; the only protection is doing this section before your first commit.
+
+The steps below have to happen **in this order**, not just as a numbered convention: step 3 (reset the history) deletes the repository's entire `.git` directory, which takes *every* remote with it - including `origin`, however it's currently set. Repoint `origin` at your own repository before resetting, and the reset undoes the repoint along with everything else, leaving you back at square one with no warning that it happened. Reset first, then repoint, as the steps below do.
 
 1. Rename the directory to something meaningful for your own report. Cloning leaves you with a folder called `prodockit-template`, which says nothing about whose work it holds - and if you clone a second project later, you will not be able to tell them apart.
 
