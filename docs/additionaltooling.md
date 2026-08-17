@@ -11,7 +11,7 @@ icon: lucide/book-open
 
 # Additional tooling
 
-This page covers optional tooling you can add on top of the core Zensical workflow covered in [Install tooling](installtooling.md) and [Start editing](startediting.md): Visual Studio Code extensions that connect the editor directly to GitLab or GitHub, view Git history, and check your writing; and keeping your document's images small. You don't need any of this to write or publish your document - add whichever pieces are useful to you, and skip the rest. Each section below assumes no prior Linux or command-line experience, and spells out every step.
+This page covers optional tooling you can add on top of the core Zensical workflow covered in [Install tooling](installtooling.md) and [Start editing](startediting.md): Visual Studio Code extensions that connect the editor directly to GitLab or GitHub, view Git history, and check your writing; converting existing Word, PowerPoint, or PDF content into Markdown; and keeping your document's images small. You don't need any of this to write or publish your document - add whichever pieces are useful to you, and skip the rest. Each section below assumes no prior Linux or command-line experience, and spells out every step.
 
 ## Installing Visual Studio Code extensions
 
@@ -257,6 +257,23 @@ If [Vale](#install-vale-to-check-for-grammar-spelling-and-style-issues) below fe
     * [University of York](https://subjectguides.york.ac.uk/academic-language/voice){target="_blank"}
 
     You can also change the `Microsoft.Passive` rule in the `.vale.ini` file to `NO` if you find it too difficult to change all instances of passive voice to active voice.
+
+## Converting existing documents to Markdown
+
+If you're starting from content you've already written elsewhere - a Word report, PowerPoint slides, an Excel table, a PDF - you don't have to retype it. [anydoc](https://github.com/firecrawl/anydoc){target="_blank"} converts \index{Word document conversion}Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, CSV, and PDF files into clean Markdown, close enough to what this template already expects that you can paste the result straight into a page and clean up from there.
+
+The simplest option, needing no installation, is [anydoc's own browser demo](https://firecrawl.github.io/anydoc/){target="_blank"} - it runs the conversion locally as WebAssembly, so your document never leaves your machine. Drag a file in, and copy the Markdown it produces.
+
+If you'd rather convert from the command line - useful for several files, or if you want to redo the conversion after editing the original - run it with `npx`, which downloads the tool the first time and reuses it afterwards. You already have Node.js installed from [Install the diagram and maths tooling](installtooling.md#install-the-diagram-and-maths-tooling):
+
+``` bash
+npx @firecrawl/anydoc report.docx -o report.md
+```
+
+Replace `report.docx` with the file you're converting, and `report.md` with wherever you want the Markdown written. Leave off `-o report.md` to print the result to the terminal instead.
+
+!!! tip "Check the result before you rely on it"
+    Automatic conversion is a starting point, not a finished page - tables, footnotes, and anything with complex formatting are the most likely to need a manual fix afterwards. Review the Markdown against the original before you build on it, the same way you would proofread text you'd typed yourself.
 
 ## Optimising images before committing
 
