@@ -454,37 +454,56 @@ Initial commit
 
 ## Directory structure
 
-Now that you've customised the website, the \index{document structure}, the cover page, and the PDF layout, it's worth knowing where everything you've just changed actually lives. The listing below is a complete map of the template as delivered: every markdown page under `docs/`, the configuration and build scripts at the project root, the CSS that drives both outputs, and the CI/CD workflows that publish them. Use it as a reference when you're looking for a file mentioned earlier in this section, or deciding where to add a new page.
+Now that you've customised the website, the \index{document structure}, the cover page, and the PDF layout, it's worth knowing where everything you've just changed actually lives. The listing below is the template as delivered. Use it as a reference when you're looking for a file mentioned earlier in this section, or deciding where to add a new page.
 
-* :material-folder: **docs/** — Holds the documentation source tree.
-    * :material-file-document-outline: `index.md` — The cover page of your documentation.
-    * :material-file-document-outline: `originality.md` — Your declaration of originality and AI use for you to complete.
-    * :material-file-document-outline: `section1.md` — The first section of your documentation for you to edit - ships with worked examples of citations, acronyms, and the glossary (see [References and bibliography](customisecontent.md#references-and-bibliography), [Acronyms and abbreviations](customisecontent.md#acronyms-and-abbreviations), and [Glossary](customisecontent.md#glossary-page-setup) in Customise document content).
-    * :material-file-document-outline: `section2.md` — The second section, with a worked cross-reference example (see [Section cross-references](customisecontent.md#section-cross-references) in Customise document content).
-    * :material-file-document-outline: `section3.md` — The third section, with a worked figure-caption example (see [Captions](customisecontent.md#captions) in Customise document content).
-    * :material-file-document-outline: `section4.md` — The fourth section, with a worked table-caption example (see [Captions](customisecontent.md#captions) in Customise document content).
-    * :material-file-document-outline: `acronyms.md` — Your acronym list, for you to complete - see [Acronyms and abbreviations](customisecontent.md#acronyms-and-abbreviations) in Customise document content.
-    * :material-file-document-outline: `glossary.md` — Your glossary of key terms, for you to complete - see [Glossary](customisecontent.md#glossary-page-setup) in Customise document content.
-    * :material-file-document-outline: `references.md` — Your bibliography, for you to complete - see [References and bibliography](customisecontent.md#references-and-bibliography) in Customise document content.
-    * :material-folder: **assets/** — Images, logos, and header backgrounds used across the site and the cover page.
-    * :material-folder: **stylesheets/** — CSS for the website and the PDF.
-        * :material-file-document-outline: `extra.css` — Most of the template's own website customisations (logo swap, header image, cover page styles, `.pdf-only`/`.web-only` markers).
-        * :material-file-document-outline: `print.css` — PDF-only styles, read only by the PDF build - see [Extra CSS and JavaScript](#extra-css-and-javascript) for the `pdf_extra_css` setting that loads it.
-* :material-file-code-outline: `macros.py` — This template's own Zensical macro hooks (Surrey detection). Word count, repository link, and heading/reference-style numbering come from `prodockit.zensical_macros` instead - see `zensical.toml`'s `modules = ["prodockit.zensical_macros"]`.
-* :material-folder: **tools/** — Node.js tooling used only by the PDF build, not the website. Scaffolded by `prodockit init-tools` - see [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths).
-    * :material-folder: **mermaid/** — `mermaid-cli`, for rendering ` ```mermaid ` diagrams to images in the PDF.
-    * :material-folder: **mathjax/** — `mathjax-full`, for rendering `$...$`/`$$...$$` maths to images in the PDF.
-* :material-folder: **test/** — The test suite that checks the built website and PDF for regressions - see [Testing](testing.md).
-* :material-file-cog-outline: `zensical.toml` — The project's configuration file.
-* :material-file-document-outline: `.vale.ini` — Configuration file for Vale, a syntax and style checker.
-* :material-file-document-outline: `requirements.txt` — Lists the Python dependencies required for the project.
-* :material-file-document-outline: `testrequirements.txt` — Lists the test suite's own dependencies, installed separately - see [Testing](testing.md).
-* :material-file-document-outline: `README.md` — The README file for the project, providing an overview and instructions.
-* :material-file-document-outline: `LICENSE` — The licence file for the project, specifying the terms under which you can use and distribute the project. This project uses the MIT license, the same choice Zensical itself uses. It's a permissive free software license that allows reuse within proprietary software, provided all copies of the licensed software include a copy of the MIT License terms and the copyright notice.
-* :material-file-document-outline: `.gitignore` — Specifies files and directories for Git to ignore.
-* :material-file-document-outline: `.gitlab-ci.yml` — Configuration file for GitLab CI/CD, building and publishing the site (and the PDF) to GitLab Pages.
-* :material-folder: **.github/workflows/** — Configuration for GitHub Actions.
-    * :material-file-document-outline: `docs.yml` — Builds and publishes the site (and the PDF) to GitHub Pages.
+/// tree
+docs/ - Your report's Markdown source
+  index.md - The cover page
+  originality.md - Your declaration of originality and AI use, for you to complete
+  section1.md - The first section, with worked citation, acronym and glossary examples
+  section2.md - The second section, with a worked cross-reference example
+  section3.md - The third section, with a worked figure-caption example
+  section4.md - The fourth section, with a worked table-caption example
+  acronyms.md - Your acronym list, for you to complete
+  glossary.md - Your glossary of key terms, for you to complete
+  references.md - Your bibliography, for you to complete
+  bibliography.md - The bibliography page
+  assets/ - Images, logos and header backgrounds
+  javascripts/ - Site JavaScript, including the MathJax bundle CI installs
+  stylesheets/ - CSS for both outputs
+    extra.css - Website customisations
+    print.css - PDF-only styles, loaded by the `pdf_extra_css` setting
+overrides/ - Theme partials this template replaces
+tools/ - Node tooling used only by the PDF build
+  mermaid/ - `mermaid-cli`, for rendering diagrams to images
+  mathjax/ - `mathjax-full`, for rendering maths to images
+test/ - The test suite that checks the built website and PDF
+.github/ - GitHub configuration
+  workflows/ - The pipelines that publish the site and PDF
+    docs.yml - Builds and publishes to GitHub Pages
+    drift.yml - Reports when a pinned build input falls behind
+    release-redeploy.yml - Rebuilds the site after a release is published
+  ISSUE_TEMPLATE/ - Issue forms for this repository
+.vscode/ - Editor settings and the LTeX dictionary
+zensical.toml - Site configuration and navigation
+macros.py - This template's own build-time logic
+references.bib - Your bibliography source
+bibliography.bib - A second bibliography source, if you keep them apart
+requirements.txt - The Python dependencies
+testrequirements.txt - The test suite's own dependencies
+.python-version - The Python version CI and your shell both read
+.vale.ini - Configuration for Vale, a prose style checker
+.gitlab-ci.yml - Builds and publishes to GitLab Pages
+.gitignore - Files and directories Git should ignore
+README.md - The repository's front page, for you to rewrite before submitting
+CONTRIBUTING.md - How to contribute to the template itself
+CHANGELOG.md - What has changed in the template
+LICENSE - The MIT licence this template is published under
+///
+
+Some of these are covered in more detail elsewhere: [References and bibliography](customisecontent.md#references-and-bibliography), [Acronyms and abbreviations](customisecontent.md#acronyms-and-abbreviations) and [Glossary](customisecontent.md#glossary-page-setup) in Customise document content; [Extra CSS and JavaScript](#extra-css-and-javascript) above for `print.css`; [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths) for `tools/`; and [Testing](testing.md) for `test/`.
+
+`harvard-cite-them-right.csl` is not in the list because it is not committed - every build fetches it, and `prodockit bootstrap` does it for you.
 
 ## Where to go next {: #customise-where-to-go-next }
 

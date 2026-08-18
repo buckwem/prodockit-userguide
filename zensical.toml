@@ -238,6 +238,7 @@ numbering = "continuous"
 [project.markdown_extensions."prodockit.bibliography"]
 [project.markdown_extensions."prodockit.tables"]
 [project.markdown_extensions."prodockit.index"]
+[project.markdown_extensions."prodockit.tree"]
 [project.markdown_extensions.pymdownx.snippets]
 [project.markdown_extensions.pymdownx.blocks.caption]
 types = [
