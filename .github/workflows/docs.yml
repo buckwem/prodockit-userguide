@@ -55,6 +55,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
+    # Builds the site and the PDFs: about two minutes, eight and a half
+    # at its slowest over 29 runs. The margin is for a slow build, not
+    # for a stall - this job sat eleven minutes on `apt-get` and would
+    # have held the runner for six hours (issue #130).
+    timeout-minutes: 30
     # Consumed by the verify job below.
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
@@ -95,10 +100,37 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
         with:
           pandoc-version: ${{ env.PANDOC_VERSION }}
+      # The image's mirrorlist puts `azure.archive.ubuntu.com` first. When
+      # that host is down - it was, repeatedly, on 2026-08-18, and it held
+      # this workflow for eleven minutes before anyone noticed - apt spends
+      # minutes on it before reaching the `archive.ubuntu.com` fallback,
+      # which answers in milliseconds throughout. Neither a shorter connect
+      # timeout nor fewer retries reached it in reasonable time, so the dead
+      # host is taken out of the list instead
+      # (prodockit-extensions#478, issue #130).
+      #
+      # Reported rather than assumed: if the image stops shipping a
+      # mirrorlist, or stops using Azure, the run says so and carries on
+      # unchanged - a substitution that quietly matched nothing would be
+      # worse than either.
+      - name: Point apt at a mirror that answers
+        timeout-minutes: 2
+        run: |
+          list=/etc/apt/apt-mirrors.txt
+          if [ ! -f "$list" ]; then
+            echo "::notice::no $list in this image - apt left as it is"
+          elif ! grep -q 'azure.archive.ubuntu.com' "$list"; then
+            echo "::notice::$list no longer names Azure - apt left as it is"
+          else
+            sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$list"
+            echo "mirrorlist now:"; cat "$list"
+          fi
       - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0
+        timeout-minutes: 8
       - run: curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
       - run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
       - run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
+        timeout-minutes: 8
       - run: npm ci --prefix tools/mermaid
       - run: npm ci --prefix tools/mathjax
       # MathJax for the *website*, from the very install above. Neither
@@ -170,6 +202,10 @@ jobs:
   verify:
     needs: deploy
     runs-on: ubuntu-24.04
+    # Deliberately above the polling window below: this job waits out
+    # Pages' ten-minute cache for up to fifteen minutes, so a limit
+    # under that would cut short a wait that is working.
+    timeout-minutes: 25
     steps:
       # Pages serves `cache-control: max-age=600`, so up to ~10 minutes of
       # staleness is normal and expected rather than a fault. 15 minutes of

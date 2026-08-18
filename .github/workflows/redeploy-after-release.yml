@@ -26,6 +26,8 @@ permissions:
 jobs:
   redeploy:
     runs-on: ubuntu-24.04
+    # Six seconds in every run measured.
+    timeout-minutes: 10
     steps:
       - env:
           GH_TOKEN: ${{ github.token }}
