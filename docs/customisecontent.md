@@ -363,25 +363,41 @@ Which renders as:
 
 Use a CSS length (e.g. `120px`) instead of a percentage for a column that should stay a fixed size regardless of the table's own width. Leave a column unannotated and it takes whatever space is left over, shared evenly with any other unannotated column - only a table with at least one `width` gets this treatment at all.
 
-### Sideways tables
+### Landscape Table or Diagram
 
-A table too wide for a portrait page can print sideways on its own landscape page instead - wrap it (and its own caption) in a `<div class="prodockit-table-rotated" markdown="1">` block, using [`md_in_html`](https://python-markdown.github.io/extensions/md_in_html/){target="_blank"} (the `markdown="1"` is required):
+A table or diagram too wide for a portrait page can have its own landscape page instead - wrap it (and its own caption) in a `<div class="landscape-page" markdown="1">` block, using [`md_in_html`](https://python-markdown.github.io/extensions/md_in_html/){target="_blank"} (the `markdown="1"` is required):
 
 ``` markdown
-<div class="prodockit-table-rotated" markdown="1">
-
-/// table-caption | <
-A wide reference table
-///
+<div class="landscape-page" markdown="1">
 
 | ID {: width="15%" } | Description {: width="70%" } | Due {: width="15%" } |
 |---|---|---|
 | 1 | ... | Q1 |
+/// table-caption | <
+A wide reference table
+///
 
 </div>
 ```
 
-This is PDF-only - the same table renders completely normally, the right way up, on the live website. A page break is always forced immediately before and after the block, so it never shares a page with anything else.
+The caption block goes **after** the table it describes - that is what attaches the two together. Put it before and the caption becomes a standalone item with the table left loose beneath it.
+
+A diagram works the same way:
+
+``` markdown
+<div class="landscape-page" markdown="1">
+
+![Architecture overview](assets/images/architecture.png)
+/// figure-caption
+Architecture overview
+///
+
+</div>
+```
+
+A table longer than one page carries on across further landscape pages, repeating its header row on each one exactly as it would on a portrait page.
+
+This is PDF-only - the same table or diagram renders completely normally on the live website. A page break is always forced immediately before and after the block, so it never shares a page with anything else. A document mixing portrait and landscape pages prints without any special handling.
 
 ## Finalising your document
 
