@@ -39,6 +39,11 @@ docs/site_documentation.pdf
 docs/source_bundle.pdf
 docs/.prodockit-pdf-mermaid/
 
+# Citation style for prodockit.bibliography - fetched, not vendored (see
+# "An alternative: prodockit.bibliography" in customisecontent.md and
+# prodockit-userguide#97). Matches prodockit-template's own .gitignore.
+/harvard-cite-them-right.csl
+
 # Local Claude Code config (dev-preview launch config, personal permissions)
 .claude/
 
