@@ -363,6 +363,108 @@ Which renders as:
 
 Use a CSS length (e.g. `120px`) instead of a percentage for a column that should stay a fixed size regardless of the table's own width. Leave a column unannotated and it takes whatever space is left over, shared evenly with any other unannotated column - only a table with at least one `width` gets this treatment at all.
 
+### Dense tables
+
+A table with many short columns comes out wider than it needs to be. The theme
+gives every header cell a minimum width of `5rem` and pads each cell generously,
+so a column holding `H` takes as much room as one holding a sentence - and a wide
+table overflows whatever it actually contains.
+
+Mark any header cell `{: .compact }` to turn both off:
+
+``` markdown
+| Threat {: .compact } | Likelihood | Impact | Risk |
+|---|---|---|---|
+| Credential theft | H | H | H |
+```
+
+Which renders as:
+
+| Threat {: .compact } | Likelihood | Impact | Risk |
+|---|---|---|---|
+| Credential theft | H | H | H |
+
+The marker describes the whole table, not the column it's written on - it can go
+on any header cell. It applies to the website and the PDF alike, and combines
+with `width`, which answers a different question: how wide one column is, rather
+than how tightly every cell is set.
+
+It's deliberately opt-in. A table that reads well at its default keeps it.
+
+### A header of more than one row
+
+A Markdown table has exactly one header row. A heading that needs two lines has
+to be written as a second body row - and that row then stops repeating when the
+table breaks across pages, because only the real header repeats.
+
+Mark it `{: .header }` and it becomes part of the header:
+
+``` markdown
+| Target {: rowspan=2 } | Measured {: colspan=2 } | | Note {: rowspan=2 } |
+|---|---|---|---|
+| | Before {: .header } | After | |
+| Widget | 1 | 2 | ok |
+```
+
+Which renders as:
+
+| Target {: rowspan=2 } | Measured {: colspan=2 } | | Note {: rowspan=2 } |
+|---|---|---|---|
+| | Before {: .header } | After | |
+| Widget | 1 | 2 | ok |
+
+Both lines now repeat on every page the table reaches.
+
+`colspan` and `rowspan` merge cells in the usual way. Because a pipe table has to
+keep its columns to parse at all, a merged cell is written with empty cells after
+it - those are removed, so the row isn't left wider than its header.
+
+!!! note "Put the marker on a cell that has text"
+    `attr_list` needs something to attach to, so `{: .header }` won't work in an
+    empty cell. In the example above the first cell of the second row is blank -
+    covered by the `rowspan` above it - so the marker goes on `Before` instead.
+    Any cell in the row will do.
+
+    Only rows at the top are promoted. A `{: .header }` further down the table
+    stays where it is, rather than the table being quietly re-ordered around it.
+
+    An empty placeholder cell is removed; one with text in it is kept, on the
+    assumption that it's your content.
+
+### Rotated headings
+
+A wide table is often wide because of its headings, not its data. Turn them on
+their side:
+
+``` markdown
+| Item | Availability {: rotate=270 width="2em" height="90pt" } | Confidentiality {: rotate=270 width="2em" height="90pt" } |
+|---|---|---|
+| Investment data | H | H |
+```
+
+Which renders as:
+
+| Item | Availability {: rotate=270 width="2em" height="90pt" } | Confidentiality {: rotate=270 width="2em" height="90pt" } |
+|---|---|---|
+| Investment data | H | H |
+
+`270` reads bottom-to-top and `90` top-to-bottom; no other angle is accepted,
+because it would give a heading nobody can read and a row height nobody can
+predict.
+
+All three parts are needed together, and a `rotate` without a `width` is refused
+rather than rendered:
+
+!!! warning "The width is what saves the space"
+    Rotating text doesn't make a column narrower - a rotated heading still
+    occupies the room it would have taken lying flat. **The `width` is what
+    narrows the column; the rotation is what keeps the heading readable once it
+    is narrow.** That's why the two have to be given together: a rotated heading
+    in a full-width column looks exactly like the feature working.
+
+    `height` sets how tall the header row is, and is what a long heading wraps
+    against - the rotated text reserves no height of its own.
+
 ### Landscape Table or Diagram
 
 A table or diagram too wide for a portrait page can have its own landscape page instead - wrap it (and its own caption) in a `<div class="landscape-page" markdown="1">` block, using [`md_in_html`](https://python-markdown.github.io/extensions/md_in_html/){target="_blank"} (the `markdown="1"` is required):
@@ -395,7 +497,7 @@ Architecture overview
 </div>
 ```
 
-A table longer than one page carries on across further landscape pages, repeating its header row on each one exactly as it would on a portrait page.
+A table longer than one page carries on across further landscape pages, repeating its header on each one exactly as it would on a portrait page - including a two-row header marked with `{: .header }`.
 
 This is PDF-only - the same table or diagram renders completely normally on the live website. A page break is always forced immediately before and after the block, so it never shares a page with anything else. A document mixing portrait and landscape pages prints without any special handling.
 
