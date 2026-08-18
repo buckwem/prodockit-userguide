@@ -22,6 +22,9 @@ permissions:
 jobs:
   drift:
     runs-on: ubuntu-24.04
+    # Around three minutes, and unattended on a schedule - the run
+    # nobody is watching is the one that must not hang.
+    timeout-minutes: 20
     env:
       # Same reasoning as docs.yml - needed for prodockit pdf's Mermaid/TeX
       # pre-rendering, both builds below go through it.
@@ -41,10 +44,37 @@ jobs:
         with:
           node-version: "22"
       - uses: r-lib/actions/setup-pandoc@v2
+      # The image's mirrorlist puts `azure.archive.ubuntu.com` first. When
+      # that host is down - it was, repeatedly, on 2026-08-18, and it held
+      # this workflow for eleven minutes before anyone noticed - apt spends
+      # minutes on it before reaching the `archive.ubuntu.com` fallback,
+      # which answers in milliseconds throughout. Neither a shorter connect
+      # timeout nor fewer retries reached it in reasonable time, so the dead
+      # host is taken out of the list instead
+      # (prodockit-extensions#478, issue #130).
+      #
+      # Reported rather than assumed: if the image stops shipping a
+      # mirrorlist, or stops using Azure, the run says so and carries on
+      # unchanged - a substitution that quietly matched nothing would be
+      # worse than either.
+      - name: Point apt at a mirror that answers
+        timeout-minutes: 2
+        run: |
+          list=/etc/apt/apt-mirrors.txt
+          if [ ! -f "$list" ]; then
+            echo "::notice::no $list in this image - apt left as it is"
+          elif ! grep -q 'azure.archive.ubuntu.com' "$list"; then
+            echo "::notice::$list no longer names Azure - apt left as it is"
+          else
+            sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$list"
+            echo "mirrorlist now:"; cat "$list"
+          fi
       - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0 fonts-inter fonts-jetbrains-mono
+        timeout-minutes: 8
       - run: curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
       - run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
       - run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
+        timeout-minutes: 8
       - run: npm ci --prefix tools/mermaid
       - run: npm ci --prefix tools/mathjax
 
