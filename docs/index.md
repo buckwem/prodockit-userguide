@@ -15,7 +15,7 @@ hide:
 
 # <span class="cover-hero-title-light">prodockit</span> <br>User Guide {: .cover-hero-title .unnumbered }
 
-A docs-as-code workflow for professional and academic documentation, built on Zensical.
+A docs-as-code workflow for professional and academic documentation, built on Zensical and Markdown.
 {: .cover-hero-subtitle }
 
 {% if release %}
