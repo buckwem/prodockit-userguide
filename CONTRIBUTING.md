@@ -45,6 +45,7 @@ For anything beyond a small fix (typos, broken links), please open an issue firs
    - Website changes: `zensical serve` and check the page in a browser.
    - PDF-affecting changes: run `prodockit pdf` and check `docs/site_documentation.pdf`.
    - Prose changes: optionally run `vale docs/` if you have [Vale](https://vale.sh/) installed (see [Install vale to check for grammar, spelling, and style issues](https://buckwem.github.io/prodockit-userguide/additionaltooling/) in the User Guide); it's not enforced in CI.
+   - Before opening a pull request with website or documentation changes, run `zensical build --clean --strict` as the final validation check. Keep `zensical serve` for interactive previewing; the strict build additionally fails on broken internal links, missing anchors, and other validation warnings.
 3. Open a pull request against `main`. `main` is protected, so all changes - including from maintainers - go through a reviewed PR.
 4. Reference the issue your PR addresses (e.g. `Fixes #123`) where applicable.
 

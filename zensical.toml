@@ -179,10 +179,6 @@ pdf_header_footer_font_size = "10pt"
 pdf_header_footer_color = "#555555"
 pdf_header_footer_divider_color = "#e2e8f0"
 
-# Back-of-book index built from every \index{Term} marker in the content -
-# see prodockit-extensions#55/prodockit.pdf.index.
-pdf_include_index = true
-
 # ----------------------------------------------------------------------------
 # Markdown extensions - mirrors prodockit-template's own config, since every
 # page here demonstrates one of these features live.
@@ -238,6 +234,10 @@ numbering = "continuous"
 [project.markdown_extensions."prodockit.bibliography"]
 [project.markdown_extensions."prodockit.tables"]
 [project.markdown_extensions."prodockit.index"]
+# Build the PDF's back-of-book index from every \index{Term} marker in the
+# content - see prodockit-extensions#55/prodockit.pdf.index.
+include = true
+title = "Index"
 [project.markdown_extensions."prodockit.tree"]
 [project.markdown_extensions.pymdownx.snippets]
 [project.markdown_extensions.pymdownx.blocks.caption]

@@ -254,6 +254,8 @@ Appendix pages are lettered in `nav` order - the first `is_appendix: true` page 
 
 This template also enables [`prodockit.index`](https://buckwem.github.io/prodockit-extensions/extensions/index-terms/){target="_blank"} for a \index{back-of-book index}: a traditional, alphabetised, PDF-only index at the end of your document, listing every term you've marked and the page(s) it appears on - the same kind of index/back matter every printed technical book has.
 
+The shipped userguide already enables the extension **and** generates the index, so you normally only need to mark the terms you want to include. There is no separate setup step.
+
 !!! info "PDF-only"
     There's no website equivalent - a reader of the live site uses [Zensical's own search](https://zensical.org/docs/setup/search/) instead. Marking a term has no visible effect on the website at all; it only ever becomes an index entry once the PDF is built.
 
@@ -283,16 +285,18 @@ Run \index{`git commit`} to save your changes.
 
 Which renders as: Run \index{`git commit`} to save your changes.
 
-Set `pdf_include_index` in `[project.extra]` to actually generate the index page, appended at the very end of the PDF:
+The existing extension table in `zensical.toml` contains the generation settings:
 
 ```toml
-[project.extra]
-pdf_include_index = true
-pdf_index_title = "Index"   # optional - the page's own heading text
+[project.markdown_extensions."prodockit.index"]
+include = true
+title = "Index"
 ```
 
+`include = true` appends the generated index to the PDF. The `title` line is an optional customisation: change it if your document needs a different heading, or omit it to use the default `"Index"`.
+
 !!! tip
-    Generating page numbers for the index needs a second pass over the whole PDF, so it's a little slower than a build without one - not something to worry about unless you actually have `pdf_include_index` switched on.
+    Generating page numbers for the index needs a second pass over the whole PDF, so it's a little slower than a build without one. The shipped userguide already has `include` switched on.
 
 ## Captions
 

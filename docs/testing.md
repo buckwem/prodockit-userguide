@@ -23,7 +23,7 @@ The tests check the *built output* - the website in `public/` and the PDF at `do
 ```bash
 pip install -r requirements.txt -r testrequirements.txt
 prodockit pdf
-zensical build
+zensical build --clean --strict
 python test/run_tests.py
 ```
 
@@ -75,6 +75,8 @@ Where a check needs "the real thing this feature is supposed to do" as a source 
 | `word_count` | Pages flagged `exclude_from_word_count: true` are actually subtracted from both the website's and the PDF's word count, not just present as an unused flag (see [issue #23](https://github.com/buckwem/prodockit-template/issues/23)). |
 | `content` | No un-translated template syntax leaks into the PDF as literal, visible text - unsubstituted `{WORDCOUNT}`/`{REPOURL}` markers on the cover page, or leaked attr_list `{: ... }` syntax on the Acronyms/Glossary/References pages. |
 | `pdf_structure` | The cover page's computed fields (word count, repo URL) and the auto-generated Table of Contents are present and look like real data. |
+| `index` | Back-of-book index generation is enabled through `prodockit.index` rather than former PDF-wide settings, and the built PDF contains its exact `Index` section with representative plain, nested, and code-styled entries (see [issue #140](https://github.com/buckwem/prodockit-userguide/issues/140)). |
+| `strict_build` | Both publishing pipelines run `zensical build --clean --strict`, and the contributor guide names the same final validation check while retaining `zensical serve` for interactive preview (see [issue #141](https://github.com/buckwem/prodockit-userguide/issues/141)). |
 | `fences` | The fence-skipping loops in `macros.py`'s heading/word counters hold up under nested combinations of headings, admonitions, and code blocks - not just a single flat fenced block. The PDF build's own equivalent primitives were retired in prodockit-template#92: `prodockit.pdf` renders pages through Zensical's real Markdown parser, so a heading/tab/admonition shown inside a fenced code example is never mistaken for the real thing in the first place. |
 | `captions` | The PDF's `figure-caption`/`table-caption` numbering (see [Captions](customisecontent.md#captions)) is correctly prefixed with the page's chapter number/appendix letter, and no `///` block syntax leaks into the PDF as literal text - checked against the real, already-built PDF. Manual number overrides, custom id/class, and prepend/append position are `pymdownx.blocks.caption`'s own behaviour since prodockit-template#92, identical to the website's - no longer a PDF-build-specific concern to unit-test here. |
 | `markdown_foundations` | The core Markdown syntax documented in [Markdown basics](markdown.md) - headings, text formatting, links/images, lists (including the 4-space nesting rule - see [issue #70](https://github.com/buckwem/prodockit-template/issues/70)), code blocks, tables, horizontal rules, task lists, and blockquotes - rendered through this project's real `markdown.Markdown()` extension config, not a hardcoded copy of it, plus a real `pandoc` subprocess check for a genuine website/PDF nesting discrepancy. |
