@@ -285,10 +285,10 @@ Both `.gitlab-ci.yml` and `.github/workflows/docs.yml` run this exact sequence a
 
 ```bash
 prodockit pdf
-zensical build --clean
+zensical build --clean --strict
 ```
 
-`prodockit pdf` runs first so `docs/site_documentation.pdf` exists before Zensical builds the site - that's what makes the "Download PDF" button on the cover page work, since the published website includes the PDF as part of itself. `zensical build --clean` then builds the site into the `public/` directory (set by `site_dir` in `zensical.toml`), which GitLab Pages or GitHub Pages then publishes. See [Clean build](#clean-build) in Troubleshooting if you need to force a fresh website build locally.
+`prodockit pdf` runs first so `docs/site_documentation.pdf` exists before Zensical builds the site - that's what makes the "Download PDF" button on the cover page work, since the published website includes the PDF as part of itself. `zensical build --clean --strict` then builds the site into the `public/` directory (set by `site_dir` in `zensical.toml`), which GitLab Pages or GitHub Pages then publishes. `--strict` turns validation warnings such as broken internal links or missing anchors into build failures, so a faulty site is not published. See [Clean build](#clean-build) in Troubleshooting if you need to force a fresh website build locally.
 
 ## Managing branches and issues
 
@@ -457,14 +457,14 @@ If you save a change and the browser doesn't refresh, or the page looks stuck:
 
 ### Clean build
 
-The `--clean` flag on `zensical build --clean` deletes the previous contents of `public/` before rebuilding, so pages you've since renamed or removed don't linger in the published site. Both CI pipelines always build clean.
+The `--clean` flag on `zensical build --clean --strict` deletes the previous contents of `public/` before rebuilding, so pages you've since renamed or removed don't linger in the published site. `--strict` also makes validation warnings fail the build. Both CI pipelines use both flags.
 
 To do the same locally - useful if the local `public/` folder looks out of date or you suspect a stale file is causing an issue - delete it yourself first:
 
 ```bash
 rm -rf public
 prodockit pdf
-zensical build --clean
+zensical build --clean --strict
 ```
 
 ### Numbered lists reset to "1."

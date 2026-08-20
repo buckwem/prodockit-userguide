@@ -197,7 +197,7 @@ prodockit pins --set pandoc=3.10.1
 
 This project also pins the runner/image used to build it - `ubuntu-24.04` in `.github/workflows/docs.yml`, `python:3.13` in `.gitlab-ci.yml` - since a runner label or image tag has no package index either, only `--set` to a version you choose yourself, e.g. `prodockit pins -p ubuntu --set ubuntu=24.04`.
 
-`prodockit` itself is pinned exactly too - it renders this project's own site and PDF content directly (headings, refs, citations, glossary, the back-of-book index), so a new release can change published output the same way a Zensical or WeasyPrint upgrade can. It isn't one of `prodockit pins`' five default packages, so managing or checking it needs naming explicitly:
+`prodockit` itself uses a minimum version rather than an exact pin: this userguide requires 0.41.0 or newer because that release introduced the extension-owned back-of-book index configuration. It isn't one of `prodockit pins`' five default packages, so managing or checking that floor needs naming explicitly:
 
 ```bash
 prodockit pins --check -p zensical -p weasyprint -p prodockit
@@ -207,7 +207,7 @@ prodockit pins --check -p zensical -p weasyprint -p prodockit
     `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. Watching for a newer release *actually mattering* is the next section's job instead.
 
 !!! warning "Needs prodockit 0.17.5 or newer to see this line at all"
-    `prodockit[index]==0.17.5` has an extras bracket between the name and the version - a shape `prodockit pins` couldn't parse before 0.17.5, silently reporting "not declared anywhere" rather than failing to parse (prodockit-extensions#156). Run the check with an older `prodockit` installed and it passes for the wrong reason: it never saw the declaration to disagree with.
+    `prodockit[index]>=0.41.0` has an extras bracket between the name and the version - a shape `prodockit pins` couldn't parse before 0.17.5, silently reporting "not declared anywhere" rather than failing to parse (prodockit-extensions#156). Run the check with an older `prodockit` installed and it passes for the wrong reason: it never saw the declaration to disagree with.
 
 ### Watching for drift {: #customisebuild-drift }
 
@@ -233,7 +233,7 @@ When a drift issue reports something worth having:
 ```bash
 prodockit pins -p zensical -p weasyprint -p prodockit  # accept the suggested version, or type one
 prodockit pdf                                          # rebuild - PDF first ...
-zensical build --clean                                 # ... then the site
+zensical build --clean --strict                        # ... then the site
 ```
 
 Then diff the built output against the previous version before committing - the same comparison the drift job already made, just with a person deciding rather than reading a report. Repeat for the runner image if that's what moved (`prodockit pins -p ubuntu`, or `-p python` on GitLab), since it isn't upgraded by the same command.
@@ -250,7 +250,7 @@ This project publishes from two pipelines, kept deliberately in step:
 Both install the same tooling and run the same commands, in the same order:
 
 ```
-install dependencies → prodockit pdf → zensical build → run tests → publish
+install dependencies → prodockit pdf → zensical build --clean --strict → run tests → publish
 ```
 
 The tests run *after* both builds because they check the built output - a diagram that reached the PDF as raw source fails the pipeline rather than being published.

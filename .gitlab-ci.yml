@@ -103,7 +103,7 @@ pages:
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
     - prodockit pdf
-    - zensical build --clean
+    - zensical build --clean --strict
     # These check the *built* PDF, so they run after both builds - they fail
     # the pipeline if a Mermaid diagram or a formula reached it as raw source
     # instead of a rendered image (see test/ and issue #23).

@@ -14,12 +14,9 @@ zensical==0.0.55
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
 # prodockit.index in zensical.toml.
 #
-# Pinned exactly, not left as a floor - see the comment on zensical above
-# for why. prodockit renders this project's PDF and site content directly
-# (headings, refs, citations, glossary, the back-of-book index), so a new
-# release can change published output the same way a zensical or
-# weasyprint upgrade can. Confirmed byte-identical site and PDF against
-# 0.17.2 before taking this pin (see #47).
+# A minimum rather than an exact pin: 0.41.0 introduced the extension-owned
+# index-generation settings used by zensical.toml, while newer prodockit
+# releases remain acceptable for building the userguide.
 #
 # `prodockit pins` could not manage this line before 0.17.5: its matcher
 # expected the version straight after the package name, and the `[index]`
@@ -27,7 +24,7 @@ zensical==0.0.55
 # rather than failing to parse (prodockit-extensions#156). Needs 0.17.5+
 # installed to pin or check this line - see "Pinning build inputs" in
 # customisebuild.md.
-prodockit[index]==0.38.0
+prodockit[index]>=0.41.0
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI

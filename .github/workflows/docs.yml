@@ -167,7 +167,7 @@ jobs:
       # was sync_repo_icon.py, now provided by prodockit itself (#27).
       - run: prodockit sync-repo
       - run: prodockit pdf
-      - run: zensical build --clean
+      - run: zensical build --clean --strict
       # After the builds, since these tests check the built PDF - they fail
       # the deploy if a Mermaid diagram or a formula reached it as raw
       # source instead of a rendered image (see test/ and issue #23).
