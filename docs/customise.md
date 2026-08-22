@@ -355,6 +355,8 @@ For how to actually run it as part of your day-to-day writing - installing its d
 
 `prodockit pdf` controls most of the generated PDF's page layout - the running header, the footer, the page size, and the fonts - either from `zensical.toml` settings you already use for the website, or (for page size and margins) their own PDF-only `zensical.toml` settings.
 
+The shared PDF typography defaults are **11pt body text** and **10pt inline or fenced code**. Keeping code one point smaller prevents the monospace face from appearing optically larger than the surrounding proportional text. `prodockit-template` uses the same pair, so a generated project, this guide, and prodockit's own documentation begin from one consistent baseline.
+
 ### Page header
 
 Every page except the cover shows a \index{running header}: your project's `site_name` (from `zensical.toml` - see [Site name](#site-name)), left-aligned, with a divider line underneath. There's no separate PDF setting for it - editing `site_name` in `zensical.toml` updates the header everywhere, including the website.

@@ -44,12 +44,15 @@ def test_table_styles_keep_the_five_percent_default_and_cell_overrides() -> None
 
 
 def test_new_042_behaviour_is_documented() -> None:
+    customise = _text("docs/customise.md")
     content = _text("docs/customisecontent.md")
     build = _text("docs/customisebuild.md")
     install = _text("docs/installtooling.md")
     editing = _text("docs/startediting.md")
 
     assert "forward cross-page" in content
+    assert "11pt body text" in customise
+    assert "10pt inline or fenced code" in customise
     assert "prodockit template-sync --apply" in build
     assert "preserves every existing" in build
     assert "`project.extra.pdf_*` value" in build
