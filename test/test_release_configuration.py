@@ -13,7 +13,7 @@ def _text(path: str) -> str:
 def test_prodockit_042_is_a_minimum_not_an_exact_pin() -> None:
     requirements = _text("requirements.txt")
 
-    assert "prodockit[index]>=0.42.0" in requirements
+    assert "prodockit[index]>=0.42.1" in requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit==" not in requirements
 
