@@ -6,7 +6,7 @@ body:
     id: page
     attributes:
       label: Which page?
-      description: The page URL or path (e.g. https://buckwem.github.io/prodockit-userguide/testing/).
+      description: The page URL or path (e.g. https://docs.prodockit.org/testing/).
     validations:
       required: false
   - type: textarea

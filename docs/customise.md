@@ -434,9 +434,9 @@ Useful for a submission that requires the underlying source alongside the report
 Written into `docs_dir`, alongside `site_documentation.pdf`, so the website's own **Source** download button finds it with no extra step.
 
 !!! note "Only your Markdown and config, not your whole repository"
-    Earlier versions of this feature bundled every one of your repository's own tracked (and not-ignored) files - Python, CSS, tests, everything. `prodockit source-bundle` bundles your documentation's own source: every `.md` file, plus `zensical.toml`. For most coursework this is what you actually want - your own written content, not the template's build tooling.
+    Earlier versions of this feature bundled every one of your repository's own tracked (and not-ignored) files - Python, CSS, tests, everything. `prodockit source-bundle` now bundles the root `README.md`, Markdown beneath the configured documentation directory, and the active Zensical configuration. It excludes generated root files such as `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE.md`, along with the template's build tooling. For most coursework this is what you actually want - your own written content and configuration.
 
-    If your submission needs the *whole* repository bundled - for example, an originality declaration covering custom code you wrote yourself, not just prose - that's still possible, just not from this command. See [`prodockit.pdf.source_bundle`](https://buckwem.github.io/prodockit-extensions/pdf/#prodockitpdfsource_bundle) in the prodockit-extensions docs for calling `build_source_bundle()` directly.
+    If your submission needs the *whole* repository bundled - for example, an originality declaration covering custom code you wrote yourself, not just prose - that's still possible, just not from this command. See [`prodockit.pdf.source_bundle`](https://prodockit.org/pdf/#prodockitpdfsource_bundle) in the prodockit-extensions docs for calling `build_source_bundle()` directly.
 
 ### Screenshots
 

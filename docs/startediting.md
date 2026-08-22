@@ -128,8 +128,11 @@ same way, which the **Source** button points at - both land directly in `docs/`,
 there's nothing to copy anywhere before the preview can serve them.
 
 !!! note "Only your Markdown and config, not your whole repository"
-    `prodockit source-bundle` bundles every `.md` file plus `zensical.toml` - your
-    documentation's own source, not the template's build tooling. See
+    `prodockit source-bundle` bundles the root `README.md`, every Markdown file
+    beneath the configured documentation directory, and the active Zensical
+    configuration - your documentation's own source, not generated root files
+    such as `CHANGELOG.md`, `CONTRIBUTING.md` or `LICENSE.md`, and not the
+    template's build tooling. See
     [Source-code bundling](customise.md#source-code-bundling) if your submission needs
     the whole repository bundled instead.
 
@@ -245,7 +248,7 @@ Once your commit reaches the default branch, the [CI/CD pipeline](#automated-bui
 
     === "GitHub"
 
-        1. Go to your GitHub Pages address, in the form `https://`*username*`.github.io/`*repository-name*. This template's own site is at [https://buckwem.github.io/prodockit-template](https://buckwem.github.io/prodockit-template){target="_blank"}.
+        1. Go to your GitHub Pages address, in the form `https://`*username*`.github.io/`*repository-name*. This template's own site is at [https://template.prodockit.org](https://template.prodockit.org/){target="_blank"}.
         2. Unlike GitLab Pages, GitHub Pages sites are publicly accessible by default, even when the source repository is private - so no separate authorisation step is normally needed to view a GitHub Pages site once it's built.
         3. If your organisation has restricted Pages visibility (available on GitHub Enterprise), GitHub will ask you to sign in with an account that has access to the repository before the site loads.
 
@@ -538,10 +541,10 @@ Install a native Chromium and point Puppeteer at it instead of its own download,
 
 ## Release your report
 
-Before you submit your report, remove the "Start Here" stub page so it isn't part of what you hand in - see [Start here](https://buckwem.github.io/prodockit-template/starthere/starthere/){target="_blank"} in your own copy of the template for exactly what to comment out in `zensical.toml` and what to delete.
+Before you submit your report, remove the "Start Here" stub page so it isn't part of what you hand in - see [Start here](https://template.prodockit.org/starthere/starthere/){target="_blank"} in your own copy of the template for exactly what to comment out in `zensical.toml` and what to delete.
 
 !!! Info
-    Once you've removed the stub from your own report, you can still come back to this guidance any time on the independent [prodockit User Guide](https://buckwem.github.io/prodockit-userguide/){target="_blank"} site.
+    Once you've removed the stub from your own report, you can still come back to this guidance any time on the independent [prodockit User Guide](https://docs.prodockit.org/){target="_blank"} site.
 
 ## Where to go next {: #startediting-where-to-go-next }
 

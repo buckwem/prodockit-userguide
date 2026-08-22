@@ -40,7 +40,7 @@ Keep the numbers in each title sequential as you add, remove, or reorder chapter
 
 ## Section cross-references
 
-This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extensions/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for \index{cross-references}: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
+This template uses [`prodockit.refs`](https://prodockit.org/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for \index{cross-references}: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
 
 !!! info "How the PDF handles this"
     Same as citations/glossary below - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\ref{id}` resolves the same way in both outputs with no separate PDF-side translation.
@@ -61,17 +61,22 @@ This template uses [`prodockit.refs`](https://buckwem.github.io/prodockit-extens
 
     No need to track down the section's current number, or update it by hand if the target moves - `\ref{id}` re-resolves on every build. This template's own `docs/section1.md`-`docs/section4.md` cross-reference each other's citation/acronym/glossary/caption examples this way, each using an explicit attr_list id since "SubSection" repeats several times per page.
 
+Targets can appear later in `nav` than the page that refers to them. The
+site-wide scan records headings, figure captions and table captions before any
+individual page renders, so a forward cross-page `\ref{caption-id}` resolves on
+the first build just like a reference to an earlier page.
+
 !!! note
-    A reference to a heading that doesn't exist (a typo in the id, or a heading in a page not yet processed) falls back to `??`, the same way an undefined LaTeX `\ref` shows `??` until a later compilation pass - a quick visual signal something needs fixing. It renders with a `prodockit-ref-unresolved` CSS class, so you can style it more prominently (e.g. a warning colour) in `extra.css` if `??` alone isn't visible enough while drafting.
+    A reference to a target that genuinely doesn't exist (usually a typo in the id) falls back to `??`, the same way an undefined LaTeX `\ref` shows `??` - a quick visual signal something needs fixing. It renders with a `prodockit-ref-unresolved` CSS class, so you can style it more prominently (e.g. a warning colour) in `extra.css` if `??` alone isn't visible enough while drafting.
 
 ## References and bibliography
 
-This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-extensions/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\citeref{id}`.
+This template uses [`prodockit.citations`](https://prodockit.org/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\citeref{id}`.
 
 !!! info "How the PDF handles this"
     `prodockit pdf` renders every page through the same Zensical/prodockit pipeline the website uses, so `\citeref{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
 
-1. Create a page for your sources (this template includes one at [`docs/references.md`](https://buckwem.github.io/prodockit-template/references/){target="_blank"}). List each source as a paragraph, and give it a short, unique id plus a short display text using [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax on the line directly below it (no heading needed - attr_list works on plain paragraphs too):
+1. Create a page for your sources (this template includes one at [`docs/references.md`](https://template.prodockit.org/references/){target="_blank"}). List each source as a paragraph, and give it a short, unique id plus a short display text using [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax on the line directly below it (no heading needed - attr_list works on plain paragraphs too):
 
     ``` markdown
     Skoulikari, A. (2023) *Learning Git: A Hands-On and Visual Guide to the Basics of Git*. Sebastopol, CA: O'Reilly Media.
@@ -135,7 +140,7 @@ This template uses [`prodockit.citations`](https://buckwem.github.io/prodockit-e
 
 ### An alternative: prodockit.bibliography
 
-This template also enables [`prodockit.bibliography`](https://buckwem.github.io/prodockit-extensions/extensions/bibliography/){target="_blank"} in `zensical.toml`, a different way to manage sources - not currently used in this guide's own content, but available if you'd rather work this way instead of (or alongside) `prodockit.citations` above.
+This template also enables [`prodockit.bibliography`](https://prodockit.org/extensions/bibliography/){target="_blank"} in `zensical.toml`, a different way to manage sources - not currently used in this guide's own content, but available if you'd rather work this way instead of (or alongside) `prodockit.citations` above.
 
 Where `prodockit.citations` is a hand-typed reference list you write and format yourself, `prodockit.bibliography` generates one automatically from a BibTeX/BibLaTeX `.bib` file, in any Citation Style Language (CSL) style - APA, IEEE, Harvard, and hundreds more:
 
@@ -157,16 +162,16 @@ Cite a source with `\cite{id}` (note the different marker, distinct from `\citer
 Git is a distributed version control system \cite{chacon2014}.
 ```
 
-It's a longer-term trade for a shorter one: `prodockit.bibliography` needs [Pandoc](https://pandoc.org/) installed even for a website-only build with no PDF, but in return gives you an automatically generated, correctly styled reference list you never hand-format yourself. See [prodockit.bibliography's own docs](https://buckwem.github.io/prodockit-extensions/extensions/bibliography/#comparing-the-two-approaches) for the full comparison between the two.
+It's a longer-term trade for a shorter one: `prodockit.bibliography` needs [Pandoc](https://pandoc.org/) installed even for a website-only build with no PDF, but in return gives you an automatically generated, correctly styled reference list you never hand-format yourself. See [prodockit.bibliography's own docs](https://prodockit.org/extensions/bibliography/#comparing-the-two-approaches) for the full comparison between the two.
 
 ## Acronyms and abbreviations
 
-This template uses [`prodockit.glossary`](https://buckwem.github.io/prodockit-extensions/extensions/glossary/) (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations above - see [prodockit-template#87](https://github.com/buckwem/prodockit-template/issues/87)) for \index{acronyms}: define a term once, insert it by id with `\gls{id}` - it expands to the term's own text, linked to its definition.
+This template uses [`prodockit.glossary`](https://prodockit.org/extensions/glossary/) (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations above - see [prodockit-template#87](https://github.com/buckwem/prodockit-template/issues/87)) for \index{acronyms}: define a term once, insert it by id with `\gls{id}` - it expands to the term's own text, linked to its definition.
 
 !!! info "How the PDF handles this"
     Same as citations above - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\gls{id}` resolves the same way in both outputs with no separate PDF-side translation.
 
-1. Create a page for your acronyms (this template includes one at [`docs/acronyms.md`](https://buckwem.github.io/prodockit-template/acronyms/){target="_blank"}). List each acronym as a short paragraph, and give it an id plus a `data-term` attribute (the acronym's own text) using attr_list syntax on the line directly below it:
+1. Create a page for your acronyms (this template includes one at [`docs/acronyms.md`](https://template.prodockit.org/acronyms/){target="_blank"}). List each acronym as a short paragraph, and give it an id plus a `data-term` attribute (the acronym's own text) using attr_list syntax on the line directly below it:
 
     ``` markdown
     **CSS** - Cascading Style Sheets
@@ -197,7 +202,7 @@ You can build a \index{glossary} of key terms the same way, in its own page - th
 !!! info "How the PDF handles this"
     Same as acronyms above - resolved automatically, no separate PDF-side translation.
 
-1. Create a page for your glossary (this template includes one at [`docs/glossary.md`](https://buckwem.github.io/prodockit-template/glossary/){target="_blank"}). List each term as a short paragraph, and give it an id plus a `data-term` attribute using attr_list syntax, the same as an acronym entry:
+1. Create a page for your glossary (this template includes one at [`docs/glossary.md`](https://template.prodockit.org/glossary/){target="_blank"}). List each term as a short paragraph, and give it an id plus a `data-term` attribute using attr_list syntax, the same as an acronym entry:
 
     ``` markdown
     **Markdown** - A lightweight markup language for formatting plain text...
@@ -222,7 +227,7 @@ You can build a \index{glossary} of key terms the same way, in its own page - th
     {: #css .acronym data-term="CSS" }
     ```
 
-    This template's own `docs/acronyms.md`/`docs/glossary.md` cross-link every entry that has a counterpart on the other page this way - see [prodockit.glossary's own docs](https://buckwem.github.io/prodockit-extensions/extensions/glossary/#cross-links-between-entries-use-a-plain-link-not-glsid) for the full rule of thumb: `\gls{id}` when the term's own name belongs in the sentence, a plain link when the link text needs to say something else entirely.
+    This template's own `docs/acronyms.md`/`docs/glossary.md` cross-link every entry that has a counterpart on the other page this way - see [prodockit.glossary's own docs](https://prodockit.org/extensions/glossary/#cross-links-between-entries-use-a-plain-link-not-glsid) for the full rule of thumb: `\gls{id}` when the term's own name belongs in the sentence, a plain link when the link text needs to say something else entirely.
 
 !!! tip
     If a term is also one of your acronyms, cross-link the two entries as shown above rather than duplicating the explanation on both pages.
@@ -252,7 +257,7 @@ Appendix pages are lettered in `nav` order - the first `is_appendix: true` page 
 
 ## Back-of-book index
 
-This template also enables [`prodockit.index`](https://buckwem.github.io/prodockit-extensions/extensions/index-terms/){target="_blank"} for a \index{back-of-book index}: a traditional, alphabetised, PDF-only index at the end of your document, listing every term you've marked and the page(s) it appears on - the same kind of index/back matter every printed technical book has.
+This template also enables [`prodockit.index`](https://prodockit.org/extensions/index-terms/){target="_blank"} for a \index{back-of-book index}: a traditional, alphabetised, PDF-only index at the end of your document, listing every term you've marked and the page(s) it appears on - the same kind of index/back matter every printed technical book has.
 
 The shipped userguide already enables the extension **and** generates the index, so you normally only need to mark the terms you want to include. There is no separate setup step.
 
@@ -434,6 +439,34 @@ it - those are removed, so the row isn't left wider than its header.
 
     An empty placeholder cell is removed; one with text in it is kept, on the
     assumption that it's your content.
+
+!!! warning "Keep the header and delimiter the same width"
+    A merged heading still needs one empty placeholder for every column its
+    `colspan` covers. If the header and `|---|` delimiter rows declare different
+    cell counts, prodockit stops with both counts and points to the missing
+    placeholders instead of publishing the table as visible pipe characters.
+
+### Cell shading
+
+Header cells have a subtle 5% shade by default in both the website and PDF.
+Remove it from one cell with `shade="off"`, or give any header or body cell an
+explicit percentage from `0%` to `100%`:
+
+``` markdown
+| Unshaded {: shade="off" } | Grouped heading {: colspan=2 shade="8%" } | |
+|---|---|---|
+| Normal | Highlighted {: shade="5%" } | Normal |
+```
+
+Which renders as:
+
+| Unshaded {: shade="off" } | Grouped heading {: colspan=2 shade="8%" } | |
+|---|---|---|
+| Normal | Highlighted {: shade="5%" } | Normal |
+
+Shading applies to the surviving merged cell, so `shade` combines with
+`colspan` or `rowspan` on the same attribute list. Use `off` when the intent is
+to suppress the default header shade explicitly.
 
 ### Rotated headings
 
