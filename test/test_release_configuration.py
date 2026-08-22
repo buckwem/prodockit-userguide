@@ -10,7 +10,7 @@ def _text(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
 
 
-def test_prodockit_042_is_a_minimum_not_an_exact_pin() -> None:
+def test_prodockit_0421_is_a_minimum_not_an_exact_pin() -> None:
     requirements = _text("requirements.txt")
 
     assert "prodockit[index]>=0.42.1" in requirements
@@ -35,6 +35,8 @@ def test_table_styles_keep_the_five_percent_default_and_cell_overrides() -> None
     assert "background-color: rgba(var(--prodockit-table-shade-rgb), 0.05)" in css
     assert "table th.prodockit-table-cell-shaded" in css
     assert "table td.prodockit-table-cell-unshaded" in css
+    assert ".md-typeset th.prodockit-rotate" in css
+    assert ".md-typeset span.prodockit-rotate" in css
     assert "Header cells have a subtle 5% shade by default" in guide
     assert 'shade="off"' in guide
     assert 'shade="8%"' in guide

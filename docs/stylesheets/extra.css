@@ -139,6 +139,20 @@
   padding: 0.4em 0.5em;
 }
 
+/* A header turned on its side, from `{: rotate=270 width="..." }`.
+   These are the project-side layout rules paired with the stable classes
+   emitted by prodockit.tables; the PDF has equivalent bundled rules. */
+.md-typeset th.prodockit-rotate {
+  vertical-align: bottom;
+  text-align: center;
+  padding: 0.4em 0.2em;
+}
+.md-typeset span.prodockit-rotate {
+  display: inline-block;
+  transform-origin: center center;
+  white-space: normal;
+}
+
 /* ============================================================= */
 /* ================ Style for slate theme logo ================ */
 /* ============================================================= */
