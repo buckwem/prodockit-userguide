@@ -171,7 +171,7 @@ prodockit pins          # prompt per package; Enter takes the newest release
 prodockit pins --check  # behind, or files disagreeing with each other? exit non-zero
 ```
 
-With no `-p` flags, both commands cover five packages by default: `zensical`, `weasyprint`, `markdown`, `pymdown-extensions`, and **pandoc** - Pandoc is the fourth build input alongside Zensical and WeasyPrint, and the one that has actually caught this project family out. Pandoc 3.10 stopped treating a syntax-highlighted `<pre><code>` as a code block; on that version every fenced code block in the PDF lost its preformatting and reflowed as justified prose, while the build reported success. The published PDFs stayed correct only because CI happened to be installing an older pandoc than anyone's laptop - exactly the silent drift this section exists to catch. [Pandoc version drift](https://buckwem.github.io/prodockit-extensions/devcons/continuous-integration/#ci-pandoc-version){target="_blank"} covers the how, and prodockit's [limitations](https://buckwem.github.io/prodockit-extensions/devcons/limitations/){target="_blank"} page records the episode in full.
+With no `-p` flags, both commands cover five packages by default: `zensical`, `weasyprint`, `markdown`, `pymdown-extensions`, and **pandoc** - Pandoc is the fourth build input alongside Zensical and WeasyPrint, and the one that has actually caught this project family out. Pandoc 3.10 stopped treating a syntax-highlighted `<pre><code>` as a code block; on that version every fenced code block in the PDF lost its preformatting and reflowed as justified prose, while the build reported success. The published PDFs stayed correct only because CI happened to be installing an older pandoc than anyone's laptop - exactly the silent drift this section exists to catch. [Pandoc version drift](https://prodockit.org/devcons/continuous-integration/#ci-pandoc-version){target="_blank"} covers the how, and prodockit's [limitations](https://prodockit.org/devcons/limitations/){target="_blank"} page records the episode in full.
 
 This project pins `zensical`/`weasyprint` in `requirements.txt`, and pandoc as `PANDOC_VERSION` in both `.github/workflows/docs.yml` and `.gitlab-ci.yml`:
 
@@ -197,7 +197,7 @@ prodockit pins --set pandoc=3.10.1
 
 This project also pins the runner/image used to build it - `ubuntu-24.04` in `.github/workflows/docs.yml`, `python:3.13` in `.gitlab-ci.yml` - since a runner label or image tag has no package index either, only `--set` to a version you choose yourself, e.g. `prodockit pins -p ubuntu --set ubuntu=24.04`.
 
-`prodockit` itself uses a minimum version rather than an exact pin: this userguide requires 0.41.0 or newer because that release introduced the extension-owned back-of-book index configuration. It isn't one of `prodockit pins`' five default packages, so managing or checking that floor needs naming explicitly:
+`prodockit` itself uses a minimum version rather than an exact pin: this userguide requires 0.42.1 or newer as the coordinated patch floor for the forward caption references, table grid and theme-aware cell shading demonstrated here. It isn't one of `prodockit pins`' five default packages, so managing or checking that floor needs naming explicitly:
 
 ```bash
 prodockit pins --check -p zensical -p weasyprint -p prodockit
@@ -207,7 +207,7 @@ prodockit pins --check -p zensical -p weasyprint -p prodockit
     `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. Watching for a newer release *actually mattering* is the next section's job instead.
 
 !!! warning "Needs prodockit 0.17.5 or newer to see this line at all"
-    `prodockit[index]>=0.41.0` has an extras bracket between the name and the version - a shape `prodockit pins` couldn't parse before 0.17.5, silently reporting "not declared anywhere" rather than failing to parse (prodockit-extensions#156). Run the check with an older `prodockit` installed and it passes for the wrong reason: it never saw the declaration to disagree with.
+    `prodockit[index]>=0.42.1` has an extras bracket between the name and the version - a shape `prodockit pins` couldn't parse before 0.17.5, silently reporting "not declared anywhere" rather than failing to parse (prodockit-extensions#156). Run the check with an older `prodockit` installed and it passes for the wrong reason: it never saw the declaration to disagree with.
 
 ### Watching for drift {: #customisebuild-drift }
 
@@ -238,7 +238,30 @@ zensical build --clean --strict                        # ... then the site
 
 Then diff the built output against the previous version before committing - the same comparison the drift job already made, just with a person deciding rather than reading a report. Repeat for the runner image if that's what moved (`prodockit pins -p ubuntu`, or `-p python` on GitLab), since it isn't upgraded by the same command.
 
-See prodockit-extensions' own [Taking an upgrade](https://buckwem.github.io/prodockit-extensions/continuous-integration/#pinning-taking-an-upgrade){target="_blank"} and [Version pinning and drift](https://buckwem.github.io/prodockit-extensions/continuous-integration/#pinning-version-pinning-and-drift){target="_blank"} sections for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
+See prodockit-extensions' own [Taking an upgrade](https://prodockit.org/devcons/continuous-integration/#pinning-taking-an-upgrade){target="_blank"} and [Version pinning and drift](https://prodockit.org/devcons/continuous-integration/#pinning-version-pinning-and-drift){target="_blank"} sections for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
+
+## Updating from prodockit-template {: #customisebuild-template-sync }
+
+A project made from `prodockit-template` is a copy, so later template fixes do
+not arrive through `git pull`. Review them with:
+
+```bash
+prodockit template-sync          # report only; writes no project file
+prodockit template-sync --apply  # create a branch, apply and stage the update
+```
+
+The template's manifest separates template-owned build files from project-owned
+content. Your Markdown, assets, bibliography, licence and prose settings are not
+replaced. Shared configuration is merged at key level rather than copied as one
+file.
+
+In prodockit 0.42.0 and later, that merge also preserves every existing
+`project.extra.pdf_*` value: page size, margins, duplex mode, header/footer
+styling and output choices remain yours. A template update can add a genuinely
+new PDF parameter, but it cannot reset one your project already has.
+
+Review the staged diff before committing it, exactly as you would any other
+dependency update.
 
 ## Publishing {: #customisebuild-publishing }
 
@@ -285,7 +308,7 @@ So neither pipeline builds tags. GitHub rebuilds against `main` from a separate 
 **The Puppeteer variable.** `mermaid-cli` drives Chrome through Puppeteer to draw diagrams. Set `PUPPETEER_SKIP_DOWNLOAD`, **not** the older `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` - Puppeteer renamed it, and the current version ignores the old name, downloading a full Chrome build on every run before discarding it.
 
 !!! tip "Copy a working pipeline rather than assembling one"
-    prodockit's own [Continuous integration](https://buckwem.github.io/prodockit-extensions/continuous-integration/){target="_blank"} page has complete, working recipes for both GitHub Actions and GitLab CI, with the reasoning behind each step. This project's two pipeline files are the same recipe in use.
+    prodockit's own [Continuous integration](https://prodockit.org/devcons/continuous-integration/){target="_blank"} page has complete, working recipes for both GitHub Actions and GitLab CI, with the reasoning behind each step. This project's two pipeline files are the same recipe in use.
 
 ## Mirroring to a second host {: #customisebuild-mirroring }
 

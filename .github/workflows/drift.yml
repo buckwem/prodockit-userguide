@@ -114,7 +114,7 @@ jobs:
 
           PDF: $PDF_RESULT. Website: $CHANGED_FILES files differ.
 
-          Run \`prodockit pins\` to take the upgrade, rebuild, and review the diff before committing - see [Pinning build inputs](https://buckwem.github.io/prodockit-userguide/customisebuild/#customisebuild-pinning)."
+          Run \`prodockit pins\` to take the upgrade, rebuild, and review the diff before committing - see [Pinning build inputs](https://docs.prodockit.org/customisebuild/#customisebuild-pinning)."
 
           # One open issue at a time, updated in place rather than a fresh
           # one every week - a scheduled job that piles up issues trains

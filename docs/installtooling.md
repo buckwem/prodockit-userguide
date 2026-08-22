@@ -869,6 +869,13 @@ We are not complete with the setup yet, but you now have a local copy of the tem
 
 Here are brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
 
+!!! tip "Automated machine setup"
+    If prodockit is already installed, `prodockit bootstrap --apply` can inspect
+    and carry out the same machine and project setup. From 0.42.0, its git
+    service prompt is a numbered menu: University of Surrey GitLab is the
+    default, followed by GitHub.com and GitLab.com. The existing reachability
+    and Surrey VPN check runs after that selection.
+
 !!! Note
     You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
 
@@ -1106,7 +1113,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
     with itself across releases: 3.10 changed how it reads highlighted code
     in HTML, in a way that broke every fenced code block in the PDF while
     the build still reported success - see [Pandoc version
-    drift](https://buckwem.github.io/prodockit-extensions/devcons/continuous-integration/#ci-pandoc-version){target="_blank"}
+    drift](https://prodockit.org/devcons/continuous-integration/#ci-pandoc-version){target="_blank"}
     for what that looked like.
 
     Confirm which version you actually have:

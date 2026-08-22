@@ -24,7 +24,7 @@
 
 The full setup, authoring, customisation, and testing guide for [prodockit-template](https://github.com/buckwem/prodockit-template) and other Zensical projects built on the [prodockit](https://github.com/buckwem/prodockit-extensions) package.
 
-Read it live at **[buckwem.github.io/prodockit-userguide](https://buckwem.github.io/prodockit-userguide/)**.
+Read it live at **[docs.prodockit.org](https://docs.prodockit.org/)**.
 
 ## Why a separate repo?
 
