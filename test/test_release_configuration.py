@@ -18,6 +18,13 @@ def test_prodockit_0421_is_a_minimum_not_an_exact_pin() -> None:
     assert "prodockit==" not in requirements
 
 
+def test_dependency_drift_automation_is_not_shipped() -> None:
+    assert not (ROOT / ".github" / "workflows" / "drift.yml").exists()
+    gitlab = _text(".gitlab-ci.yml")
+    assert "\ndrift:" not in gitlab
+    assert "DRIFT_TOKEN" not in gitlab
+
+
 def test_custom_domain_is_consistent() -> None:
     config = _text("zensical.toml")
     readme = _text("README.md")
