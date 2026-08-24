@@ -204,31 +204,41 @@ prodockit pins --check -p zensical -p weasyprint -p prodockit
 ```
 
 !!! tip
-    `prodockit pins --check` only reports what's already pinned - it doesn't run on every push here, since a pin going out of date on PyPI is expected over time, not something that should fail an unrelated change's own build. Watching for a newer release *actually mattering* is the next section's job instead.
+    `prodockit pins --check` only reports what's already pinned. It does not run on every push, because a pin going out of date on PyPI is expected over time rather than a failure in an unrelated document change.
 
 !!! warning "Needs prodockit 0.17.5 or newer to see this line at all"
     `prodockit[index]>=0.42.1` has an extras bracket between the name and the version - a shape `prodockit pins` couldn't parse before 0.17.5, silently reporting "not declared anywhere" rather than failing to parse (prodockit-extensions#156). Run the check with an older `prodockit` installed and it passes for the wrong reason: it never saw the declaration to disagree with.
 
-### Watching for drift {: #customisebuild-drift }
+### Checking an upgrade manually {: #customisebuild-drift }
 
-A newer release existing isn't interesting on its own - PyPI already answers that. Whether taking it would *change what gets published* is the thing worth someone looking at, and the only way to answer that is a real build: with the pinned versions, then again with the newest ones, diffed byte for byte.
+A normal `prodockit template-sync` preview checks whether the activated project
+environment is using the latest prodockit release. For a broader check of the
+versions declared throughout the project, run:
 
-Both `.github/workflows/drift.yml` and the `drift` job in `.gitlab-ci.yml` do exactly this, weekly:
+```bash
+prodockit template-sync
+prodockit pins --check -p zensical -p weasyprint -p prodockit
+```
+
+Neither command changes the project. Dependency drift is not checked by an
+automated workflow in this repository; most routine prodockit checking is
+handled by the command supplied from the extensions package.
+
+When you need to know whether a broader upgrade changes the published output,
+make the comparison manually: build the current versions, retain those
+outputs, take the upgrade, then build again and compare the PDF and website.
 
 ```
 build (pinned) → build (newest) → diff the PDF and website → report
 ```
 
-It reports rather than fails - `allow_failure: true` on GitLab, and the GitHub job skips its own report step entirely once nothing actually changed - and keeps a single open issue updated in place rather than filing a fresh one every week. A build order flip here (`zensical build` after `prodockit pdf`, not before) matters more than it looks: `zensical build` copies the PDF into the published site, so building it first would make every comparison a false positive that looks exactly like drift.
-
-All three pinned packages are watched, not just Zensical and WeasyPrint - `prodockit` is upgraded and reported alongside them, since it renders content directly and can change output the same way.
-
-!!! note "The GitLab job needs two things set up once"
-    A weekly [pipeline schedule](https://docs.gitlab.com/ee/ci/pipelines/schedules.html){target="_blank"} pointed at this project (the job's own `rules:` only stop it running on a normal push, they don't create the schedule), and a `DRIFT_TOKEN` CI/CD variable - a project access token with the `api` scope, masked and protected - so the job can open or update an issue. The GitHub workflow needs neither: `schedule:` in the workflow file is the trigger, and the built-in `github.token` already has enough access to open an issue in the same repository.
+Build the PDF before the website: `zensical build` copies the PDF into the
+published site, so reversing the order would compare the newly built website
+with an older PDF and create a false difference.
 
 ### Taking an upgrade {: #customisebuild-taking-an-upgrade }
 
-When a drift issue reports something worth having:
+When the checks show an upgrade you want to assess:
 
 ```bash
 prodockit pins -p zensical -p weasyprint -p prodockit  # accept the suggested version, or type one
@@ -236,7 +246,10 @@ prodockit pdf                                          # rebuild - PDF first ...
 zensical build --clean --strict                        # ... then the site
 ```
 
-Then diff the built output against the previous version before committing - the same comparison the drift job already made, just with a person deciding rather than reading a report. Repeat for the runner image if that's what moved (`prodockit pins -p ubuntu`, or `-p python` on GitLab), since it isn't upgraded by the same command.
+Then compare the built output with the copy made before the upgrade and review
+the differences before committing. Repeat for the runner image if that is what
+moved (`prodockit pins -p ubuntu`, or `-p python` on GitLab), since it is not
+upgraded by the same command.
 
 See prodockit-extensions' own [Taking an upgrade](https://prodockit.org/devcons/continuous-integration/#pinning-taking-an-upgrade){target="_blank"} and [Version pinning and drift](https://prodockit.org/devcons/continuous-integration/#pinning-version-pinning-and-drift){target="_blank"} sections for the full reasoning behind each step - this project's two files are that same recipe, adapted from a `pyproject.toml`-based Python package to a `requirements.txt`-based Zensical site.
 
