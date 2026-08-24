@@ -1,17 +1,30 @@
-/* Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors */
+/* Copyright (c) 2026 Mark Buckwell and contributors */
 /* SPDX-License-Identifier: MIT */
 
-/* ============================================================= */
-/* ============ Styles for prodockit.tables' own width ========== */
-/* ============================================================= */
+/* .web-only content (e.g. the "Download PDF" link/button on every docs
+   page) needs no rule here at all - prodockit.pdf.css hides it
+   automatically in every PDF build, and it's meant to show normally here
+   on the live website. .pdf-only is the other half: content meant only
+   for the PDF (this site has none yet, but a project with e.g. an
+   automated cover-page word count would add its own here) - prodockit
+   has no reach into a live website's own stylesheet, so this one line is
+   the project-side part of the convention - see the "Web-only / PDF-only
+   content" section in the PDF generation docs. */
+.pdf-only {
+  display: none !important;
+}
+@media print {
+  .web-only {
+    display: none !important;
+  }
+}
 
 /* prodockit.tables' own <colgroup>-based column widths only take effect
    under table-layout: fixed - scoped to its own marker class so a plain
    table's existing auto-layout/content-driven column sizing is unaffected.
    A consuming project's own website theme needs this same rule too -
    prodockit doesn't ship a bundled website stylesheet the way it ships
-   prodockit.pdf's own CSS for the PDF path (matches prodockit-extensions'
-   own copy of this rule, prodockit-extensions#123).
+   prodockit.pdf's own CSS for the PDF path.
 
    The theme's own default table styling (border, padding, alternating
    presentation) is scoped ".md-typeset table:not([class])" - confirmed
@@ -140,8 +153,18 @@
 }
 
 /* A header turned on its side, from `{: rotate=270 width="..." }`.
-   These are the project-side layout rules paired with the stable classes
-   emitted by prodockit.tables; the PDF has equivalent bundled rules. */
+
+   `transform` rather than `writing-mode`, and deliberately the same
+   mechanism the PDF uses: WeasyPrint ignores `writing-mode` entirely and
+   silently, so a heading set that way is horizontal in the PDF while the
+   column still narrows - it looks merely wrapped rather than broken. One
+   mechanism that behaves the same in both outputs is worth more than two
+   that have to agree (prodockit-extensions#474).
+
+   `transform` never affects layout, which is why the column has to carry
+   a width of its own: a rotated box still occupies the space it would
+   have occupied unrotated. The extension refuses `rotate` without
+   `width` for that reason. */
 .md-typeset th.prodockit-rotate {
   vertical-align: bottom;
   text-align: center;
@@ -157,18 +180,10 @@
 /* ================ Style for slate theme logo ================ */
 /* ============================================================= */
 
-/* Relative url() references, not inlined base64. prodockit.pdf resolves
-   these for the PDF itself: _inline_css_urls() rewrites every relative
-   url() in a project's extra_css into a data: URI against the
-   stylesheet's own directory, precisely so a .md-logo content swap keeps
-   working once the compiled CSS lands in its temporary work directory.
-   This file previously carried two ~10KB base64 payloads to work around
-   a problem the library already handles.
-
-   Keeping them as files is also what makes the institution-branding swap
-   possible at all - macros.py copies the chosen pair over
-   logo_black.png/logo_white.png at build start, which a data: URI baked
-   into this stylesheet would silently ignore. */
+/* Keep these as relative files so projects can replace their active
+   logo_black.png/logo_white.png pair without editing this shared stylesheet.
+   prodockit.pdf inlines local CSS assets while assembling the PDF, so the
+   relative website URLs do not make the PDF build depend on this directory. */
 [data-md-color-scheme="slate"] .md-logo img {
   content: url("../assets/logo_white.png");
 }
@@ -200,22 +215,17 @@
 /* =============== Site header title weight ===================== */
 /* ============================================================= */
 
-/* The theme renders site_name ("prodockit User Guide") as one plain text
-   node in the header, with no way to target just "prodockit" within it -
-   de-bold the whole thing rather than leave it inconsistent with the
-   now-regular-weight "prodockit" on the cover page/PDF. */
+/* Matches the regular (non-bold) weight "prodockit" already renders at on
+   the cover page's own hero title (see ".cover-hero-title-light" below) -
+   the theme's own header title is bold by default, which otherwise reads
+   inconsistently against the cover page directly beneath it. */
 .md-header__topic .md-ellipsis {
   font-weight: normal;
 }
 
-/* ============================================================= */
-/* ================ Styles for framed screenshots ================ */
-/* ============================================================= */
-
-/* Applied via "{ .screenshot }" on an image (see "Captions" in
-   customise.md) - a subtle border, rounded corners, and a light shadow
-   signal "this is a picture of your screen", distinguishing a real
-   application/tool screenshot from a logo, icon, or diagram. */
+/* Framed screenshots and single-column card grids are author-facing
+   helpers used by the template and its User Guide. They belong in the
+   shared stylesheet so an example has the same presentation everywhere. */
 .md-typeset img.screenshot {
   border: 1px solid #d0d0d0;
   border-radius: 4px;
@@ -225,11 +235,6 @@
   border-color: #4a4a4a;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
-
-/* ============================================================= */
-/* ============== Styles for use with card grids =============== */
-/* ============================================================= */
-
 .grid.cards.one-column {
   grid-template-columns: 1fr;
 }
@@ -274,9 +279,10 @@
   margin: 0 0 1rem !important;
 }
 
-/* "prodockit" itself stays regular weight - only "User Guide" is bold -
-   same rule for both the website and the PDF, since both share this markup
-   and CSS. */
+/* The site's own wordmark - kept regular weight rather than the bold
+   ".cover-hero-title" default, matching the header logo/title elsewhere on
+   the page. Same rule for both the website and the PDF, since both share
+   this markup and CSS. */
 .cover-hero-title-light {
   font-weight: 400 !important;
 }
@@ -293,8 +299,7 @@
    (renaming or dropping the variable) can't silently break this
    project's own PDF-visible text again (prodockit-extensions#121); the
    live website still gets the real, theme-adaptive value whenever it's
-   actually defined, via the var() fallback below. Matches
-   prodockit-extensions' own copy of this fix. */
+   actually defined, via the var() fallback below. */
 :root {
   --prodockit-fg-color-light: rgba(0, 0, 0, 0.55);
 }
@@ -315,9 +320,9 @@
 
 /* font-weight: 400 for the same reason .cover-hero-subtitle needs it above
    - without it, prodockit.pdf's Pandoc-based pipeline renders this
-   paragraph in a bold weight instead of regular (confirmed directly on
-   prodockit-extensions' own identical rule: Inter-Ultra-Bold instead of
-   Inter, via a real PDF's own extracted font info). */
+   paragraph in a bold weight (confirmed directly: Inter-Ultra-Bold
+   instead of Inter, via a real PDF's own extracted font info) instead of
+   regular. */
 .cover-hero-release {
   font-size: 1rem;
   font-weight: 400;
@@ -327,7 +332,7 @@
 
 /* Matches the hero graphic's own innermost, most saturated stroke colour
    (docs/assets/cover-hero-*.svg - both light and dark variants use the
-   same green) rather than the theme's default primary colour, which
+   same green now) rather than the theme's default primary colour, which
    .md-button--primary would otherwise use unmodified. Scoped to the hero's
    own "Download PDF" button, not the bare ".md-button--primary" class, so
    any other primary button elsewhere keeps the theme's default colour. */
@@ -409,134 +414,119 @@
   }
 }
 
-/* ============================================================= */
-/* ============ Styles for numbering page headings ============= */
-/* ============================================================= */
 
-/* Matches prodockit-template's own copy exactly - see "Continuous numbering
-   across pages" in customise.md. `heading_counter_reset(page)`, called near
-   the top of every content page, overrides `h1-count`/`toc1` below with
-   this page's own starting value (or a lettered "Appendix X" scheme),
-   turning per-document numbering into continuous numbering across the
-   whole nav. */
+/* Simple emphasis colours documented by the template. */
+.bg-blue,
+.bg-green,
+.bg-grey {
+  color: #ffffff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+.bg-blue { background-color: #0078d4; }
+.bg-green { background-color: #029e50; }
+.bg-grey { background-color: #6e6d6dca; }
 
-/* 1. Reset the main counter at the start of the page content */
-.md-typeset {
-  counter-reset: h1-count 0; /* Change 0 to (StartNumber - 1) to offset */ }
-
-/* 2. Style Heading 1 */
-.md-typeset h1 {
-  counter-increment: h1-count; counter-reset: h2-count; /* Reset H2s when a new H1 appears */ }
-.md-typeset h1::before {
-  content: counter(h1-count) ". "; }
-
-/* 3. Style Heading 2 */
-.md-typeset h2 {
-  counter-increment: h2-count; counter-reset: h3-count; /* Reset H3s when a new H2 appears */ }
-.md-typeset h2::before {
-  content: counter(h1-count) "." counter(h2-count) " "; }
-
-/* 4. Style Heading 3 */
-.md-typeset h3 {
-  counter-increment: h3-count; }
-.md-typeset h3::before {
-  content: counter(h1-count) "." counter(h2-count) "." counter(h3-count) " "; }
-
-/* prodockit.headings' own "unnumbered" class (e.g. this template's cover
-   page title, `# Title {: .unnumbered }`) only excludes a heading from the
-   Python-side registry - counter-increment above still runs unconditionally
-   for every h1/h2/h3, so without this override an "unnumbered" heading
-   would still visibly show a number. prodockit-template's own cover page
-   sidesteps this a different way (hiding its h1 outright via `display:
-   none`); this project's cover page keeps its title visible, so the number
-   itself needs suppressing instead. */
+/* Continuous chapter numbering across pages. A project's
+   heading_counter_reset(page) macro supplies the starting value for each
+   page; project.extra.heading_numbering can switch the visible numbering
+   off for a site that does not use document-style chapter numbers. */
+.md-typeset { counter-reset: h1-count 0; }
+.md-typeset h1 { counter-increment: h1-count; counter-reset: h2-count; }
+.md-typeset h1::before { content: counter(h1-count) ". "; }
+.md-typeset h2 { counter-increment: h2-count; counter-reset: h3-count; }
+.md-typeset h2::before { content: counter(h1-count) "." counter(h2-count) " "; }
+.md-typeset h3 { counter-increment: h3-count; }
+.md-typeset h3::before { content: counter(h1-count) "." counter(h2-count) "." counter(h3-count) " "; }
 .md-typeset h1.unnumbered::before,
 .md-typeset h2.unnumbered::before,
-.md-typeset h3.unnumbered::before {
-  content: none; }
-
-/* 3. Level 2 (The subsections) */
+.md-typeset h3.unnumbered::before { content: none; }
 .md-nav--secondary > .md-nav__list > .md-nav__item {
   counter-increment: toc2;
-  counter-reset: toc3 0; /* Ensures every new H1 resets the H2 count to .1 */ }
-
+  counter-reset: toc3 0;
+}
 .md-nav--secondary > .md-nav__list > .md-nav__item > .md-nav__link .md-ellipsis::before {
-  content: counter(toc1) "." counter(toc2) " "; /* Result: 3.1 */ }
-
-/* 4. Level 3 (The subsubsections) */
+  content: counter(toc1) "." counter(toc2) " ";
+}
 .md-nav--secondary > .md-nav__list > .md-nav__item .md-nav__list > .md-nav__item {
-  counter-increment: toc3; }
-
+  counter-increment: toc3;
+}
 .md-nav--secondary > .md-nav__list > .md-nav__item .md-nav__list > .md-nav__item > .md-nav__link .md-ellipsis::before {
-  content: counter(toc1) "." counter(toc2) "." counter(toc3) " "; /* Result: 3.1.1 */ }
-
-/* ============================================================= */
-/* ============ Styles for figure/table caption numbers ========= */
-/* ============================================================= */
-
-/* pymdownx.blocks.caption's own auto-number (zensical.toml's "{}." prefix
-   template) only knows about the current page, not this template's
-   cross-page chapter numbering - so it supplies just the auto-incrementing
-   part ("1.", "2.", ...) inside .caption-prefix, and this prepends the
-   "Figure "/"Table " word plus the current page's own chapter number
-   (already tracked by h1-count - see "Styles for numbering page headings"
-   above) in front of it via ::before, e.g. "Figure " + "7." + "1." =
-   "Figure 7.1.". See "Captions" in customise.md. Appendix pages override
-   these same rules with a literal letter instead of counter(h1-count) - see
-   heading_counter_reset() in macros.py. */
+  content: counter(toc1) "." counter(toc2) "." counter(toc3) " ";
+}
 .md-typeset .prodockit-figure-caption .caption-prefix::before {
-  content: "Figure " counter(h1-count) "."; }
+  content: "Figure " counter(h1-count) ".";
+}
 .md-typeset .prodockit-table-caption .caption-prefix::before {
-  content: "Table " counter(h1-count) "."; }
-
-/* ============================================================= */
-/* ============ PDF-only / web-only content markers ============= */
-/* ============================================================= */
-
-/* Hides ".pdf-only" content on the live website - prodockit.pdf's own CSS
-   forces it back to visible inside the generated PDF. Hides ".web-only"
-   content (e.g. the cover page's Download PDF button) only when printing -
-   WeasyPrint always renders the PDF build in print mode, and this same
-   stylesheet is passed through to it as `extra_css`, so one rule here
-   covers both outputs. `!important` on both: an element carrying either
-   class may also have its own inline `style="display: ..."` (e.g. the
-   Download PDF button's centring style), which would otherwise silently
-   win over a plain class rule regardless of media query. */
-.pdf-only {
-  display: none !important;
-}
-@media print {
-  .web-only {
-    display: none !important;
-  }
+  content: "Table " counter(h1-count) ".";
 }
 
-/* ============================================================= */
-/* ============= Styles for text background colour ============= */
-/* ============================================================= */
 
-.bg-blue {
-    background-color: #0078d4;
-    color: #ffffff;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-weight: bold;
+
+/* prodockit.steps - numbered steps a reader works through in order.
+   ---------------------------------------------------------------------
+   Two things here are worth keeping, because both fail silently and only
+   in the PDF (prodockit-extensions#378).
+
+   1. The line joining the steps is positioned from the number's own
+      size - half a circle, less half a line - so the two cannot drift
+      apart. Change --step-size to any value in any unit and it stays
+      centred.
+
+   2. ::after carries the same font-size as ::before. The number sets its
+      own size so the digits fit, so an `em` means one thing inside the
+      circle and another in the line's `left` - measured at -8.8pt adrift
+      once the text was scaled. Matching the basis holds every case at
+      zero. */
+.md-typeset ol.prodockit-steps {
+  --step-size: 1.65rem;        /* diameter of the number */
+  --step-gap: 0.75rem;         /* number to text */
+  --step-line: 2px;            /* thickness of the joining line */
+  --step-line-gap: 0.3rem;     /* 0 makes the line touch the numbers */
+  --step-ink: var(--md-primary-fg-color, #1f2937);
+  --step-rule: var(--md-default-fg-color--lighter, #d1d5db);
+  list-style: none;
+  margin: 0 0 1rem;
+  padding-left: 0;
 }
-
-.bg-green {
-    background-color: #029e50;
-    color: #ffffff;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-weight: bold;
+.md-typeset ol.prodockit-steps > li {
+  position: relative;
+  margin: 0;
+  padding-left: calc(var(--step-size) + var(--step-gap));
+  padding-bottom: 1.15rem;
+  min-height: var(--step-size);
 }
-
-.bg-grey {
-    background-color: #6e6d6dca;
-    color: #ffffff;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-weight: bold;
+.md-typeset ol.prodockit-steps > li:last-child { padding-bottom: 0; }
+.md-typeset ol.prodockit-steps > li::before {          /* the number */
+  content: counter(list-item);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--step-size);
+  height: var(--step-size);
+  line-height: var(--step-size);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--step-ink);
+  color: var(--md-primary-bg-color, #fff);
+}
+.md-typeset ol.prodockit-steps > li::after {           /* the line between */
+  content: "";
+  position: absolute;
+  font-size: 0.8rem;                                   /* same basis as the number */
+  left: calc(var(--step-size) / 2 - var(--step-line) / 2);
+  top: calc(var(--step-size) + var(--step-line-gap));
+  bottom: var(--step-line-gap);
+  width: var(--step-line);
+  background: var(--step-rule);
+}
+.md-typeset ol.prodockit-steps > li:last-child::after { content: none; }
+.md-typeset ol.prodockit-steps p.prodockit-step-title {
+  font-weight: 700;
+  margin: 0 0 0.35rem;
 }
 
 /* prodockit.tree - a directory listing that looks like one.

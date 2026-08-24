@@ -28,7 +28,7 @@ nav = [
     {"1. About this guide" = "about.md"}
   ]},
   {"Guide" = [
-    {"2. Install tooling" = "installtooling.md"},
+    {"2. Manual install" = "installtooling.md"},
     {"3. Start editing" = "startediting.md"},
     {"4. Markdown basics" = "markdown.md"},
     {"5. Zensical basics" = "zensicalbasics.md"},
@@ -238,6 +238,7 @@ numbering = "continuous"
 # content - see prodockit-extensions#55/prodockit.pdf.index.
 include = true
 title = "Index"
+[project.markdown_extensions."prodockit.steps"]
 [project.markdown_extensions."prodockit.tree"]
 [project.markdown_extensions.pymdownx.snippets]
 [project.markdown_extensions.pymdownx.blocks.caption]
