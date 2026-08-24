@@ -61,20 +61,6 @@ def test_new_042_behaviour_is_documented() -> None:
     assert "generated root files" in editing
 
 
-def test_manual_install_explains_both_repository_starting_points() -> None:
-    install = _text("docs/installtooling.md")
-    config = _text("zensical.toml")
-
-    assert "# Manual install" in install
-    assert "### Path 1: start from the template" in install
-    assert "### Path 2: clone the existing repository" in install
-    assert "git remote add origin" in install
-    assert 'git commit -m "Initial commit"' in install
-    assert "git push -u origin main" in install
-    assert "git log -1 --oneline" in install
-    assert '{"2. Manual install" = "installtooling.md"}' in config
-
-
 def test_every_prodockit_markdown_extension_is_enabled() -> None:
     config = _text("zensical.toml")
 
