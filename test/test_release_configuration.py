@@ -144,6 +144,18 @@ def test_install_platform_tabs_are_separate_and_consistently_ordered() -> None:
         assert labels == expected_group * (len(labels) // 3)
 
 
+def test_guide_is_split_into_top_level_workflow_sections() -> None:
+    config = _text("zensical.toml")
+
+    assert '{"Guide" = [' not in config
+    assert '{"Install" = [' in config
+    assert '{"Edit" = [' in config
+    assert '{"Basics" = [' in config
+    assert '{"Customise" = [' in config
+    assert '{"Build" = [' in config
+    assert config.count('{"10. Customise build" = "customisebuild.md"}') == 1
+
+
 def test_retired_github_pages_domains_are_not_used() -> None:
     paths = [ROOT / "README.md", ROOT / "zensical.toml"]
     paths.extend((ROOT / "docs").rglob("*.md"))

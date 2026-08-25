@@ -27,18 +27,26 @@ nav = [
   {"About" = [
     {"1. About this guide" = "about.md"}
   ]},
-  {"Guide" = [
+  {"Install" = [
     {"2. Adoption install" = "adoptioninstall.md"},
     {"3. Bootstrap Install" = "bootstrapinstall.md"},
-    {"4. Manual install" = "installtooling.md"},
-    {"5. Start editing" = "startediting.md"},
+    {"4. Manual install" = "installtooling.md"}
+  ]},
+  {"Edit" = [
+    {"5. Start editing" = "startediting.md"}
+  ]},
+  {"Basics" = [
     {"6. Markdown basics" = "markdown.md"},
     {"7. Zensical basics" = "zensicalbasics.md"},
+    {"12. Shell commands" = "shcommands.md"}
+  ]},
+  {"Customise" = [
     {"8. Customisation" = "customise.md"},
-    {"9. Customise document content" = "customisecontent.md"},
+    {"9. Customise document content" = "customisecontent.md"}
+  ]},
+  {"Build" = [
     {"10. Customise build" = "customisebuild.md"},
     {"11. Additional tooling" = "additionaltooling.md"},
-    {"12. Shell commands" = "shcommands.md"},
     {"13. Testing" = "testing.md"}
   ]},
   {"Reference" = [
