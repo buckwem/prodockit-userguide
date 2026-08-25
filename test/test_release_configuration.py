@@ -1,5 +1,6 @@
 """Release floor, canonical domains, and prodockit 0.42 documentation."""
 
+import re
 from pathlib import Path
 
 
@@ -117,6 +118,30 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
         '{"3. Bootstrap Install" = "bootstrapinstall.md"}'
     ) < config.index('{"4. Manual install" = "installtooling.md"}')
     assert '[project.markdown_extensions."prodockit.steps"]' in config
+
+
+def test_install_platform_tabs_are_separate_and_consistently_ordered() -> None:
+    expected_group = [
+        ":material-apple: macOS",
+        ":fontawesome-brands-windows: Windows",
+        ":material-linux: Linux (Ubuntu)",
+    ]
+
+    for path in (
+        "docs/adoptioninstall.md",
+        "docs/bootstrapinstall.md",
+        "docs/installtooling.md",
+    ):
+        source = _text(path)
+        labels = re.findall(
+            r'^=== "(:(?:material-apple|fontawesome-brands-windows|material-linux): [^"]+)"$',
+            source,
+            flags=re.MULTILINE,
+        )
+        assert "macOS /" not in source
+        assert labels
+        assert len(labels) % 3 == 0
+        assert labels == expected_group * (len(labels) // 3)
 
 
 def test_retired_github_pages_domains_are_not_used() -> None:

@@ -88,7 +88,7 @@ needed to run the command itself.
     command rather than the Python you installed. Repeat the installer with
     **Add python.exe to PATH** selected, then open a new PowerShell window.
 
-=== ":material-linux: Ubuntu"
+=== ":material-linux: Linux (Ubuntu)"
 
     Open Terminal and run:
 
@@ -140,7 +140,7 @@ environment named `.venv` in that directory and install prodockit into it.
     python -m pip install --upgrade "prodockit>=0.43.2"
     ```
 
-=== ":material-linux: Ubuntu"
+=== ":material-linux: Linux (Ubuntu)"
 
     ``` bash
     mkdir -p ~/GitLab
@@ -154,7 +154,7 @@ environment named `.venv` in that directory and install prodockit into it.
 The prompt should now begin with `(.venv)`. Confirm that the expected command
 and version are active:
 
-=== ":material-apple: macOS / :material-linux: Ubuntu"
+=== ":material-apple: macOS"
 
     ``` bash
     command -v pdkboot
@@ -165,6 +165,13 @@ and version are active:
 
     ``` powershell
     Get-Command pdkboot
+    pdkboot --version
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    command -v pdkboot
     pdkboot --version
     ```
 
@@ -306,7 +313,7 @@ service returning a temporary error, a closed terminal, or a computer restart.
 Return to the directory containing `.pdkboot.toml`, reactivate its environment,
 and run the same apply command again.
 
-=== ":material-apple: macOS / :material-linux: Ubuntu"
+=== ":material-apple: macOS"
 
     ``` bash
     cd ~/GitLab
@@ -319,6 +326,14 @@ and run the same apply command again.
     ``` powershell
     cd ~\GitLab
     .\.venv\Scripts\Activate.ps1
+    pdkboot --apply
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    cd ~/GitLab
+    source .venv/bin/activate
     pdkboot --apply
     ```
 

@@ -85,7 +85,7 @@ Change to the repository directory containing one supported configuration:
 - `zensical.toml`, `zensical.yml`, or `zensical.yaml`; or
 - `mkdocs.yml` or `mkdocs.yaml`.
 
-=== ":material-apple: macOS / :material-linux: Ubuntu"
+=== ":material-apple: macOS"
 
     ``` bash
     cd /path/to/your-document
@@ -98,6 +98,13 @@ Change to the repository directory containing one supported configuration:
 
     ``` powershell
     cd C:\path\to\your-document
+    git status --short
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    cd /path/to/your-document
     git status --short
     ```
 
@@ -128,7 +135,7 @@ Fix an unsuccessful baseline build before adoption.
 Use the Python environment the project already uses. For the common `.venv`
 name:
 
-=== ":material-apple: macOS / :material-linux: Ubuntu"
+=== ":material-apple: macOS"
 
     ``` bash
     source .venv/bin/activate
@@ -140,6 +147,12 @@ name:
 
     ``` powershell
     .\.venv\Scripts\Activate.ps1
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    source .venv/bin/activate
     ```
 
 The prompt normally begins with `(.venv)` after activation. If the project
@@ -166,7 +179,7 @@ Install the command into the active project environment.
     python -m pip install --upgrade prodockit
     ```
 
-=== ":material-linux: Ubuntu"
+=== ":material-linux: Linux (Ubuntu)"
 
     ``` bash
     python -m pip install --upgrade prodockit
@@ -384,7 +397,7 @@ rather than replacing the project's other custom fences.
 Generate current prodockit copies in a sibling comparison directory. This
 does not touch the existing files under the project's `tools/` directory.
 
-=== ":material-apple: macOS / :material-linux: Ubuntu"
+=== ":material-apple: macOS"
 
     ``` bash
     prodockit init-tools --dir ../prodockit-tools-reference
@@ -396,6 +409,12 @@ does not touch the existing files under the project's `tools/` directory.
 
     ``` powershell
     prodockit init-tools --dir ..\prodockit-tools-reference
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    prodockit init-tools --dir ../prodockit-tools-reference
     ```
 
 Add `--no-mathjax` when only Mermaid was selected, or `--no-mermaid` when only
@@ -439,7 +458,7 @@ network failure, closed terminal, or package-service error interrupts the
 installation, return to the project, activate its environment, and apply
 again:
 
-=== ":material-apple: macOS / :material-linux: Ubuntu"
+=== ":material-apple: macOS"
 
     ``` bash
     cd /path/to/your-document
@@ -454,6 +473,14 @@ again:
     ``` powershell
     cd C:\path\to\your-document
     .\.venv\Scripts\Activate.ps1
+    prodockit adopt --apply
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    cd /path/to/your-document
+    source .venv/bin/activate
     prodockit adopt --apply
     ```
 

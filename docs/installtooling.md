@@ -1480,7 +1480,7 @@ First confirm that you are in the project directory and that its `.venv` is
 active. Every new Terminal or PowerShell window needs the environment to be
 activated again.
 
-=== ":material-apple: macOS / :material-linux: Ubuntu"
+=== ":material-apple: macOS"
 
     ``` bash
     cd /path/to/your-project
@@ -1492,6 +1492,13 @@ activated again.
     ``` powershell
     cd C:\path\to\your-project
     .\.venv\Scripts\Activate.ps1
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    cd /path/to/your-project
+    source .venv/bin/activate
     ```
 
 If an operating-system installer has just added Git, Node.js, or Visual Studio
