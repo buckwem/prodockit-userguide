@@ -31,22 +31,22 @@ nav = [
     {"2. Adoption install" = "adoptioninstall.md"},
     {"3. Bootstrap Install" = "bootstrapinstall.md"},
     {"4. Manual install" = "installtooling.md"},
-    {"11. Additional tooling" = "additionaltooling.md"}
+    {"5. Additional tooling" = "additionaltooling.md"}
   ]},
   {"Edit" = [
-    {"5. Start editing" = "startediting.md"}
+    {"6. Start editing" = "startediting.md"}
   ]},
   {"Basics" = [
-    {"6. Markdown basics" = "markdown.md"},
-    {"7. Zensical basics" = "zensicalbasics.md"},
-    {"12. Shell commands" = "shcommands.md"}
+    {"7. Markdown basics" = "markdown.md"},
+    {"8. Zensical basics" = "zensicalbasics.md"},
+    {"9. Shell commands" = "shcommands.md"}
   ]},
   {"Customise" = [
-    {"8. Customisation" = "customise.md"},
-    {"9. Customise document content" = "customisecontent.md"}
+    {"10. Customisation" = "customise.md"},
+    {"11. Customise document content" = "customisecontent.md"}
   ]},
   {"Build and test" = [
-    {"10. Customise build" = "customisebuild.md"},
+    {"12. Customise build" = "customisebuild.md"},
     {"13. Testing" = "testing.md"}
   ]},
   {"Reference" = [

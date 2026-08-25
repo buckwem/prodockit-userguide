@@ -153,13 +153,18 @@ def test_guide_is_split_into_top_level_workflow_sections() -> None:
     assert '{"Basics" = [' in config
     assert '{"Customise" = [' in config
     assert '{"Build and test" = [' in config
-    assert config.count('{"10. Customise build" = "customisebuild.md"}') == 1
+    assert config.count('{"12. Customise build" = "customisebuild.md"}') == 1
     install = config[config.index('{"Install" = [') : config.index('{"Edit" = [')]
     build = config[
         config.index('{"Build and test" = [') : config.index('{"Reference" = [')
     ]
-    assert '{"11. Additional tooling" = "additionaltooling.md"}' in install
-    assert '{"11. Additional tooling" = "additionaltooling.md"}' not in build
+    assert '{"5. Additional tooling" = "additionaltooling.md"}' in install
+    assert '{"5. Additional tooling" = "additionaltooling.md"}' not in build
+    numbers = [
+        int(number)
+        for number in re.findall(r'\{"(\d+)\. [^"]+" = "[^"]+"\}', config)
+    ]
+    assert numbers == list(range(1, 14))
 
 
 def test_retired_github_pages_domains_are_not_used() -> None:
