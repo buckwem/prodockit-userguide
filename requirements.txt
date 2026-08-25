@@ -1,22 +1,18 @@
 # Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
 # SPDX-License-Identifier: MIT
 
-# Pinned exactly, not left as a bare floor: either one changing output
-# without anything failing is the actual risk `prodockit pins` exists for -
-# Zensical 0.0.52 already redrew this project's own GitHub brand icon on
-# every page, and a WeasyPrint upgrade decides pagination, which page
-# numbers here depend on (the back-of-book index, the table of contents).
-# Keep both in step with `prodockit pins`/`prodockit pins --check` - see
-# "Pinning build inputs" in customisebuild.md - rather than editing the
-# version here by hand.
-zensical==0.0.55
+# A minimum version retains the fixes this guide requires while allowing a
+# fresh environment to use a later compatible Zensical release. Use
+# `prodockit pins` to move managed versions together - see "Pinning build
+# inputs" in customisebuild.md.
+zensical>=0.0.57
 # The [index] extra pulls in pymupdf, needed for the back-of-book index
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
 # prodockit.index in zensical.toml.
 #
-# A minimum rather than an exact pin: 0.42.1 is the coordinated patch floor
-# for the forward caption references, table grids and theme-aware cell shading
-# used and documented by this guide, while newer releases remain acceptable.
+# A minimum rather than an exact pin: 0.45.0 is the coordinated release floor
+# for the authoring components and PDF renderer used by this guide, while
+# newer releases remain acceptable.
 #
 # `prodockit pins` could not manage this line before 0.17.5: its matcher
 # expected the version straight after the package name, and the `[index]`
@@ -24,10 +20,11 @@ zensical==0.0.55
 # rather than failing to parse (prodockit-extensions#156). Needs 0.17.5+
 # installed to pin or check this line - see "Pinning build inputs" in
 # customisebuild.md.
-prodockit[index]>=0.42.1
+prodockit[index]>=0.45.0
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI
 # entry point is, so it's listed here rather than assumed pre-installed.
-# Pinned exactly - see the comment on zensical above for why.
+# Pinned exactly because a WeasyPrint change can alter pagination, including
+# the table of contents and back-of-book index.
 weasyprint==69.0
