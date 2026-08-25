@@ -68,6 +68,7 @@ def test_manual_install_explains_both_repository_starting_points() -> None:
     assert "# Manual install" in install
     assert "### Path 1: start from the template" in install
     assert "### Path 2: clone the existing repository" in install
+    assert "## Help with common problems {: #installtooling-help-with-common-problems }" in install
     assert "git remote add origin" in install
     assert 'git commit -m "Initial commit"' in install
     assert "git push -u origin main" in install

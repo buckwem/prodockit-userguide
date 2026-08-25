@@ -1472,6 +1472,90 @@ If `prodockit sync-repo` or an editor setting made an intentional change,
 review it with `git diff` and follow the normal editing workflow in the next
 section rather than replacing the repository's history.
 
+## Help with common problems {: #installtooling-help-with-common-problems }
+
+### A command is not recognised {: #installtooling-command-not-recognised }
+
+First confirm that you are in the project directory and that its `.venv` is
+active. Every new Terminal or PowerShell window needs the environment to be
+activated again.
+
+=== ":material-apple: macOS / :material-linux: Ubuntu"
+
+    ``` bash
+    cd /path/to/your-project
+    source .venv/bin/activate
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    ``` powershell
+    cd C:\path\to\your-project
+    .\.venv\Scripts\Activate.ps1
+    ```
+
+If an operating-system installer has just added Git, Node.js, or Visual Studio
+Code, close the terminal, open a new one, return to the project, and activate
+`.venv` again. Windows in particular does not add a newly installed command to
+terminals that are already open.
+
+### Git reports `Permission denied` {: #installtooling-git-permission-denied }
+
+Test the SSH connection independently:
+
+``` bash
+ssh -T git@your-git-host
+```
+
+If the host rejects the key, confirm that the private key is loaded into the
+SSH agent and that its matching public key is registered with the correct
+GitLab or GitHub account. Also check that `git remote -v` contains the expected
+host, namespace, and repository name. Do not create another repository merely
+because SSH cannot currently see the intended one.
+
+### The project directory already exists {: #installtooling-directory-exists }
+
+Do not clone over an existing directory or delete it without reviewing its
+contents. Run `git status --short`, `git remote -v`, and
+`git log -1 --oneline` inside it. If it is the intended existing project,
+continue with Path 2. If it is unrelated, choose a different clone directory
+or move it to a clearly named backup first.
+
+### WeasyPrint cannot load its graphics libraries {: #installtooling-weasyprint-libraries }
+
+Activate the project environment and repeat the direct import check:
+
+``` bash
+python -c "import weasyprint; print(weasyprint.__version__)"
+```
+
+An error ending in `cannot load library` means the platform-specific Pango
+libraries are missing or cannot be found. Return to
+[Install Python and Zensical](#install-python-and-zensical) and repeat the
+graphics-library instructions for the operating system. Installing the Python
+package again does not install those external libraries.
+
+### `node` works but `npm` is missing {: #installtooling-npm-missing }
+
+Open a new terminal first, then check both commands:
+
+``` bash
+node --version
+npm --version
+```
+
+If only `npm` is missing, return to [Install Node.js](#install-nodejs) and use
+the supported installer for the operating system rather than combining Node.js
+from one source with npm from another.
+
+### A download or package service fails {: #installtooling-download-fails }
+
+A timeout, connection reset, or temporary `503` normally does not require the
+project or `.venv` to be removed. Check the network or university VPN, wait
+briefly, and repeat only the failed installation command. Package managers
+usually recognise components that finished successfully and continue with the
+missing work.
+
 ## Where to go next {: #installtooling-where-to-go-next }
 
 You now have Visual Studio Code, Git, Zensical and the diagram and maths
