@@ -45,7 +45,7 @@ nav = [
     {"8. Customisation" = "customise.md"},
     {"9. Customise document content" = "customisecontent.md"}
   ]},
-  {"Build" = [
+  {"Build and test" = [
     {"10. Customise build" = "customisebuild.md"},
     {"13. Testing" = "testing.md"}
   ]},
