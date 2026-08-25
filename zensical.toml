@@ -4,7 +4,7 @@
 [project]
 
 site_name = "prodockit User Guide"
-site_description = "Full setup, authoring, customisation, and testing guide for prodockit-template and other prodockit-based Zensical projects."
+site_description = "Full setup, authoring, customisation, building, and publishing guide for prodockit-template and other prodockit-based Zensical projects."
 site_author = "Mark Buckwell"
 site_url = "https://docs.prodockit.org/"
 site_dir = "public"
@@ -42,12 +42,11 @@ nav = [
     {"9. Shell commands" = "shcommands.md"}
   ]},
   {"Customise" = [
-    {"10. Customisation" = "customise.md"},
-    {"11. Customise document content" = "customisecontent.md"}
+    {"10. Document appearance and structure" = "customise.md"},
+    {"11. Prodockit authoring features" = "customisecontent.md"}
   ]},
   {"Build and test" = [
-    {"12. Customise build" = "customisebuild.md"},
-    {"13. Testing" = "testing.md"}
+    {"12. Build and publish" = "customisebuild.md"}
   ]},
   {"Reference" = [
     {"A. Acronyms" = "acronyms.md"},
@@ -59,14 +58,14 @@ nav = [
 extra_css = ["stylesheets/extra.css"]
 # MathJax is installed rather than fetched from unpkg - the CDN URL was
 # `mathjax@3`, which floats, while `prodockit pdf` renders the PDF through
-# tools/mathjax's exactly-pinned 3.2.2, so the two agreed only by
+# tools/mathjax's exactly-pinned install, so the two agreed only by
 # coincidence. This copy comes from that same pinned install, so the
 # website and the PDF provably typeset through one build. It also removes
 # five third-party requests per page carrying a formula (the bundle, plus
 # the four .woff fonts CommonHTML fetched at runtime).
 #
 # Neither file is committed - both are third-party code/generated
-# configuration, and a repository is redistribution. `prodockit bootstrap`
+# configuration, and a repository is redistribution. `pdkboot`
 # writes them on a developer's machine; CI installs them the same way (see
 # .github/workflows/docs.yml, .gitlab-ci.yml) - see docs/customise.md's
 # "Extra CSS and JavaScript" for the full reasoning
@@ -152,9 +151,8 @@ quote = "fontawesome/solid/quote-left"
 # reach into the website's own Jinja partials). A real HTML fragment - a
 # real <br> forces the line break, and the two <a> links render as real,
 # clickable links in the PDF, not flattened to plain text - see
-# "Copyright text" in prodockit-extensions' pdf.md. Requires prodockit
-# >=0.9.0 (unreleased at time of writing - see prodockit-extensions#88):
-# under the previous mechanism (a CSS content string with a literal `\A `
+# "Copyright text" in prodockit-extensions' pdf.md. Under the previous
+# mechanism (a CSS content string with a literal `\A `
 # escape), this same value would render literally instead of as a line
 # break with real links.
 pdf_copyright = 'Author: Mark Buckwell and contributors. Licensed under the MIT License.<br>Made with <a href="https://zensical.org/">Zensical</a> and <a href="https://prodockit.org/">prodockit</a>.'

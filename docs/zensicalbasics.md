@@ -2,7 +2,7 @@
 icon: lucide/book-open
 ---
 
-<!-- 
+<!--
 # Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
 # SPDX-License-Identifier: MIT
 -->
@@ -11,75 +11,145 @@ icon: lucide/book-open
 
 # Zensical basics
 
-\index{Zensical} is the static site generator that powers this template: it turns the Markdown files under `docs/` into the website you're reading now, and (via `prodockit pdf`) into the single-file PDF version of your document. It reads its configuration from `zensical.toml`, extends Markdown with the authoring features shown below (admonitions, tabs, diagrams, maths, and more), and lets you preview your changes locally with `zensical serve` before publishing.
+\index{Zensical} Zensical turns the Markdown files under `docs/` into the
+website. Prodockit uses the same configured Markdown pipeline when it builds the
+PDF, so the authoring features on this page are intended to work in both
+outputs.
 
-This page is a quick reference for the Markdown extensions you're most likely to use while writing your document, each with a live example. For the underlying, general-purpose Markdown syntax these extensions build on (headings, links, bold/italic text, and so on), see [Markdown basics](markdown.md). For full documentation on Zensical itself, visit [zensical.org](https://zensical.org/docs/).
+Start with [Markdown basics](markdown.md) if headings, links, images, or lists
+are new to you. This page introduces the extended features configured in this
+project. Each section shows either the source to copy, a live result, or both.
 
-## Commands
+## Preview and build
 
-Zensical provides a command line interface (CLI) to create, build, and serve your documentation. The following commands are available:
+Run commands from the project directory with its virtual environment active.
+Use the Zensical Studio viewer in Visual Studio Code, or start the live website
+preview with:
 
-* [`zensical new`][new] - Create a new project
-* [`zensical serve`][serve] - Start local web server
-* [`zensical build`][build] - Build your site
+``` bash
+zensical serve
+```
 
-  [new]: https://zensical.org/docs/usage/new/
-  [serve]: https://zensical.org/docs/usage/preview/
-  [build]: https://zensical.org/docs/usage/build/
+Leave it running while you edit and press `Ctrl+C` when you want to stop it.
+For a complete clean website build, use:
 
-## Examples
+``` bash
+zensical build --clean --strict
+```
 
-Some examples of Zensical syntax are below. For full documentation visit [zensical.org](https://zensical.org/docs/).
+The preview and website build do not rebuild the PDF. Use `prodockit pdf` and
+follow the author checks in [Start editing](startediting.md#build-the-pdf) when
+both outputs need reviewing.
 
-### Lists within lists
+## Follow the four-space rule {: #lists-within-lists }
 
-Markdown supports nested lists by indenting the inner list by four spaces. This is an implementation-specific feature of Python Markdown used by Zensical, and isn't part of the original Markdown specification.
+Python Markdown uses four spaces to attach nested content to a list item,
+admonition, tab, or other containing block:
 
-!!! warning "The Four Space Rule"
+``` markdown
+1. A list item with supporting information.
 
-    If you are nesting Tabs, Admonitions, or Code Blocks inside a list, you must indent by exactly 4 spaces. If your ordered list numbering resets to "1", check your indentation! Further background information is on the [Zensical authoring section](https://zensical.org/docs/authoring/markdown/).
+    !!! note
+        This admonition belongs to the list item. Its own content is indented
+        by another four spaces.
 
-### Admonitions
+2. The next list item.
+```
 
-Zensical supports \index{Zensical!admonitions}, that highlight blocks of content to draw attention to important information. Admonitions are available for notes, warnings, tips, and more. For further details, go to the [admonitions documentation](https://zensical.org/docs/authoring/admonitions/).
+If a list unexpectedly restarts at `1`, or block syntax appears as visible
+text, inspect its indentation first. Do not substitute a tab or two spaces.
 
-!!! note
+## Add an admonition
 
-    This is a **note** admonition. Use it to provide helpful information.
+\index{Zensical!admonitions} Admonitions distinguish supporting information
+from the main argument. Use them sparingly: `note` for context, `tip` for useful
+advice, and `warning` or `danger` when ignoring the message has a consequence.
+
+``` markdown
+!!! note "Optional title"
+    The content is indented by four spaces.
 
 !!! warning
+    A title is optional.
+```
 
-    This is a **warning** admonition. Be careful!
+The first example renders as:
 
-### Details
+!!! note "Optional title"
+    The content is indented by four spaces.
 
-Zensical supports collapsible blocks using the `???` syntax. This is useful for hiding content until the user clicks to expand it. For further details, go to the [admonitions collapsible blocks documentation](https://zensical.org/docs/authoring/admonitions/#collapsible-blocks).
+See Zensical's [admonitions reference](https://zensical.org/docs/authoring/admonitions/){target="_blank"}
+for every supported type.
 
-??? info "Click to expand for more info"
-    
-    This content is hidden until you click to expand it.
-    Great for FAQs or long explanations.
+## Add collapsible details
 
-## Code blocks {: #zensicalbasics-code-blocks }
+Replace `!!!` with `???` to hide the content until a reader opens it. Use
+`???+` when it should start open:
 
-Zensical supports fenced code blocks with syntax highlighting. You can specify the language for syntax highlighting by adding the language name after the opening backticks. For further details, go to the [code blocks documentation](https://zensical.org/docs/authoring/code-blocks/).
+``` markdown
+??? info "Show the explanation"
+    This content starts closed.
 
-``` python hl_lines="2" title="Code blocks"
+???+ note "Shown initially"
+    This content starts open but can be collapsed.
+```
+
+??? info "Show the explanation"
+    This content starts closed.
+
+Collapsible details are useful for optional explanations and answers, but not
+for information every reader must see.
+
+## Enhance code blocks {: #zensicalbasics-code-blocks }
+
+Add options after a fenced block's language to provide a title, line numbers,
+or highlighted lines:
+
+```` markdown
+``` python title="Greeting" linenums="1" hl_lines="2"
 def greet(name):
-    printf("Hello, {name}!") # (1)!
+    print(f"Hello, {name}!")
 
 greet("Python")
 ```
+````
 
-1.  Go to [code annotations documentation](https://zensical.org/docs/authoring/code-blocks/#code-annotations)
+Annotations connect a numbered marker in code with an explanation immediately
+after the block:
 
-    Code annotations enable attaching of notes to lines of code.
+``` python title="Code annotation"
+print("Hello")  # (1)!
+```
 
-You can also highlight code inline: `#!python print("Hello, Python!")`.
+1. This explanation belongs to marker 1.
 
-## Content tabs
+Highlight short inline code by adding a language after `#!`:
+`#!python print("Hello, Python!")`.
 
-Zensical supports \index{Zensical!content tabs}, which enables you to present different content in the same space. This is useful for showing code examples in multiple programming languages. For further details, go to the [content tabs documentation](https://zensical.org/docs/authoring/content-tabs/).
+See Zensical's [code-block reference](https://zensical.org/docs/authoring/code-blocks/){target="_blank"}
+for the complete option list.
+
+## Present alternatives in content tabs
+
+\index{Zensical!content tabs} Tabs are useful when a reader should choose one
+of several alternatives, such as an operating system. Each tab heading begins
+with `===`, and all of its content is indented by four spaces:
+
+``` markdown
+=== "Python"
+
+    ``` python
+    print("Hello from Python!")
+    ```
+
+=== "Rust"
+
+    ``` rust
+    println!("Hello from Rust!");
+    ```
+```
+
+The example renders as:
 
 === "Python"
 
@@ -89,112 +159,188 @@ Zensical supports \index{Zensical!content tabs}, which enables you to present di
 
 === "Rust"
 
-    ``` rs
+    ``` rust
     println!("Hello from Rust!");
     ```
 
-## Images
+Keep tab labels short and do not hide sequential steps inside tabs.
 
-Zensical supports Markdown image syntax using the `<figure>` tag to add captions. For further details, go to the [images documentation](https://zensical.org/docs/authoring/images/).
+## Add a caption {: #images }
 
-<figure markdown="span">
-  ![Image title](https://dummyimage.com/600x400/){ width="300" }
-  <figcaption>Image caption</figcaption>
-</figure>
-
-This template also enables the [`pymdownx.blocks.caption`](https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/caption/){target="_blank"} extension, an alternative way to caption an image using a `/// caption ... ///` block straight after it, rather than wrapping it in `<figure>`/`<figcaption>` tags:
+This project enables PyMdown Blocks captions for images and tables. Put the
+caption block immediately after the item it describes:
 
 ``` markdown
-![Image title](https://dummyimage.com/600x400/){ width="300" }
-/// caption
-Image caption
+![Example reference-list layout](images/reference-style-european.png){ width="70%" }
+/// figure-caption
+    attrs: {id: figure-caption-example}
+
+Example reference-list layout
 ///
 ```
 
-See [Captions](customisecontent.md#captions) in Customise document content for more detail, including how this same syntax also captions **tables**, and how this template handles it in the PDF.
+For a table, use `table-caption` and add `| <` to display its caption above the
+table:
 
-## Diagrams
+``` markdown
+| Option | Purpose |
+|---|---|
+| `--clean` | Start with an empty output directory |
+/// table-caption | <
+    attrs: {id: table-caption-example}
 
-Zensical supports [Mermaid](https://mermaid.js.org/){target="_blank"} diagrams. You can create flowcharts, sequence diagrams, and more. For further details, go to the [diagrams documentation](https://zensical.org/docs/authoring/diagrams/).
+Build options
+///
+```
 
-!!! note
-    If you're on the COMM058 Architectural Thinking for Security module, it doesn't use any of these documentation types. It's better that you use draw.io to create your diagrams and export them as images to include in your documentation. Use the downloadable version of draw.io, not the web version, as it's much easier to edit. Also, if you use draw.io in your working life, your company may have a policy against using cloud services unless they're a paid, approved service for hosting confidential company data.
+The figure and table caption types are numbered in both outputs. Continue to
+[Caption a figure](customisecontent.md#caption-a-figure) for stable ids and
+cross-references, or [Caption a table](customisecontent.md#caption-a-table) for
+positioning and the table-layout features. The
+[PyMdown Blocks caption reference](https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/caption/){target="_blank"}
+contains the underlying syntax.
+
+## Add a Mermaid diagram {: #diagrams }
+
+Zensical renders [Mermaid](https://mermaid.js.org/){target="_blank"} definitions
+as diagrams. Use a Mermaid fence rather than an ordinary code fence:
 
 ``` mermaid
 graph LR
-  A[Start] --> B{Error?};
-  B -->|Yes| C[Hmm...];
-  C --> D[Debug];
-  D --> B;
-  B ---->|No| E[Yay!];
+    A[Start] --> B{Error?};
+    B -->|Yes| C[Hmm...];
+    C --> D[Debug];
+    D --> B;
+    B ---->|No| E[Yay!];
 ```
 
-## Footnotes
+The website renders Mermaid in the browser. The PDF needs the optional Mermaid
+renderer installed during Adoption, Bootstrap, or Manual install. If the PDF
+shows definition text instead of a diagram, use
+[the editing help](startediting.md#mermaid-or-mathematics-appears-as-source-text).
 
-Zensical supports \index{Zensical!footnotes}, which enables you to add references or additional information without cluttering the main text. You can create a footnote by using the `[^1]` syntax. For further details, go to the [footnotes documentation](https://zensical.org/docs/authoring/footnotes/).
-  
+!!! note "Consider a drawing tool for architecture diagrams"
+    A drawing tool such as the downloadable draw.io application is often a
+    better choice for a carefully arranged architecture diagram. Export it as
+    an image and keep the editable source in the project. Follow any
+    organisational policy governing confidential information and cloud tools.
 
-Here's a sentence with a footnote.[^1]
+## Add footnotes
 
-Hover it, to see a tooltip.
+Place a marker in the sentence and define it elsewhere on the page:
 
-[^1]: This is the footnote.
+``` markdown
+This statement needs extra context.[^context]
 
-## Formatting
+[^context]: This is the supporting information.
+```
 
-Zensical supports various formatting options, including bold, italics, and strikethrough. You can also create headings, blockquotes, and horizontal rules. For further details, go to the [formatting documentation](https://zensical.org/docs/authoring/formatting/).
+This statement has a live footnote.[^live-footnote]
 
-- ==This was marked (highlight)==
-- ^^This was inserted (underline)^^
-- ~~This was deleted (strikethrough)~~
-- H~2~O
-- A^T^A
-- ++ctrl+alt+del++
+[^live-footnote]: The website can show this in a tooltip, while the PDF places
+    it as a conventional footnote.
 
-## Icons, emojis
+Use a meaningful label such as `context` rather than a number when the source
+will be easier to maintain that way.
 
-Zensical supports \index{Zensical!icons and emojis}. You can use the `:icon-name:` syntax to add icons from the [Lucide](https://lucide.dev/){target="_blank"} icon set, or use standard emoji codes. For further details, go to the [icons and emojis documentation](https://zensical.org/docs/authoring/icons-emojis/).
+## Use extended formatting {: #formatting }
 
-* :sparkles: `:sparkles:`
-* :rocket: `:rocket:`
-* :tada: `:tada:`
-* :memo: `:memo:`
-* :eyes: `:eyes:`
+| Source | Result | Purpose |
+|---|---|---|
+| `==important==` | ==important== | Highlight text. |
+| `^^inserted^^` | ^^inserted^^ | Underline or mark inserted text. |
+| `~~removed~~` | ~~removed~~ | Mark deleted text. |
+| `H~2~O` | H~2~O | Subscript. |
+| `A^T^A` | A^T^A | Superscript. |
+| `++ctrl+alt+del++` | ++ctrl+alt+del++ | Keyboard keys. |
+/// table-caption | <
+    attrs: {id: table-extended-formatting}
 
-## Maths
+Extended text formatting
+///
 
-Zensical supports mathematical notation using [MathJax](https://www.mathjax.org/){target="_blank"}. You can write inline math using the `$...$` syntax, and display math using the `$$...$$` syntax. For further details, go to the [math documentation](https://zensical.org/docs/authoring/math/).
+Avoid combining several styles merely for decoration. Headings and emphasis
+communicate document structure more clearly.
+
+## Add icons and emojis
+
+\index{Zensical!icons and emojis} Use `:name:` for an emoji or configured icon:
+
+- `:sparkles:` → :sparkles:
+- `:rocket:` → :rocket:
+- `:material-file-document:` → :material-file-document:
+
+The available icon sets depend on `zensical.toml`. See Zensical's
+[icons and emojis reference](https://zensical.org/docs/authoring/icons-emojis/){target="_blank"}
+before adding a new icon family.
+
+## Add mathematics {: #maths }
+
+\index{Zensical!MathJax} Put inline mathematics between single dollar signs.
+Put displayed mathematics between double dollar signs on separate lines. This
+live example is displayed mathematics:
 
 $$
 \cos x=\sum_{k=0}^{\infty}\frac{(-1)^k}{(2k)!}x^{2k}
 $$
 
-!!! tip "Available on every page"
-    \index{Zensical!MathJax} is loaded site-wide from `extra_javascript` in
-    `zensical.toml` - see [Extra CSS and JavaScript](customise.md#extra-css-and-javascript) -
-    so you can write a formula on any page without adding anything to it.
-    The copy it loads is installed for this project rather than fetched from
-    a CDN, so formulas render with no external request and work offline - see
-    [Install the diagram and maths tooling](installtooling.md#install-the-diagram-and-maths-tooling)
-    for the one-time setup this needs.
+MathJax renders the website copy and prodockit's optional maths tool renders the
+PDF copy. Both must be installed for consistent output. Use
+[the editing help](startediting.md#mermaid-or-mathematics-appears-as-source-text)
+if the formula appears as raw TeX.
 
-## Task lists {: #zensicalbasics-task-lists }
+## Add task lists {: #zensicalbasics-task-lists }
 
-Zensical supports task lists, which allow you to create checklists with checkboxes. You can create a task list by using the `- [ ]` syntax for an unchecked item and `- [x]` for a checked item. For further details, go to the [task lists documentation](https://zensical.org/docs/authoring/lists/#using-task-lists).
+Task-list syntax produces checkboxes:
 
-* [x] Install Zensical
-* [x] Configure `zensical.toml`
-* [x] Write amazing documentation
-* [ ] Deploy anywhere
+``` markdown
+- [x] Draft completed
+- [x] References checked
+- [ ] Final review outstanding
+```
 
-## Tooltips
+Use these for project work, not as a substitute for numbered procedural steps.
 
-Zensical supports \index{Zensical!tooltips}, which allow you to add additional information that appears when the user hovers over a specific element. You can create a tooltip by using the `[text][example]` syntax. For further details, go to the [tooltips documentation](https://zensical.org/docs/authoring/tooltips/).
+## Add a tooltip or abbreviation
 
+A reference-style link with a title becomes a tooltip:
+
+``` markdown
 [Hover over this text][example]
 
-  [example]: https://example.com "I'm a tooltip!"
+[example]: https://example.com "Additional information"
+```
+
+[Hover over this live text][live-tooltip].
+
+[live-tooltip]: https://example.com "Additional information"
+
+Define an abbreviation once and Zensical explains matching text when a reader
+hovers over it:
+
+``` markdown
+*[HTML]: HyperText Markup Language
+```
+
+Use the dedicated [Acronyms and abbreviations](customisecontent.md#acronyms-and-abbreviations)
+feature when the term must also link to a managed acronym or glossary page.
+
+## Avoid common mistakes {: #zensical-common-mistakes }
+
+- Preview with Zensical Studio or `zensical serve`, not a generic Markdown
+    viewer that lacks this project's extensions.
+- Use four spaces for content nested inside lists, tabs, admonitions, details,
+    footnotes, and other blocks.
+- Leave a blank line around block syntax and close every fence or block.
+- Build and inspect the PDF as well as the website; JavaScript-rendered diagrams
+    and mathematics use a separate PDF toolchain.
+- Use an ordinary Markdown link when link text should differ from a registered
+    term, citation, or cross-reference.
 
 ## Where to go next {: #zensicalbasics-where-to-go-next }
 
-Continue to [Customisation](customise.md) to change this template's branding, restructure your document's pages, and customise the cover page and PDF layout.
+Use [Shell commands](shcommands.md) as a beginner's reference when following
+terminal instructions. Continue to [Document appearance and structure](customise.md) to change the
+site, cover page, navigation, and PDF layout, or to
+[Prodockit authoring features](customisecontent.md) for prodockit's authoring
+extensions.
