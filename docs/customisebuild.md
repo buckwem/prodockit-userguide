@@ -357,7 +357,7 @@ That last push is what triggers the mirror's own CI/CD pipeline - see [Publishin
     ```
 
 !!! tip "Both hosts need their own SSH key"
-    Use the SSH URL for the mirror remote, not HTTPS, matching [Generate and configure ssh keys for Git](installtooling.md#generate-and-configure-ssh-keys-for-git) in Install tooling - the same guide already covers setting up a separate key per host and picking the right one automatically via `~/.ssh/config`.
+    Use the SSH URL for the mirror remote, not HTTPS, matching [Generate and configure ssh keys for Git](installtooling.md#generate-and-configure-ssh-keys-for-git) in Manual install - the same guide already covers setting up a separate key per host and picking the right one automatically via `~/.ssh/config`.
 
 ### GitHub to GitHub
 

@@ -11,7 +11,7 @@ icon: lucide/book-open
 
 # Start editing
 
-This page covers the day-to-day cycle of working on your document: previewing your changes locally, syncing them to GitLab or GitHub, viewing the published website, building the PDF, working with branches and issues, troubleshooting common problems, and finally releasing your report. It assumes no prior experience with the command line, Git, or software development - each step includes the exact commands to type. For one-time setup (installing Python, Git, and Zensical itself), see [Install tooling](installtooling.md) first if you haven't already.
+This page covers the day-to-day cycle of working on your document: previewing your changes locally, syncing them to GitLab or GitHub, viewing the published website, building the PDF, working with branches and issues, troubleshooting common problems, and finally releasing your report. It assumes no prior experience with the command line, Git, or software development - each step includes the exact commands to type. For one-time setup (installing Python, Git, and Zensical itself), see [Manual install](installtooling.md) first if you haven't already.
 
 ## Viewing documentation locally
 
@@ -512,7 +512,7 @@ python3 -c "import weasyprint; print(weasyprint.__version__)"
 A version number means you are ready. The same long error means the libraries still are not being found.
 
 !!! note "On macOS, if it still fails after installing Pango"
-    macOS only looks in Homebrew's folder for libraries if the Python you are using was itself installed by Homebrew. That is why [Install tooling](installtooling.md#install-python-and-zensical) has you create the virtual environment with the full path `/opt/homebrew/bin/python3` rather than a plain `python3`. If you created it another way, the quickest fix is to delete `.venv` and make it again, following those steps exactly.
+    macOS only looks in Homebrew's folder for libraries if the Python you are using was itself installed by Homebrew. That is why [Manual install](installtooling.md#install-python-and-zensical) has you create the virtual environment with the full path `/opt/homebrew/bin/python3` rather than a plain `python3`. If you created it another way, the quickest fix is to delete `.venv` and make it again, following those steps exactly.
 
 ### Mermaid render fails with a browser process error {: #startediting-arm64-mermaid }
 
@@ -536,7 +536,7 @@ Install a native Chromium and point Puppeteer at it instead of its own download,
 1. Check the pipeline (GitLab **CI/CD > Pipelines**) or workflow (GitHub **Actions** tab) actually ran, and succeeded, for your latest commit - if it's still running, or failed, the old version stays published.
 2. Confirm your change actually reached the default branch (`main`) - a commit sitting on a feature branch, or a merge/pull request you haven't merged yet, never triggers a rebuild. See [Managing branches and issues](#managing-branches-and-issues).
 3. Hard refresh the published page (`Ctrl+Shift+R`/`Cmd+Shift+R`) - your browser can cache the old version just as easily as it caches the local preview.
-4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after cloning a fresh copy of the repository into a new GitHub account - see the GitHub Pages step in [Cloning the prodockit-template](installtooling.md#cloning-the-prodockit-template) in Install tooling.
+4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after creating a repository in a new GitHub account - see [Choose how to get the project](installtooling.md#cloning-the-prodockit-template) in Manual install.
 5. On GitLab specifically, if the pipeline succeeds but no Pages site ever appears, check that the **Pages** feature itself hasn't been disabled for the project: **Settings > General > Visibility, project features, permissions**, and make sure **Pages** is toggled on. Unlike GitHub, GitLab doesn't need a separate "source" setting - Pages deploys automatically from the `pages` job in `.gitlab-ci.yml` once the feature is enabled, which it is by default.
 
 ## Release your report
