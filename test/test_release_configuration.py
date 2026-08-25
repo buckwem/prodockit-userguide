@@ -19,6 +19,13 @@ def test_prodockit_0421_is_a_minimum_not_an_exact_pin() -> None:
     assert "prodockit==" not in requirements
 
 
+def test_dependency_drift_automation_is_not_shipped() -> None:
+    assert not (ROOT / ".github" / "workflows" / "drift.yml").exists()
+    gitlab = _text(".gitlab-ci.yml")
+    assert "\ndrift:" not in gitlab
+    assert "DRIFT_TOKEN" not in gitlab
+
+
 def test_custom_domain_is_consistent() -> None:
     config = _text("zensical.toml")
     readme = _text("README.md")
@@ -165,6 +172,21 @@ def test_guide_is_split_into_top_level_workflow_sections() -> None:
         for number in re.findall(r'\{"(\d+)\. [^"]+" = "[^"]+"\}', config)
     ]
     assert numbers == list(range(1, 14))
+def test_every_prodockit_markdown_extension_is_enabled() -> None:
+    config = _text("zensical.toml")
+
+    for name in (
+        "headings",
+        "refs",
+        "citations",
+        "glossary",
+        "bibliography",
+        "tables",
+        "steps",
+        "tree",
+        "index",
+    ):
+        assert f'[project.markdown_extensions."prodockit.{name}"]' in config
 
 
 def test_retired_github_pages_domains_are_not_used() -> None:

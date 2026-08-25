@@ -483,7 +483,6 @@ test/ - The test suite that checks the built website and PDF
 .github/ - GitHub configuration
   workflows/ - The pipelines that publish the site and PDF
     docs.yml - Builds and publishes to GitHub Pages
-    drift.yml - Reports when a pinned build input falls behind
     release-redeploy.yml - Rebuilds the site after a release is published
   ISSUE_TEMPLATE/ - Issue forms for this repository
 .vscode/ - Editor settings and the LTeX dictionary
