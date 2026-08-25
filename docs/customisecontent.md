@@ -150,7 +150,7 @@ bib_file = "references.bib"
 csl_style = "harvard-cite-them-right.csl"
 ```
 
-The template enables this by default, pointing at `harvard-cite-them-right.csl` - but that file isn't part of the clone, so it's fetched rather than committed. If you followed [Install tooling](installtooling.md#install-python-and-zensical) when setting up, you already did this; if not, or if you'd rather use a different CSL style, fetch one from the [Zotero Style Repository](https://www.zotero.org/styles){target="_blank"} into your project root and point `csl_style` at its filename:
+The template enables this by default, pointing at `harvard-cite-them-right.csl` - but that file isn't part of the clone, so it's fetched rather than committed. If you followed [Manual install](installtooling.md#install-python-and-zensical) when setting up, you already did this; if not, or if you'd rather use a different CSL style, fetch one from the [Zotero Style Repository](https://www.zotero.org/styles){target="_blank"} into your project root and point `csl_style` at its filename:
 
 ``` bash
 curl -fsSL -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-them-right"

@@ -265,7 +265,7 @@ A Jinja conditional block wraps the cover page's logo, colours, and introductory
 If you're not from the University of Surrey, the `{% raw %}{% else %}{% endraw %}` branch is where you customise your own institution or company \index{branding}: replace `Crested Eagle Labs`, `University of the World`, and `Research programmes in Cyber Security` with your own text, and point the two `![]()` image lines at your own logo files (see [Site logo](#site-logo) above for the light/dark logo swap).
 
 !!! tip
-    `is_surrey` isn't only used on the cover page - `repo_url`/`repo_name` in [Repository link](#repository-link) above switch the same way. [Install tooling](installtooling.md) and the other guide pages show both the GitLab and GitHub paths side by side instead, since a centrally-hosted guide can't detect which one applies to any given reader.
+    `is_surrey` isn't only used on the cover page - `repo_url`/`repo_name` in [Repository link](#repository-link) above switch the same way. [Manual install](installtooling.md) and the other guide pages show both the GitLab and GitHub paths side by side instead, since a centrally-hosted guide can't detect which one applies to any given reader.
 
 ### PDF-only and web-only content
 

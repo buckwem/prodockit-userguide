@@ -61,6 +61,57 @@ def test_new_042_behaviour_is_documented() -> None:
     assert "generated root files" in editing
 
 
+def test_manual_install_explains_both_repository_starting_points() -> None:
+    install = _text("docs/installtooling.md")
+    config = _text("zensical.toml")
+
+    assert "# Manual install" in install
+    assert "### Path 1: start from the template" in install
+    assert "### Path 2: clone the existing repository" in install
+    assert "git remote add origin" in install
+    assert 'git commit -m "Initial commit"' in install
+    assert "git push -u origin main" in install
+    assert "git log -1 --oneline" in install
+    assert '{"4. Manual install" = "installtooling.md"}' in config
+
+
+def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
+    adoption = _text("docs/adoptioninstall.md")
+    bootstrap = _text("docs/bootstrapinstall.md")
+    about = _text("docs/about.md")
+    config = _text("zensical.toml")
+
+    assert "# Adoption install" in adoption
+    assert "/// steps" in adoption
+    assert "prodockit adopt --configure" in adoption
+    assert "prodockit adopt --dry-run" in adoption
+    assert "prodockit adopt --apply" in adoption
+    assert "Git, SSH, remotes, editors, commits, and pushes" in adoption
+    assert "pip3 install --upgrade prodockit" in adoption
+    assert "python -m pip install --upgrade prodockit" in adoption
+    assert "prodockit>=" not in adoption
+    assert "# Bootstrap Install" in bootstrap
+    assert "/// steps" in bootstrap
+    assert "pdkboot --configure" in bootstrap
+    assert "pdkboot --check" in bootstrap
+    assert "pdkboot --dry-run" in bootstrap
+    assert "pdkboot --apply" in bootstrap
+    assert "prodockit-template" in bootstrap
+    assert "The repository already contains work" in bootstrap
+    assert "All 23 stages are set up." in bootstrap
+    assert "[Adoption install](adoptioninstall.md)" in about
+    assert "[Bootstrap Install](bootstrapinstall.md)" in about
+    assert "recommended" not in about.lower()
+    assert "formal-looking document as a head start" in about
+    assert "www.youtube-nocookie.com/embed/ZlabtdA-gZE" in about
+    assert "www.youtube.com/embed/ZlabtdA-gZE" not in about
+    assert about.count("/// steps") >= 2
+    assert config.index('{"2. Adoption install" = "adoptioninstall.md"}') < config.index(
+        '{"3. Bootstrap Install" = "bootstrapinstall.md"}'
+    ) < config.index('{"4. Manual install" = "installtooling.md"}')
+    assert '[project.markdown_extensions."prodockit.steps"]' in config
+
+
 def test_retired_github_pages_domains_are_not_used() -> None:
     paths = [ROOT / "README.md", ROOT / "zensical.toml"]
     paths.extend((ROOT / "docs").rglob("*.md"))

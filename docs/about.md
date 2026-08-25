@@ -11,105 +11,197 @@ SPDX-License-Identifier: MIT
 
 # About this guide
 
-A \index{docs-as-code} workflow makes it easy to publish documentation on a static website. [Markdown](https://www.markdownguide.org/){target=_blank} is a markup language you use to write documentation in text files, which you then store in a Git repository. Hosted Git services such as GitLab or GitHub, together with tooling such as Visual Studio Code, make it easy to maintain and host documentation.
+A \index{docs-as-code} workflow uses plain-text Markdown, version control, and
+automated builds to create documentation. This guide helps you add prodockit
+to an existing Zensical or MkDocs site, or use
+[prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}
+as a head start for a new professional website and PDF.
 
-Adopting a docs-as-code workflow transforms documentation from a chore into an engineering process. By treating your written content with the same rigour as code, you enable a collaborative approach to documentation.
+By following the guide, you will be able to:
 
-This site is the full setup, authoring, customisation, and testing guide for [prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"} and other Zensical projects built on the [prodockit](https://github.com/buckwem/prodockit-extensions){target="_blank"} package. It's hosted independently of any individual fork of those templates, so it can be kept current without every existing fork being stuck with whatever it looked like the day it was forked.
+- write and organise a document in Markdown;
+- preview the website and build the PDF on your computer;
+- save a recoverable history of the work in GitLab or GitHub;
+- collaborate through pull requests or merge requests; and
+- publish the website and PDF through an automated pipeline.
 
-## The docs-as-code philosophy
+This guide is hosted separately from the projects it describes. It can
+therefore remain current while each project keeps control of its own template,
+content, and release schedule.
 
-Docs-as-code means using the same tools and workflows for documentation as you do for software development. This creates a unified environment where writers and developers use the same tools and development workflow.
+## Choose how to install
 
-`Markdown as the Source of Truth`
+The three routes start from different situations. Choose the one matching the
+project you already have; you do not need to complete the others.
 
-: [Markdown](https://www.markdownguide.org/){target=_blank} is a lightweight markup language that's simple to read in its raw form and consistently renders on the web. You write your documentation in it, then convert that documentation into HTML for web publishing.
+<div class="grid cards one-column" markdown>
 
-`Version control via Git`
+-   :material-clock-fast:{ .lg .middle } **Adoption install**
 
-: Storing files in a Git repository (such as GitHub, GitLab, or Bitbucket) enables the tracking of all changes to the documentation. There will be a complete history of "who changed what and why," making it easy to undo errors and audit changes.
+    Use [`prodockit adopt`](adoptioninstall.md) when you already have a working
+    Zensical or MkDocs document and want to add prodockit's components without
+    replacing your own template, editor, Git setup, or publishing workflow.
 
-`Collaborative Reviews`
+    [:octicons-arrow-right-24: Use Adoption install](adoptioninstall.md)
 
-: Instead of emailing Word docs back and forth, teams use Pull Requests (PRs) or Merge Requests (MRs). This enables peer reviews, automated linting, and transparent discussions before any content goes live.
+-   :material-rocket-launch:{ .lg .middle } **Bootstrap Install**
 
-## The docs-as-code stack
+    Use [`pdkboot`](bootstrapinstall.md) when you do not have a template of your
+    own and want a formal-looking document as a head start. It installs the
+    supported tools and sets up prodockit-template in recoverable stages.
 
-To move from using a word processor or simple website to a scalable and effective documentation tool set needs a stack of tools, as shown in the diagram below. The stack is made up of three layers: the authoring tool, the docs-as-code builder, and the code repository and management system.
+    [:octicons-arrow-right-24: Use Bootstrap Install](bootstrapinstall.md)
 
-`Authoring tool`
+-   :material-tools:{ .lg .middle } **Manual install**
 
-: Effective documentation depends on tools that help with content editing and automate quality checks, including spelling, grammar, style and formatting consistency. While there are numerous text editors available, \index{VS Code} stands out as a favoured option due to its extensive ecosystem of extensions. By using Visual Studio Code, writers can take advantage of a variety of extensions that offer real-time quality assurance. Some of the extensions available for VS Code include spell checkers, grammar checkers, and linters that enforce style guides. These tools help ensure that the documentation is clear, consistent, and professional. We are suggest using Python, Zensical Studio, Even better TOML and LTeX+.
+    Follow the [manual instructions](installtooling.md) when you want the same
+    prodockit-template head start but need or prefer to install and configure
+    every tool yourself. Commands are explained for macOS, Windows 11, and
+    Ubuntu Linux.
 
-\index{`Docs-as-code builder`}
+    [:octicons-arrow-right-24: Use Manual install](installtooling.md)
 
-: Markdown files can serve as a foundation for a static website. However, they often need enhanced formatting options through additional themes and styling. A docs-as-code builder then transforms the Markdown and supplementary instructions into HTML, applying a theme to generate a professional-looking website. Zensical is a fast and reliable docs-as-code builder that processes Markdown files and creates a static documentation website. It lets you view the website locally before publishing, so you can confirm the final output meets your quality standards. Additional extensions, such as the prodockit package, can be added to Zensical to provide extra features like heading numbering, a references page and a pdf document with an index.
+</div>
 
-`Code Repository and Management`
+## How docs-as-code works
 
-: By connecting directly to a Git repository, this integrated environment establishes a secure, centralised vault that tracks the history of project files. It records each modification as a distinct commit, letting users audit changes or revert to earlier versions if errors arise. Before finalising any work, a pull request triggers a peer-review process, where collaborators comment on, test, and approve the updates. This workflow ensures that only vetted, high-quality content reaches final publication. GitLab and GitHub are popular platforms that provide these capabilities, along with additional features like issue tracking, project management, and continuous integration.
+The workflow treats documentation with the same care as software while keeping
+the writing itself in readable Markdown files.
 
-![Diagram of Docs as code stack](assets/docs-as-code-stack.png){width="60%"}
-/// figure-caption
-Docs as code stack
+/// steps
+
+//// step | Write
+
+Write the content in [Markdown](https://www.markdownguide.org/){target="_blank"}
+using Visual Studio Code. Editor extensions help check spelling, grammar, and
+configuration while you work.
+
+////
+
+//// step | Preview
+
+Zensical turns the Markdown into a local website. prodockit adds the PDF,
+heading and caption numbering, references, citations, an index, and other
+features used by professional and academic documents.
+
+////
+
+//// step | Save and review
+
+Git records each saved change as a commit, providing a history that can be
+examined or restored. GitLab and GitHub support pull requests or merge requests
+when work needs discussion and review before it is accepted.
+
+////
+
+//// step | Publish
+
+Pushing an accepted change starts a pipeline. The pipeline repeats the build
+in a controlled environment and publishes the website and downloadable PDF.
+
+////
+
 ///
 
-!!! note "Why not LaTeX?"
+## How the tools fit together
 
-    \index{<a href="https://www.latex-project.org" target="_blank">LaTeX</a>} is a typesetting system widely used in academia and for specialised industrial documentation that requires precise formatting. Although it is not built specifically for web publishing, external tools can convert LaTeX source files into HTML for use on static websites. Markdown is often preferred for general documentation in industry because it integrates more naturally with modern web-based development workflows.
+![Diagram of the docs-as-code stack](assets/docs-as-code-stack.png){width="80%"}
+/// figure-caption
+The tools in the docs-as-code stack
+///
+
+| Layer | Tools used here | Purpose |
+| --- | --- | --- |
+| Authoring | Visual Studio Code, Zensical Studio, Even Better TOML, LTeX+, and the Python extension | Write, preview, and check the source files. |
+| Building | Zensical and prodockit | Turn Markdown into the website and PDF. |
+| Repository and publishing | Git with GitLab or GitHub | Store the history, support review, run the build, and publish its outputs. |
+
+[Zensical](https://zensical.org/){target="_blank"} is the website builder.
+The [prodockit](https://github.com/buckwem/prodockit-extensions){target="_blank"}
+package extends it with the document features and commands used throughout
+this guide. You can adopt those components into your own project, or use
+prodockit-template for a ready-to-use formal document structure and publishing
+configuration. In either case, your repository remains an independent project
+containing your own work.
 
 ## Docs-as-code in production
 
-As a student, you'll follow a simplified workflow, since you won't be handling documentation that spans thousands of pages and needs a large development team to maintain it. Nevertheless, understanding the approach used at scale can help you appreciate the value of the skills you'll develop. GitLab provides a video that outlines the entire process for their documentation and highlights the importance of the skills you gain through a docs-as-code methodology.
+An assessed report or small documentation project uses the same core cycle as
+a large technical-writing team: plan, write, review, build, and publish. The
+scale and number of reviewers change, but the underlying skills remain useful.
+
+The optional GitLab video below shows that workflow in a production
+documentation team. It covers planning, writing and reviewing, and deploying
+and publishing. You can also
+[watch the video directly on YouTube](https://www.youtube.com/watch?v=ZlabtdA-gZE){target="_blank"}.
 
 <div style="display: flex; justify-content: center;">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/ZlabtdA-gZE?si=_3GQjj5C6EDpMP8Z" title="Introduction to using GitLab as a technical writing team Youtube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe src="https://www.youtube-nocookie.com/embed/ZlabtdA-gZE" title="Introduction to using GitLab as a technical writing team" loading="lazy" style="width: 100%; max-width: 800px; aspect-ratio: 16 / 9; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
-
-## Zensical for docs-as-code
-
-Zensical provides the themes and tools necessary to draft professional documentation in Markdown with instant local previews. Once finalised, you can publish your site by uploading the files to a Git repository. From there, automated pipelines build and deploy the content into a live website.
-
-[Zensical](https://zensical.org/){target="_blank"}, written for speed and reliability using the \index{<a href="https://rust-lang.org/" target="_blank">Rust programming language</a>} and Python, publishes documentation as a website.
-
-We have provided an additional extension, the [prodockit](https://github.com/buckwem/prodockit-extensions){target="_blank"} package, which adds extra features to Zensical enabling you to create a professional-looking documentation website, together with a PDF version of the report.
-
-[prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"} is a documentation template built on Zensical and prodockit, available for you to fork and clone into a project that you can use to write your own document or report.
 
 !!! tip
 
-    Zensical processes these Markdown-formatted instructions into this site. To view the structure of this site by examining the Markdown files, go to this Git repository, linked at the top right of this page.
+    This User Guide is itself built from Markdown using Zensical and prodockit.
+    You can [view its source repository](https://github.com/buckwem/prodockit-userguide){target="_blank"}
+    to see the files behind the published site.
 
-## Guide structure
+## Follow the guide
 
-This guide continues by presenting the following sections, in the order you'll need them for the development of your documentation.
+After choosing an installation route, work through the guide in this order.
 
-`Install tooling`
+/// steps
 
-: The [*Install tooling*](installtooling.md) section describes how to install the core prerequisite tools and create a fork of the document template. By the end of this section you will have an environment ready to develop your own professional or academic documentation. The instructions are available for macOS, Windows 11, and Ubuntu/Debian Linux.
+//// step | Set up the computer and project
 
-`Start editing`
+Choose [Adoption install](adoptioninstall.md) to add prodockit to an existing
+Zensical or MkDocs document. Choose
+[Bootstrap Install](bootstrapinstall.md) for an automated formal-document head
+start when you do not have a template, or [Manual install](installtooling.md)
+to set up prodockit-template yourself.
 
-: The [*Start editing*](startediting.md) section describes how to edit the documentation and view the changes locally before publishing to a Git repository. It also describes how to synchronise your changes with the Git repository.
+////
 
-`Markdown basics`
+//// step | Learn the writing workflow
 
-: The [*Markdown basics*](markdown.md) section describes the principles of Markdown and how to use it to write your documentation.
+[Start editing](startediting.md) introduces the everyday edit, preview, commit,
+and push cycle. [Markdown basics](markdown.md) explains the source format, and
+[Zensical basics](zensicalbasics.md) covers the general website features.
 
-`Zensical basics`
+////
 
-: The [*Zensical basics*](zensicalbasics.md) section describes the principles of Zensical and how to use it to create and manage your documentation - the same general-purpose features available on any Zensical site.
+//// step | Adapt the template
 
-`Customisation`
+Use [Customisation](customise.md) for the overall project configuration,
+[Customise document content](customisecontent.md) for references, tables,
+figures, and other document features, and [Customise build](customisebuild.md)
+for website, PDF, pipeline, and dependency settings.
 
-: The [*Customisation*](customise.md) section discusses how to configure prodockit-template to give it a different style and layout to meet your specific needs - features `macros.py` and the prodockit package add on top of Zensical (heading numbering, the references page pattern, Surrey/generic branding, and more) that don't exist in a stock Zensical project.
+////
 
-`Additional tooling`
+//// step | Extend, verify, and find help
 
-: The [*Additional tooling*](additionaltooling.md) section describes additional tools you can install to help you create quality docs-as-code documents. They will take additional effort to install and configure.
+[Additional tooling](additionaltooling.md) introduces optional authoring tools.
+[Shell commands](shcommands.md) explains commands used by the guide, and
+[Testing](testing.md) shows how the website and PDF are checked. The
+[acronyms](acronyms.md), [glossary](glossary.md), and
+[references](references.md) pages provide supporting reference information.
 
-`Shell commands`
+////
 
-: The [*Shell commands*](shcommands.md) section describes the shell commands used in this guide. It's intended as a reference for you to use when writing your own documentation.
+///
 
-Continue to the next section to get started with the installation of the core tools and creating a fork of prodockit-template.
+<div class="grid cards one-column" markdown>
+
+-   :material-clock-fast:{ .lg .middle } **Already have a documentation site?**
+
+    Keep its template and continue to [Adoption install](adoptioninstall.md).
+
+-   :material-rocket-launch:{ .lg .middle } **Need a formal-looking head start?**
+
+    Continue to [Bootstrap Install](bootstrapinstall.md).
+
+-   :material-tools:{ .lg .middle } **Need the individual setup commands?**
+
+    Continue to [Manual install](installtooling.md).
+
+</div>

@@ -28,16 +28,18 @@ nav = [
     {"1. About this guide" = "about.md"}
   ]},
   {"Guide" = [
-    {"2. Install tooling" = "installtooling.md"},
-    {"3. Start editing" = "startediting.md"},
-    {"4. Markdown basics" = "markdown.md"},
-    {"5. Zensical basics" = "zensicalbasics.md"},
-    {"6. Customisation" = "customise.md"},
-    {"7. Customise document content" = "customisecontent.md"},
-    {"8. Customise build" = "customisebuild.md"},
-    {"9. Additional tooling" = "additionaltooling.md"},
-    {"10. Shell commands" = "shcommands.md"},
-    {"11. Testing" = "testing.md"}
+    {"2. Adoption install" = "adoptioninstall.md"},
+    {"3. Bootstrap Install" = "bootstrapinstall.md"},
+    {"4. Manual install" = "installtooling.md"},
+    {"5. Start editing" = "startediting.md"},
+    {"6. Markdown basics" = "markdown.md"},
+    {"7. Zensical basics" = "zensicalbasics.md"},
+    {"8. Customisation" = "customise.md"},
+    {"9. Customise document content" = "customisecontent.md"},
+    {"10. Customise build" = "customisebuild.md"},
+    {"11. Additional tooling" = "additionaltooling.md"},
+    {"12. Shell commands" = "shcommands.md"},
+    {"13. Testing" = "testing.md"}
   ]},
   {"Reference" = [
     {"A. Acronyms" = "acronyms.md"},
@@ -238,6 +240,7 @@ numbering = "continuous"
 # content - see prodockit-extensions#55/prodockit.pdf.index.
 include = true
 title = "Index"
+[project.markdown_extensions."prodockit.steps"]
 [project.markdown_extensions."prodockit.tree"]
 [project.markdown_extensions.pymdownx.snippets]
 [project.markdown_extensions.pymdownx.blocks.caption]

@@ -9,16 +9,23 @@ SPDX-License-Identifier: MIT
 
 {{ heading_counter_reset(page) }}
 
-# Install tooling
+# Manual install
 
-This section takes you through the core installation steps for the tools needed to author your document as a static website and PDF file. The instructions are for macOS, Windows 11, and Linux (Ubuntu/Debian). If you are using a different operating system, please refer to the official documentation for that operating system.
+This section explains how to prepare a computer and a project manually. It
+covers macOS, Windows 11, and Linux (Ubuntu). The commands create the same
+working setup whether you are starting a new project from the prodockit
+template or downloading a repository that already contains work.
+
+You do not need previous Git experience. Each section explains what the
+commands change and how to check the result before continuing.
 
 <div class="web-only" markdown>
 !!! Tip
     The screenshots below may have small text on your screen but you can click on an image to enlarge it. The glightbox viewer will open the image in a new tab and you can zoom in to see the details.
 </div>
 
-The install and configuration starts with the setup of Visual Studio Code.
+Work through the sections in order. Where a tool is already installed, still
+run the check shown for it before continuing.
 
 ## Install Visual Studio Code
 
@@ -560,321 +567,273 @@ Now generate the \index{Git!ssh keys} to use for authentication with your GitLab
     ```
 {% endif %}
 
-## Cloning the prodockit-template
+## Choose how to get the project {: #cloning-the-prodockit-template }
 
-Cloning the documentation template creates a local copy of the template on your computer. You will then be able to edit the template locally in Visual Studio Code and publish your own documentation website.
+A **repository** is the project and its saved history. GitLab or GitHub keeps
+the online copy; a **clone** is the working copy on your computer. Git calls
+the online repository connected to a clone `origin`.
+
+There are two different starting points. Choose one path and complete only
+that path:
+
+| Starting point | Path to follow |
+| --- | --- |
+| Your repository does not exist yet, or exists but is completely empty | [Path 1: start from the template](#manual-install-path-1) |
+| Your repository already contains one or more commits | [Path 2: clone the existing repository](#manual-install-path-2) |
+
+!!! warning "Do not replace the history of an existing repository"
+    Path 1 starts a new history. Never use its history step on a repository
+    that already contains work. Use Path 2 so every existing commit, branch,
+    and file is preserved.
+
+### Prepare a projects directory
+
+Keep the project in a directory intended for Git repositories. The examples
+use `GitLab`, but `GitHub` or `Projects` is equally suitable.
+
+=== ":material-apple: macOS"
+
+    ``` bash
+    mkdir -p ~/GitLab
+    cd ~/GitLab
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    ``` powershell
+    New-Item -ItemType Directory -Force ~\GitLab | Out-Null
+    cd ~\GitLab
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    mkdir -p ~/GitLab
+    cd ~/GitLab
+    ```
+
+The `cd` command changes the current directory. The clone command creates the
+project folder inside it.
+
+### Path 1: start from the template {: #manual-install-path-1 }
+
+Use this path when there is no repository for the project yet, or when you
+have deliberately created an empty one. It copies the template files, starts
+a clean history for your work, and connects that history to your own GitLab
+or GitHub repository.
+
+1. Create a **blank** repository on the service where the work will be kept.
+
+    === "GitLab"
+
+        On the GitLab website, select **New project > Create blank project**.
+        Give it the required name, set its visibility to **Private**, and
+        untick **Initialize repository with a README**.
+
+    === "GitHub"
+
+        On the GitHub website, select **New repository**. Give it the required
+        name, set it to **Private**, and leave every **Initialize this
+        repository with** option unticked.
+
+    The repository must be empty because the template provides the README,
+    licence, `.gitignore`, and first commit. Initialising any of those on the
+    website creates a competing history before your files arrive.
+
+1. Copy the repository's **SSH clone URL** from its web page and keep it for
+    the `git remote add` command below. An SSH URL starts with `git@`.
+
+1. Clone the template into a folder named after your project. Replace
+    `report-az1234` with the exact repository name you chose.
 
 {% if is_surrey %}
-!!! Note "University of Surrey GitLab"
-    You will be working with a repo that has been created for you, which you will clone down to your local device and push updates to ongoing.
-{% endif %}
-
-### Clone the prodockit-template
-
-Start by cloning the template into your own local device.
-
-1. If you don't have a directory for your git repositories, create one for all your *GitLab* or *GitHub* projects on your local desktop. For example, create a directory called 'GitLab' in your home directory.
-
-1. Open a terminal (Terminal on macOS/Debian, Git Bash or PowerShell on Windows 11) and navigate to the directory you created in the previous step.
-
-1. Then run the following command to clone the documentation template into your local directory. Use whichever tab matches the host you use.
-
-    <div class="grid cards one-column" markdown>
-
-    -   :material-clock-fast:{ .lg .middle } __Clone the template__
-
-        === "GitLab"
-
-{% if is_surrey %}
-            If you have been given a repository to work on, clone that instead of the template. For example, if your tutor has given you a repository called `report-az1234` in the namespace `comm058-2026`, run the following command:
-
-            ``` bash
-            git clone git@gitlab.surrey.ac.uk:comm058-2026/report-az1234.git
-            ```
-
-            If you have not been given a repository, clone the University of Surrey copy of the template:
-
-            ``` bash
-            git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git
-            ```
-
+    ``` bash
+    git clone git@gitlab.surrey.ac.uk:mb0105/prodockit-template.git report-az1234
+    ```
 {% else %}
-            ``` bash
-            git clone git@github.com:buckwem/prodockit-template.git
-            ```
-
-            The template itself lives on GitHub, so that is where you clone it from even if you intend to publish to GitLab.
+    ``` bash
+    git clone git@github.com:buckwem/prodockit-template.git report-az1234
+    ```
 {% endif %}
 
-        === "GitHub"
+    `git clone` downloads both the files and the template's Git history. The
+    second name tells Git what to call the new local folder.
 
-            ``` bash
-            git clone git@github.com:buckwem/prodockit-template.git
-            ```
+1. Change into the project directory as a separate step:
 
-    </div>
-
-    !!! Tip
-        You can find your `username` by logging into your GitLab or GitHub account and clicking on your profile picture at the top right corner of the page. On **GitLab** your username is **below** your name in the dropdown menu. On **GitHub** your username is **above** your name in the dropdown menu.
-
-### Point your clone at your own repository
-
-If you have cloned a repository that has been given to you to work on and is not a direct copy of the template, you can skip this section.
-
-Cloning gives you the template's *files*, but the clone still points at the template's *repository*. This section repoints it at a repository of your own - and is not a step to skip or leave for later, whichever of the two ways it goes wrong if you do:
-
-!!! danger "Skipping this doesn't fail safely for everyone"
-    If you don't have write access to the template, `git push` fails with a permission error - confusing the first time you see it, but harmless, and the fix is this section.
-
-    **If you do have write access** - a maintainer, a contributor, anyone who has ever been given push rights - `git push` **succeeds**, silently, straight into the template repository itself. That repository is public, and every future reader clones it. There is no error to notice and no prompt to confirm; the only protection is doing this section before your first commit.
-
-The steps below have to happen **in this order**, not just as a numbered convention: step 3 (reset the history) deletes the repository's entire `.git` directory, which takes *every* remote with it - including `origin`, however it's currently set. Repoint `origin` at your own repository before resetting, and the reset undoes the repoint along with everything else, leaving you back at square one with no warning that it happened. Reset first, then repoint, as the steps below do.
-
-1. Rename the directory to something meaningful for your own report. Cloning leaves you with a folder called `prodockit-template`, which says nothing about whose work it holds - and if you clone a second project later, you will not be able to tell them apart.
-
-    <div class="grid cards one-column" markdown>
-
-    -   :material-clock-fast:{ .lg .middle } __Rename the project folder__
-
-        === ":material-apple: macOS"
-
-            ``` bash
-            mv prodockit-template report-az1234
-            ```
-
-        === ":fontawesome-brands-windows: Windows"
-
-            ``` powershell
-            Rename-Item prodockit-template report-az1234
-            ```
-
-        === ":material-linux: Linux (Ubuntu)"
-
-            ``` bash
-            mv prodockit-template report-az1234
-            ```
-
-    </div>
-
-    Replace `report-az1234` with a name that identifies your own work - your username, your coursework code, or whatever your course tutor specifies.
-
-    !!! note "Renaming the folder doesn't rename the repository"
-        This changes only the folder on your own machine. The project's name on GitLab or GitHub is unaffected, and so is the `origin` remote inside it - `git push` and `git pull` carry on working exactly as before.
-
-1. Check what your clone currently points at:
-
-    <div class="grid cards one-column" markdown>
-
-    -   :material-clock-fast:{ .lg .middle } __Check the current remote__
-
-        === ":material-apple: macOS"
-
-            ``` bash
-            cd report-az1234
-            git remote -v
-            ```
-
-        === ":fontawesome-brands-windows: Windows"
-
-            ``` powershell
-            cd report-az1234
-            git remote -v
-            ```
-
-        === ":material-linux: Linux (Ubuntu)"
-
-            ``` bash
-            cd report-az1234
-            git remote -v
-            ```
-
-    </div>
-
-    A fresh clone has exactly one remote, `origin`, pointing at the template:
-
-    ``` text
-    origin  git@github.com:buckwem/prodockit-template.git (fetch)
-    origin  git@github.com:buckwem/prodockit-template.git (push)
+    ``` bash
+    cd report-az1234
     ```
 
-    ``` mermaid
-    graph LR
-      L[Your local clone] -->|origin| T[prodockit-template]
-    ```
-    /// figure-caption
-    Right after cloning: `origin` points at the template
-    ///
-
-    If you added any others of your own - a `gitlab` mirror, say - they will be listed here too. You do not need to remove any of them by hand: the next step deletes the repository's entire `.git` directory, which takes every remote with it.
-
-1. Start with a fresh commit history. This is your own independent project, so carrying the template's entire commit log and branches from the template into it serves little purpose.
-
-    <div class="grid cards one-column" markdown>
-
-    -   :material-clock-fast:{ .lg .middle } __Reset the repository history__
-
-        === ":material-apple: macOS"
-
-            ``` bash
-            rm -rf .git
-            git init -b main
-            git config core.fileMode false
-            ```
-
-            !!! danger "`rm -rf .git` cannot be undone"
-                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
-
-        === ":fontawesome-brands-windows: Windows"
-
-            ``` powershell
-            Remove-Item -Recurse -Force .git
-            git init -b main
-            git config core.fileMode false
-            ```
-
-            !!! danger "`Remove-Item -Recurse -Force .git` cannot be undone"
-                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
-
-        === ":material-linux: Linux (Ubuntu)"
-
-            ``` bash
-            rm -rf .git
-            git init -b main
-            git config core.fileMode false
-            ```
-
-            !!! danger "`rm -rf .git` cannot be undone"
-                This permanently deletes the repository's history from your machine - every commit, branch and tag. There is no undo, and nothing to recover from, because the deleted history is the thing that would have recovered it. Make sure you are in the right directory (`pwd`) and that you have pushed anything you care about somewhere else first.
-
-    </div>
-
-    !!! note "Why `core.fileMode false`"
-        Git records whether a file is executable, and treats a change to
-        that bit as a change to the file. Cloud-sync clients - OneDrive in
-        particular - rewrite those bits as they sync, so a folder that syncs
-        can show every file in the project as modified when not one byte of
-        content has changed. Turning it off tells git to ignore the
-        executable bit entirely.
-
-        It is set per repository and is not committed, so it has to be
-        repeated on each machine and after each fresh clone. If you keep
-        all your work in a synced folder, `git config --global
-        core.fileMode false` saves repeating it - though `git init` and
-        `git clone` each write their own local setting, which still wins.
-
-    `rm -rf .git`/`Remove-Item -Recurse -Force .git` deletes the whole repository, remotes included, and `git init` starts a brand new one with none at all:
-
-    ``` mermaid
-    graph LR
-      L[Your local clone - no remotes]
-    ```
-    /// figure-caption
-    After resetting the history: no remotes at all
-    ///
-
-    Run `git remote -v` at this point and it prints nothing.
-
-1. Create the new, **empty** repository on the host you are publishing to. Do **not** add a README, `.gitignore` or licence - the template brings its own, and an initial commit on the host side collides with what you are about to push.
-
-    <div class="grid cards one-column" markdown>
-
-    -   :material-clock-fast:{ .lg .middle } __Create the empty repository__
-
-        === "GitLab"
-
-            On the GitLab website, click **New project > Create blank project**. Name it, set **Visibility Level** to **Private**, and untick **Initialize repository with a README**.
-
-        === "GitHub"
-
-            On the GitHub website, click **New repository**. Name it, set it to **Private**, and leave every **Initialize this repository with** option unticked.
-
-    </div>
-
-1. Point your clone at your own repository, using the tab matching your host:
-
-    !!! note "There is nothing to remove first"
-        Deleting `.git` in step 3 took the template's `origin` with it, along
-        with any other remotes you saw in step 2 - `git init` starts a
-        repository with none at all. If you run `git remote remove origin`
-        out of habit, Git tells you so:
-
-        ``` text
-        error: No such remote: 'origin'
-        ```
-
-        That message means the previous step did its job, not that anything
-        is wrong.
-
-    <div class="grid cards one-column" markdown>
-
-    -   :material-clock-fast:{ .lg .middle } __Point the clone at your repository__
-
-        === "GitLab"
-
-{% if is_surrey %}
-            ``` bash
-            git remote add origin git@gitlab.surrey.ac.uk:comm058-2026/your-new-directory-name.git
-            ```
-
-            Where your-new-directory-name is the name of the repository you created on GitLab, such as `report-az1234`. Replace `comm058-2026` with your own namespace if it is different.
-{% else %}
-            ``` bash
-            git remote add origin git@gitlab.com:your-namespace/your-new-directory-name.git
-            ```
-
-            Replace `gitlab.com` with your own GitLab instance if it is self-hosted.
-{% endif %}
-
-        === "GitHub"
-
-            ``` bash
-            git remote add origin git@github.com:your-username/your-new-directory-name.git
-            ```
-
-    </div>
-
-    Confirm it took:
+1. Check which online repository the clone currently uses:
 
     ``` bash
     git remote -v
     ```
 
-    ``` mermaid
-    graph LR
-      L[Your local clone] -->|origin| R[Your own repository]
+    Both lines should point to `prodockit-template`. Do not push while that
+    is true: `origin` still means the template, not your repository.
+
+1. Move the template's history to a recoverable backup, then start a new
+    history. The files in the project are not moved or deleted.
+
+    === ":material-apple: macOS"
+
+        ``` bash
+        mv .git ../.report-az1234.git.pdk-template-backup
+        git init -b main
+        git config core.fileMode false
+        ```
+
+    === ":fontawesome-brands-windows: Windows"
+
+        ``` powershell
+        Move-Item -LiteralPath .git -Destination ..\.report-az1234.git.pdk-template-backup
+        git init -b main
+        git config core.fileMode false
+        ```
+
+    === ":material-linux: Linux (Ubuntu)"
+
+        ``` bash
+        mv .git ../.report-az1234.git.pdk-template-backup
+        git init -b main
+        git config core.fileMode false
+        ```
+
+    !!! info "Why move `.git` instead of deleting it?"
+        The hidden `.git` directory contains the template's history and its
+        connection to the template repository. Moving it removes both from
+        the active project, but the sibling backup remains available if you
+        made a mistake. `git init` then creates a clean history owned by this
+        project. `core.fileMode false` prevents file-permission changes made
+        by Windows or cloud-sync software appearing as edits.
+
+1. Connect the clean local history to your blank online repository. Use the
+    SSH URL you copied earlier:
+
+    === "University of Surrey GitLab"
+
+        ``` bash
+        git remote add origin git@gitlab.surrey.ac.uk:comm058-2026/report-az1234.git
+        ```
+
+    === "GitLab.com"
+
+        ``` bash
+        git remote add origin git@gitlab.com:your-namespace/report-az1234.git
+        ```
+
+    === "GitHub"
+
+        ``` bash
+        git remote add origin git@github.com:your-username/report-az1234.git
+        ```
+
+1. Run `git remote -v` again. Both lines must now show your repository, not
+    `prodockit-template`:
+
+    ``` bash
+    git remote -v
     ```
-    /// figure-caption
-    After repointing: `origin` points at your own repository
-    ///
 
-    `origin` now points at your own repository rather than the template's - compare this against the first diagram in this section, where it pointed at `prodockit-template` instead.
+    Do not commit or push yet. After the shared installation steps,
+    `prodockit sync-repo` will replace the template's own links before your
+    first commit is created.
 
-    !!! note "Don't commit or push yet"
-        Step 3 left you with an empty repository - the template's files are
-        all still there, but Git is tracking none of them yet.
+### Path 2: clone the existing repository {: #manual-install-path-2 }
 
-        Resist committing them now. The template's files still name the
-        *template's* repository in several places, and `prodockit sync-repo`
-        in the next section is what repoints them at yours. Committing first
-        would put those stale references into your project's very first
-        commit, and you would then be correcting them in the second.
+Use this path when the GitLab or GitHub repository already contains work. A
+repository with a visible file list or any entry under **Commits** is not
+empty. This path keeps its complete history and keeps `origin` pointing to
+the same place.
 
-        [Install Python and Zensical](#install-python-and-zensical) ends
-        with the `git add`, `git commit` and `git push` that publish
-        everything in one go, once there is something correct to publish.
+1. Open the repository in GitLab or GitHub. Select **Code**, choose **SSH**,
+    and copy the URL. Check the browser address and repository name carefully;
+    similar project names can lead to cloning the wrong work without an error.
 
-We are not complete with the setup yet, but you now have a local copy of the template that is connected to your own repository on GitLab or GitHub. Do not start editing yet, as the next section installs Python, Zensical and prodockit, which are needed to build your documentation.
+1. Clone that URL. For example:
+
+    === "University of Surrey GitLab"
+
+        ``` bash
+        git clone git@gitlab.surrey.ac.uk:comm058-2026/report-az1234.git
+        ```
+
+    === "GitLab.com"
+
+        ``` bash
+        git clone git@gitlab.com:your-namespace/report-az1234.git
+        ```
+
+    === "GitHub"
+
+        ``` bash
+        git clone git@github.com:your-username/report-az1234.git
+        ```
+
+1. Change into the cloned project as a separate step:
+
+    ``` bash
+    cd report-az1234
+    ```
+
+1. Keep its history and configure this clone to ignore file-permission noise:
+
+    ``` bash
+    git config core.fileMode false
+    ```
+
+1. Confirm the clone is connected to the expected repository and has a
+    commit:
+
+    ``` bash
+    git remote -v
+    git log -1 --oneline
+    git status --short
+    ```
+
+    `origin` should show the repository you copied. `git log` should show the
+    latest saved change. `git status --short` should print nothing, meaning
+    the new clone has no unsaved local changes.
+
+You now have the project locally. The remaining sections are shared by both
+paths and install everything needed to edit, build, and publish it.
+
+### Confirm the commit identity for this project
+
+Git records an author's name and email address with every commit. Set them
+inside this repository so they do not depend on settings from another project:
+
+``` bash
+git config --local user.name "Your Name"
+git config --local user.email "your.email@example.com"
+```
+
+Check what Git will use:
+
+``` bash
+git config --local user.name
+git config --local user.email
+```
+
+Use the email address associated with the GitLab or GitHub account that owns
+the repository.
 
 ## Install Python and Zensical
 
-Here are brief instructions for installing \index{Python} are below for macOS, Windows 11, and Linux (Ubuntu/Debian). However, it's recommended to refer to the [official Python installation documentation](https://docs.python.org/3/using/) for your operating system. 
+The instructions below install \index{Python}, the PDF system libraries, and
+a project-specific Python virtual environment on macOS, Windows 11, and
+Ubuntu. Refer to the [official Python installation
+documentation](https://docs.python.org/3/using/) if you use another operating
+system.
 
 !!! tip "Automated machine setup"
     If prodockit is already installed, `prodockit bootstrap --apply` can inspect
-    and carry out the same machine and project setup. From 0.42.0, its git
-    service prompt is a numbered menu: University of Surrey GitLab is the
-    default, followed by GitHub.com and GitLab.com. The existing reachability
-    and Surrey VPN check runs after that selection.
+    and carry out the same machine and project setup. In its service menu,
+    University of Surrey GitLab is the default, followed by GitHub.com and
+    GitLab.com. This page remains useful when you need to understand or perform
+    each command yourself.
 
 !!! Note
     You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
@@ -922,13 +881,16 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 !!! info "Why this early"
                     The website loads its fonts from a CDN at view time, but the PDF has no such fallback - WeasyPrint has to embed the actual font files, and silently substitutes a fallback font instead of erroring if they are missing. See [Fonts](customisebuild.md#customisebuild-fonts) for the full picture, including how to check the right fonts actually made it into a built PDF.
 
-            5. Open **Terminal** in your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+            5. Open **Terminal** in your project folder and create the virtual
+               environment:
 
                 ``` bash
-                # 1. Create the virtual environment
                 /opt/homebrew/bin/python3 -m venv .venv
+                ```
 
-                # 2. Activate it
+                Then activate it as a separate step:
+
+                ``` bash
                 source .venv/bin/activate
                 ```
 
@@ -949,7 +911,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
         === ":fontawesome-brands-windows: Windows"
 
-            1. Download and run the official Python installer from [python.org](https://www.python.org/downloads/){target="_blank"}.
+            1. Download and run the **Windows installer (64-bit)** from [python.org](https://www.python.org/downloads/){target="_blank"}. Use this x86-64 installer on an ARM Windows virtual machine too; Windows runs it through its x64 compatibility layer, and it then matches the UCRT64 graphics libraries installed below.
 
                 !!! Critical "Three things to get right during install"
                     - Check **Add python.exe to PATH** on the first screen. This is what lets you run `python` from the command line at all, and also puts `pip` and every command it installs on your `PATH`.
@@ -980,18 +942,41 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 winget install --id MSYS2.MSYS2
                 ```
 
-                Then open the **MSYS2 MINGW64** shell from your Start menu (not PowerShell) and run:
+                Install the matching UCRT64 Pango package from PowerShell:
 
-                ``` bash
-                pacman -S mingw-w64-x86_64-pango
+                ``` powershell
+                C:\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm --needed mingw-w64-ucrt-x86_64-pango"
                 ```
 
-                If that fails partway through with a download error, just run it again - MSYS2's mirrors are occasionally flaky, and a second attempt usually goes through cleanly.
+                If that fails partway through with a download error, run it
+                again. MSYS2 selects mirrors automatically, and a temporary
+                mirror failure does not mean the package name is wrong.
 
-                Finally, add `C:\msys64\mingw64\bin` to your user `PATH`, the same way you added Python: search for *Edit the system environment variables*, click **Environment Variables**, select **Path** under *User variables*, and add that folder. Close and reopen PowerShell afterwards so the change takes effect - the next two steps continue in that new window.
+                Tell WeasyPrint where those libraries are, both in this
+                PowerShell window and in future ones:
 
-                !!! note "No virtual environment to reactivate yet"
-                    Unlike other "close and reopen PowerShell" steps on this page, there's nothing to `cd` back to or activate here. The virtual environment isn't created until step 5 below - reopening PowerShell now just gets the `PATH` change into a fresh window before continuing.
+                ``` powershell
+                $MsysBin = "C:\msys64\ucrt64\bin"
+                $env:WEASYPRINT_DLL_DIRECTORIES = $MsysBin
+                [Environment]::SetEnvironmentVariable("WEASYPRINT_DLL_DIRECTORIES", $MsysBin, "User")
+
+                $env:Path = "$env:Path;$MsysBin"
+                $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+                if (($UserPath -split ";") -notcontains $MsysBin) {
+                    [Environment]::SetEnvironmentVariable("Path", "$UserPath;$MsysBin", "User")
+                }
+                ```
+
+                The first two assignments make the current installation run
+                work immediately. The user-level settings make new terminals
+                and VS Code find the same libraries later.
+
+                !!! warning "Python and the DLLs must have the same architecture"
+                    Error `0xc1` means Windows found a DLL built for a different
+                    processor. The verified route on both Intel/AMD Windows and
+                    Windows on ARM is the **Windows installer (64-bit)** for
+                    Python together with MSYS2's `ucrt64` package above. Do not
+                    mix that Python with `clangarm64` DLLs.
 
                 !!! info "Why this is needed"
                     That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll` - installing `pango` brings all four in. Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot start (status 43)](startediting.md#startediting-pandoc-status-43) if that happens.
@@ -1014,7 +999,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                     Would rather not change it at all? Use **classic CMD** instead of PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat` files aren't covered by execution policy.
 
-            6. Change into your project folder, then create a virtual environment and install Zensical inside it:
+            6. Change into your project folder:
 
                 ``` powershell
                 cd C:\path\to\your-project
@@ -1034,14 +1019,26 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
                     `pwd` prints where you are.
 
-                ``` powershell
-                # 1. Create the virtual environment
-                python -m venv .venv
+                Create the virtual environment:
 
-                # 2. Activate it (choose the line matching your terminal)
-                .\.venv\Scripts\Activate.ps1     # <-- Use this if you are in PowerShell
-                .\.venv\Scripts\activate.bat     # <-- Use this if you are in classic CMD
+                ``` powershell
+                python -m venv .venv
                 ```
+
+                Then activate it as a separate step. Use the command matching
+                your terminal:
+
+                === "PowerShell"
+
+                    ``` powershell
+                    .\.venv\Scripts\Activate.ps1
+                    ```
+
+                === "Classic CMD"
+
+                    ``` batch
+                    .\.venv\Scripts\activate.bat
+                    ```
 
                 Your prompt gains a `(.venv)` prefix, which is how you know the
                 virtual environment is active:
@@ -1082,13 +1079,16 @@ The instructions below are for installing Python 3.12 or later. If you have an o
                 !!! info "Why the fonts, this early"
                     The website loads its fonts from a CDN at view time, but the PDF has no such fallback - WeasyPrint has to embed the actual font files, and silently substitutes a fallback font instead of erroring if they are missing. Skipping this still looks fine right up until your first `prodockit pdf`, whose test suite (if you run one - see [Testing](testing.md)) then fails with `No 'Inter' font found anywhere in the compiled PDF`. See [Fonts](customisebuild.md#customisebuild-fonts) for the full picture, including how to check the right fonts actually made it into a built PDF.
 
-            2. Navigate to your project folder and run the following commands to create a virtual environment and install Zensical inside it:
+            2. Navigate to your project folder, then create a virtual
+               environment:
 
                 ``` bash
-                # 1. Create the virtual environment
                 python3 -m venv .venv
+                ```
 
-                # 2. Activate it
+                Activate it as a separate step:
+
+                ``` bash
                 source .venv/bin/activate
                 ```
 
@@ -1127,10 +1127,12 @@ The instructions below are for installing Python 3.12 or later. If you have an o
     without thinking about it will all move this - repeat the pandoc
     install step above for your platform to bring it back.
 
-1. Install Zensical and prodockit inside the virtual environment. The `requirements.txt` file in the template lists the required packages, so you can install them all with a single command (use `pip` if `pip3` is not available):
+1. Install Zensical and prodockit inside the active virtual environment. The
+    `requirements.txt` file lists the required packages, so install them with
+    the environment's own Python:
 
     ``` bash
-    pip3 install -r requirements.txt
+    python -m pip install -r requirements.txt
     ```
 
 1. Check that the `prodockit` command actually resolves to the one you just installed:
@@ -1144,7 +1146,7 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 1. Check that WeasyPrint can find its graphics libraries. This is the one part of the setup `pip` cannot verify for you, so it is worth confirming now rather than at your first PDF build:
 
     ``` bash
-    python3 -c "import weasyprint; print(weasyprint.__version__)"
+    python -c "import weasyprint; print(weasyprint.__version__)"
     ```
 
     A version number means everything is in place. If instead you get a long error ending in `cannot load library`, the libraries from the step above are missing or cannot be found - go back and install them.
@@ -1177,13 +1179,20 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
     See [An alternative: prodockit.bibliography](customisecontent.md#an-alternative-prodockitbibliography) for what this feature does, and how to fetch a different CSL style instead.
 
-1. Sync the repository's own self-references to match. The template's files still name the *template's* repository in several places, and nothing about changing a Git remote updates them:
+1. Check the repository's own links against `origin`:
+
+    ``` bash
+    prodockit sync-repo --check
+    ```
+
+    Path 1 still contains the template's repository name, so the check will
+    report the changes it needs. Apply them:
 
     ``` bash
     prodockit sync-repo
     ```
 
-    It reports what it changed:
+    It reports what it changed, for example:
 
     ``` text
     Detected GitLab remote (https://gitlab.surrey.ac.uk/az1234/report-az1234); updated: repo_url, repo_name, theme.icon.repo, README badges
@@ -1191,19 +1200,14 @@ The instructions below are for installing Python 3.12 or later. If you have an o
 
     This rewrites `repo_url`, `repo_name`, `theme.icon.repo` and `edit_uri` in `zensical.toml`, plus the badge row in your `README.md`, to match the `origin` you just set - so your built site and PDF link to your own repository rather than the template's. Note `theme.icon.repo` in that list: moving from a GitHub template to a GitLab project switches the header's brand icon to match, which is easy to miss by hand. Only the values that actually needed changing are listed, so the set you see may be smaller.
 
+    On Path 2, the check should normally report that everything already
+    matches. If it reports changes, first confirm `git remote -v` shows the
+    correct repository. Then run `prodockit sync-repo` to apply them.
+
     !!! tip "Check it any time"
         `prodockit sync-repo --check` writes nothing and exits non-zero if these have drifted
         from your remote - useful after any later change of host. See
         [Checks worth having](customisebuild.md#customisebuild-checks).
-
-1. Lets now commit the changes to your own repository. Run the following commands to commit and push the changes:
-
-    ``` bash
-    git add .
-    git commit -m "Initial commit with Zensical and prodockit installed"
-    git push -u origin main
-    ```
-
 
 ### Install Zensical Studio and other plugins
 
@@ -1216,17 +1220,19 @@ Now we'll install the \index{VS Code!Zensical Studio} plugin for Visual Studio C
         Check it worked by opening a new terminal (**Terminal > New Terminal**) - the prompt should start with `(.venv)`. If it doesn't, reopen VS Code in the project folder, then choose **Python: Select Interpreter** from the Command Palette (`Ctrl+Shift+P`/`Cmd+Shift+P`) and pick the one inside `.venv`.
 
 1. Install the **Zensical Studio** extension by searching for "Zensical Studio" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides a set of tools to help you work with Zensical projects, including commands to build and preview your site.
-1. Follow the instructions on the Zensical Studio plugin page to configure the extension. You may find the configuration aleady exists but if it's not there add to the `.vscode/settings.json` file in your project directory the following lines:
+1. Follow the instructions on the Zensical Studio extension page to configure
+    it. The current template already contains the required setting. If an
+    older repository does not, add this to `.vscode/settings.json`:
 
     ```json
     {
       "files.associations": {
-       "*.md": "python-markdown"
+        "*.md": "python-markdown"
       }
     }
     ```
 
-1. Install the **Even Better TOML** extensiuon for Visual Studio Code by searching for "Even Better TOML" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides syntax highlighting and other features for working with TOML files, which are used for configuration in Zensical projects.
+1. Install the **Even Better TOML** extension for Visual Studio Code by searching for "Even Better TOML" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} when prompted. This extension provides syntax highlighting and other features for working with TOML files, which are used for configuration in Zensical projects.
 1. Install the **LTeX+ – LanguageTool grammar/spell checking** plugin for Visual Studio Code by searching for "LTeX+" in the Extensions view and clicking **Install**{: .bg-blue} and then **Trust Publisher and Install**{: .bg-blue} to enable spelling and grammar checking for Markdown. Configure the plugin's *language* setting to whichever English (or other language LTeX+ supports) you're actually writing in{% if is_surrey %} - `en-GB` for British English, which is what Surrey coursework expects{% endif %}.
 
     !!! warning "Get this right, or corrections are confidently wrong"
@@ -1265,10 +1271,17 @@ The two tools are Node.js programs, so install Node.js first. Version 22 or newe
         winget install OpenJS.NodeJS.LTS
         ```
 
-        Close and reopen PowerShell afterwards, so it picks up the new `PATH`. The new window starts in `C:\Users\yourname` with the virtual environment inactive, so get back to where you were before continuing:
+        Close and reopen PowerShell afterwards, so it picks up the new
+        `PATH`. The new window starts in your home directory. First change
+        back to the project:
 
         ``` powershell
         cd C:\path\to\your-project
+        ```
+
+        Then activate its virtual environment as a separate step:
+
+        ``` powershell
         .\.venv\Scripts\Activate.ps1
         ```
 
@@ -1334,11 +1347,32 @@ echo 'export PUPPETEER_SKIP_DOWNLOAD=true' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Open a new terminal for this step (it picks up the exports above from `~/.bashrc` automatically), and make sure it's actually sitting in your project's root directory first - the `--prefix` paths below are relative to wherever you run them from:
+If you opened a new terminal, change back to the project first - the
+`--prefix` paths below are relative to wherever you run them from:
 
 ``` bash
 cd path/to/your-project
 ```
+
+Then activate the project's virtual environment as a separate step:
+
+=== ":material-apple: macOS"
+
+    ``` bash
+    source .venv/bin/activate
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    ``` powershell
+    .\.venv\Scripts\Activate.ps1
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    source .venv/bin/activate
+    ```
 
 Then install both:
 
@@ -1351,30 +1385,17 @@ npm ci --prefix tools/mathjax
 
 This creates a `node_modules` folder inside each, which is deliberately not committed (see `.gitignore`). Run these two commands again if you ever re-clone the project.
 
-Install the MathJax bundle the *website* itself needs, from the `tools/mathjax` install you just ran. It isn't committed - it's third-party code, and a repository is redistribution - so this step is what makes formulas render at all until you run it, on every machine that needs to see them, including CI (see [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths)):
+Install the MathJax bundle and its matching configuration for the website:
 
 ``` bash
-mkdir -p docs/javascripts/vendor/mathjax
-cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js docs/javascripts/vendor/mathjax/
-cp tools/mathjax/node_modules/mathjax-full/LICENSE docs/javascripts/vendor/mathjax/
+prodockit init-mathjax
 ```
 
-Then write the config MathJax needs to actually process the formulas your document contains - without it, every equation renders as raw TeX, with nothing in the build to say why:
-
-``` bash
-cat > docs/javascripts/mathjax.js <<'MATHJAX'
-window.MathJax = {
-  tex: {
-    processEscapes: true,
-    processEnvironments: true,
-  },
-  options: {
-    ignoreHtmlClass: ".*|",
-    processHtmlClass: "arithmatex",
-  },
-};
-MATHJAX
-```
+This copies the pinned browser bundle from `tools/mathjax` and writes the
+configuration before the bundle is loaded. Without that configuration, a
+successful website build can still display raw TeX. The generated files are
+deliberately excluded from Git, so run this command again after cloning the
+project onto another computer.
 
 !!! note "If npm reports vulnerabilities or an `allow-scripts` warning"
     Both are normal here, not a sign anything went wrong:
@@ -1397,8 +1418,63 @@ MATHJAX
 !!! tip "Starting a project that isn't from the template?"
     Then you have no `tools/` directory to install from, and need `prodockit init-tools` first to create it. Running it on a copy of the template is harmless but pointless - it will just report `Kept existing tools/mermaid/package.json` for each file it finds. See [Diagrams and maths](customisebuild.md#customisebuild-diagrams-and-maths) for the full picture.
 
-Test the whole thing by building the PDF - see [Generate the Source and PDF documents](startediting.md#startediting-generate-documents) in the next section. If a diagram appears as an image rather than as text, everything is set up correctly. None of this is required if your document has no diagrams or formulas, but setting it up now costs nothing and means the trap above can't catch you later when you add your first one.
+## Build and finish the setup
+
+Build the website and PDF before publishing anything:
+
+``` bash
+zensical build --clean
+prodockit pdf
+```
+
+Open both outputs and check that headings, diagrams, mathematics, tables, and
+references render correctly. A command completing successfully cannot detect
+every visual problem.
+
+### Finish Path 1: make and push the first commit
+
+Path 1 has a new local history and an empty online repository. Check exactly
+what the first commit will contain:
+
+``` bash
+git status --short
+```
+
+Generated dependencies such as `.venv`, `node_modules`, and the installed
+MathJax bundle should not appear because `.gitignore` excludes them. Then save
+the project and send it to `origin`:
+
+``` bash
+git add -A
+git commit -m "Initial commit"
+git push -u origin main
+```
+
+`git commit` saves the first version locally. `git push` copies that commit to
+GitLab or GitHub and `-u origin main` records where later pushes should go.
+
+### Finish Path 2: leave existing work unchanged
+
+Installing local dependencies should not alter an existing repository. Check:
+
+``` bash
+git status --short
+git rev-parse HEAD
+git rev-parse origin/main
+```
+
+An empty status means no project files changed. Matching commit identifiers
+mean the local `main` branch is still at the same saved version as the online
+one. Do not create an "initial" commit and do not force-push an existing
+repository.
+
+If `prodockit sync-repo` or an editor setting made an intentional change,
+review it with `git diff` and follow the normal editing workflow in the next
+section rather than replacing the repository's history.
 
 ## Where to go next {: #installtooling-where-to-go-next }
 
-You now have Visual Studio Code, Git, Zensical and the diagram and maths tooling installed, and your own copy of the documentation template cloned locally. Continue to [Start editing](startediting.md) to preview your changes locally and publish them to GitLab or GitHub.
+You now have Visual Studio Code, Git, Zensical and the diagram and maths
+tooling installed, and the correct project repository cloned locally.
+Continue to [Start editing](startediting.md) to preview changes and use Git
+without replacing work that is already saved.
