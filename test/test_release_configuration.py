@@ -15,12 +15,26 @@ def _text(path: str) -> str:
 
 def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
+    test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.45.0" in requirements
+    assert "prodockit[index]>=0.46.0" in requirements
+    assert "prodockit[testing]>=0.46.0" in test_requirements
     assert "prodockit[index]==" not in requirements
+    assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
     assert "zensical>=0.0.57" in requirements
     assert "zensical==" not in requirements
+
+
+def test_python_artifact_builds_use_the_version_file() -> None:
+    version = _text(".python-version").strip()
+    github = _text(".github/workflows/docs.yml")
+    gitlab = _text(".gitlab-ci.yml")
+
+    assert version == "3.14"
+    assert "python-version-file: .python-version" in github
+    assert "python-version: 3.x" not in github
+    assert f"image: python:{version}" in gitlab
 
 
 def test_dependency_drift_automation_is_not_shipped() -> None:

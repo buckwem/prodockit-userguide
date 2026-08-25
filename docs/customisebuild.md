@@ -173,6 +173,31 @@ Review \index{Dependencies!versions} without contacting package indexes:
 prodockit pins --check --offline
 ```
 
+This checks every declaration in the root requirements files, including
+`testrequirements.txt`, and the Python version used by the hosted builds. If
+the project has a `.prodockit-shared-files.toml` manifest, the same command
+also checks that each declared file matches the copy supplied by the installed
+Prodockit release. The check changes nothing.
+
+For example, the three Prodockit documentation repositories share one
+`extra.css`. Preview a missing or different copy directly with:
+
+``` bash
+prodockit shared-files --check
+```
+
+Restore the installed release's copy only when you intend to review the
+result:
+
+``` bash
+prodockit shared-files --apply
+git diff -- docs/stylesheets/extra.css
+```
+
+Commit the restored file only after reviewing the difference. The shared-file
+check reads the installed package and the local project; it does not contact a
+package index or another repository.
+
 Use the interactive command only when you intend to review and take an update:
 
 ``` bash
@@ -200,7 +225,7 @@ prodockit template-sync
 
 ////
 
-//// step | Check declared build versions
+//// step | Check declared versions and shared files
 
 ``` bash
 prodockit pins --check --offline

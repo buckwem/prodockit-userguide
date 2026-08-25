@@ -93,7 +93,8 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          # One source of truth for local tooling and both CI hosts.
+          python-version-file: .python-version
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -162,6 +163,10 @@ jobs:
           };
           MATHJAX
       - run: pip install -r requirements.txt -r testrequirements.txt
+      # Offline and non-writing: keeps every declaration consistent and also
+      # checks manifest-managed files against this installed Prodockit
+      # release. A failure names the drift and prints its recovery command.
+      - run: prodockit pins --check --offline
       # Keeps repo_url/repo_name/edit_uri/brand icon and the README badge
       # row matching whichever remote this checkout is published from -
       # was sync_repo_icon.py, now provided by prodockit itself (#27).
