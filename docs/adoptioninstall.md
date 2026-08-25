@@ -389,3 +389,13 @@ A temporary npm or network error can be retried safely with
 `prodockit adopt --apply`. If the document does not contain that kind of
 content, run `prodockit adopt --configure`, turn the unused renderer off, and
 apply again.
+
+## Where to go next {: #adoptioninstall-where-to-go-next }
+
+Your existing document now has prodockit's standard authoring components while
+retaining its own template, editor, Git setup, and publishing workflow.
+Continue to [Start editing](startediting.md) for the everyday preview, build,
+commit, and publishing workflow. Use
+[Customise document content](customisecontent.md) when you are ready to add
+numbering, cross-references, citations, indexes, enhanced tables, steps, or
+directory trees to the document.

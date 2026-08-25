@@ -406,3 +406,11 @@ The first pipeline commonly takes several minutes. Open **Build > Pipelines**
 on GitLab or **Actions** on GitHub and wait for the publishing job to finish.
 Then rerun `pdkboot --apply` or `pdkboot --check` and confirm the page in your
 browser.
+
+## Where to go next {: #bootstrapinstall-where-to-go-next }
+
+You now have the supported tools, a local prodockit project, and a formal-looking
+document as a head start. Continue to [Start editing](startediting.md) to open
+the project, preview the website, build its PDF, and use Git for later changes.
+Then use [Customisation](customise.md) to replace the example content and adapt
+the document's branding, structure, and build settings for your own work.

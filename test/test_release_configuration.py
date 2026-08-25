@@ -87,6 +87,7 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
     assert "prodockit adopt --dry-run" in adoption
     assert "prodockit adopt --apply" in adoption
     assert "Git, SSH, remotes, editors, commits, and pushes" in adoption
+    assert "## Where to go next {: #adoptioninstall-where-to-go-next }" in adoption
     assert "pip3 install --upgrade prodockit" in adoption
     assert "python -m pip install --upgrade prodockit" in adoption
     assert "prodockit>=" not in adoption
@@ -96,6 +97,7 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
     assert "pdkboot --check" in bootstrap
     assert "pdkboot --dry-run" in bootstrap
     assert "pdkboot --apply" in bootstrap
+    assert "## Where to go next {: #bootstrapinstall-where-to-go-next }" in bootstrap
     assert "prodockit-template" in bootstrap
     assert "The repository already contains work" in bootstrap
     assert "All 23 stages are set up." in bootstrap
