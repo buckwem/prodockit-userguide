@@ -9,377 +9,380 @@ icon: lucide/book-open
 
 {{ heading_counter_reset(page) }}
 
-# Customise document content
+# Prodockit authoring features
 
-[Customisation](customise.md) covers your website's branding, layout, and cover page. This page covers the [prodockit](https://github.com/buckwem/prodockit-extensions) extensions that number, cross-reference, cite, define, and index your document's actual *content* - the things you reach for while writing, not while setting the project up. Every one of them works identically on the website and in the PDF, with no separate PDF-side translation needed.
+[Document appearance and structure](customise.md) covers the appearance and structure of the
+website and PDF. This page covers the prodockit features an author uses while
+writing. They are already enabled in the template and work in both outputs
+unless a section says otherwise.
+
+Use this page to get a feature working. Follow its link to the
+[Extensions Guide](https://prodockit.org/extensions/){target="_blank"} when you
+need every option or the generated HTML details.
+
+| When you want to… | Use |
+|---|---|
+| Number headings and appendixes | `prodockit.headings` |
+| Link to a heading, figure, or table | `prodockit.refs` |
+| Write a procedure | `prodockit.steps` |
+| Show folders and files | `prodockit.tree` |
+| Maintain a hand-written reference list | `prodockit.citations` |
+| Generate references from a `.bib` file | `prodockit.bibliography` |
+| Define acronyms and glossary terms | `prodockit.glossary` |
+| Format complex tables | `prodockit.tables` |
+| Produce a PDF index | `prodockit.index` |
+/// table-caption | <
+    attrs: {id: table-authoring-features}
+
+Authoring features
+///
 
 ## Changing heading numbering
 
-By default, this documentation template enables heading numbering. If you want to disable heading numbering, you can do so by adding the following line to the `[project.extra]` section of the `zensical.toml` file:
+\index{Headings!numbering} is enabled for the website and PDF by default. To turn it
+off, set this in `zensical.toml`:
 
-```toml
+``` toml
+[project.extra]
 heading_numbering = false
 ```
 
-This will also disable heading numbering in the generated PDF output. If you want to enable heading numbering again, simply set the value to `true`:
+Set it back to `true` to restore them. The numbers written in the `nav` titles
+are separate and must be kept in sequence manually:
 
-```toml
-heading_numbering = true
+``` toml
+{"6. Case study" = "casestudy.md"}
 ```
 
-The top level heading numbering shown in the sidebar isn't generated automatically - it's typed directly into each entry's title in `nav`, matching the pattern of the ones already there, for example:
+### Leave a heading unnumbered or out of PDF navigation
 
-```toml
-{"6. Case Study" = "casestudy.md"}
+Add classes to a heading when it should not behave like an ordinary numbered
+section:
+
+``` markdown
+# Cover page {: .unnumbered .unlisted .unbookmarked }
 ```
 
-Keep the numbers in each title sequential as you add, remove, or reorder chapters - inserting a new entry partway through (as above, right after "5. Section") means renumbering every entry after it, since (unlike the in-page heading numbers) `nav` doesn't renumber these for you.
+- `.unnumbered` removes its number without consuming the next number.
+- `.unlisted` leaves it out of the PDF's Table of Contents page.
+- `.unbookmarked` leaves it out of the PDF reader's bookmark outline.
 
-!!! note
-    Appendix pages are the one exception - see [Appendixes](#appendixes) below - since they're lettered rather than numbered, and don't take a number from this sequence at all. The front matter flag that marks a page as an appendix is `is_appendix` by default, but its name itself is configurable (`appendix_attr` in `prodockit.headings`) if you'd rather use a different key.
+Use only the classes you need. The heading keeps its id and remains a valid
+link target. See the
+[`prodockit.headings` reference](https://prodockit.org/extensions/headings/){target="_blank"}
+for numbering modes and advanced configuration.
 
 ## Section cross-references
 
-This template uses [`prodockit.refs`](https://prodockit.org/extensions/refs/){target="_blank"} (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations/glossary below) for \index{cross-references}: give a heading an id, then reference it from anywhere with `\ref{id}` - it resolves to that heading's current section number, similar in spirit to LaTeX's `\ref`.
+\index{Cross-references} need an important target with a short, stable id so a later wording change does not
+break its links:
 
-!!! info "How the PDF handles this"
-    Same as citations/glossary below - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\ref{id}` resolves the same way in both outputs with no separate PDF-side translation.
+``` markdown
+## Deployment process {: #deployment }
+```
 
-1. Every heading already has an id, the same slugified-from-its-text id `toc`'s permalinks use (this page's own "## Changing heading numbering" heading above got `changing-heading-numbering` automatically, with no extra markup needed). Give it an explicit id instead with [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax when you want a short, stable id that won't change if you reword the heading later, or to avoid a collision with another heading elsewhere in the document that slugifies to the same text:
+Link to it from any page with `\ref{id}`:
 
-    ``` markdown
-    ## SubSection {: #citations-example }
-    ```
+``` markdown
+Follow the process in \ref{deployment}.
+```
 
-2. Reference it from anywhere in the document with `\ref{id}`:
+The displayed number and heading text update automatically when content moves.
+Targets may appear on a later page: a forward cross-page reference resolves on
+the first complete build. The same syntax links to a figure or table when its
+caption has an id.
 
-    ``` markdown
-    As covered in \ref{changing-heading-numbering}, ...
-    ```
+If the target is missing or mistyped, the link displays `??`. Search for that
+marker in both the website and PDF before publishing.
 
-    Which renders as: As covered in \ref{changing-heading-numbering}, ...
+### Include the target's PDF page number
 
-    No need to track down the section's current number, or update it by hand if the target moves - `\ref{id}` re-resolves on every build. This template's own `docs/section1.md`-`docs/section4.md` cross-reference each other's citation/acronym/glossary/caption examples this way, each using an explicit attr_list id since "SubSection" repeats several times per page.
+Use `\autoref{id}` where someone reading a printed copy may need to turn to the
+target:
 
-Targets can appear later in `nav` than the page that refers to them. The
-site-wide scan records headings, figure captions and table captions before any
-individual page renders, so a forward cross-page `\ref{caption-id}` resolves on
-the first build just like a reference to an earlier page.
+``` markdown
+The numbering rules are explained in \autoref{changing-heading-numbering}.
+```
 
-!!! note
-    A reference to a target that genuinely doesn't exist (usually a typo in the id) falls back to `??`, the same way an undefined LaTeX `\ref` shows `??` - a quick visual signal something needs fixing. It renders with a `prodockit-ref-unresolved` CSS class, so you can style it more prominently (e.g. a warning colour) in `extra.css` if `??` alone isn't visible enough while drafting.
+On the website it looks like `\ref{id}`. In the PDF it also says “on page N”.
+Use `\ref` for ordinary links and `\autoref` when the page number helps the
+printed reader. See the
+[`prodockit.refs` reference](https://prodockit.org/extensions/refs/){target="_blank"}
+for caption references and troubleshooting.
+
+## Write a numbered procedure
+
+Use `prodockit.steps` for \index{Numbered procedures} when a reader must carry out actions in order. Use an
+ordinary numbered list when the items are facts.
+
+```` markdown
+/// steps
+
+//// step | Preview the website
+
+``` bash
+zensical serve
+```
+
+Leave the preview running while you edit.
+
+////
+
+//// step | Stop the preview
+
+Return to the terminal and press `Ctrl+C`.
+
+////
+
+///
+````
+
+The outer block uses three slashes. Each nested step uses four and closes with
+the same number. A step can contain paragraphs, commands, admonitions, or tabs.
+
+Continue after a break by setting the next number:
+
+``` markdown
+/// steps
+    start: 3
+
+//// step | Build the finished website
+
+Run `zensical build --clean --strict`.
+
+////
+
+///
+```
+
+Options go immediately below `/// steps`, indented by four spaces, followed by
+a blank line. See the
+[`prodockit.steps` reference](https://prodockit.org/extensions/steps/){target="_blank"}
+for ids and more complex content.
+
+## Show a directory structure
+
+Use `prodockit.tree` to create \index{Directory trees} instead of drawing a directory with box characters:
+
+``` markdown
+/// tree
+    indent: 4
+
+docs/ - source files for the document
+    index.md - home page
+    images/ - images used by the document
+        architecture.png - system architecture diagram
+zensical.toml - website configuration
+///
+```
+
+A trailing `/` marks a directory. An entry without one is a file. Add a
+description after ` - `, including the spaces on both sides of the hyphen.
+`indent: 4` makes each four-space level one level of the tree. See the
+[`prodockit.tree` reference](https://prodockit.org/extensions/tree/){target="_blank"}
+for icon choices and error explanations.
 
 ## References and bibliography
 
-This template uses [`prodockit.citations`](https://prodockit.org/extensions/citations/) (from the [prodockit](https://github.com/buckwem/prodockit-extensions) package, already installed and enabled in `zensical.toml` - see [prodockit-template#25](https://github.com/buckwem/prodockit-template/issues/25)) for \index{citations}: define a source once, cite it by key anywhere with `\citeref{id}`.
+The template supports \index{References} and a generated \index{Bibliography}. Pick the approach that matches how your
+sources are maintained; both can coexist, but most documents need only one.
 
-!!! info "How the PDF handles this"
-    `prodockit pdf` renders every page through the same Zensical/prodockit pipeline the website uses, so `\citeref{id}` resolves to the same linked citation in both outputs automatically - no separate PDF-side translation needed, and no manual HTML or per-output link either.
+| Approach | Best when | Markers |
+|---|---|---|
+| Hand-written references | You need complete control over a short reference list | `\citeref{id}` |
+| BibTeX bibliography | You already use a `.bib` file or need a formal CSL style | `\cite{id}` and `\bibliography` |
+/// table-caption | <
+    attrs: {id: table-source-management}
 
-1. Create a page for your sources (this template includes one at [`docs/references.md`](https://template.prodockit.org/references/){target="_blank"}). List each source as a paragraph, and give it a short, unique id plus a short display text using [attr_list](https://zensical.org/docs/authoring/formatting/#attribute-lists) syntax on the line directly below it (no heading needed - attr_list works on plain paragraphs too):
+Ways to manage sources
+///
 
-    ``` markdown
-    Skoulikari, A. (2023) *Learning Git: A Hands-On and Visual Guide to the Basics of Git*. Sebastopol, CA: O'Reilly Media.
-    {: #skou2023 .reference data-cite-text="Skoulikari, 2023" }
-    ```
+### Maintain a hand-written reference list
 
-    Each entry needs a blank line before and after it - attr_list only recognises `{: ... }` as an id (rather than literal visible text) when it's the last line of its own paragraph. Removing the blank lines to save space merges entries into one paragraph and breaks both outputs.
+Add each source to `docs/references.md` and give it a unique id, display text,
+and `.reference` class:
 
-2. Add the page to `nav` in `zensical.toml` so it appears in the sidebar - as a regular numbered chapter, or as a lettered appendix (see [Appendixes](#appendixes) below). This template ships it as an appendix by default.
-3. Cite the source in-text with `\citeref{id}`:
+``` markdown
+Skoulikari, A. (2023) *Learning Git: A Hands-On and Visual Guide to the Basics
+of Git*. Sebastopol, CA: O'Reilly Media.
+{: #skou2023 .reference data-cite-text="Skoulikari, 2023" }
+```
 
-    ``` markdown
-    Git is a tool used to manage version control.\citeref{skou2023}
-    ```
+Leave a blank line around every entry. Cite it from any page with:
 
-    Which renders as: Git is a tool used to manage version control.\citeref{skou2023}
+``` markdown
+Git records changes to a project.\citeref{skou2023}
+```
 
-    No relative path to work out, regardless of which page cites it - unlike a hand-typed Markdown link, `\citeref{id}` resolves the same way from any page, and the `data-cite-text` you set once is reused everywhere the source is cited. Cite more than one source in the same place with a comma: `\citeref{skou2023,chacon2014}` renders `\citeref{skou2023,chacon2014}`.
+Use a comma inside one marker to cite several sources:
+`\citeref{skou2023,chacon2014}`. A missing id displays `?`.
 
-    This in-text citation resolves correctly in both outputs - on the website, and as an internal cross-page link jumping straight to the cited entry within the built PDF.
-
-4. Consecutive entries get the browser's normal spacing between paragraphs by default - noticeably looser than a typical bibliography. Give each entry's attr_list line a `.reference` class alongside its id and `data-cite-text` (as shown in the code block above) so the template's layout rules - described next - can target them.
-
-5. Set `project.extra.reference_style` in `zensical.toml` to control how `.reference` entries are laid out, on both the website and the PDF build:
-
-    ``` toml
-    [project.extra]
-    reference_style = "european" # or "global"
-    ```
-
-    `"european"` (the default) - single line spacing, no indent, entries close together:
-
-    ![European reference style: single line spacing, no indent, entries close together](images/reference-style-european.png){ width="100%" .screenshot }
-    /// figure-caption
-    European reference style
-    ///
-
-    `"global"` - double spacing between entries, with a 0.5in/1.27cm hanging indent on wrapped lines (the common APA/MLA/Chicago style):
-
-    ![Global reference style: double spacing between entries, with a hanging indent on wrapped lines](images/reference-style-global.png){ width="100%" .screenshot }
-    /// figure-caption
-    Global reference style
-    ///
-
-    Set `project.extra.reference_spacing_european`, `reference_indent_global`, and `reference_spacing_global` in `zensical.toml` to change the spacing/indent values themselves, on both the website and the PDF build:
-
-    ```toml
-    [project.extra]
-    reference_spacing_european = "-0.8em"  # gap between entries, "european" style
-    reference_indent_global = "1.27cm"     # hanging indent on wrapped lines, "global" style
-    reference_spacing_global = "2em"       # gap between entries, "global" style
-    ```
-
-    Each accepts any valid CSS length and defaults to the value shown above if left unset. `reference_spacing_european` also controls the [Acronyms](#acronyms-and-abbreviations) and [Glossary](#glossary-page-setup) pages' own list spacing, which share the same tight "european" look but have no "global"-style alternative to switch to.
-
-!!! tip
-    Keep ids short and stable (e.g. `skou2023`, author surname plus year) so citations keep working even if you reorder entries on the references page later. Unlike a hand-typed link, `\citeref{id}` needs no adjustment when citing from a page nested in a subdirectory.
-
-!!! note
-    An unresolved `\citeref{id}` (a typo in the key, or a source not yet added) renders `?` instead of a linked citation, with a `prodockit-cite-unresolved` CSS class for styling it distinctly.
+The template's default `reference_style = "european"` keeps entries close
+together. Change it to `"global"` in `[project.extra]` for larger spacing and
+a hanging indent. See the
+[`prodockit.citations` reference](https://prodockit.org/extensions/citations/){target="_blank"}
+for the layout settings and generated links.
 
 ### An alternative: prodockit.bibliography
 
-This template also enables [`prodockit.bibliography`](https://prodockit.org/extensions/bibliography/){target="_blank"} in `zensical.toml`, a different way to manage sources - not currently used in this guide's own content, but available if you'd rather work this way instead of (or alongside) `prodockit.citations` above.
-
-Where `prodockit.citations` is a hand-typed reference list you write and format yourself, `prodockit.bibliography` generates one automatically from a BibTeX/BibLaTeX `.bib` file, in any Citation Style Language (CSL) style - APA, IEEE, Harvard, and hundreds more:
-
-```toml
-[project.markdown_extensions."prodockit.bibliography"]
-bib_file = "references.bib"
-csl_style = "harvard-cite-them-right.csl"
-```
-
-The template enables this by default, pointing at `harvard-cite-them-right.csl` - but that file isn't part of the clone, so it's fetched rather than committed. If you followed [Manual install](installtooling.md#install-python-and-zensical) when setting up, you already did this; if not, or if you'd rather use a different CSL style, fetch one from the [Zotero Style Repository](https://www.zotero.org/styles){target="_blank"} into your project root and point `csl_style` at its filename:
-
-``` bash
-curl -fsSL -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-them-right"
-```
-
-Cite a source with `\cite{id}` (note the different marker, distinct from `\citeref{id}` above), and put a bare `\bibliography` marker on its own paragraph wherever you want the formatted reference list to appear:
+Put BibTeX or BibLaTeX entries in `references.bib`. Cite an entry by its key:
 
 ``` markdown
 Git is a distributed version control system \cite{chacon2014}.
 ```
 
-It's a longer-term trade for a shorter one: `prodockit.bibliography` needs [Pandoc](https://pandoc.org/) installed even for a website-only build with no PDF, but in return gives you an automatically generated, correctly styled reference list you never hand-format yourself. See [prodockit.bibliography's own docs](https://prodockit.org/extensions/bibliography/#comparing-the-two-approaches) for the full comparison between the two.
+Place the generated list where it belongs:
+
+``` markdown
+# References
+
+\bibliography
+```
+
+The template points to `harvard-cite-them-right.csl`; change `csl_style` under
+`[project.markdown_extensions."prodockit.bibliography"]` when another style is
+required. Pandoc must be installed for website and PDF builds using this
+extension. See the
+[`prodockit.bibliography` reference](https://prodockit.org/extensions/bibliography/){target="_blank"}
+for `.bib` files, CSL styles, locators, and multiple bibliographies.
 
 ## Acronyms and abbreviations
 
-This template uses [`prodockit.glossary`](https://prodockit.org/extensions/glossary/) (from the same [prodockit](https://github.com/buckwem/prodockit-extensions) package as citations above - see [prodockit-template#87](https://github.com/buckwem/prodockit-template/issues/87)) for \index{acronyms}: define a term once, insert it by id with `\gls{id}` - it expands to the term's own text, linked to its definition.
+Define \index{Acronyms} once in `docs/acronyms.md`:
 
-!!! info "How the PDF handles this"
-    Same as citations above - `prodockit pdf` renders this page through the real Zensical/prodockit pipeline, so `\gls{id}` resolves the same way in both outputs with no separate PDF-side translation.
+``` markdown
+**CSS** - Cascading Style Sheets
+{: #css .acronym data-term="CSS" }
+```
 
-1. Create a page for your acronyms (this template includes one at [`docs/acronyms.md`](https://template.prodockit.org/acronyms/){target="_blank"}). List each acronym as a short paragraph, and give it an id plus a `data-term` attribute (the acronym's own text) using attr_list syntax on the line directly below it:
+Insert it from any page with `\gls{id}`:
 
-    ``` markdown
-    **CSS** - Cascading Style Sheets
-    {: #css .acronym data-term="CSS" }
-    ```
+``` markdown
+The website uses \gls{css} for its appearance.
+```
 
-    Each entry needs a blank line before and after it, and the `.acronym` class is what keeps consecutive entries close together rather than using the browser's normal, looser paragraph spacing.
-
-2. Add the page to `nav` in `zensical.toml` so it appears in the sidebar - as a regular numbered chapter, or as a lettered appendix (see [Appendixes](#appendixes) below). This template ships it as an appendix by default.
-3. Insert the acronym the first time you use it in a page with `\gls{id}`:
-
-    ``` markdown
-    This template uses \gls{css} to control the website's appearance.
-    ```
-
-    Which renders as: This template uses \gls{css} to control the website's appearance.
-
-!!! tip
-    Keep ids short and lowercase (e.g. `css`, `pdf`) so `\gls{id}` keeps working even if you reorder entries on the acronyms page later.
-
-!!! note
-    An unresolved `\gls{id}` renders `?` instead of the term's expansion, with a `prodockit-gls-unresolved` CSS class for styling it distinctly.
+Keep ids short, lowercase, and unique. A missing id displays `?`.
 
 ## Glossary {: #glossary-page-setup }
 
-You can build a \index{glossary} of key terms the same way, in its own page - this template includes one at `docs/glossary.md`, right after the acronyms page in `nav`. Acronym entries and glossary entries share the same `prodockit.glossary` registry - they're the same kind of thing, an id with a short display text - so a `\gls{id}` works identically whichever page defines it.
+\index{Glossary} terms use the same extension and syntax in `docs/glossary.md`:
 
-!!! info "How the PDF handles this"
-    Same as acronyms above - resolved automatically, no separate PDF-side translation.
+``` markdown
+**Markdown** - A lightweight markup language for formatting plain text.
+{: #markdown-def .glossary data-term="Markdown" }
+```
 
-1. Create a page for your glossary (this template includes one at [`docs/glossary.md`](https://template.prodockit.org/glossary/){target="_blank"}). List each term as a short paragraph, and give it an id plus a `data-term` attribute using attr_list syntax, the same as an acronym entry:
+Insert the term with `\gls{markdown-def}`. Acronyms and glossary terms share
+one id namespace, so do not reuse an id. Use an ordinary Markdown link when
+the sentence needs different link text, such as “see the glossary”.
 
-    ``` markdown
-    **Markdown** - A lightweight markup language for formatting plain text...
-    {: #markdown-def .glossary data-term="Markdown" }
-    ```
-
-    Give glossary entries their own ids, distinct from any acronym ids for the same concept (for example `css-def` rather than `css`) - `prodockit.glossary` shares one id namespace across every page, so two entries sharing an id anywhere in the site would collide.
-
-2. Add the page to `nav` in `zensical.toml` so it appears in the sidebar - as a regular numbered chapter, or as a lettered appendix (see [Appendixes](#appendixes) below). This template ships it as an appendix by default.
-3. Insert the term the first time you use it in a page with `\gls{id}`, the same way as an acronym:
-
-    ``` markdown
-    This document is written in \gls{markdown-def}.
-    ```
-
-    Which renders as: This document is written in \gls{markdown-def}.
-
-4. Cross-link an acronym to its own glossary entry (and vice versa) with a plain Markdown link, **not** `\gls{id}`. A "see also" reference needs to say something like "see the glossary", not repeat the term itself - `\gls{id}` always inserts the term's own registered text instead, so `\gls{css-def}` would read "See Cascading Style Sheets for the expansion" rather than "See the glossary...":
-
-    ``` markdown
-    **CSS** - Cascading Style Sheets. See the [glossary](glossary.md#css-def) for what this means in practice.
-    {: #css .acronym data-term="CSS" }
-    ```
-
-    This template's own `docs/acronyms.md`/`docs/glossary.md` cross-link every entry that has a counterpart on the other page this way - see [prodockit.glossary's own docs](https://prodockit.org/extensions/glossary/#cross-links-between-entries-use-a-plain-link-not-glsid) for the full rule of thumb: `\gls{id}` when the term's own name belongs in the sentence, a plain link when the link text needs to say something else entirely.
-
-!!! tip
-    If a term is also one of your acronyms, cross-link the two entries as shown above rather than duplicating the explanation on both pages.
+See the
+[`prodockit.glossary` reference](https://prodockit.org/extensions/glossary/){target="_blank"}
+for plural forms, first-use expansion, styling, and cross-links.
 
 ## Appendixes
 
-Set `is_appendix: true` in a page's \index{front matter} to give its heading letter-based numbering - "Appendix A", "Appendix B", ... - instead of continuing the document's normal numbered sequence, matching the usual academic convention for \index{appendixes}. Sub-headings within an appendix page number the same way numbered sections do, just using the letter instead of a chapter number - "A.1", "A.1.1", and so on.
+Mark \index{Appendixes} in the page's front matter:
 
-```markdown
+``` markdown
 ---
 icon: lucide/book-open
 is_appendix: true
+exclude_from_word_count: true
 ---
 ```
 
-Appendix pages are lettered in `nav` order - the first `is_appendix: true` page becomes Appendix A, the second becomes Appendix B, and so on - regardless of how many numbered chapters come before them, and without taking a number away from that sequence (see the note in [Changing heading numbering](#changing-heading-numbering) above). This template ships `docs/acronyms.md`, `docs/glossary.md`, and `docs/references.md` as appendixes by default, grouped under their own "Appendixes" tab in `nav`.
+Appendixes receive letters in `nav` order without consuming a chapter number.
+Their visible `nav` labels are still written manually:
 
-!!! note
-    Like the numbered chapter titles in `nav` (see [Changing heading numbering](#changing-heading-numbering)), the "Appendix A"/"Appendix B" prefix shown in the sidebar isn't generated automatically - type it directly into each entry's title in `nav`, matching the pattern already there:
+``` toml
+{"Appendix A. Acronyms" = "acronyms.md"}
+```
 
-    ```toml
-    {"Appendix A. Acronyms" = "acronyms.md"}
-    ```
-
-!!! tip
-    Appendixes conventionally don't count toward a submission's word limit either - pair `is_appendix: true` with `exclude_from_word_count: true` (see [Word count and repository link](customise.md#word-count-and-repository-link) in Customisation), as this template's own appendix pages already do.
+The template already configures its acronym, glossary, and reference pages as
+appendixes.
 
 ## Back-of-book index
 
-This template also enables [`prodockit.index`](https://prodockit.org/extensions/index-terms/){target="_blank"} for a \index{back-of-book index}: a traditional, alphabetised, PDF-only index at the end of your document, listing every term you've marked and the page(s) it appears on - the same kind of index/back matter every printed technical book has.
-
-The shipped userguide already enables the extension **and** generates the index, so you normally only need to mark the terms you want to include. There is no separate setup step.
-
-!!! info "PDF-only"
-    There's no website equivalent - a reader of the live site uses [Zensical's own search](https://zensical.org/docs/setup/search/) instead. Marking a term has no visible effect on the website at all; it only ever becomes an index entry once the PDF is built.
-
-Mark a term wherever you actually discuss it with `\index{Term}` - it displays inline exactly as written, and is marked for the index in one go, no separate definition step needed:
+Create a \index{Back-of-book index} by marking a term where it is discussed:
 
 ``` markdown
-A \index{merge conflict} happens when Git can't automatically combine two changes.
+A \index{merge conflict} occurs when Git cannot combine two changes.
 ```
 
-Which renders as: A \index{merge conflict} happens when Git can't automatically combine two changes.
-
-Marking the same term more than once across the document merges into a single index entry, with every page it appears on listed together.
-
-Nest a term under another with `Parent!Child` - only the last segment displays inline, the earlier segments only ever shape how the generated index groups related entries:
+Use `Parent!Child` to group entries and backticks for commands:
 
 ``` markdown
-Now generate the \index{Git!ssh keys} to use for authentication.
+Load the \index{Git!ssh key} before running \index{`git push`}.
 ```
 
-Which renders as: Now generate the \index{Git!ssh keys} to use for authentication.
-
-Wrap the last segment in backticks to mark a command or other code term, both inline and in the generated index entry:
-
-``` markdown
-Run \index{`git commit`} to save your changes.
-```
-
-Which renders as: Run \index{`git commit`} to save your changes.
-
-The existing extension table in `zensical.toml` contains the generation settings:
-
-```toml
-[project.markdown_extensions."prodockit.index"]
-include = true
-title = "Index"
-```
-
-`include = true` appends the generated index to the PDF. The `title` line is an optional customisation: change it if your document needs a different heading, or omit it to use the default `"Index"`.
-
-!!! tip
-    Generating page numbers for the index needs a second pass over the whole PDF, so it's a little slower than a build without one. The shipped userguide already has `include` switched on.
+The text remains normal on the website. The PDF collects every marker into an
+alphabetical index because `include = true` is set for `prodockit.index` in
+`zensical.toml`. See the
+[`prodockit.index` reference](https://prodockit.org/extensions/index-terms/){target="_blank"}
+for ranges, hidden markers, sorting, and configuration.
 
 ## Captions
 
-The [attribute list](https://zensical.org/docs/authoring/formatting/#attribute-lists)-based `<figure>`/`<figcaption>` pattern in [Zensical basics](zensicalbasics.md#images) works for images, but this template also enables `pymdownx.blocks.caption`, a `/// caption ... ///` block that captions *either* an image *or* a table, auto-numbers itself, and - unlike the `<figure>` approach - works correctly in the PDF too.
+\index{Captions} identify every figure and table that a reader may need to discuss or reference.
+Put the caption block immediately after its image or table.
 
-!!! info "How the PDF handles this"
-    `prodockit pdf` renders this page through the real Zensical/pymdownx pipeline, so `pymdownx.blocks.caption`'s own per-page auto-number is already correct by the time Pandoc sees it - a Lua filter (`Figure()`, generated by `prodockit.pdf.lua`) just prepends the current chapter number/appendix letter in front of it (e.g. "1." → "8.1."), matching the same `<chapter>.<n>` numbers the website shows via CSS.
+### Caption a figure {: #caption-a-figure }
 
-This template configures three caption types under `[project.markdown_extensions.pymdownx.blocks.caption]` in `zensical.toml`:
-
-1. **`caption`** - plain and unnumbered, for an image that doesn't need a "Figure N" label - a decorative image or an institution logo, rather than a screenshot or diagram that's part of the document's actual content:
-
-    ``` markdown
-    ![Institution logo](images/logo.png)
-    /// caption
-    Institution logo
-    ///
-    ```
-
-2. **`figure-caption`** - auto-numbered "Figure `<chapter>.<n>`" (e.g. "Figure 9.1"), attached to the image immediately before it. `<chapter>` is wherever this page ends up in `nav`; `<n>` auto-increments per page - reordering chapters, or adding another figure to the page, never needs a manual renumber:
-
-    ``` markdown
-    ![GitLab fork project](images/gitlab-fork-project.png){ width=70% .screenshot }
-    /// figure-caption
-    GitLab fork project
-    ///
-    ```
-
-3. **`table-caption`** - the same auto-numbering, but for a table, shown *below* it by default - just like a figure. Add `| <` after the type name to show it *above* the table instead, genuinely repositioned in both outputs rather than just a CSS visual trick:
-
-    ``` markdown
-    | Feature | Fork | Clone |
-    |----|----|---|
-    | ... |
-    /// table-caption | <
-    Fork and Clone Comparison at a Glance
-    ///
-    ```
-
-    !!! warning "Always add `| <` to `table-caption`"
-        `table-caption` has no setting that makes it default to top-positioned - `| <` isn't optional here, it's part of the syntax every single `table-caption` block needs. This template shows every table caption of its own above its table (see [Fork and cloning the prodockit-template](installtooling.md#cloning-the-prodockit-template) for a real example); a `table-caption` block missing `| <` silently falls back to *below* the table instead, breaking that consistency without any warning. There's no `zensical.toml` setting to make this the default and skip typing `| <` each time - see [issue #68](https://github.com/buckwem/prodockit-template/issues/68) if you want to help change that.
-
-The caption block always comes *after* the image or table it captions, regardless of where it's actually shown - `pymdownx.blocks.caption` attaches to whichever element immediately precedes it.
-
-!!! tip
-    Force a specific number instead of the auto-incrementing one with `| 5` (later auto-numbers on the same page continue counting up from there, never going backwards); give a caption a stable custom id instead of the auto-generated one with `| #my-id`; add an extra CSS class with `| #my-id.my-class`. Combine modifiers with spaces, e.g. `/// table-caption | < 5 #my-id`.
-
-!!! note "Caption every image, diagram, and table"
-    Every screenshot, diagram, or other image that's actually part of the document's content gets `figure-caption`, and every table gets `table-caption` - so a reader can cite "Figure 7.2" or "Table 3.1" and mean something specific. Reserve the plain `caption` type for decorative images that aren't part of the content itself, like an institution logo (see the `caption` example above).
-
-### Table column widths
-
-Give any table's header cell a `width` attribute with attr_list syntax to control how much horizontal space that column takes, in either output:
+Give the caption a stable id when the figure will be referenced elsewhere:
 
 ``` markdown
-| Name {: width="25%" } | Description {: width="50%" } | Due {: width="25%" } |
-|---|---|---|
-| Headings | Heading ids and section numbers | Q1 |
-| Refs | Cross-references, resolved by number | Q2 |
+![Architecture overview](images/architecture.png)
+/// figure-caption
+    attrs: {id: figure-architecture}
+
+Architecture overview
+///
 ```
 
-Which renders as:
+Refer to it with `\ref{figure-architecture}`. Add the `.screenshot` class to
+the image when it is a screenshot rather than a diagram, logo, or photograph.
 
-| Name {: width="25%" } | Description {: width="50%" } | Due {: width="25%" } |
-|---|---|---|
-| Headings | Heading ids and section numbers | Q1 |
-| Refs | Cross-references, resolved by number | Q2 |
+### Caption a table {: #caption-a-table }
 
-Use a CSS length (e.g. `120px`) instead of a percentage for a column that should stay a fixed size regardless of the table's own width. Leave a column unannotated and it takes whatever space is left over, shared evenly with any other unannotated column - only a table with at least one `width` gets this treatment at all.
+Add `| <` so a table caption is displayed above its table even though the
+caption block remains after it in the Markdown:
 
-### Dense tables
+``` markdown
+| Option | Purpose |
+|---|---|
+| `--clean` | Remove the previous output before building |
+/// table-caption | <
+    attrs: {id: table-build-options}
 
-A table with many short columns comes out wider than it needs to be. The theme
-gives every header cell a minimum width of `5rem` and pads each cell generously,
-so a column holding `H` takes as much room as one holding a sentence - and a wide
-table overflows whatever it actually contains.
+Build options
+///
+```
 
-Mark any header cell `{: .compact }` to turn both off:
+Give the caption an id when it will be referenced with
+`\ref{table-build-options}`. Use plain `/// caption` only for an unnumbered
+decorative image. The
+[PyMdown Blocks caption reference](https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/caption/){target="_blank"}
+explains fixed numbers, extra classes, and positioning.
+
+### Set table widths and alignment
+
+Adjust \index{Tables!width and alignment} when the automatic widths do not read well:
+
+``` markdown
+| Name {: width="30%" } | Description |
+|:---|---|
+| Headings | Heading ids and section numbers |
+| References | Cross-references resolved by number |
+```
+
+The colon in `:---` left-aligns that column. Use `:---:` to centre it or
+`---:` to right-align it. Width and alignment work together.
+
+### Make a dense table compact
+
+Add `.compact` to any header cell to reduce the padding and minimum widths for
+the whole table:
 
 ``` markdown
 | Threat {: .compact } | Likelihood | Impact | Risk |
@@ -387,26 +390,10 @@ Mark any header cell `{: .compact }` to turn both off:
 | Credential theft | H | H | H |
 ```
 
-Which renders as:
+### Merge cells and use more than one header row
 
-| Threat {: .compact } | Likelihood | Impact | Risk |
-|---|---|---|---|
-| Credential theft | H | H | H |
-
-The marker describes the whole table, not the column it's written on - it can go
-on any header cell. It applies to the website and the PDF alike, and combines
-with `width`, which answers a different question: how wide one column is, rather
-than how tightly every cell is set.
-
-It's deliberately opt-in. A table that reads well at its default keeps it.
-
-### A header of more than one row
-
-A Markdown table has exactly one header row. A heading that needs two lines has
-to be written as a second body row - and that row then stops repeating when the
-table breaks across pages, because only the real header repeats.
-
-Mark it `{: .header }` and it becomes part of the header:
+Use `colspan` and `rowspan` on the cells that survive a merge. Keep empty
+placeholder cells so every Markdown row still has the same number of columns:
 
 ``` markdown
 | Target {: rowspan=2 } | Measured {: colspan=2 } | | Note {: rowspan=2 } |
@@ -415,42 +402,13 @@ Mark it `{: .header }` and it becomes part of the header:
 | Widget | 1 | 2 | ok |
 ```
 
-Which renders as:
+The `.header` class promotes the second row into the repeating table header.
+Put it on a cell containing text.
 
-| Target {: rowspan=2 } | Measured {: colspan=2 } | | Note {: rowspan=2 } |
-|---|---|---|---|
-| | Before {: .header } | After | |
-| Widget | 1 | 2 | ok |
+### Shade a cell
 
-Both lines now repeat on every page the table reaches.
-
-`colspan` and `rowspan` merge cells in the usual way. Because a pipe table has to
-keep its columns to parse at all, a merged cell is written with empty cells after
-it - those are removed, so the row isn't left wider than its header.
-
-!!! note "Put the marker on a cell that has text"
-    `attr_list` needs something to attach to, so `{: .header }` won't work in an
-    empty cell. In the example above the first cell of the second row is blank -
-    covered by the `rowspan` above it - so the marker goes on `Before` instead.
-    Any cell in the row will do.
-
-    Only rows at the top are promoted. A `{: .header }` further down the table
-    stays where it is, rather than the table being quietly re-ordered around it.
-
-    An empty placeholder cell is removed; one with text in it is kept, on the
-    assumption that it's your content.
-
-!!! warning "Keep the header and delimiter the same width"
-    A merged heading still needs one empty placeholder for every column its
-    `colspan` covers. If the header and `|---|` delimiter rows declare different
-    cell counts, prodockit stops with both counts and points to the missing
-    placeholders instead of publishing the table as visible pipe characters.
-
-### Cell shading
-
-Header cells have a subtle 5% shade by default in both the website and PDF.
-Remove it from one cell with `shade="off"`, or give any header or body cell an
-explicit percentage from `0%` to `100%`:
+Header cells have a subtle 5% shade by default. Remove it from one cell with
+`shade="off"`, or set a percentage on a header or body cell:
 
 ``` markdown
 | Unshaded {: shade="off" } | Grouped heading {: colspan=2 shade="8%" } | |
@@ -458,97 +416,58 @@ explicit percentage from `0%` to `100%`:
 | Normal | Highlighted {: shade="5%" } | Normal |
 ```
 
-Which renders as:
+Shading belongs to the surviving cell and therefore works with merged cells.
 
-| Unshaded {: shade="off" } | Grouped heading {: colspan=2 shade="8%" } | |
-|---|---|---|
-| Normal | Highlighted {: shade="5%" } | Normal |
+### Fit an unusually wide table
 
-Shading applies to the surviving merged cell, so `shade` combines with
-`colspan` or `rowspan` on the same attribute list. Use `off` when the intent is
-to suppress the default header shade explicitly.
-
-### Rotated headings
-
-A wide table is often wide because of its headings, not its data. Turn them on
-their side:
+First try shorter headings, `.compact`, and sensible column widths. If a
+heading still makes a narrow data column too wide, rotate it with `rotate=270`
+and give it both a `width` and a `height`:
 
 ``` markdown
-| Item | Availability {: rotate=270 width="2em" height="90pt" } | Confidentiality {: rotate=270 width="2em" height="90pt" } |
-|---|---|---|
-| Investment data | H | H |
+| Item | Availability {: rotate=270 width="2em" height="90pt" } |
+|---|---|
+| Investment data | H |
 ```
 
-Which renders as:
-
-| Item | Availability {: rotate=270 width="2em" height="90pt" } | Confidentiality {: rotate=270 width="2em" height="90pt" } |
-|---|---|---|
-| Investment data | H | H |
-
-`270` reads bottom-to-top and `90` top-to-bottom; no other angle is accepted,
-because it would give a heading nobody can read and a row height nobody can
-predict.
-
-All three parts are needed together, and a `rotate` without a `width` is refused
-rather than rendered:
-
-!!! warning "The width is what saves the space"
-    Rotating text doesn't make a column narrower - a rotated heading still
-    occupies the room it would have taken lying flat. **The `width` is what
-    narrows the column; the rotation is what keeps the heading readable once it
-    is narrow.** That's why the two have to be given together: a rotated heading
-    in a full-width column looks exactly like the feature working.
-
-    `height` sets how tall the header row is, and is what a long heading wraps
-    against - the rotated text reserves no height of its own.
-
-### Landscape Table or Diagram
-
-A table or diagram too wide for a portrait page can have its own landscape page instead - wrap it (and its own caption) in a `<div class="landscape-page" markdown="1">` block, using [`md_in_html`](https://python-markdown.github.io/extensions/md_in_html/){target="_blank"} (the `markdown="1"` is required):
+For a table or diagram that genuinely needs a landscape PDF page, wrap it and
+its caption in:
 
 ``` markdown
 <div class="landscape-page" markdown="1">
 
-| ID {: width="15%" } | Description {: width="70%" } | Due {: width="15%" } |
-|---|---|---|
-| 1 | ... | Q1 |
+| ID | Description |
+|---|---|
+| 1 | A wide item |
 /// table-caption | <
+    attrs: {id: table-landscape-example}
+
 A wide reference table
 ///
 
 </div>
 ```
 
-The caption block goes **after** the table it describes - that is what attaches the two together. Put it before and the caption becomes a standalone item with the table left loose beneath it.
-
-A diagram works the same way:
-
-``` markdown
-<div class="landscape-page" markdown="1">
-
-![Architecture overview](assets/images/architecture.png)
-/// figure-caption
-Architecture overview
-///
-
-</div>
-```
-
-A table longer than one page carries on across further landscape pages, repeating its header on each one exactly as it would on a portrait page - including a two-row header marked with `{: .header }`.
-
-This is PDF-only - the same table or diagram renders completely normally on the live website. A page break is always forced immediately before and after the block, so it never shares a page with anything else. A document mixing portrait and landscape pages prints without any special handling.
+The website remains in its normal layout. The PDF places the complete block on
+a landscape page. See the
+[`prodockit.tables` reference](https://prodockit.org/extensions/tables/){target="_blank"}
+for validation rules and the remaining cell options.
 
 ## Finalising your document
 
-Before you release your document, work through the following step.
+\index{Tasks!Finalise a document} before publishing it:
 
-### Remove the Originality warning
-
-Delete the first Warning admonition box in `originality.md` - it's a note for you as the author, explaining what to do on that page, and isn't part of your declaration itself.
-
-!!! note
-    Earlier versions of this template shipped a "START HERE" nav entry and stub page (`docs/starthere.md`) that had to be removed before submitting. The template no longer ships one at all - this User Guide is the only copy of this guidance, so there's nothing left in your own fork to comment out of `nav` or delete.
+1. Delete the author's warning admonition at the start of `originality.md`.
+2. Search the website and PDF for unresolved `??` references and `?`
+    citations or glossary terms.
+3. Check every figure and table has the intended caption and number.
+4. Check appendix labels and manually written numbers in `nav` remain in order.
+5. Build both outputs and complete the review in
+    [Build and publish](customisebuild.md#customisebuild-checks).
 
 ## Where to go next {: #customisecontent-where-to-go-next }
 
-Continue to [Customise build](customisebuild.md) for how your document is built and published - the two build commands, the tooling that diagrams and maths need in the PDF, and the settings that make publishing behave.
+Continue to [Build and publish](customisebuild.md) to change how the website and
+PDF are built and published. Use the
+[Extensions Guide](https://prodockit.org/extensions/){target="_blank"} when a
+feature needs an option not covered by this author workflow.

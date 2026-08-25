@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 # Bootstrap Install
 
-`pdkboot` automates the one-time setup needed to work with
+`pdkboot` lets you \index{Tasks!Bootstrap a new project} by automating the one-time setup needed to work with
 [prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}.
 It checks the computer first, shows what it proposes to change, and then works
 through the installation in stages. A completed stage is checked and skipped
@@ -50,6 +50,9 @@ sign in to GitLab or GitHub, confirm any administrator request, and approve the
 first push. `pdkboot` explains these actions when it reaches them.
 
 ## Complete the automated installation
+
+The steps below complete the automated installation while keeping
+the project and the separate environment used to run `pdkboot` distinct.
 
 /// steps
 
@@ -117,7 +120,7 @@ environment named `.venv` in that directory and install prodockit into it.
     "$(brew --prefix)/bin/python3" -m venv .venv
     source .venv/bin/activate
     python -m pip install --upgrade pip
-    python -m pip install --upgrade "prodockit>=0.43.2"
+    python -m pip install --upgrade prodockit
     ```
 
 === ":fontawesome-brands-windows: Windows"
@@ -137,7 +140,7 @@ environment named `.venv` in that directory and install prodockit into it.
     python -m venv .venv
     .\.venv\Scripts\Activate.ps1
     python -m pip install --upgrade pip
-    python -m pip install --upgrade "prodockit>=0.43.2"
+    python -m pip install --upgrade prodockit
     ```
 
 === ":material-linux: Linux (Ubuntu)"
@@ -148,7 +151,7 @@ environment named `.venv` in that directory and install prodockit into it.
     python3 -m venv .venv
     source .venv/bin/activate
     python -m pip install --upgrade pip
-    python -m pip install --upgrade "prodockit>=0.43.2"
+    python -m pip install --upgrade prodockit
     ```
 
 The prompt should now begin with `(.venv)`. Confirm that the expected command
@@ -195,16 +198,18 @@ Press ++enter++ to accept a value shown in brackets. The questions identify:
 
 - the Git service holding the project;
 - your name and email address for saved Git changes;
-- your username, group or namespace, and repository name; and
+- your username, group or namespace, and repository name.
+{% if is_surrey %}
 - for supported University of Surrey assignments, the course, assessment
     stage, and year used to derive the issued repository name.
+{% endif %}
 
 The answers are saved to `.pdkboot.toml` in the current directory. This is a
 local setup file and should remain outside the project repository.
 
 !!! warning "Connect to the required network first"
-    A private university GitLab service may require the university network or
-    VPN. If the host cannot be reached, connect the VPN and repeat
+    A private GitLab service may require an organisation's network or VPN. If
+    the host cannot be reached, connect to the required network and repeat
     `pdkboot --configure`. A temporary network failure does not damage the
     configuration already entered.
 
@@ -266,7 +271,7 @@ and the browser actions that need you. It does not make changes.
 !!! danger "Check the exact repository address"
     Before confirming a host project, compare the group and repository shown
     by `pdkboot` with the address in your browser. A similarly named repository
-    is not interchangeable with an assessed or organisation-issued one because
+    is not interchangeable with an assigned or organisation-issued one because
     its permissions may differ.
 
 ////
@@ -391,7 +396,7 @@ Every new Terminal or PowerShell window needs this step. If `pdkboot --version`
 still fails, reinstall prodockit with the same environment active:
 
 ``` bash
-python -m pip install --upgrade "prodockit>=0.43.2"
+python -m pip install --upgrade prodockit
 ```
 
 ### The Git service cannot be reached
@@ -425,7 +430,9 @@ browser.
 ## Where to go next {: #bootstrapinstall-where-to-go-next }
 
 You now have the supported tools, a local prodockit project, and a formal-looking
-document as a head start. Continue to [Start editing](startediting.md) to open
-the project, preview the website, build its PDF, and use Git for later changes.
-Then use [Customisation](customise.md) to replace the example content and adapt
-the document's branding, structure, and build settings for your own work.
+document as a head start. Add any useful, non-essential editor or conversion
+tools from [Additional tooling](additionaltooling.md), or continue directly to
+[Start editing](startediting.md) to open the project, preview the website, build
+its PDF, and use Git for later changes. Then use
+[Document appearance and structure](customise.md) to replace the example content and adapt the
+document's branding, structure, and build settings for your own work.

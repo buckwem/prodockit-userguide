@@ -2,7 +2,7 @@
 icon: lucide/book-open
 ---
 
-<!-- 
+<!--
 Copyright (c) 2025-2026 Mark Buckwell and contributors
 SPDX-License-Identifier: MIT
 -->
@@ -31,12 +31,12 @@ content, and release schedule.
 
 ## Choose how to install
 
-The three routes start from different situations. Choose the one matching the
+The three routes start from different situations. \index{Tasks!Choose an installation route} matching the
 project you already have; you do not need to complete the others.
 
 <div class="grid cards one-column" markdown>
 
--   :material-clock-fast:{ .lg .middle } **Adoption install**
+-   :material-clock-fast:{ .lg .middle } **\index{Installation!Adoption install}**
 
     Use [`prodockit adopt`](adoptioninstall.md) when you already have a working
     Zensical or MkDocs document and want to add prodockit's components without
@@ -44,7 +44,7 @@ project you already have; you do not need to complete the others.
 
     [:octicons-arrow-right-24: Use Adoption install](adoptioninstall.md)
 
--   :material-rocket-launch:{ .lg .middle } **Bootstrap Install**
+-   :material-rocket-launch:{ .lg .middle } **\index{Installation!Bootstrap Install}**
 
     Use [`pdkboot`](bootstrapinstall.md) when you do not have a template of your
     own and want a formal-looking document as a head start. It installs the
@@ -52,11 +52,11 @@ project you already have; you do not need to complete the others.
 
     [:octicons-arrow-right-24: Use Bootstrap Install](bootstrapinstall.md)
 
--   :material-tools:{ .lg .middle } **Manual install**
+-   :material-tools:{ .lg .middle } **\index{Installation!Manual install}**
 
     Follow the [manual instructions](installtooling.md) when you want the same
     prodockit-template head start but need or prefer to install and configure
-    every tool yourself. Commands are explained for macOS, Windows 11, and
+    every tool yourself. Commands are explained for macOS, Windows, and
     Ubuntu Linux.
 
     [:octicons-arrow-right-24: Use Manual install](installtooling.md)
@@ -78,7 +78,7 @@ configuration while you work.
 
 ////
 
-//// step | Preview
+//// step | \index{Tasks!Preview a website}
 
 Zensical turns the Markdown into a local website. prodockit adds the PDF,
 heading and caption numbering, references, citations, an index, and other
@@ -94,7 +94,7 @@ when work needs discussion and review before it is accepted.
 
 ////
 
-//// step | Publish
+//// step | \index{Tasks!Publish a document}
 
 Pushing an accepted change starts a pipeline. The pipeline repeats the build
 in a controlled environment and publishes the website and downloadable PDF.
@@ -107,6 +107,8 @@ in a controlled environment and publishes the website and downloadable PDF.
 
 ![Diagram of the docs-as-code stack](assets/docs-as-code-stack.png){width="80%"}
 /// figure-caption
+    attrs: {id: figure-docs-as-code-stack}
+
 The tools in the docs-as-code stack
 ///
 
@@ -126,7 +128,7 @@ containing your own work.
 
 ## Docs-as-code in production
 
-An assessed report or small documentation project uses the same core cycle as
+A formal report or small documentation project uses the same core cycle as
 a large technical-writing team: plan, write, review, build, and publish. The
 scale and number of reviewers change, but the underlying skills remain useful.
 
@@ -159,6 +161,9 @@ Zensical or MkDocs document. Choose
 start when you do not have a template, or [Manual install](installtooling.md)
 to set up prodockit-template yourself.
 
+[Additional tooling](additionaltooling.md) is an optional follow-on after any
+of these routes; it is not a fourth installation route.
+
 ////
 
 //// step | Learn the writing workflow
@@ -171,18 +176,18 @@ and push cycle. [Markdown basics](markdown.md) explains the source format, and
 
 //// step | Adapt the template
 
-Use [Customisation](customise.md) for the overall project configuration,
-[Customise document content](customisecontent.md) for references, tables,
-figures, and other document features, and [Customise build](customisebuild.md)
+Use [Document appearance and structure](customise.md) for the overall project configuration,
+[Prodockit authoring features](customisecontent.md) for references, tables,
+figures, and other document features, and [Build and publish](customisebuild.md)
 for website, PDF, pipeline, and dependency settings.
 
 ////
 
-//// step | Extend, verify, and find help
+//// step | Verify and find help
 
-[Additional tooling](additionaltooling.md) introduces optional authoring tools.
 [Shell commands](shcommands.md) explains commands used by the guide, and
-[Testing](testing.md) shows how the website and PDF are checked. The
+[Build and publish](customisebuild.md) shows how to generate and review the
+website and PDF. The
 [acronyms](acronyms.md), [glossary](glossary.md), and
 [references](references.md) pages provide supporting reference information.
 

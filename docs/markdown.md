@@ -2,7 +2,7 @@
 icon: lucide/book-open
 ---
 
-<!-- 
+<!--
 # Copyright (c) 2025-2026 Mark Buckwell and contributors
 # SPDX-License-Identifier: MIT
 -->
@@ -11,186 +11,249 @@ icon: lucide/book-open
 
 # Markdown basics
 
-[Markdown](https://www.markdownguide.org/){target="_blank"} is a lightweight markup language that enables you to format plain text using a simple syntax. It's easy to read and easy to write, eventually converting into structurally valid HTML, and is widely used for documentation, readme files, and content management systems. It enables you to focus on writing without worrying about complex formatting, making it an ideal choice for collaborative documentation projects.
+[Markdown](https://www.markdownguide.org/){target="_blank"} is plain text with
+small punctuation markers that describe its structure. A file ending in `.md`
+remains readable in an editor, while Zensical turns it into the formatted
+website and prodockit turns the same source into a PDF.
 
-It's text-based, meaning you can use a text editor to create and edit Markdown files. This makes it highly portable and compatible with version control systems like Git, enabling collaborative editing and tracking of changes over time. Plain text files with the `.md` extension store the Markdown. You can then share, version, and convert these files into HTML for web publishing.
+This page teaches the syntax used in ordinary writing. Start with headings,
+paragraphs, links, images, and lists; return to the remaining sections when you
+need them. Use [Zensical basics](zensicalbasics.md) for callouts, tabs,
+diagrams, mathematics, and other extended features.
 
-Below is a summary of the most common formatting elements you'll use in a `.md` file.
+!!! note "The Markdown used by this project"
+    Zensical uses [Python Markdown](https://python-markdown.github.io/){target="_blank"}
+    with the extensions configured in `zensical.toml`. Markdown dialects differ
+    in details, especially indentation and extended blocks. Treat the local
+    Zensical preview as authoritative for this project.
 
-!!! Note "Zensical Markdown"
+!!! tip "Preview with this project's renderer"
+    Use the **Zensical Studio viewer** while editing in Visual Studio Code, or
+    activate the project environment and run:
 
-    Zensical uses a flavour of Markdown called [Python Markdown](https://python-markdown.github.io/){target=_blank} with some extensions. This ensures that your Markdown files are compatible with a wide range of tools and platforms, while also providing additional features for enhanced formatting and functionality. There are some differences between Zensical Markdown and other flavours of Markdown, so it's important to refer to the [Zensical documentation](https://zensical.org/docs/authoring/markdown/){target=_blank} for details.
+    ``` bash
+    zensical serve
+    ```
 
-!!! Tip "Markdown Live Preview"
-    You can use the [Markdown Live Preview](https://markdownlivepreview.com/){target=_blank} website to see how your Markdown will look when rendered. This is a great way to check your formatting and make adjustments as needed.
+    Both routes load the extensions and settings from this project's
+    `zensical.toml`. A generic online Markdown preview does not, so features
+    such as admonitions, captions, references, numbered headings, and tables
+    can look incomplete or different there. See
+    [Preview the website locally](startediting.md#preview-the-website-locally)
+    for the complete preview workflow.
+
+## Write a simple page
+
+Write a \index{Markdown!page} with one level-one heading, followed by
+paragraphs and lower-level headings:
+
+``` markdown
+# Project overview
+
+This paragraph introduces the project. A blank line ends the paragraph.
+
+## Purpose
+
+This section explains why the project exists.
+
+## Scope
+
+This section explains what the project includes and excludes.
+```
+
+Leave a blank line between paragraphs, headings, lists, code blocks, and other
+block elements. A line wrapping in the editor does not start a new paragraph;
+an empty line does.
 
 ## Headings
 
-Add hash signs (#) before your text to create a heading. The number of hashes corresponds to the heading level.
+The number of `#` characters sets the heading level:
 
-```
-# H1 Heading
-## H2 Heading
-### H3 Heading
-#### H4 Heading
-##### H5 Heading
-###### H6 Heading
+``` markdown
+# Page title
+## Main section
+### Subsection
+#### Lower-level subsection
 ```
 
-The [`toc`](https://python-markdown.github.io/extensions/toc/){target="_blank"} extension automatically turns every heading into a linkable anchor (the `¶` symbol you can see next to each heading on this page), and generates the sidebar and table of contents from them. The [`attr_list`](https://python-markdown.github.io/extensions/attr_list/){target="_blank"} extension lets you override the generated anchor or add a CSS class, by adding an attribute block after the heading text, for example `## Heading {: #custom-id }`. This lets you \index{Markdown!attr_list} attach IDs, classes, and other HTML attributes almost anywhere in your Markdown.
+Use one `#` heading per page. The template uses it as the chapter title and
+numbers the lower headings beneath it. Do not choose a heading level for its
+visual size or skip from `##` to `####`; headings describe the structure of the
+content.
 
-!!! warning
-    As covered in [Navigation structure](customise.md#navigation-structure) in Customisation, each page in this template can contain only one heading 1 (`#`) - it's what drives the automatic chapter/section numbering (e.g. "9.1") across the whole document. Start a new page instead of adding a second heading 1 to this one.
+Zensical generates a linkable id from each heading. Add a short, stable id when
+another page will refer to it or when repeated headings could collide:
 
-## Text formatting
-
-You can make text bold, italic, or both to add emphasis without needing complex menus.
-
+``` markdown
+## Test results {: #integration-test-results }
 ```
+
+See [Section cross-references](customisecontent.md#section-cross-references)
+for using that id.
+
+## Format text
+
+``` markdown
 **bold text**
 *italic text*
-***bold and italic***
-~~strikethrough~~
+***bold and italic text***
+~~deleted text~~
 `inline code`
 ```
 
-The [`pymdownx.betterem`](https://facelessuser.github.io/pymdown-extensions/extensions/betterem/){target="_blank"} extension handles bold and italic emphasis, and is more consistent about nested and mixed emphasis (for example `**bold _and italic_**`) than plain [Python Markdown](https://python-markdown.github.io/){target="_blank"}. Strikethrough isn't part of core Markdown at all - the [`pymdownx.tilde`](https://facelessuser.github.io/pymdown-extensions/extensions/tilde/){target="_blank"} extension provides it here. That same extension also enables subscript (`H~2~O`), and the paired [`pymdownx.caret`](https://facelessuser.github.io/pymdown-extensions/extensions/caret/){target="_blank"} extension enables superscript (`A^T^A`) and underline (`^^text^^`). See [Formatting](zensicalbasics.md#formatting) in Zensical basics for these and other extended styles, such as highlighting text and keyboard keys.
+Use emphasis to communicate meaning, not to imitate headings. Use inline code
+for commands, file names, configuration keys, and short code fragments.
 
-## Links and images
+This project also supports underline, superscript, subscript, highlighting, and
+keyboard keys; see [Formatting](zensicalbasics.md#formatting).
 
-The syntax for these is similar. Just add an exclamation mark at the beginning for an image.
+## Add links and images
 
-```
-[Link text](https://example.com)
-[Link with title](https://example.com "Hover title")
-[Reference-style link][example-ref]
-![Alt text](image.jpg)
-![Image with title](image.jpg "Image title")
+Add \index{Markdown!links} and \index{Markdown!images} with descriptive text:
 
-[example-ref]: https://example.com "Hover title"
-```
-
-The [`attr_list`](https://python-markdown.github.io/extensions/attr_list/){target="_blank"} extension lets you attach HTML attributes to a link or image by adding a `{: ... }` block straight after it, with no space:
-
-```
-[Link text](https://example.com){: .external-link }
+``` markdown
+[Descriptive link text](https://example.com)
+[Link with a title](https://example.com "Extra information")
+![A description of what the diagram communicates](images/diagram.png)
 ```
 
-This template uses that same syntax with a `target="_blank"` attribute throughout, to make external links (like the ones on this page) open in a new browser tab on the website. the PDF build strips those attributes back out, since "open in a new tab" has no meaning in a printed document.
+Write link text that makes sense out of context rather than “click here”. Write
+alternative text that communicates the image's purpose rather than its file
+name. Paths are relative to the Markdown file: a page in `docs/` can use
+`images/diagram.png` for `docs/images/diagram.png`.
 
-The [`pymdownx.magiclink`](https://facelessuser.github.io/pymdown-extensions/extensions/magiclink/){target="_blank"} extension also auto-links bare URLs (`https://example.com` becomes a clickable link with no `[]()` needed) and recognises shorthand references to GitHub/GitLab issues, pull requests, and commits.
+Add attributes immediately after a link or image when needed:
 
-## Lists
-
-Markdown handles \index{Markdown!Lists!ordered} (numbered), \index{Markdown!Lists!unordered} (bulleted), and \index{Markdown!Lists!definition lists}.
-
-### Unordered lists
-
-Use a minus sign (-), asterisk (*), or plus sign (+).
-
+``` markdown
+[External reference](https://example.com){target="_blank"}
+![Architecture](images/architecture.png){ width="70%" }
 ```
-- Item 1
-- Item 2
+
+The `target` affects the website only. A printed PDF has no browser tab.
+
+## Write lists
+
+Write \index{Markdown!lists} with `-` for a bulleted list:
+
+``` markdown
+- First item
+- Second item
     - Nested item
 ```
 
-### Ordered lists
+Use a number followed by a full stop for an ordered list:
 
-Simply use numbers followed by a period. [Python Markdown](https://python-markdown.github.io/){target="_blank"} renumbers the list for you based on the *first* number used, so `1.` for every item (or repeating the same number) is a common way to avoid manually renumbering items as you edit.
-
-```
-1. First item
-2. Second item
-3. Third item
+``` markdown
+1. First step
+2. Second step
+3. Third step
 ```
 
-### Definition lists
+Python Markdown renumbers the items from the first number, so using `1.` for
+every source item is also valid and avoids manual renumbering after an edit.
 
-The [`def_list`](https://python-markdown.github.io/extensions/definition_lists/){target="_blank"} extension adds definition lists: a term on its own line, followed by one or more indented lines starting with a colon.
+!!! warning "Use four spaces for nested content"
+    Indent a nested list—and any paragraph, image, code block, admonition, or
+    other content belonging to a list item—by exactly **four spaces**. Two spaces
+    may work in another Markdown dialect but do not work reliably in this
+    implementation.
 
+Use task-list markers when the list represents work to complete:
+
+``` markdown
+- [x] Draft completed
+- [ ] Diagram still required
 ```
-Term
-:   Definition of the term, indented under it.
 
-Second term
-:   First definition.
-:   A second definition for the same term.
+## Write a definition list
+
+``` markdown
+Static site generator
+:   A tool that builds a website from source files.
+
+Repository
+:   A project directory whose history is managed by Git.
 ```
 
-## Code blocks {: #markdown-code-blocks }
+The definition is indented beneath its term. Leave a blank line before the next
+term.
 
-Markdown is a favourite for developers because of how it handles code snippets. This template uses the [`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/){target="_blank"} extension for fenced code blocks (in place of Python Markdown's more limited built-in [`fenced_code`](https://python-markdown.github.io/extensions/fenced_code_blocks/){target="_blank"}), together with [`pymdownx.highlight`](https://facelessuser.github.io/pymdown-extensions/extensions/highlight/){target="_blank"} and [`pymdownx.inlinehilite`](https://facelessuser.github.io/pymdown-extensions/extensions/inlinehilite/){target="_blank"} for syntax highlighting.
+## Show code and commands {: #markdown-code-blocks }
 
-* Inline code: wrap text in backticks: `code`.
-* \index{Markdown!Fenced code blocks}: wrap multiple lines in "fences" using three backticks (```). Add the language name straight after the opening fence for syntax highlighting.
+Show \index{Markdown!code} and commands by wrapping a short fragment in backticks:
+`zensical.toml`.
 
+For several lines, use three backticks and name the language after the opening
+fence:
+
+```` markdown
+``` python
+def greet(name):
+    print(f"Hello, {name}!")
+```
 ````
-```javascript
-function hello() {
-  console.log("Hello, world!");
-}
-```
-````
 
-[`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/){target="_blank"} also lets you nest fenced code blocks inside other Markdown structures such as lists and admonitions, and supports custom fence types - the Mermaid diagrams in [Diagrams](zensicalbasics.md#diagrams) are a fenced ` ```mermaid ` block rather than plain code. For line highlighting, titled code blocks, and inline code with syntax highlighting, see [Code blocks](zensicalbasics.md#zensicalbasics-code-blocks) in Zensical basics.
+The language enables syntax highlighting. Use `bash` for macOS/Linux shell
+commands, `powershell` for Windows commands, `toml` for `zensical.toml`, and
+`text` for output that should not be highlighted. See
+[Code blocks](zensicalbasics.md#zensicalbasics-code-blocks) for titles, line
+highlighting, and annotations.
 
-## Tables
+## Write tables
 
-Use pipes `|` and hyphens `-` to create \index{Markdown!tables}. The [`tables`](https://python-markdown.github.io/extensions/tables/){target="_blank"} extension is what enables this - it isn't part of core [Python Markdown](https://python-markdown.github.io/){target="_blank"}. Add colons to the separator row to control column alignment.
+Write a basic \index{Markdown!table} using pipes for columns and a delimiter row beneath the header. Colons set text
+alignment:
 
-```
+``` markdown
 | Left-aligned | Centred | Right-aligned |
 |:-------------|:-------:|--------------:|
-| Row 1        | Data    | Data          |
-| Row 2        | Data    | Data          |
+| Row 1 | Data | 12 |
+| Row 2 | Data | 34 |
 ```
 
-## Horizontal rule
+Every row must describe the same number of columns. Use
+[Prodockit authoring features](customisecontent.md#captions) for captions,
+column widths, merged headers, cell shading, and wide tables.
 
-Put three or more hyphens, asterisks, or underscores on their own line, surrounded by blank lines, to create a thematic break:
+## Add quotations and thematic breaks
 
+Start each quoted paragraph with `>`:
+
+``` markdown
+> This is a quotation.
+>
+> It contains a second paragraph.
+>
+> > This sentence is nested inside the quotation.
 ```
+
+Use an admonition rather than a quotation for your own note, warning, or tip.
+
+Three hyphens on a line of their own create a thematic break:
+
+``` markdown
 ---
 ```
 
-```
-***
-```
+## Avoid common mistakes {: #markdown-common-mistakes }
 
-```
-___
-```
-
-## Task lists {: #markdown-task-lists }
-
-\index{Markdown!Task lists} aren't part of core [Python Markdown](https://python-markdown.github.io/){target="_blank"} either - they're enabled by the [`pymdownx.tasklist`](https://facelessuser.github.io/pymdown-extensions/extensions/tasklist/){target="_blank"} extension, configured in this template to render as clickable checkboxes rather than plain `[x]`/`[ ]` text.
-
-```
-- [x] Completed task
-- [ ] Incomplete task
-- [ ] Another task
-```
-
-## Blockquotes
-
-Use the `>` symbol before the text to create a callout or quote. Nest additional `>` symbols to quote within a quote.
-
-```
-> This is a blockquote
-> Multiple lines
->> Nested quote
-```
-
-For structured callouts with an icon and title (notes, warnings, tips), use an admonition instead - see [Admonitions](zensicalbasics.md#admonitions) in Zensical basics.
-
-## Quick tips
-
-* **Line breaks:** To create a line break without starting a new paragraph, end a line with two or more spaces before hitting enter.
-
-* **Escaping characters:** If you want to show a literal character (like a `*`) without it formatting the text, use a backslash: `\*`.
-
-* **Attributes on any element:** The [`attr_list`](https://python-markdown.github.io/extensions/attr_list/){target="_blank"} extension used for links, images, and headings above works on most other Markdown elements too - for example adding a CSS class to a paragraph or list item with `{: .my-class }` directly after it.
+- **Missing blank lines:** Separate block elements with a blank line. Without
+    one, a heading, list, attribute list, or code fence can become ordinary
+    visible text.
+- **Incorrect indentation:** Use four spaces for nested content. Tabs and two
+    spaces are not interchangeable with this rule.
+- **More than one level-one heading:** Use one `#` heading per page, then `##`
+    and `###` beneath it.
+- **Skipped heading levels:** Move from `##` to `###`, not directly to `####`.
+- **Broken image paths:** Check images through Zensical and use paths relative
+    to the Markdown page.
+- **Visible punctuation:** To display a Markdown punctuation character
+    literally, put a backslash before it; `\*` displays an asterisk instead of
+    starting emphasis.
 
 ## Where to go next {: #markdown-where-to-go-next }
 
-The syntax on this page works in any \index{Markdown} file, including plain README files on GitLab or GitHub. Continue to [Zensical basics](zensicalbasics.md) for the extensions that only work in this template's own Zensical-built pages - admonitions, content tabs, diagrams, and more.
+Continue to [Zensical basics](zensicalbasics.md) for the extended authoring
+features configured by this project. If terminal commands are unfamiliar, use
+[Shell commands](shcommands.md) as a beginner's reference while following the
+rest of the guide.

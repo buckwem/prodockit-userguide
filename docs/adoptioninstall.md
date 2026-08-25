@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 # Adoption install
 
-`prodockit adopt` adds prodockit's authoring components to an existing
+`prodockit adopt` lets you \index{Tasks!Adopt an existing document} by adding prodockit's authoring components to an existing
 Zensical or MkDocs document. It keeps the project's own template, structure,
 appearance, Git history, editor, remote repository, and publishing workflow.
 The command first reports what is needed, lets you choose Mermaid diagrams and
@@ -215,7 +215,7 @@ work. No files or packages are changed.
 
 ////
 
-//// step | Choose the optional renderers
+//// step | Choose optional renderers
 
 Run:
 
@@ -343,7 +343,7 @@ All selected prodockit components are configured.
 
 Continue to [Start editing](startediting.md) for the everyday preview, build,
 commit, and publishing workflow, or go directly to
-[Customise document content](customisecontent.md) to start using prodockit's
+[Prodockit authoring features](customisecontent.md) to start using prodockit's
 document features.
 
 ////
@@ -351,6 +351,9 @@ document features.
 ///
 
 ## Manually integrate files prodockit preserves {: #adoptioninstall-manual-integration }
+
+Manually integrate preserved files when adoption reports that a
+shared file contains project changes that it must not overwrite.
 
 Adoption changes a file automatically only when it can preserve the project's
 existing settings. A file already maintained by the project's developer may
@@ -453,6 +456,9 @@ normal development process before committing them.
 
 ## Resume safely if work stops
 
+Resume an interrupted adoption by running the command again; it
+reassesses completed stages before proposing further changes.
+
 The stages are idempotent: a completed stage is checked and left alone. If a
 network failure, closed terminal, or package-service error interrupts the
 installation, return to the project, activate its environment, and apply
@@ -521,8 +527,10 @@ apply again.
 
 Your existing document now has prodockit's standard authoring components while
 retaining its own template, editor, Git setup, and publishing workflow.
-Continue to [Start editing](startediting.md) for the everyday preview, build,
-commit, and publishing workflow. Use
-[Customise document content](customisecontent.md) when you are ready to add
+Add any useful, non-essential editor or conversion tools from
+[Additional tooling](additionaltooling.md), or continue directly to
+[Start editing](startediting.md) for the everyday preview, build, commit, and
+publishing workflow. Use
+[Prodockit authoring features](customisecontent.md) when you are ready to add
 numbering, cross-references, citations, indexes, enhanced tables, steps, or
 directory trees to the document.
