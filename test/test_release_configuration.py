@@ -1,4 +1,4 @@
-"""Release floor, canonical domains, and prodockit 0.42 documentation."""
+"""Release floors, canonical domains, and coordinated documentation."""
 
 import re
 from pathlib import Path
@@ -13,12 +13,14 @@ def _text(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
 
 
-def test_prodockit_0421_is_a_minimum_not_an_exact_pin() -> None:
+def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
 
-    assert "prodockit[index]>=0.42.1" in requirements
+    assert "prodockit[index]>=0.45.0" in requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit==" not in requirements
+    assert "zensical>=0.0.57" in requirements
+    assert "zensical==" not in requirements
 
 
 def test_dependency_drift_automation_is_not_shipped() -> None:
