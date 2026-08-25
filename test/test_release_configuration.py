@@ -89,6 +89,10 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
     assert "prodockit adopt --apply" in adoption
     assert "Git, SSH, remotes, editors, commits, and pushes" in adoption
     assert "## Where to go next {: #adoptioninstall-where-to-go-next }" in adoption
+    assert "## Manually integrate files prodockit preserves" in adoption
+    assert "tools/mermaid/package.json" in adoption
+    assert "tools/mathjax/tex2svg.js" in adoption
+    assert "prodockit init-tools --dir ../prodockit-tools-reference" in adoption
     assert "pip3 install --upgrade prodockit" in adoption
     assert "python -m pip install --upgrade prodockit" in adoption
     assert "prodockit>=" not in adoption

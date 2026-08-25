@@ -275,6 +275,11 @@ full output and recovery advice are shown if a command fails.
 The command stops after changing local project files. It does not commit,
 push, alter a remote, or publish the site.
 
+If prodockit keeps an existing file or says that a configuration form cannot
+be updated safely, do not force an overwrite. Follow
+[Manually integrate files prodockit preserves](#adoptioninstall-manual-integration)
+before building the result.
+
 ////
 
 //// step | Build and review the result
@@ -331,6 +336,101 @@ document features.
 ////
 
 ///
+
+## Manually integrate files prodockit preserves {: #adoptioninstall-manual-integration }
+
+Adoption changes a file automatically only when it can preserve the project's
+existing settings. A file already maintained by the project's developer may
+therefore be kept, or an unusual configuration layout may be reported for
+manual attention. This is a safety result, not a failed installation.
+
+Start with `git status --short` and `git diff`. If another developer is
+currently changing the same file, let that work finish and obtain its latest
+version before merging prodockit's requirements. Do not use `--force` merely
+to make the message disappear.
+
+### Check what each shared file needs
+
+| File | Result required after manual integration |
+| --- | --- |
+| The existing requirements file | Retain its current packages and include a `prodockit` dependency. |
+| `zensical.toml`, `zensical.yml`, `zensical.yaml`, `mkdocs.yml`, or `mkdocs.yaml` | Retain the project's settings; enable the standard prodockit extensions and load `stylesheets/prodockit.css` before the project's own stylesheets. |
+| `tools/mermaid/package.json` | Retain project-specific scripts and dependencies; include `@mermaid-js/mermaid-cli` when Mermaid was selected. |
+| `tools/mathjax/package.json` | Retain project-specific scripts and dependencies; include `mathjax-full` when mathematics was selected. |
+| `tools/mathjax/tex2svg.js` | Preserve intentional local changes while ensuring the script still reads TeX from standard input and writes an SVG to standard output. |
+
+The standard extensions are:
+
+``` text
+prodockit.headings
+prodockit.refs
+prodockit.citations
+prodockit.glossary
+prodockit.bibliography
+prodockit.tables
+prodockit.steps
+prodockit.tree
+prodockit.index
+```
+
+When mathematics is selected, retain or add `pymdownx.arithmatex` with
+`generic` enabled and load `javascripts/mathjax.js` followed by
+`javascripts/vendor/mathjax/tex-svg-full.js`. When Mermaid is selected, retain
+the existing `pymdownx.superfences` settings and add a `mermaid` custom fence
+rather than replacing the project's other custom fences.
+
+### Create reference copies of optional renderer files
+
+Generate current prodockit copies in a sibling comparison directory. This
+does not touch the existing files under the project's `tools/` directory.
+
+=== ":material-apple: macOS / :material-linux: Ubuntu"
+
+    ``` bash
+    prodockit init-tools --dir ../prodockit-tools-reference
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    In PowerShell:
+
+    ``` powershell
+    prodockit init-tools --dir ..\prodockit-tools-reference
+    ```
+
+Add `--no-mathjax` when only Mermaid was selected, or `--no-mermaid` when only
+mathematics was selected. Open each existing file beside its reference copy
+and merge only the missing dependency, setting, or script change. Keep the
+project's name, scripts, additional dependencies, comments, and other
+intentional customisations.
+
+Do not run `prodockit init-tools --force` against the real project unless the
+developer has reviewed the difference and explicitly chosen to replace the
+whole file. The sibling reference directory is temporary and should not be
+committed with the project.
+
+### Install and reassess the merged files
+
+Install the dependencies from the real project directories that were merged:
+
+``` bash
+npm install --prefix tools/mermaid
+npm install --prefix tools/mathjax
+```
+
+Run only the command for each selected renderer. Then reassess and build:
+
+``` bash
+prodockit adopt
+zensical build --clean
+git diff
+git status --short
+```
+
+For an MkDocs project, replace the Zensical build command with
+`mkdocs build --clean`. The adoption report should now show the selected
+components as configured. Review the combined changes through the project's
+normal development process before committing them.
 
 ## Resume safely if work stops
 
