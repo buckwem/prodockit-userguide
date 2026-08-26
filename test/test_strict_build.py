@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import re
+import shlex
 from pathlib import Path
 
 from prodockit.template_sync import read_config
@@ -15,8 +16,15 @@ STRICT_BUILD = "zensical build --clean --strict"
 
 
 def _contains_command(contents):
-    command = rf"(?m)^\s*-\s+(?:run:\s+)?{re.escape(STRICT_BUILD)}\s*$"
-    return re.search(command, contents) is not None
+    command = re.compile(r"(?m)^\s*-\s+(?:run:\s+)?(zensical build\b[^\n]*)$")
+    for match in command.finditer(contents):
+        arguments = shlex.split(match.group(1))
+        if arguments[:2] == ["zensical", "build"] and {
+            "--clean",
+            "--strict",
+        }.issubset(arguments):
+            return True
+    return False
 
 
 def _top_level_section(contents, name):

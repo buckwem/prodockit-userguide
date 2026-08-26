@@ -80,6 +80,18 @@ def test_home_page_hero_does_not_force_a_full_viewport() -> None:
     assert "max-width: min(540px, 44vw)" in graphic
 
 
+def test_public_userguide_uses_consent_gated_analytics_only_outside_surrey() -> None:
+    config = _text("zensical.toml")
+    copyright = _text("overrides/partials/copyright.html")
+
+    assert 'property = "G-ET1T9VSNF2"' in config
+    assert 'actions = ["accept", "reject", "manage"]' in config
+    assert "analytics.checked = false" in config
+    assert "{% if config.extra.analytics %}" in copyright
+    assert 'href="#__consent"' in copyright
+    assert "tools/surrey_config.py" in _text(".gitlab-ci.yml")
+
+
 def test_new_042_behaviour_is_documented() -> None:
     customise = _text("docs/customise.md")
     customise_words = re.sub(r"\s+", " ", customise)

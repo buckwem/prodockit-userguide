@@ -189,6 +189,27 @@ pdf_header_footer_font_size = "10pt"
 pdf_header_footer_color = "#555555"
 pdf_header_footer_divider_color = "#e2e8f0"
 
+# Measure use of the public User Guide without loading Google Analytics until
+# a visitor explicitly consents. The GitLab pipeline builds from a generated
+# configuration with these analytics and consent tables removed, so the Surrey
+# mirror neither loads Analytics nor presents a consent interface.
+[project.extra.analytics]
+provider = "google"
+property = "G-ET1T9VSNF2"
+
+[project.extra.consent]
+title = "Cookie consent"
+description = """
+    We use optional analytics cookies to understand which guidance is useful
+    and improve the Prodockit User Guide. Google Analytics remains disabled
+    unless you choose to accept it.
+"""
+actions = ["accept", "reject", "manage"]
+
+[project.extra.consent.cookies]
+analytics.name = "Google Analytics"
+analytics.checked = false
+
 # ----------------------------------------------------------------------------
 # Markdown extensions - mirrors prodockit-template's own config, since every
 # page here demonstrates one of these features live.
