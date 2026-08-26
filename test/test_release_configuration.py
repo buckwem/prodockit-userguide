@@ -69,6 +69,17 @@ def test_table_styles_keep_the_five_percent_default_and_cell_overrides() -> None
     assert "colspan=2" in guide
 
 
+def test_home_page_hero_does_not_force_a_full_viewport() -> None:
+    stylesheet = _text("docs/stylesheets/pdk.css")
+    hero = stylesheet.split(".cover-hero {", 1)[1].split("}", 1)[0]
+    graphic = stylesheet.split(".cover-hero-graphic {", 1)[1].split("}", 1)[0]
+
+    assert "align-items: flex-start" in hero
+    assert "min-height: 0" in hero
+    assert "100vh" not in hero
+    assert "max-width: min(540px, 44vw)" in graphic
+
+
 def test_new_042_behaviour_is_documented() -> None:
     customise = _text("docs/customise.md")
     customise_words = re.sub(r"\s+", " ", customise)
