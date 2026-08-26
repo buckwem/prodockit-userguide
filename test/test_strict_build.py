@@ -8,6 +8,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from prodockit.template_sync import read_config
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STRICT_BUILD = "zensical build --clean --strict"
 
@@ -44,3 +46,15 @@ def test_gitlab_pages_job_uses_the_strict_build():
 def test_contributing_names_the_strict_build_as_the_final_check():
     contents = (REPO_ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
     assert f"`{STRICT_BUILD}`" in contents
+
+
+def test_macro_rendering_errors_also_stop_non_strict_builds():
+    config = read_config((REPO_ROOT / "zensical.toml").read_text(encoding="utf-8"))
+    macros = config["project"]["markdown_extensions"]["zensical"]["extensions"][
+        "macros"
+    ]
+    guide = (REPO_ROOT / "docs" / "customise.md").read_text(encoding="utf-8")
+
+    assert macros["on_error_fail"] is True
+    assert "allowing a broken site to be published" in guide
+    assert "https://prodockit.org/macros/" in guide

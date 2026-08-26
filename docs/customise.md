@@ -273,6 +273,13 @@ Jinja markers: they allow the same source to select different institutional
 branding when a project needs it.
 {% endif %}
 
+The template sets `on_error_fail = true` for Zensical's macros extension.
+Keep that setting when changing `zensical.toml`: if Jinja cannot render a page
+variable or macro call, the preview or build then stops instead of returning
+the unrendered page and allowing a broken site to be published. The
+[website-macros reference](https://prodockit.org/macros/){target="_blank"}
+shows the complete configuration.
+
 ### PDF-only and web-only content
 
 Add `.pdf-only` to content intended only for the PDF and `.web-only` to content
