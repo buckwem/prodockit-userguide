@@ -179,8 +179,9 @@ the project has a `.prodockit-shared-files.toml` manifest, the same command
 also checks that each declared file matches the copy supplied by the installed
 Prodockit release. The check changes nothing.
 
-For example, the three Prodockit documentation repositories share one
-`extra.css`. Preview a missing or different copy directly with:
+For example, the Prodockit documentation repositories share managed website
+and PDF styles in `pdk.css` and `pdk-pdf.css`. Preview a missing or different
+copy directly with:
 
 ``` bash
 prodockit shared-files --check
@@ -191,7 +192,7 @@ result:
 
 ``` bash
 prodockit shared-files --apply
-git diff -- docs/stylesheets/extra.css
+git diff -- docs/stylesheets/pdk.css docs/stylesheets/pdk-pdf.css
 ```
 
 Commit the restored file only after reviewing the difference. The shared-file

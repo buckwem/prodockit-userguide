@@ -17,8 +17,8 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.47.0" in requirements
-    assert "prodockit[testing]>=0.47.0" in test_requirements
+    assert "prodockit[index]>=0.48.0" in requirements
+    assert "prodockit[testing]>=0.48.0" in test_requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
@@ -55,7 +55,7 @@ def test_custom_domain_is_consistent() -> None:
 
 
 def test_table_styles_keep_the_five_percent_default_and_cell_overrides() -> None:
-    css = _text("docs/stylesheets/extra.css")
+    css = _text("docs/stylesheets/pdk.css")
     guide = _text("docs/customisecontent.md")
 
     assert "background-color: rgba(var(--prodockit-table-shade-rgb), 0.05)" in css
