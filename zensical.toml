@@ -55,7 +55,7 @@ nav = [
   ]}
 ]
 
-extra_css = ["stylesheets/extra.css"]
+extra_css = ["stylesheets/pdk.css", "stylesheets/extra.css"]
 # MathJax is installed rather than fetched from unpkg - the CDN URL was
 # `mathjax@3`, which floats, while `prodockit pdf` renders the PDF through
 # tools/mathjax's exactly-pinned install, so the two agreed only by
@@ -144,6 +144,8 @@ example = "fontawesome/solid/flask"
 quote = "fontawesome/solid/quote-left"
 
 [project.extra]
+pdf_extra_css = ["stylesheets/pdk-pdf.css", "stylesheets/print.css"]
+
 # Overrides `copyright` for the PDF's own running footer only, leaving the
 # website's copyright text untouched - adds a "Made with Zensical and
 # prodockit" credit line, since the live site's own equivalent credit

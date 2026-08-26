@@ -18,7 +18,8 @@ Most document-wide changes are made in one of four places:
 | Site details, navigation, theme, and PDF settings | `zensical.toml` |
 | Cover-page content | `docs/index.md` |
 | Logos, header backgrounds, and other images | `docs/assets/` |
-| Website and PDF styling | `docs/stylesheets/extra.css` and `print.css` |
+| Managed website and PDF styling | `docs/stylesheets/pdk.css` and `pdk-pdf.css` |
+| Your styling overrides | `docs/stylesheets/extra.css` and `print.css` |
 /// table-caption | <
     attrs: {id: table-customisation-locations}
 
@@ -175,7 +176,7 @@ The project already loads its shared website style sheet and local MathJax
 files:
 
 ``` toml
-extra_css = ["stylesheets/extra.css"]
+extra_css = ["stylesheets/pdk.css", "stylesheets/extra.css"]
 extra_javascript = [
     "javascripts/mathjax.js",
     "javascripts/vendor/mathjax/tex-svg-full.js",
@@ -187,14 +188,16 @@ Keep the MathJax configuration before its bundle. Prefer a versioned local copy
 of a library to a floating CDN address so builds remain reproducible and work
 offline.
 
-Use a separate style sheet for PDF-only overrides:
+Load the managed PDF defaults before your PDF-only overrides:
 
 ``` toml
 [project.extra]
-pdf_extra_css = ["stylesheets/print.css"]
+pdf_extra_css = ["stylesheets/pdk-pdf.css", "stylesheets/print.css"]
 ```
 
-`print.css` loads after `extra.css`, so its rules take precedence in the PDF.
+The complete PDF cascade is `pdk.css`, `extra.css`, `pdk-pdf.css`, then
+`print.css`; your two override files therefore take precedence over the
+corresponding managed defaults.
 
 ### Add footer links
 
@@ -450,9 +453,11 @@ docs/ - document source
     references.md - hand-written reference list
     assets/ - logos and header backgrounds
     images/ - content images and screenshots
-    stylesheets/ - shared and PDF-only styles
-        extra.css - website and shared component styles
-        print.css - PDF-only overrides
+    stylesheets/ - managed styles followed by your overrides
+        pdk.css - managed website and shared component styles
+        pdk-pdf.css - managed PDF styles
+        extra.css - your website and shared overrides
+        print.css - your PDF-only overrides
     javascripts/ - local website scripts and MathJax files
 tools/ - Mermaid and mathematics renderers
 test/ - website and PDF checks

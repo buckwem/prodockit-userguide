@@ -103,7 +103,7 @@ def _detect_is_surrey(env=None):
 def _apply_branding_logos(is_surrey):
     """Copies the chosen logo pair over the active logo_black/white.png.
 
-    docs/stylesheets/extra.css points `.md-logo img`'s `content` at these
+    docs/stylesheets/pdk.css points `.md-logo img`'s `content` at these
     two files by relative url(), so overwriting them is what actually
     changes the header logo. That only works because they are real files:
     this stylesheet used to inline them as base64 data: URIs, which would
