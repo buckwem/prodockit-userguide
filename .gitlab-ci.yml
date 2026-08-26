@@ -100,14 +100,18 @@ pages:
       };
       MATHJAX
     - pip install -r requirements.txt -r testrequirements.txt
+    # Build the Surrey mirror from an analytics-free configuration. The
+    # public GitHub Pages site retains consent-gated Google Analytics, while
+    # this generated file removes both analytics and the consent interface.
+    - python tools/surrey_config.py zensical.toml .zensical-surrey.toml
     # Keep version declarations consistent and manifest-managed files
     # byte-identical to this installed Prodockit release. The check is local,
     # offline and non-writing; its failure prints the recovery command.
     - prodockit pins --check --offline
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
-    - prodockit pdf
-    - zensical build --clean --strict
+    - prodockit pdf --config-file .zensical-surrey.toml
+    - zensical build --config-file .zensical-surrey.toml --clean --strict
     # These check the *built* PDF, so they run after both builds - they fail
     # the pipeline if a Mermaid diagram or a formula reached it as raw source
     # instead of a rendered image (see test/ and issue #23).

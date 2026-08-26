@@ -17,8 +17,8 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.48.0" in requirements
-    assert "prodockit[testing]>=0.48.0" in test_requirements
+    assert "prodockit[index]>=0.48.1" in requirements
+    assert "prodockit[testing]>=0.48.1" in test_requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
@@ -67,6 +67,29 @@ def test_table_styles_keep_the_five_percent_default_and_cell_overrides() -> None
     assert 'shade="off"' in guide
     assert 'shade="8%"' in guide
     assert "colspan=2" in guide
+
+
+def test_home_page_hero_does_not_force_a_full_viewport() -> None:
+    stylesheet = _text("docs/stylesheets/pdk.css")
+    hero = stylesheet.split(".cover-hero {", 1)[1].split("}", 1)[0]
+    graphic = stylesheet.split(".cover-hero-graphic {", 1)[1].split("}", 1)[0]
+
+    assert "align-items: flex-start" in hero
+    assert "min-height: 0" in hero
+    assert "100vh" not in hero
+    assert "max-width: min(540px, 44vw)" in graphic
+
+
+def test_public_userguide_uses_consent_gated_analytics_only_outside_surrey() -> None:
+    config = _text("zensical.toml")
+    copyright = _text("overrides/partials/copyright.html")
+
+    assert 'property = "G-ET1T9VSNF2"' in config
+    assert 'actions = ["accept", "reject", "manage"]' in config
+    assert "analytics.checked = false" in config
+    assert "{% if config.extra.analytics %}" in copyright
+    assert 'href="#__consent"' in copyright
+    assert "tools/surrey_config.py" in _text(".gitlab-ci.yml")
 
 
 def test_new_042_behaviour_is_documented() -> None:
