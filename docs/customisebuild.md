@@ -60,12 +60,12 @@ The prompt normally gains `(.venv)` when activation succeeds.
 
 ## Build both outputs {: #customisebuild-two-commands }
 
-The \index{Build!website and PDF} process builds the PDF first, then the website. The website build copies the finished
-PDF into the published site:
+The \index{Build!website and PDF} process builds the website first, then uses
+that completed output to build the PDF:
 
 ``` bash
-prodockit pdf
 zensical build --clean --strict
+prodockit pdf
 ```
 
 The outputs are:
@@ -75,7 +75,9 @@ The outputs are:
 
 `--clean` prevents files removed from the source remaining in the website.
 `--strict` turns Zensical warnings into failures so they cannot pass unnoticed
-in the publishing pipeline.
+in the publishing pipeline. `prodockit pdf` does not run Zensical. It reads the
+generated pages and atomically adds the finished PDF to `public/`, so the
+website's **Download PDF** link works without a second website build.
 
 The [PDF guide](https://prodockit.org/pdf/){target="_blank"} documents every
 PDF setting, output file, and known limitation. The
@@ -245,8 +247,8 @@ together.
 //// step | Rebuild and test
 
 ``` bash
-prodockit pdf
 zensical build --clean --strict
+prodockit pdf
 ```
 
 ////
@@ -316,8 +318,8 @@ Run these \index{Build!checks} before publishing a release or after changing bui
 ``` bash
 prodockit sync-repo --check
 prodockit pins --check --offline
-prodockit pdf
 zensical build --clean --strict
+prodockit pdf
 ```
 
 - `sync-repo --check` detects repository metadata that no longer matches the

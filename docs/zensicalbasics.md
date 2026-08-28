@@ -37,9 +37,10 @@ For a complete clean website build, use:
 zensical build --clean --strict
 ```
 
-The preview and website build do not rebuild the PDF. Use `prodockit pdf` and
-follow the author checks in [Start editing](startediting.md#build-the-pdf) when
-both outputs need reviewing.
+The preview and website build do not rebuild the PDF. After the clean build,
+use `prodockit pdf`; it reads the completed website rather than running
+Zensical itself. Follow the author checks in
+[Start editing](startediting.md#build-the-pdf) when both outputs need reviewing.
 
 ## Follow the four-space rule {: #lists-within-lists }
 

@@ -171,8 +171,10 @@ jobs:
       # row matching whichever remote this checkout is published from -
       # was sync_repo_icon.py, now provided by prodockit itself (#27).
       - run: prodockit sync-repo
-      - run: prodockit pdf
       - run: zensical build --clean --strict
+      # The PDF renderer consumes the completed website and then mirrors the
+      # finished PDF into public/ without rebuilding or cleaning the site.
+      - run: prodockit pdf
       # After the builds, since these tests check the built PDF - they fail
       # the deploy if a Mermaid diagram or a formula reached it as raw
       # source instead of a rendered image (see test/ and issue #23).
