@@ -36,3 +36,6 @@ def test_gitlab_build_uses_generated_config_for_both_outputs() -> None:
     assert "python tools/surrey_config.py zensical.toml .zensical-surrey.toml" in pipeline
     assert "prodockit pdf --config-file .zensical-surrey.toml" in pipeline
     assert "zensical build --config-file .zensical-surrey.toml --clean --strict" in pipeline
+    assert pipeline.index(
+        "zensical build --config-file .zensical-surrey.toml --clean --strict"
+    ) < pipeline.index("prodockit pdf --config-file .zensical-surrey.toml")

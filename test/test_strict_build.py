@@ -42,18 +42,26 @@ def _top_level_section(contents, name):
 
 def test_github_pages_workflow_uses_the_strict_build():
     workflow = REPO_ROOT / ".github" / "workflows" / "docs.yml"
-    assert _contains_command(workflow.read_text(encoding="utf-8"))
+    contents = workflow.read_text(encoding="utf-8")
+    assert _contains_command(contents)
+    assert contents.index("zensical build --clean --strict") < contents.index(
+        "run: prodockit pdf"
+    )
 
 
 def test_gitlab_pages_job_uses_the_strict_build():
     workflow = REPO_ROOT / ".gitlab-ci.yml"
     pages_job = _top_level_section(workflow.read_text(encoding="utf-8"), "pages")
     assert _contains_command(pages_job)
+    assert pages_job.index(
+        "zensical build --config-file .zensical-surrey.toml --clean --strict"
+    ) < pages_job.index("prodockit pdf --config-file .zensical-surrey.toml")
 
 
-def test_contributing_names_the_strict_build_as_the_final_check():
+def test_contributing_builds_the_strict_site_before_the_pdf():
     contents = (REPO_ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
     assert f"`{STRICT_BUILD}`" in contents
+    assert "run `zensical build --clean --strict`, then `prodockit pdf`" in contents
 
 
 def test_macro_rendering_errors_also_stop_non_strict_builds():

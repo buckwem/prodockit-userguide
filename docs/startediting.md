@@ -152,9 +152,10 @@ appear in them.
 
 1. Confirm that the terminal is in the project directory and its virtual
     environment is active.
-2. Build the report:
+2. Make a clean website build, then build the report from it:
 
     ``` bash
+    zensical build --clean --strict
     prodockit pdf
     ```
 
@@ -342,16 +343,15 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 Both `.gitlab-ci.yml` and `.github/workflows/docs.yml` run this exact sequence automatically on every push to your default branch:
 
 ```bash
-prodockit pdf
 zensical build --clean --strict
+prodockit pdf
 ```
 
-`prodockit pdf` runs first so `docs/site_documentation.pdf` exists before
-Zensical builds the site. That makes the cover page's **Download PDF** button
-work in the published website. `zensical build --clean --strict` then builds
-the site into the configured output directory for GitLab Pages or GitHub Pages.
-`--strict` turns validation warnings such as broken internal links or missing
-anchors into build failures. See
+`zensical build --clean --strict` creates the complete site and turns
+validation warnings such as broken internal links or missing anchors into
+build failures. `prodockit pdf` then reads those generated pages and atomically
+adds `site_documentation.pdf` to the site output, making the cover page's
+**Download PDF** button work without another website build. See
 [A clean website build is needed](#a-clean-website-build-is-needed) if the
 local output appears stale.
 
@@ -517,8 +517,8 @@ briefly show the value from the preceding build.
 Stop the preview with `Ctrl+C`, then make a clean build:
 
 ``` bash
-prodockit pdf
 zensical build --clean --strict
+prodockit pdf
 ```
 
 Open the rebuilt page again before changing a correct reference by hand. The
@@ -550,8 +550,8 @@ The `--clean` flag on `zensical build --clean --strict` deletes the previous con
 To do the same locally when the website output looks stale, run:
 
 ```bash
-prodockit pdf
 zensical build --clean --strict
+prodockit pdf
 ```
 
 ### Numbered lists reset to "1."
@@ -567,8 +567,8 @@ the other is not.
 
 1. Confirm the project was installed with the Mermaid or mathematics option it
     actually uses.
-2. Run `prodockit pdf` and read any renderer warning printed in the terminal.
-3. Run `zensical build --clean --strict` and check the website again.
+2. Run `zensical build --clean --strict` and check the website.
+3. Run `prodockit pdf` and read any renderer warning printed in the terminal.
 
 Return to [Adoption install](adoptioninstall.md),
 [Bootstrap Install](bootstrapinstall.md), or
@@ -602,15 +602,17 @@ reported value with the institution's own counting rules.
 
 If `prodockit pdf` errors out or produces a PDF missing content:
 
-1. Check the error message in the terminal - it usually names the file and the problem directly, and anything the underlying tool printed appears beneath it.
-2. Make sure the dependencies from `requirements.txt` are installed in the
+1. Run `zensical build --clean --strict` first. The PDF command requires a
+    completed website and reports any generated page that is missing.
+2. Check the error message in the terminal - it usually names the file and the problem directly, and anything the underlying tool printed appears beneath it.
+3. Make sure the dependencies from `requirements.txt` are installed in the
     active virtual environment.
-3. If the document uses \index{Zensical!Mermaid} diagrams or mathematics,
+4. If the document uses \index{Zensical!Mermaid} diagrams or mathematics,
     confirm that those options were enabled during
     [Adoption install](adoptioninstall.md), or that their toolchains were
     installed by [Bootstrap Install](bootstrapinstall.md) or
     [Manual install](installtooling.md#install-the-two-toolchains).
-4. If the error says WeasyPrint cannot load a library, return to the common
+5. If the error says WeasyPrint cannot load a library, return to the common
     problems for the installation route. Reinstalling the Python package alone
     does not install its operating-system graphics libraries.
 

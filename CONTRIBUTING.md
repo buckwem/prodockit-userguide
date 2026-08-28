@@ -36,16 +36,16 @@ For anything beyond a small fix (typos, broken links), please open an issue firs
    MATHJAX
    ```
 4. Preview the site locally: `zensical serve`.
-5. If your change affects the PDF build, also run `prodockit pdf` - see [Install tooling](https://buckwem.github.io/prodockit-userguide/installtooling/) for the full setup. The one Mermaid diagram in [Diagrams](https://buckwem.github.io/prodockit-userguide/zensicalbasics/#diagrams) only renders as an image in the PDF if `mermaid-cli` (`mmdc`) is available on your `PATH`; without it, the PDF build silently skips it rather than failing.
+5. Make a clean, strict website build with `zensical build --clean --strict`. If your change affects the PDF, run `prodockit pdf` afterwards - it reads that completed site rather than building it itself. See [Install tooling](https://buckwem.github.io/prodockit-userguide/installtooling/) for the full setup. The one Mermaid diagram in [Diagrams](https://buckwem.github.io/prodockit-userguide/zensicalbasics/#diagrams) only renders as an image in the PDF if `mermaid-cli` (`mmdc`) is available on your `PATH`; without it, the PDF build silently skips it rather than failing.
 
 ## Making a change
 
 1. Create a branch off `main` for your change.
 2. Make your change and verify it locally:
    - Website changes: `zensical serve` and check the page in a browser.
-   - PDF-affecting changes: run `prodockit pdf` and check `docs/site_documentation.pdf`.
+   - PDF-affecting changes: run `zensical build --clean --strict`, then `prodockit pdf`, and check `docs/site_documentation.pdf`.
    - Prose changes: optionally run `vale docs/` if you have [Vale](https://vale.sh/) installed (see [Install vale to check for grammar, spelling, and style issues](https://buckwem.github.io/prodockit-userguide/additionaltooling/) in the User Guide); it's not enforced in CI.
-   - Before opening a pull request with website or documentation changes, run `zensical build --clean --strict` as the final validation check. Keep `zensical serve` for interactive previewing; the strict build additionally fails on broken internal links, missing anchors, and other validation warnings.
+   - Before opening a pull request with website or documentation changes, make sure the strict website build has completed before the PDF build. Keep `zensical serve` for interactive previewing; the strict build additionally fails on broken internal links, missing anchors, and other validation warnings.
 3. Open a pull request against `main`. `main` is protected, so all changes - including from maintainers - go through a reviewed PR.
 4. Reference the issue your PR addresses (e.g. `Fixes #123`) where applicable.
 

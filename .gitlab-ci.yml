@@ -110,8 +110,10 @@ pages:
     - prodockit pins --check --offline
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
-    - prodockit pdf --config-file .zensical-surrey.toml
     - zensical build --config-file .zensical-surrey.toml --clean --strict
+    # The PDF consumes this completed analytics-free site, then adds the
+    # finished file to public/ without another Zensical build.
+    - prodockit pdf --config-file .zensical-surrey.toml
     # These check the *built* PDF, so they run after both builds - they fail
     # the pipeline if a Mermaid diagram or a formula reached it as raw source
     # instead of a rendered image (see test/ and issue #23).
