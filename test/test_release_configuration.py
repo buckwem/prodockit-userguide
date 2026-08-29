@@ -17,8 +17,8 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.50.1" in requirements
-    assert "prodockit[testing]>=0.50.1" in test_requirements
+    assert "prodockit[index]>=0.51.0" in requirements
+    assert "prodockit[testing]>=0.51.0" in test_requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
@@ -107,7 +107,7 @@ def test_new_042_behaviour_is_documented() -> None:
     assert "preserves every existing" in build
     assert "`project.extra.pdf_*` value" in build
     assert "[Bootstrap Install](bootstrapinstall.md)" in install
-    assert "`pdkboot`" in install
+    assert "`prodockit bootstrap`" in install
     assert "generated root files" in editing
 
 
@@ -150,10 +150,10 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
     assert "prodockit>=0.43.2" not in bootstrap
     assert "# Bootstrap Install" in bootstrap
     assert "/// steps" in bootstrap
-    assert "pdkboot --configure" in bootstrap
-    assert "pdkboot --check" in bootstrap
-    assert "pdkboot --dry-run" in bootstrap
-    assert "pdkboot --apply" in bootstrap
+    assert "prodockit bootstrap --configure" in bootstrap
+    assert "prodockit bootstrap --check" in bootstrap
+    assert "prodockit bootstrap --dry-run" in bootstrap
+    assert "prodockit bootstrap --apply" in bootstrap
     assert "## Where to go next {: #bootstrapinstall-where-to-go-next }" in bootstrap
     assert "prodockit-template" in bootstrap
     assert "The repository already contains work" in bootstrap

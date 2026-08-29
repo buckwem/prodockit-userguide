@@ -46,7 +46,7 @@ project you already have; you do not need to complete the others.
 
 -   :material-rocket-launch:{ .lg .middle } **\index{Installation!Bootstrap Install}**
 
-    Use [`pdkboot`](bootstrapinstall.md) when you do not have a template of your
+    Use [`prodockit bootstrap`](bootstrapinstall.md) when you do not have a template of your
     own and want a formal-looking document as a head start. It installs the
     supported tools and sets up prodockit-template in recoverable stages.
 

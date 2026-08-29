@@ -59,7 +59,7 @@ need Node.js, Mermaid CLI, MathJax, or a browser renderer.
 ## How the stages work
 
 The command presents seven stages in four phases, using the same prominent
-phase and stage headings as `pdkboot`:
+phase and stage headings as `prodockit bootstrap`:
 
 | Phase | What `prodockit adopt` checks |
 | --- | --- |

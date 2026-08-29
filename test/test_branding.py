@@ -130,11 +130,21 @@ def test_logo_css_references_files_not_inlined_data(macros):
     prodockit.pdf's own _inline_css_urls() re-inlines them for the PDF, so
     the relative references cost nothing there.
     """
-    css = (REPO_ROOT / "docs" / "stylesheets" / "pdk.css").read_text(encoding="utf-8")
+    shared_css = (REPO_ROOT / "docs" / "stylesheets" / "pdk.css").read_text(
+        encoding="utf-8"
+    )
+    css = (REPO_ROOT / "docs" / "stylesheets" / "branding.css").read_text(
+        encoding="utf-8"
+    )
+    config = (REPO_ROOT / "zensical.toml").read_text(encoding="utf-8")
     logo_rules = [line for line in css.splitlines() if ".md-logo img" in line or "logo_" in line]
     assert any("../assets/logo_white.png" in line for line in logo_rules)
     assert any("../assets/logo_black.png" in line for line in logo_rules)
+    assert ".md-logo img" not in shared_css
+    assert config.index('"stylesheets/pdk.css"') < config.index(
+        '"stylesheets/branding.css"'
+    ) < config.index('"stylesheets/extra.css"')
     assert "data:image/png;base64" not in css, (
-        "a base64 logo payload is back in pdk.css - the branding swap would "
+        "a base64 logo payload is in branding.css - the branding swap would "
         "silently stop having any visible effect"
     )
