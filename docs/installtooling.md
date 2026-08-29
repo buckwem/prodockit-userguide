@@ -805,7 +805,7 @@ system.
 
 !!! tip "Automated machine setup"
     For automated machine and project setup, use
-    [Bootstrap Install](bootstrapinstall.md). Its `pdkboot` command works in
+    [Bootstrap Install](bootstrapinstall.md). Its `prodockit bootstrap` command works in
     recoverable stages and checks completed work when it resumes. This page
     remains useful when you need to understand or perform each command
     yourself.

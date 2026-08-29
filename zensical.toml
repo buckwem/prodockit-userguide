@@ -55,7 +55,11 @@ nav = [
   ]}
 ]
 
-extra_css = ["stylesheets/pdk.css", "stylesheets/extra.css"]
+extra_css = [
+  "stylesheets/pdk.css",
+  "stylesheets/branding.css",
+  "stylesheets/extra.css",
+]
 # MathJax is installed rather than fetched from unpkg - the CDN URL was
 # `mathjax@3`, which floats, while `prodockit pdf` renders the PDF through
 # tools/mathjax's exactly-pinned install, so the two agreed only by
@@ -65,7 +69,7 @@ extra_css = ["stylesheets/pdk.css", "stylesheets/extra.css"]
 # the four .woff fonts CommonHTML fetched at runtime).
 #
 # Neither file is committed - both are third-party code/generated
-# configuration, and a repository is redistribution. `pdkboot`
+# configuration, and a repository is redistribution. `prodockit bootstrap`
 # writes them on a developer's machine; CI installs them the same way (see
 # .github/workflows/docs.yml, .gitlab-ci.yml) - see docs/customise.md's
 # "Extra CSS and JavaScript" for the full reasoning

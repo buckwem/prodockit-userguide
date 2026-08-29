@@ -11,31 +11,31 @@ SPDX-License-Identifier: MIT
 
 # Bootstrap Install
 
-`pdkboot` lets you \index{Tasks!Bootstrap a new project} by automating the one-time setup needed to work with
+`prodockit bootstrap` lets you \index{Tasks!Bootstrap a new project} by automating the one-time setup needed to work with
 [prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}.
 It checks the computer first, shows what it proposes to change, and then works
 through the installation in stages. A completed stage is checked and skipped
 when the command is run again.
 
-Use this page when you want `pdkboot` to install and configure the supported
+Use this page when you want `prodockit bootstrap` to install and configure the supported
 tooling for you. If you need to perform each task yourself, or cannot allow an
 installer to make the changes, use [Manual install](installtooling.md) instead.
 
 !!! info "Automation for the prodockit template"
-    `pdkboot` is designed around the files, build tools, editor settings, and
+    `prodockit bootstrap` is designed around the files, build tools, editor settings, and
     publishing workflow supplied by prodockit-template. It is not a general
     installer for every Zensical project.
 
-!!! note "The command is `pdkboot`"
-    `pdkboot` is installed by the `prodockit` Python package. It is separate
-    from the older `prodockit bootstrap` command, which remains available for
-    existing users. These instructions use `pdkboot` throughout.
+!!! note "The command is `prodockit bootstrap`"
+    The `prodockit` Python package installs this command. The shorter
+    `pdk boot` alias performs the same work; these instructions use the full
+    command throughout.
 
 ## What it sets up
 
 The command checks 23 stages grouped into seven phases:
 
-| Phase | What `pdkboot` prepares |
+| Phase | What `prodockit bootstrap` prepares |
 | --- | --- |
 | Preflight | A separate Python environment for running prodockit |
 | Core tools | Visual Studio Code and Git |
@@ -47,18 +47,18 @@ The command checks 23 stages grouped into seven phases:
 
 Some actions must remain yours. For example, you choose an SSH-key passphrase,
 sign in to GitLab or GitHub, confirm any administrator request, and approve the
-first push. `pdkboot` explains these actions when it reaches them.
+first push. `prodockit bootstrap` explains these actions when it reaches them.
 
 ## Complete the automated installation
 
 The steps below complete the automated installation while keeping
-the project and the separate environment used to run `pdkboot` distinct.
+the project and the separate environment used to run `prodockit bootstrap` distinct.
 
 /// steps
 
 //// step | Install Python
 
-Python is the one prerequisite `pdkboot` cannot install because Python is
+Python is the one prerequisite `prodockit bootstrap` cannot install because Python is
 needed to run the command itself.
 
 === ":material-apple: macOS"
@@ -106,7 +106,7 @@ needed to run the command itself.
 
 ////
 
-//// step | Create the environment that runs pdkboot
+//// step | Create the environment that runs prodockit bootstrap
 
 Choose a top-level directory in which to keep your projects. The examples use
 `GitLab`; you can call it `GitHub` or `Projects` instead. Create a small Python
@@ -160,28 +160,28 @@ and version are active:
 === ":material-apple: macOS"
 
     ``` bash
-    command -v pdkboot
-    pdkboot --version
+    command -v prodockit
+    prodockit --version
     ```
 
 === ":fontawesome-brands-windows: Windows"
 
     ``` powershell
-    Get-Command pdkboot
-    pdkboot --version
+    Get-Command prodockit
+    prodockit --version
     ```
 
 === ":material-linux: Linux (Ubuntu)"
 
     ``` bash
-    command -v pdkboot
-    pdkboot --version
+    command -v prodockit
+    prodockit --version
     ```
 
 !!! important "There will eventually be two environments"
-    This top-level `.venv` contains `pdkboot`. During stage 16, `pdkboot`
+    This top-level `.venv` contains prodockit. During stage 16, `prodockit bootstrap`
     creates another `.venv` inside the project for the project's own build
-    packages. Keep them separate. Run `pdkboot` from the top-level environment;
+    packages. Keep them separate. Run `prodockit bootstrap` from the top-level environment;
     use the project environment later when editing and building the document.
 
 ////
@@ -191,7 +191,7 @@ and version are active:
 Remain in the top-level projects directory with its `.venv` active, then run:
 
 ``` bash
-pdkboot --configure
+prodockit bootstrap --configure
 ```
 
 Press ++enter++ to accept a value shown in brackets. The questions identify:
@@ -205,12 +205,14 @@ Press ++enter++ to accept a value shown in brackets. The questions identify:
 {% endif %}
 
 The answers are saved to `.pdkboot.toml` in the current directory. This is a
-local setup file and should remain outside the project repository.
+local setup file and should remain outside the project repository. The legacy
+filename is retained so existing Bootstrap configurations continue to work
+with the promoted command.
 
 !!! warning "Connect to the required network first"
     A private GitLab service may require an organisation's network or VPN. If
     the host cannot be reached, connect to the required network and repeat
-    `pdkboot --configure`. A temporary network failure does not damage the
+    `prodockit bootstrap --configure`. A temporary network failure does not damage the
     configuration already entered.
 
 ////
@@ -220,7 +222,7 @@ local setup file and should remain outside the project repository.
 Run the read-only check:
 
 ``` bash
-pdkboot --check
+prodockit bootstrap --check
 ```
 
 The report uses four useful states:
@@ -236,7 +238,7 @@ The report uses four useful states:
 not a sign that the installation has failed.
 
 The project path near the top of the output deserves a quick check. It should
-be the new folder `pdkboot` will create beneath the directory containing
+be the new folder that `prodockit bootstrap` will create beneath the directory containing
 `.pdkboot.toml`.
 
 ////
@@ -246,31 +248,31 @@ be the new folder `pdkboot` will create beneath the directory containing
 Before installing anything, run:
 
 ``` bash
-pdkboot --dry-run
+prodockit bootstrap --dry-run
 ```
 
 The preview shows the outstanding stages, the commands that can be automated,
 and the browser actions that need you. It does not make changes.
 
-`pdkboot` handles the two common repository starting points:
+`prodockit bootstrap` handles the two common repository starting points:
 
 `The repository is new or empty`
 
-: You create a blank private repository when prompted. `pdkboot` clones
+: You create a blank private repository when prompted. `prodockit bootstrap` clones
     prodockit-template locally, archives the template's Git history, starts a
     clean history for your work, points it at your repository, builds it, and
     pushes the first commit.
 
 `The repository already contains work`
 
-: `pdkboot` clones that repository and retains all of its existing files and
+: `prodockit bootstrap` clones that repository and retains all of its existing files and
     history. It does not replace the work with the template. The output says
     that the existing repository is being cloned and kept unchanged before the
     remaining machine and project tooling is installed.
 
 !!! danger "Check the exact repository address"
     Before confirming a host project, compare the group and repository shown
-    by `pdkboot` with the address in your browser. A similarly named repository
+    by `prodockit bootstrap` with the address in your browser. A similarly named repository
     is not interchangeable with an assigned or organisation-issued one because
     its permissions may differ.
 
@@ -281,10 +283,10 @@ and the browser actions that need you. It does not make changes.
 Run:
 
 ``` bash
-pdkboot --apply
+prodockit bootstrap --apply
 ```
 
-Each phase and stage has a prominent heading. Before a change, `pdkboot` shows
+Each phase and stage has a prominent heading. Before a change, `prodockit bootstrap` shows
 what it will do and asks for confirmation. Press ++enter++ to accept the
 default **Yes**, or enter `n` to skip that action.
 
@@ -323,7 +325,7 @@ and run the same apply command again.
     ``` bash
     cd ~/GitLab
     source .venv/bin/activate
-    pdkboot --apply
+    prodockit bootstrap --apply
     ```
 
 === ":fontawesome-brands-windows: Windows"
@@ -331,7 +333,7 @@ and run the same apply command again.
     ``` powershell
     cd ~\GitLab
     .\.venv\Scripts\Activate.ps1
-    pdkboot --apply
+    prodockit bootstrap --apply
     ```
 
 === ":material-linux: Linux (Ubuntu)"
@@ -339,7 +341,7 @@ and run the same apply command again.
     ``` bash
     cd ~/GitLab
     source .venv/bin/activate
-    pdkboot --apply
+    prodockit bootstrap --apply
     ```
 
 Completed stages are checked and skipped. Partially completed package installs
@@ -358,7 +360,7 @@ one download failed.
 When the apply run finishes, perform one final read-only check:
 
 ``` bash
-pdkboot --check
+prodockit bootstrap --check
 ```
 
 The final line should say:
@@ -377,7 +379,7 @@ git remote -v
 git log -1 --oneline
 ```
 
-Replace `report-az1234` with the project directory printed by `pdkboot`. An
+Replace `report-az1234` with the project directory printed by `prodockit bootstrap`. An
 empty `git status --short` result means there are no unsaved file changes.
 
 Continue to [Start editing](startediting.md) to open the project, preview the
@@ -389,10 +391,10 @@ website, build its PDF, and publish later changes.
 
 ## Help with common problems
 
-### `pdkboot` is not recognised
+### `prodockit` is not recognised
 
 Change to the directory containing the top-level `.venv` and activate it again.
-Every new Terminal or PowerShell window needs this step. If `pdkboot --version`
+Every new Terminal or PowerShell window needs this step. If `prodockit --version`
 still fails, reinstall prodockit with the same environment active:
 
 ``` bash
@@ -402,19 +404,19 @@ python -m pip install --upgrade prodockit
 ### The Git service cannot be reached
 
 Check the network or VPN first. A website loading in a browser does not always
-prove that its SSH service on port 22 is reachable. Resume `pdkboot` after the
+prove that its SSH service on port 22 is reachable. Resume `prodockit bootstrap` after the
 service is available; the SSH and repository stages will be checked again.
 
 ### An installed command is not found on Windows
 
-Windows installers update the environment used by future terminals. `pdkboot`
+Windows installers update the environment used by future terminals. `prodockit bootstrap`
 refreshes its own environment during an apply run, but commands you type by
 hand may still require a new PowerShell window. Open a new window, return to the
 setup directory, activate `.venv`, and resume.
 
 ### WeasyPrint cannot load its graphics libraries
 
-Run `pdkboot --apply` again from the setup directory. On macOS, `pdkboot`
+Run `prodockit bootstrap --apply` again from the setup directory. On macOS, `prodockit bootstrap`
 configures the project activation script to expose Homebrew's libraries. On
 Windows, it selects MSYS2 libraries that match the architecture of the Python
 executable rather than relying on the machine label alone. On Ubuntu, it
@@ -424,7 +426,7 @@ installs the required Pango libraries through `apt`.
 
 The first pipeline commonly takes several minutes. Open **Build > Pipelines**
 on GitLab or **Actions** on GitHub and wait for the publishing job to finish.
-Then rerun `pdkboot --apply` or `pdkboot --check` and confirm the page in your
+Then rerun `prodockit bootstrap --apply` or `prodockit bootstrap --check` and confirm the page in your
 browser.
 
 ## Where to go next {: #bootstrapinstall-where-to-go-next }
