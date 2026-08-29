@@ -134,39 +134,17 @@ jobs:
         timeout-minutes: 8
       - run: npm ci --prefix tools/mermaid
       - run: npm ci --prefix tools/mathjax
-      # MathJax for the *website*, from the very install above. Neither
-      # file is committed - the bundle is third-party code, and both are
-      # written by `prodockit bootstrap` on a developer's machine
-      # (prodockit-extensions#263) - so CI has to install them the same
-      # way. Without this the site builds with a dangling script reference
-      # and shows raw TeX where an equation should be.
-      - name: Install MathJax for the website
-        run: |
-          mkdir -p docs/javascripts/vendor/mathjax
-          cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js \
-             docs/javascripts/vendor/mathjax/
-          cp tools/mathjax/node_modules/mathjax-full/LICENSE \
-             docs/javascripts/vendor/mathjax/
-          cat > docs/javascripts/mathjax.js <<'MATHJAX'
-          // Written by CI, matching what `prodockit bootstrap` writes. Loaded
-          // *before* the MathJax bundle: MathJax reads `window.MathJax` once at
-          // startup, so a config arriving afterwards is ignored.
-          window.MathJax = {
-            tex: {
-              processEscapes: true,
-              processEnvironments: true,
-            },
-            options: {
-              ignoreHtmlClass: ".*|",
-              processHtmlClass: "arithmatex",
-            },
-          };
-          MATHJAX
       - run: pip install -r requirements.txt -r testrequirements.txt
+      # Generate the ignored website configuration, bundle and licence from
+      # the pinned npm installation through the same implementation used by
+      # bootstrap and local builds.
+      - run: prodockit init-mathjax
       # Offline and non-writing: keeps every declaration consistent and also
       # checks manifest-managed files against this installed Prodockit
       # release. A failure names the drift and prints its recovery command.
       - run: prodockit pins --check --offline
+      # Validate resolved Prodockit settings and their local project inputs.
+      - run: prodockit config --check
       # Keeps repo_url/repo_name/edit_uri/brand icon and the README badge
       # row matching whichever remote this checkout is published from -
       # was sync_repo_icon.py, now provided by prodockit itself (#27).

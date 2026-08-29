@@ -74,32 +74,10 @@ pages:
     - apt-get install -y google-chrome-stable
     - npm ci --prefix tools/mermaid
     - npm ci --prefix tools/mathjax
-    # MathJax for the *website*, from the very install above. Neither file
-    # is committed - the bundle is third-party code, and both are written
-    # by `prodockit bootstrap` on a developer's machine
-    # (prodockit-extensions#263) - so CI has to install them the same way.
-    # Without this the site builds with a dangling script reference and
-    # shows raw TeX where an equation should be.
-    - mkdir -p docs/javascripts/vendor/mathjax
-    - cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js docs/javascripts/vendor/mathjax/
-    - cp tools/mathjax/node_modules/mathjax-full/LICENSE docs/javascripts/vendor/mathjax/
-    - |
-      cat > docs/javascripts/mathjax.js <<'MATHJAX'
-      // Written by CI, matching what `prodockit bootstrap` writes. Loaded
-      // *before* the MathJax bundle: MathJax reads `window.MathJax` once at
-      // startup, so a config arriving afterwards is ignored.
-      window.MathJax = {
-        tex: {
-          processEscapes: true,
-          processEnvironments: true,
-        },
-        options: {
-          ignoreHtmlClass: ".*|",
-          processHtmlClass: "arithmatex",
-        },
-      };
-      MATHJAX
     - pip install -r requirements.txt -r testrequirements.txt
+    # Generate the ignored website assets through Prodockit's maintained
+    # implementation rather than duplicating its MathJax configuration here.
+    - prodockit init-mathjax
     # Build the Surrey mirror from an analytics-free configuration. The
     # public GitHub Pages site retains consent-gated Google Analytics, while
     # this generated file removes both analytics and the consent interface.
@@ -108,6 +86,8 @@ pages:
     # byte-identical to this installed Prodockit release. The check is local,
     # offline and non-writing; its failure prints the recovery command.
     - prodockit pins --check --offline
+    # Validate resolved Prodockit settings and their local project inputs.
+    - prodockit config --check
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
     - zensical build --config-file .zensical-surrey.toml --clean --strict

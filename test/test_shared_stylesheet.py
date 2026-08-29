@@ -55,6 +55,10 @@ def test_both_publishing_workflows_enforce_the_shared_file_check() -> None:
 
     for workflow in (github, gitlab):
         assert "prodockit pins --check --offline" in workflow
+        assert "prodockit config --check" in workflow
         assert workflow.index("pip install -r requirements.txt -r testrequirements.txt") < (
             workflow.index("prodockit pins --check --offline")
+        )
+        assert workflow.index("prodockit init-mathjax") < workflow.index(
+            "prodockit config --check"
         )
