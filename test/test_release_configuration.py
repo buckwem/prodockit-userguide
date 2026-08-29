@@ -17,8 +17,8 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.49.1" in requirements
-    assert "prodockit[testing]>=0.49.1" in test_requirements
+    assert "prodockit[index]>=0.50.0" in requirements
+    assert "prodockit[testing]>=0.50.0" in test_requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
@@ -407,6 +407,7 @@ def test_build_page_is_an_author_workflow() -> None:
     assert "## Prepare the terminal" in build
     assert "prodockit template-sync" in build
     assert "prodockit pins --check --offline" in build
+    assert "prodockit config --check" in build
     assert "### Use one maintenance cycle" in build
     assert "https://prodockit.org/devcons/template-sync/" in build
     assert "https://prodockit.org/devcons/continuous-integration/" in build

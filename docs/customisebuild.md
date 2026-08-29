@@ -167,6 +167,25 @@ Review the staged changes and rebuild both outputs before committing. The
 explains preserved files, conflicts, `--force`, verbose output, and direct
 updates to `main`.
 
+### Validate the project configuration {: #customisebuild-config-check }
+
+Check the settings Prodockit will actually use before starting a build:
+
+``` bash
+prodockit config --check
+```
+
+The command resolves `zensical.toml`, validates Prodockit-owned settings, and
+checks that referenced navigation pages, images, citation styles, optional
+renderers, and enabled extensions are available. It does not build the site,
+change the configuration, or inspect unrelated Zensical settings. A failure
+names the missing or invalid input so it can be corrected before a longer
+website or PDF build.
+
+Run it after changing configuration or adding an optional renderer. The
+[command-line reference](https://prodockit.org/command-line/){target="_blank"}
+shows the resolved values printed by the command and its available options.
+
 ### Review dependency versions {: #customisebuild-pinning }
 
 Review \index{Dependencies!versions} without contacting package indexes:
@@ -318,6 +337,7 @@ Run these \index{Build!checks} before publishing a release or after changing bui
 ``` bash
 prodockit sync-repo --check
 prodockit pins --check --offline
+prodockit config --check
 zensical build --clean --strict
 prodockit pdf
 ```
@@ -325,6 +345,8 @@ prodockit pdf
 - `sync-repo --check` detects repository metadata that no longer matches the
     actual remote.
 - `pins --check --offline` detects inconsistent declared versions.
+- `config --check` reports invalid Prodockit settings and missing local files,
+    navigation pages, images, citation styles, extensions, or renderers.
 - The builds prove both outputs can be generated from a clean website tree.
 
 Then inspect the website and PDF. Check navigation, references, captions,
