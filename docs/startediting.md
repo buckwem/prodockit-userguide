@@ -495,6 +495,105 @@ The prompt gains a `(.venv)` prefix when it works. This bites most often after a
 
 If activating makes no difference, the virtual environment itself may be in the wrong place: `.venv` created somewhere other than your project folder still activates perfectly happily. `pwd` tells you where you are.
 
+### The virtual environment is broken
+
+A virtual environment can become inconsistent after an interrupted install or
+upgrade. Typical signs include `WARNING: Ignoring invalid distribution
+~ensical` or `WARNING: Ignoring invalid distribution ~rodockit`, duplicate
+`*.dist-info` directories, `python -m pip show prodockit` reporting an old
+version after an upgrade, or `pdk --version` reporting a stale system
+installation.
+
+Do not repair individual files under `.venv` or `site-packages`. The `.venv`
+directory contains installed packages, not your document or its source files,
+so it is disposable and safer to rebuild as one unit. Start in the project
+directory containing `requirements.txt`. If the prompt currently begins with
+`(.venv)`, run `deactivate`; otherwise skip that first command. If a
+`.venv-broken` backup already exists, choose a different backup name rather
+than overwriting it.
+
+=== ":material-apple: macOS"
+
+    ``` bash
+    deactivate
+    mv .venv .venv-broken
+
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt -r testrequirements.txt
+    python -m pip install --upgrade prodockit
+
+    rehash
+    command -v pdk
+    python -m pip show prodockit
+    pdk --version
+    ```
+
+    `rehash` refreshes zsh's cached command locations. Without it, the shell
+    can continue to run a system `pdk` found before the new environment was
+    activated.
+
+=== ":fontawesome-brands-windows: Windows"
+
+    In PowerShell:
+
+    ``` powershell
+    deactivate
+    Rename-Item .venv .venv-broken
+
+    python -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt -r testrequirements.txt
+    python -m pip install --upgrade prodockit
+
+    Get-Command pdk
+    python -m pip show prodockit
+    pdk --version
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    deactivate
+    mv .venv .venv-broken
+
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt -r testrequirements.txt
+    python -m pip install --upgrade prodockit
+
+    hash -r
+    command -v pdk
+    python -m pip show prodockit
+    pdk --version
+    ```
+
+    `hash -r` is bash's equivalent of zsh's `rehash`: it discards cached
+    command locations before the checks resolve `pdk` again.
+
+The command lookup should point inside the new `.venv`, and the two version
+checks should agree. Run `zensical build --clean --strict` as a final check.
+Delete the backup only after the rebuilt environment has passed these checks
+and you are certain it contains no local file you still need:
+
+=== ":material-apple: macOS / :material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    rm -rf .venv-broken
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    ``` powershell
+    Remove-Item -Recurse -Force .venv-broken
+    ```
+
 ### Local preview isn't updating
 
 If you save a change and the browser doesn't refresh, or the page looks stuck:
