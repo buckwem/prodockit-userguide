@@ -78,10 +78,9 @@ pages:
     # Generate the ignored website assets through Prodockit's maintained
     # implementation rather than duplicating its MathJax configuration here.
     - prodockit init-mathjax
-    # Build the Surrey mirror from an analytics-free configuration. The
-    # public GitHub Pages site retains consent-gated Google Analytics, while
-    # this generated file removes both analytics and the consent interface.
-    - python tools/surrey_config.py zensical.toml .zensical-surrey.toml
+    # The committed configuration is analytics-free. Only the canonical
+    # GitHub Pages workflow creates a temporary Analytics overlay, so Surrey
+    # can build this reusable configuration directly.
     # Keep version declarations consistent and manifest-managed files
     # byte-identical to this installed Prodockit release. The check is local,
     # offline and non-writing; its failure prints the recovery command.
@@ -90,10 +89,10 @@ pages:
     - prodockit config --check
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
-    - zensical build --config-file .zensical-surrey.toml --clean --strict
+    - zensical build --clean --strict
     # The PDF consumes this completed analytics-free site, then adds the
     # finished file to public/ without another Zensical build.
-    - prodockit pdf --config-file .zensical-surrey.toml
+    - prodockit pdf
     # These check the *built* PDF, so they run after both builds - they fail
     # the pipeline if a Mermaid diagram or a formula reached it as raw source
     # instead of a rendered image (see test/ and issue #23).

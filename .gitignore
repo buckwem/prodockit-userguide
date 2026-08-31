@@ -33,7 +33,7 @@ __pycache__
 tmp
 .cache/
 public/
-.zensical-surrey.toml
+.zensical-canonical.toml
 
 # Generated PDF build output
 docs/site_documentation.pdf

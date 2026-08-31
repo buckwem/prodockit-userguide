@@ -157,6 +157,26 @@ jobs:
       # the deploy if a Mermaid diagram or a formula reached it as raw
       # source instead of a rendered image (see test/ and issue #23).
       - run: python -m pytest test/ -v
+      # The committed configuration is the reusable baseline used by local,
+      # fork and Surrey builds. Only this repository's canonical GitHub Pages
+      # deployment receives Analytics, through a validated ignored file made
+      # after the reusable site, PDF and their tests have all passed.
+      - name: Prepare the canonical website analytics
+        if: github.repository == 'buckwem/prodockit-userguide'
+        env:
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
+        run: |
+          if [ -z "$GOOGLE_ANALYTICS_ID" ]; then
+            echo "::error::The canonical User Guide deployment needs the GOOGLE_ANALYTICS_ID repository secret."
+            exit 1
+          fi
+          python tools/canonical_site_config.py zensical.toml .zensical-canonical.toml "$GOOGLE_ANALYTICS_ID"
+      - name: Build the canonical User Guide website
+        if: github.repository == 'buckwem/prodockit-userguide'
+        run: zensical build --config-file .zensical-canonical.toml --clean --strict
+      - name: Verify the canonical consent controls
+        if: github.repository == 'buckwem/prodockit-userguide'
+        run: python tools/check_canonical_site.py public/index.html
       # Fingerprint what we are about to publish, so the verify job below can
       # tell whether the live site is actually serving *this* build. Taken
       # from the same directory upload-pages-artifact packs, immediately
