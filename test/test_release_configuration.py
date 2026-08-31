@@ -80,16 +80,21 @@ def test_home_page_hero_does_not_force_a_full_viewport() -> None:
     assert "max-width: min(540px, 44vw)" in graphic
 
 
-def test_public_userguide_uses_consent_gated_analytics_only_outside_surrey() -> None:
+def test_only_canonical_github_pages_receives_consent_gated_analytics() -> None:
     config = _text("zensical.toml")
     copyright = _text("overrides/partials/copyright.html")
+    github = _text(".github/workflows/docs.yml")
+    gitlab = _text(".gitlab-ci.yml")
 
-    assert 'property = "G-ET1T9VSNF2"' in config
-    assert 'actions = ["accept", "reject", "manage"]' in config
-    assert "analytics.checked = false" in config
+    assert "[project.extra.analytics]" not in config
+    assert "[project.extra.consent]" not in config
     assert "{% if config.extra.analytics %}" in copyright
     assert 'href="#__consent"' in copyright
-    assert "tools/surrey_config.py" in _text(".gitlab-ci.yml")
+    assert "GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}" in github
+    assert "if: github.repository == 'buckwem/prodockit-userguide'" in github
+    assert "python tools/canonical_site_config.py" in github
+    assert "GOOGLE_ANALYTICS_ID" not in gitlab
+    assert "canonical_site_config.py" not in gitlab
 
 
 def test_new_042_behaviour_is_documented() -> None:

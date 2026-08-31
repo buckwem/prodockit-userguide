@@ -53,9 +53,9 @@ def test_gitlab_pages_job_uses_the_strict_build():
     workflow = REPO_ROOT / ".gitlab-ci.yml"
     pages_job = _top_level_section(workflow.read_text(encoding="utf-8"), "pages")
     assert _contains_command(pages_job)
-    assert pages_job.index(
-        "zensical build --config-file .zensical-surrey.toml --clean --strict"
-    ) < pages_job.index("prodockit pdf --config-file .zensical-surrey.toml")
+    assert pages_job.index("zensical build --clean --strict") < pages_job.index(
+        "prodockit pdf"
+    )
 
 
 def test_contributing_builds_the_strict_site_before_the_pdf():
