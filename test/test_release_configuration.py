@@ -171,6 +171,29 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
     assert '[project.markdown_extensions."prodockit.steps"]' in config
 
 
+def test_adoption_guide_uses_the_current_shared_stylesheet_name() -> None:
+    adoption = _text("docs/adoptioninstall.md")
+
+    assert "prodockit.css" not in adoption
+    assert adoption.count("pdk.css") >= 3
+    assert "docs/stylesheets/pdk.css" in adoption
+    assert "stylesheets/pdk.css" in adoption
+
+
+def test_start_editing_explains_how_to_rebuild_a_broken_environment() -> None:
+    editing = _text("docs/startediting.md")
+
+    assert "### The virtual environment is broken" in editing
+    assert "Ignoring invalid distribution" in editing
+    assert "mv .venv .venv-broken" in editing
+    assert "Rename-Item .venv .venv-broken" in editing
+    assert "rehash" in editing
+    assert "hash -r" in editing
+    assert "Get-Command pdk" in editing
+    assert "python -m pip show prodockit" in editing
+    assert "after the rebuilt environment has passed" in editing
+
+
 def test_guide_defers_product_versions_to_extensions_reference() -> None:
     guide = "\n".join(
         path.read_text(encoding="utf-8")

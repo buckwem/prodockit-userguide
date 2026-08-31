@@ -41,7 +41,7 @@ The standard adoption adds:
     file, or a new `requirements.txt` when the project has none;
 - the standard prodockit Markdown extensions to the existing Zensical or
     MkDocs configuration;
-- `docs/stylesheets/prodockit.css`, loaded before the project's own
+- `docs/stylesheets/pdk.css`, loaded before the project's own
     stylesheets so its existing rules can still override the shared styles;
 - `.prodockit-components.toml`, recording the optional renderers selected for
     the project; and
@@ -312,7 +312,7 @@ Build the adopted site from its real content and configuration:
     ```
 
 Open the local result and check representative pages. The project's own
-stylesheet remains later in the configuration than `prodockit.css`, so its
+stylesheet remains later in the configuration than `pdk.css`, so its
 intentional appearance should take precedence.
 
 Review exactly what adoption changed:
@@ -370,7 +370,7 @@ to make the message disappear.
 | File | Result required after manual integration |
 | --- | --- |
 | The existing requirements file | Retain its current packages and include a `prodockit` dependency. |
-| `zensical.toml`, `zensical.yml`, `zensical.yaml`, `mkdocs.yml`, or `mkdocs.yaml` | Retain the project's settings; enable the standard prodockit extensions and load `stylesheets/prodockit.css` before the project's own stylesheets. |
+| `zensical.toml`, `zensical.yml`, `zensical.yaml`, `mkdocs.yml`, or `mkdocs.yaml` | Retain the project's settings; enable the standard prodockit extensions and load `stylesheets/pdk.css` before the project's own stylesheets. |
 | `tools/mermaid/package.json` | Retain project-specific scripts and dependencies; include `@mermaid-js/mermaid-cli` when Mermaid was selected. |
 | `tools/mathjax/package.json` | Retain project-specific scripts and dependencies; include `mathjax-full` when mathematics was selected. |
 | `tools/mathjax/tex2svg.js` | Preserve intentional local changes while ensuring the script still reads TeX from standard input and writes an SVG to standard output. |
