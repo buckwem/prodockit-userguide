@@ -78,6 +78,9 @@ pages:
     # Generate the ignored website assets through Prodockit's maintained
     # implementation rather than duplicating its MathJax configuration here.
     - prodockit init-mathjax
+    # Fail early when the Python environment, project inputs or complete
+    # website/PDF rendering toolchain is incompatible or incomplete.
+    - pdk diag
     # The committed configuration is analytics-free. Only the canonical
     # GitHub Pages workflow creates a temporary Analytics overlay, so Surrey
     # can build this reusable configuration directly.

@@ -47,18 +47,20 @@ def test_shared_stylesheet_drift_fails_with_recovery(
     assert "prodockit shared-files --apply" in result.output
 
 
-def test_both_publishing_workflows_enforce_the_shared_file_check() -> None:
+def test_both_publishing_workflows_enforce_prodockit_checks() -> None:
     github = (ROOT / ".github" / "workflows" / "docs.yml").read_text(
         encoding="utf-8"
     )
     gitlab = (ROOT / ".gitlab-ci.yml").read_text(encoding="utf-8")
 
     for workflow in (github, gitlab):
+        assert "pdk diag" in workflow
         assert "prodockit pins --check --offline" in workflow
         assert "prodockit config --check" in workflow
         assert workflow.index("pip install -r requirements.txt -r testrequirements.txt") < (
-            workflow.index("prodockit pins --check --offline")
+            workflow.index("pdk diag")
         )
-        assert workflow.index("prodockit init-mathjax") < workflow.index(
-            "prodockit config --check"
+        assert workflow.index("prodockit init-mathjax") < workflow.index("pdk diag")
+        assert workflow.index("pdk diag") < workflow.index(
+            "prodockit pins --check --offline"
         )
