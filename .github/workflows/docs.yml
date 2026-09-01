@@ -139,6 +139,9 @@ jobs:
       # the pinned npm installation through the same implementation used by
       # bootstrap and local builds.
       - run: prodockit init-mathjax
+      # Fail early when the Python environment, project inputs or complete
+      # website/PDF rendering toolchain is incompatible or incomplete.
+      - run: pdk diag
       # Offline and non-writing: keeps every declaration consistent and also
       # checks manifest-managed files against this installed Prodockit
       # release. A failure names the drift and prints its recovery command.
