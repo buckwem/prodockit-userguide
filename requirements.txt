@@ -6,11 +6,15 @@
 # `prodockit pins` to move managed versions together - see "Pinning build
 # inputs" in customisebuild.md.
 zensical>=0.0.57
+# ProDocKit 0.54.0 uses APIs introduced in PyMdown Extensions 11.0.2.
+# Declare the floor directly so fresh and upgraded environments cannot retain
+# an older transitive version that is incompatible with the current build.
+pymdown-extensions>=11.0.2
 # The [index] extra pulls in pymupdf, needed for the back-of-book index
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
 # prodockit.index in zensical.toml.
 #
-# A minimum rather than an exact pin: 0.51.4 is the coordinated release floor
+# A minimum rather than an exact pin: 0.54.0 is the coordinated release floor
 # that supplies the managed website and PDF stylesheet pair used by this
 # guide, while newer releases remain acceptable.
 #
@@ -20,7 +24,7 @@ zensical>=0.0.57
 # rather than failing to parse (prodockit-extensions#156). Needs 0.17.5+
 # installed to pin or check this line - see "Pinning build inputs" in
 # customisebuild.md.
-prodockit[index]>=0.51.4
+prodockit[index]>=0.54.0
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI

@@ -17,8 +17,8 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.51.4" in requirements
-    assert "prodockit[testing]>=0.51.4" in test_requirements
+    assert "prodockit[index]>=0.54.0" in requirements
+    assert "prodockit[testing]>=0.54.0" in test_requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
