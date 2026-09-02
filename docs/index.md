@@ -18,8 +18,8 @@ hide:
 A docs-as-code workflow for professional and academic documentation, built on Zensical and Markdown.
 {: .cover-hero-subtitle }
 
-{% if release %}
-<p class="cover-hero-release">Release: {{ release }}</p>
+{% if git.short_tag %}
+<p class="cover-hero-release">Release: {{ git.short_tag }}</p>
 {% endif %}
 
 [:material-file-pdf-box: Download PDF](site_documentation.pdf){ .md-button .md-button--primary target="_blank" .web-only } [Continue... :material-arrow-right:](about.md){ .md-button .web-only }

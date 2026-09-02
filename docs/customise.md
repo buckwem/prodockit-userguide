@@ -298,10 +298,11 @@ Use these classes only when the two outputs genuinely need different content.
 
 ### Site name
 
-The cover reads `site_name` from `zensical.toml`:
+Zensical exposes the `site_name` from `zensical.toml` through its native
+`config` variable:
 
 ``` markdown
-<p class="title-ctr-b4">{% raw %}{{ site_name }}{% endraw %}</p>
+<p class="title-ctr-b4">{% raw %}{{ config.site_name }}{% endraw %}</p>
 ```
 
 Edit `site_name` rather than typing a second copy into the cover. Remove the
@@ -332,10 +333,10 @@ exclude_from_word_count: true
 ---
 ```
 
-The website equivalents are `{% raw %}{{ word_count }}{% endraw %}`,
-`{% raw %}{{ repo_url }}{% endraw %}`, and
-`{% raw %}{{ release }}{% endraw %}`. The website count is an estimate and can
-differ slightly from the final PDF count.
+For the website, ProDocKit supplies `{% raw %}{{ word_count }}{% endraw %}` and
+`{% raw %}{{ repo_url }}{% endraw %}`. Zensical supplies the release through its
+native `{% raw %}{{ git.short_tag }}{% endraw %}` variable. The website count is
+an estimate and can differ slightly from the final PDF count.
 
 ### Download PDF button
 
