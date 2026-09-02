@@ -1,6 +1,7 @@
 """Release floors, canonical domains, and coordinated documentation."""
 
 import re
+import subprocess
 from pathlib import Path
 
 from jinja2 import Environment
@@ -78,6 +79,40 @@ def test_home_page_hero_does_not_force_a_full_viewport() -> None:
     assert "min-height: 0" in hero
     assert "100vh" not in hero
     assert "max-width: min(540px, 44vw)" in graphic
+
+
+def test_guide_uses_native_zensical_site_and_release_variables() -> None:
+    home = _text("docs/index.md")
+    customise = _text("docs/customise.md")
+    macro_module = _text("macros.py")
+    workflows = "\n".join(
+        (
+            _text(".github/workflows/docs.yml"),
+            _text(".github/workflows/redeploy-after-release.yml"),
+            _text(".gitlab-ci.yml"),
+        )
+    )
+
+    assert "{% if git.short_tag %}" in home
+    assert "{{ git.short_tag }}" in home
+    assert "{{ config.site_name }}" in customise
+    assert "release tag" not in macro_module
+    assert "word count, repo URL" in macro_module
+    assert "`git.short_tag`" in workflows
+
+
+def test_built_home_page_renders_the_native_git_short_tag() -> None:
+    short_tag = subprocess.run(
+        ["git", "describe", "--tags", "--abbrev=0"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    home = _text("public/index.html")
+
+    assert f"Release: {short_tag}" in home
+    assert "{{ git.short_tag }}" not in home
 
 
 def test_only_canonical_github_pages_receives_consent_gated_analytics() -> None:
@@ -218,14 +253,14 @@ def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
     environment = Environment(autoescape=False)
     context = {
         "acronym_style": lambda: "",
+        "config": {"site_name": ""},
+        "git": {"short_tag": ""},
         "glossary_style": lambda: "",
         "heading_counter_reset": lambda _page: "",
         "is_surrey": False,
         "page": None,
         "reference_style": lambda: "",
-        "release": "",
         "repo_url": "",
-        "site_name": "",
         "word_count": "",
     }
     standard = "\n".join(

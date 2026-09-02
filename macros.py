@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 """This project's own Zensical macros - institution branding (Surrey vs.
-default). Everything else the guide needs (word count, repo URL, release
-tag, and heading/reference-style numbering for acronyms.md/glossary.md/
-references.md's {{ acronym_style() }}/{{ glossary_style() }}/
-{{ reference_style() }} calls, plus docs/index.md's {{ release }}
-cover-page line) comes from prodockit.zensical_macros, not duplicated here.
+default). Zensical supplies its native ``config`` and ``git`` variables.
+Everything else the guide needs (word count, repo URL, and heading/reference-
+style numbering for acronyms.md/glossary.md/references.md's
+``acronym_style()``/``glossary_style()``/``reference_style()`` calls) comes
+from prodockit.zensical_macros, not duplicated here.
 
 prodockit.zensical_macros.define_env() is called directly below rather than
 via zensical.toml's documented `modules = [...]` extension option: that

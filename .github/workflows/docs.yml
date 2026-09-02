@@ -87,9 +87,9 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/checkout@v5
         with:
-          # Full history, not the default shallow clone - `{{ release }}`
-          # comes from `git describe --tags`, which sees no tags at all in a
-          # depth-1 checkout (prodockit-extensions#122).
+          # Full history, not the default shallow clone - Zensical's
+          # `git.short_tag` needs reachable tags, but a depth-1 checkout sees
+          # none at all (prodockit-extensions#122).
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:

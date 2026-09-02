@@ -27,11 +27,9 @@ pages:
   resource_group: pages
   variables:
     # Full history, not GitLab's default shallow clone. The cover page's
-    # "Release: ..." line comes from prodockit.zensical_macros' {{ release }},
-    # which is `git describe --tags --abbrev=0` - a shallow clone fetches no
-    # tags at all, so it would resolve to an empty string and the line would
-    # silently disappear. The GitLab counterpart of `fetch-depth: 0` in the
-    # GitHub workflow.
+    # "Release: ..." line uses Zensical's native `git.short_tag`; a shallow
+    # clone fetches no tags, so the line would silently disappear. The GitLab
+    # counterpart of `fetch-depth: 0` in the GitHub workflow.
     #
     # Note prodockit-template needs none of this: its cover uses the PDF-only
     # {RELEASE} marker, resolved from the releases API rather than git tags.
