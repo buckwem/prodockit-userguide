@@ -14,8 +14,24 @@ For anything beyond a small fix (typos, broken links), please open an issue firs
 ## Getting set up
 
 1. Fork the repository and clone your fork.
-2. Install the Python prerequisites: `pip install -r requirements.txt`.
-3. Install the MathJax bundle the *website* needs - not committed (it's third-party code; see [Extra CSS and JavaScript](https://buckwem.github.io/prodockit-userguide/customise/#extra-css-and-javascript)), so `zensical serve` shows every formula as raw TeX until this has run once:
+2. Install Python 3.14, create the project environment, and activate it:
+
+   ```bash
+   python3.14 -m venv .venv
+   source .venv/bin/activate
+   python --version
+   ```
+
+   On Windows, use `py -3.14 -m venv .venv` followed by
+   `.\.venv\Scripts\Activate.ps1`. The version check must report Python 3.14.
+   If you use Conda, Poetry, uv, or another environment manager, adapt these
+   and the remaining package commands for that environment.
+3. Install the Python prerequisites into the active environment:
+
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+4. Install the MathJax bundle the *website* needs - not committed (it's third-party code; see [Extra CSS and JavaScript](https://buckwem.github.io/prodockit-userguide/customise/#extra-css-and-javascript)), so `zensical serve` shows every formula as raw TeX until this has run once:
 
    ```bash
    npm ci --prefix tools/mathjax
@@ -35,8 +51,8 @@ For anything beyond a small fix (typos, broken links), please open an issue firs
    };
    MATHJAX
    ```
-4. Preview the site locally: `zensical serve`.
-5. Make a clean, strict website build with `zensical build --clean --strict`. If your change affects the PDF, run `prodockit pdf` afterwards - it reads that completed site rather than building it itself. See [Install tooling](https://buckwem.github.io/prodockit-userguide/installtooling/) for the full setup. The one Mermaid diagram in [Diagrams](https://buckwem.github.io/prodockit-userguide/zensicalbasics/#diagrams) only renders as an image in the PDF if `mermaid-cli` (`mmdc`) is available on your `PATH`; without it, the PDF build silently skips it rather than failing.
+5. Preview the site locally: `zensical serve`.
+6. Make a clean, strict website build with `zensical build --clean --strict`. If your change affects the PDF, run `prodockit pdf` afterwards - it reads that completed site rather than building it itself. See [Install tooling](https://buckwem.github.io/prodockit-userguide/installtooling/) for the full setup. The one Mermaid diagram in [Diagrams](https://buckwem.github.io/prodockit-userguide/zensicalbasics/#diagrams) only renders as an image in the PDF if `mermaid-cli` (`mmdc`) is available on your `PATH`; without it, the PDF build silently skips it rather than failing.
 
 ## Making a change
 

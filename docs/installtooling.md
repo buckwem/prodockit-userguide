@@ -27,6 +27,103 @@ commands change and how to check the result before continuing.
 Work through the sections in order. Where a tool is already installed, still
 run the check shown for it before continuing.
 
+## Install Python 3.14
+
+Python is the first prerequisite because Zensical, prodockit, and their build
+tools are installed into a Python virtual environment. Install Python 3.14
+before any of the other tools on this page, then confirm the terminal finds
+that release.
+
+=== ":material-apple: macOS"
+
+    Install Homebrew from [brew.sh](https://brew.sh){target="_blank"} if it is
+    not already present. Close and reopen Terminal after installing it, then
+    run:
+
+    ``` bash
+    brew install python@3.14
+    "$(brew --prefix python@3.14)/bin/python3.14" --version
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    Download and run the **Python 3.14 Windows installer (64-bit)** from
+    [python.org](https://www.python.org/downloads/){target="_blank"}. Select
+    **Add python.exe to PATH** on the first screen and **Disable path length
+    limit** on the final screen. Open a new PowerShell window and run:
+
+    ``` powershell
+    py -3.14 --version
+    ```
+
+    If the `py` command is missing, rerun the installer with the Python
+    Launcher selected.
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    Use an Ubuntu release that supplies Python 3.14, then run:
+
+    ``` bash
+    sudo apt update
+    sudo apt install python3.14 python3.14-venv python3-pip
+    python3.14 --version
+    ```
+
+Each check must report `Python 3.14` before you continue.
+
+## Create the setup environment
+
+Create the top-level `GitHub` directory that will contain your projects, then
+create and activate its `.venv` setup environment.
+
+=== ":material-apple: macOS"
+
+    ``` bash
+    mkdir -p ~/GitHub
+    cd ~/GitHub
+    "$(brew --prefix python@3.14)/bin/python3.14" -m venv .venv
+    source .venv/bin/activate
+    python --version
+    python -m pip install --upgrade pip
+    python -m pip install --upgrade prodockit
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    PowerShell normally prevents activation scripts from running. Allow
+    locally created scripts for your account once, then create the environment:
+
+    ``` powershell
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+    New-Item -ItemType Directory -Force ~\GitHub | Out-Null
+    Set-Location ~\GitHub
+    py -3.14 -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    python --version
+    python -m pip install --upgrade pip
+    python -m pip install --upgrade prodockit
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    mkdir -p ~/GitHub
+    cd ~/GitHub
+    python3.14 -m venv .venv
+    source .venv/bin/activate
+    python --version
+    python -m pip install --upgrade pip
+    python -m pip install --upgrade prodockit
+    ```
+
+The check must report `Python 3.14`, and the prompt should begin with
+`(.venv)`, before you continue. Run `prodockit --version` to confirm that the
+setup command is available. This `GitHub/.venv` contains prodockit and remains
+outside every repository. Later, after the project has been cloned, the same
+interpreter creates a second `.venv` inside the project for its build
+packages. Installing packages into the system Python is not part of this
+workflow.
+
 ## Install Visual Studio Code
 
 [Visual Studio Code](https://code.visualstudio.com){target="_blank"} (VS Code) is the editor we have chosen for developing the documentation using Zensical. You can use other editors, but the availability of many plugins in Visual Studio Code will help you edit your documentation more efficiently.
@@ -559,32 +656,34 @@ that path:
 
 ### Prepare a projects directory
 
-Keep the project in a directory intended for Git repositories. The examples
-use `GitLab`, but `GitHub` or `Projects` is equally suitable.
+Use the `GitHub` directory and setup environment created at the start of this
+page.
 
 === ":material-apple: macOS"
 
     ``` bash
-    mkdir -p ~/GitLab
-    cd ~/GitLab
+    cd ~/GitHub
+    source .venv/bin/activate
     ```
 
 === ":fontawesome-brands-windows: Windows"
 
     ``` powershell
-    New-Item -ItemType Directory -Force ~\GitLab | Out-Null
-    cd ~\GitLab
+    Set-Location ~\GitHub
+    .\.venv\Scripts\Activate.ps1
     ```
 
 === ":material-linux: Linux (Ubuntu)"
 
     ``` bash
-    mkdir -p ~/GitLab
-    cd ~/GitLab
+    cd ~/GitHub
+    source .venv/bin/activate
     ```
 
-The `cd` command changes the current directory. The clone command creates the
-project folder inside it.
+The `cd` or `Set-Location` command changes the current directory. The clone
+command creates the project folder inside it. Reactivate this setup
+environment in every new terminal until the project build environment is
+created.
 
 ### Path 1: start from the template {: #manual-install-path-1 }
 
@@ -795,10 +894,10 @@ git config --local user.email
 Use the email address associated with the GitLab or GitHub account that owns
 the repository.
 
-## Install Python and Zensical
+## Create the Python environment and install Zensical {: #install-python-and-zensical }
 
-Use the instructions below to install Python and Zensical, the PDF system libraries, and
-a project-specific Python \index{Python!virtual environment} on macOS, Windows, and
+Use the instructions below to create and activate a project-specific Python
+\index{Python!virtual environment}, then install Zensical and the PDF system libraries on macOS, Windows, and
 Ubuntu. Refer to the [official Python installation
 documentation](https://docs.python.org/3/using/) if you use another operating
 system.
@@ -810,30 +909,30 @@ system.
     remains useful when you need to understand or perform each command
     yourself.
 
-!!! note
-    You may need to use 'python3' and 'pip3' instead of 'python' and 'pip' depending on your system configuration.
+!!! important "Use the project `.venv`"
+    Run every Python and prodockit command from this point with the project's
+    `.venv` active. If you deliberately use Conda, Poetry, uv, or another
+    environment manager, adapt the creation and activation commands and make
+    sure `python -m pip` installs into that environment rather than the system
+    Python.
 
-Install a Python release currently supported by prodockit. The
-[Extensions support and compatibility page](https://prodockit.org/about/support/#required-versions){target="_blank"}
-is the single source for current version requirements.
+The prompt may currently show the parent `GitHub/.venv`. If it does, run
+`deactivate` now. The commands below create a new `.venv` in the current
+project directory. This second environment contains the project's build
+packages and is the environment used for all later editing and building.
 
-1. Follow the instructions below to install Python, create a virtual environment for the project, and install Zensical inside it for your operating system.
+1. Follow the instructions below to create and activate the project environment
+    with the Python 3.14 interpreter installed at the start of this page.
 
     === ":material-apple: macOS"
 
-        1. If you use the Homebrew package manager, run this command in your Terminal to install Python. If you don't have Homebrew installed, you can install it by following the instructions on the [Homebrew website](https://brew.sh/){target="_blank"}.
-
-            ``` bash
-            brew install python3
-            ```
-
-        2. Install \index{Pango}, which is not a Python package, so `pip` cannot install it for you:
+        1. Install \index{Pango}, which is not a Python package, so `pip` cannot install it for you:
 
             ``` bash
             brew install pango
             ```
 
-        3. Install \index{Pandoc}:
+        2. Install \index{Pandoc}:
 
             ``` bash
             brew install pandoc
@@ -842,7 +941,7 @@ is the single source for current version requirements.
             !!! info "Why Pandoc and Pango"
                 `prodockit pdf` shells out to `pandoc`, which hands the result to \index{WeasyPrint} to lay out the pages - and WeasyPrint draws text through Pango, so `pango` alone is enough (glib, HarfBuzz and fontconfig come along as its dependencies). Skipping either still looks fine right up until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot load its graphics libraries](#installtooling-weasyprint-libraries) if that happens.
 
-        4. Install the desktop font files this template's PDF uses by default - **Inter** and **JetBrains Mono**:
+        3. Install the desktop font files this template's PDF uses by default - **Inter** and **JetBrains Mono**:
 
             ``` bash
             brew install --cask font-inter font-jetbrains-mono
@@ -851,11 +950,11 @@ is the single source for current version requirements.
             !!! info "Why this early"
                 The website loads its fonts from a CDN at view time, but the PDF has no such fallback - WeasyPrint has to embed the actual font files, and silently substitutes a fallback font instead of erroring if they are missing. See [Fonts](customisebuild.md#customisebuild-fonts) for the full picture, including how to check the right fonts actually made it into a built PDF.
 
-        5. Open **Terminal** in your project folder and create the virtual
+        4. Open **Terminal** in your project folder and create the virtual
            environment:
 
             ``` bash
-            /opt/homebrew/bin/python3 -m venv .venv
+            "$(brew --prefix python@3.14)/bin/python3.14" -m venv .venv
             ```
 
             Then activate it as a separate step:
@@ -877,18 +976,14 @@ is the single source for current version requirements.
             below handles for you.
 
             !!! note "Why the full path to Python"
-                macOS ships its own older Python, and a plain `python3` may well find that one instead of Homebrew's. Naming `/opt/homebrew/bin/python3` explicitly builds the virtual environment from the version you just installed. On an Intel Mac, Homebrew installs to `/usr/local` instead, so use `/usr/local/bin/python3`.
+                macOS may provide another Python. Asking Homebrew for the
+                `python@3.14` prefix ensures `.venv` uses the interpreter you
+                checked at the start of this page on both Apple silicon and
+                Intel Macs.
 
     === ":fontawesome-brands-windows: Windows"
 
-        1. Download and run the **Windows installer (64-bit)** from [python.org](https://www.python.org/downloads/){target="_blank"}. Use this x86-64 installer on an ARM Windows virtual machine too; Windows runs it through its x64 compatibility layer, and it then matches the UCRT64 graphics libraries installed below.
-
-            !!! Critical "Three things to get right during install"
-                - Check **Add python.exe to PATH** on the first screen. This is what lets you run `python` from the command line at all, and also puts `pip` and every command it installs on your `PATH`.
-                - Once installation finishes, a final screen offers **Disable path length limit** - click it. Windows historically caps a full file path at 260 characters, and this project's own dependencies nest deep enough (`.venv\Lib\site-packages\...`, `tools\mermaid\node_modules\...`) to hit that limit without it.
-                - Make sure you are running the installer you just downloaded, not Windows' own placeholder. Typing `python` in a terminal with no real Python installed opens the Microsoft Store instead of running anything - if that still happens *after* installing, search **Manage app execution aliases** and turn off the **App Installer** entries for `python.exe`/`python3.exe`, which take priority over the one you just installed.
-
-        2. Next install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
+        1. Install pandoc, which is not a Python package, so `pip` cannot install it for you. Open **PowerShell** and run the following command:
 
             ``` powershell
             winget install --id JohnMacFarlane.Pandoc --exact
@@ -906,7 +1001,7 @@ is the single source for current version requirements.
                 `winget search pandoc` lists the real identifier if you
                 ever need to check it.
 
-        3. Install the graphics libraries \index{WeasyPrint} needs. Pandoc hands your document to WeasyPrint to lay out the pages, and WeasyPrint is not pure Python - it draws text through \index{Pango}, which on Windows comes from \index{MSYS2}. Install MSYS2 first:
+        2. Install the graphics libraries \index{WeasyPrint} needs. Pandoc hands your document to WeasyPrint to lay out the pages, and WeasyPrint is not pure Python - it draws text through \index{Pango}, which on Windows comes from \index{MSYS2}. Install MSYS2 first:
 
             ``` powershell
             winget install --id MSYS2.MSYS2
@@ -951,25 +1046,17 @@ is the single source for current version requirements.
             !!! info "Why this is needed"
                 That folder is where WeasyPrint finds `libgobject-2.0-0.dll`, `libpango-1.0-0.dll`, `libharfbuzz-0.dll` and `libfontconfig-1.dll` - installing `pango` brings all four in. Skipping this still looks fine until `prodockit pdf`, which then fails with `pandoc exited with status 43` - see [WeasyPrint cannot load its graphics libraries](#installtooling-weasyprint-libraries) if that happens.
 
-        4. Install the desktop font files this template's PDF uses by default - **Inter** and **JetBrains Mono**. Download the desktop (`.ttf`/`.otf`) files for each - [Inter](https://fonts.google.com/specimen/Inter){target="_blank"}, [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono){target="_blank"} - then select them all, right-click, and choose **Install for all users**.
+        3. Install the desktop font files this template's PDF uses by default - **Inter** and **JetBrains Mono**. Download the desktop (`.ttf`/`.otf`) files for each - [Inter](https://fonts.google.com/specimen/Inter){target="_blank"}, [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono){target="_blank"} - then select them all, right-click, and choose **Install for all users**.
 
             !!! info "Why this early"
                 The website loads its fonts from a CDN at view time, but the PDF has no such fallback - WeasyPrint has to embed the actual font files, and silently substitutes a fallback font instead of erroring if they are missing. See [Fonts](customisebuild.md#customisebuild-fonts) for the full picture, including why a `.woff`/`.woff2` download will not do, and how to check the right fonts actually made it into a built PDF.
 
-        5. Allow PowerShell to run scripts. Windows blocks all of them by default, and activating a virtual environment *is* a script, so this has to be done once before the next step will work:
+        4. The PowerShell execution policy was set when the setup environment
+           was created. If you chose not to change it, use **classic CMD** and
+           run `.\.venv\Scripts\activate.bat` when activating the project
+           environment.
 
-            ``` powershell
-            Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-            ```
-
-            Depending on your PowerShell version it may ask you to confirm the change; answer `Y` if it does. Often it simply returns to the prompt, which means it worked.
-
-            !!! info "What this changes"
-                Without it, activating the venv fails with `... cannot be loaded because running scripts is disabled on this system`. `RemoteSigned` allows locally-written scripts while still requiring signed ones from the internet; `-Scope CurrentUser` limits that to your account, so it needs no Administrator window and is a one-time, per-account change.
-
-                Would rather not change it at all? Use **classic CMD** instead of PowerShell and run `.\.venv\Scripts\activate.bat` in the next step - `.bat` files aren't covered by execution policy.
-
-        6. Change into your project folder:
+        5. Confirm you are still in your project folder:
 
             ``` powershell
             cd C:\path\to\your-project
@@ -981,7 +1068,7 @@ is the single source for current version requirements.
                 every "close and reopen PowerShell" leaves you in your home
                 directory, `C:\Users\yourname`.
 
-                `python -m venv .venv` does not object to either. It creates a
+                `py -3.14 -m venv .venv` does not object to either. It creates a
                 perfectly good virtual environment in the wrong place, and the
                 mistake only shows up a step later when `pip install -r
                 requirements.txt` cannot find a file that is sitting in your
@@ -992,7 +1079,7 @@ is the single source for current version requirements.
             Create the virtual environment:
 
             ``` powershell
-            python -m venv .venv
+            py -3.14 -m venv .venv
             ```
 
             Then activate it as a separate step. Use the command matching
@@ -1024,11 +1111,11 @@ is the single source for current version requirements.
 
     === ":material-linux: Linux (Ubuntu)"
 
-        1. Open a terminal and run the following command to install Python, the `venv` module, pandoc, the graphics libraries \index{WeasyPrint} needs, and the fonts this template's PDF uses by default. None of these is a Python package, so `pip` cannot install them for you:
+        1. Open a terminal and run the following command to install pandoc, the graphics libraries \index{WeasyPrint} needs, and the fonts this template's PDF uses by default. None of these is a Python package, so `pip` cannot install them for you:
 
             ``` bash
             sudo apt update
-            sudo apt install python3 python3-venv python3-pip pandoc \
+            sudo apt install pandoc \
               libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
               fonts-inter fonts-jetbrains-mono
             ```
@@ -1048,7 +1135,7 @@ is the single source for current version requirements.
            environment:
 
             ``` bash
-            python3 -m venv .venv
+            python3.14 -m venv .venv
             ```
 
             Activate it as a separate step:
@@ -1093,6 +1180,10 @@ is the single source for current version requirements.
     ``` bash
     python -m pip install -r requirements.txt
     ```
+
+    Using `python -m pip` ties the install to the active environment. Do not
+    use `sudo pip`, and do not continue if the prompt has lost its `(.venv)`
+    prefix.
 
 1. Check that the `prodockit` command actually resolves to the one you just installed:
 
@@ -1493,7 +1584,7 @@ python -c "import weasyprint; print(weasyprint.__version__)"
 
 An error ending in `cannot load library` means the platform-specific Pango
 libraries are missing or cannot be found. Return to
-[Install Python and Zensical](#install-python-and-zensical) and repeat the
+[Create the Python environment and install Zensical](#install-python-and-zensical) and repeat the
 graphics-library instructions for the operating system. Installing the Python
 package again does not install those external libraries.
 

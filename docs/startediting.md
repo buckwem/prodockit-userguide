@@ -69,7 +69,7 @@ The easiest way to open one is Visual Studio Code's own integrated terminal:
     * Command Palette (`Ctrl+Shift+P`/`Cmd+Shift+P`) > **View: Toggle Terminal**.
 3. A panel opens at the bottom of the window, already sitting in your project folder - defaulting to PowerShell on Windows, or your shell of choice (bash/zsh) on macOS and Linux.
 
-This integrated terminal also activates your Python virtual environment automatically (a self-contained folder holding just this project's Python packages, kept separate from everything else on your computer), as long as you've selected the `.venv` interpreter once - see [Install Python and Zensical](installtooling.md#install-python-and-zensical). That's the recommended path, since it needs no further steps below.
+This integrated terminal also activates your Python 3.14 virtual environment automatically (a self-contained folder holding just this project's Python packages, kept separate from everything else on your computer), as long as you've selected the `.venv` interpreter once - see [Create the Python environment and install Zensical](installtooling.md#install-python-and-zensical). Check that every new terminal prompt begins with `(.venv)` before running a Python, Zensical, or prodockit command.
 
 If you'd rather use your system's own terminal application instead of Visual Studio Code's, you need to navigate to your project folder and activate the virtual environment yourself:
 
@@ -123,6 +123,12 @@ If you'd rather use your system's own terminal application instead of Visual Stu
         ```
 
         Your prompt now starts with `(.venv)`, confirming it's active.
+
+
+After activation, `python --version` must report `Python 3.14`. If you use
+Conda, Poetry, uv, or a differently named environment, substitute its
+activation and package commands throughout the guide and verify it selects
+Python 3.14 before continuing.
 
 
 ### Start the preview server
@@ -518,7 +524,7 @@ than overwriting it.
     deactivate
     mv .venv .venv-broken
 
-    python3 -m venv .venv
+    "$(brew --prefix python@3.14)/bin/python3.14" -m venv .venv
     source .venv/bin/activate
 
     python -m pip install --upgrade pip
@@ -543,7 +549,7 @@ than overwriting it.
     deactivate
     Rename-Item .venv .venv-broken
 
-    python -m venv .venv
+    py -3.14 -m venv .venv
     .\.venv\Scripts\Activate.ps1
 
     python -m pip install --upgrade pip
@@ -561,7 +567,7 @@ than overwriting it.
     deactivate
     mv .venv .venv-broken
 
-    python3 -m venv .venv
+    python3.14 -m venv .venv
     source .venv/bin/activate
 
     python -m pip install --upgrade pip
