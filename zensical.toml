@@ -28,25 +28,26 @@ nav = [
     {"1. About this guide" = "about.md"}
   ]},
   {"Install" = [
-    {"2. Adoption install" = "adoptioninstall.md"},
-    {"3. Bootstrap Install" = "bootstrapinstall.md"},
-    {"4. Manual install" = "installtooling.md"},
-    {"5. Additional tooling" = "additionaltooling.md"}
+    {"2. Installing prodockit" = "installing.md"},
+    {"3. Adoption install" = "adoptioninstall.md"},
+    {"4. Bootstrap Install" = "bootstrapinstall.md"},
+    {"5. Manual install" = "installtooling.md"},
+    {"6. Additional tooling" = "additionaltooling.md"}
   ]},
   {"Edit" = [
-    {"6. Start editing" = "startediting.md"}
+    {"7. Start editing" = "startediting.md"}
   ]},
   {"Basics" = [
-    {"7. Markdown basics" = "markdown.md"},
-    {"8. Zensical basics" = "zensicalbasics.md"},
-    {"9. Shell commands" = "shcommands.md"}
+    {"8. Markdown basics" = "markdown.md"},
+    {"9. Zensical basics" = "zensicalbasics.md"},
+    {"10. Shell commands" = "shcommands.md"}
   ]},
   {"Customise" = [
-    {"10. Document appearance and structure" = "customise.md"},
-    {"11. Prodockit authoring features" = "customisecontent.md"}
+    {"11. Document appearance and structure" = "customise.md"},
+    {"12. Prodockit authoring features" = "customisecontent.md"}
   ]},
   {"Build and test" = [
-    {"12. Build and publish" = "customisebuild.md"}
+    {"13. Build and publish" = "customisebuild.md"}
   ]},
   {"Reference" = [
     {"A. Acronyms" = "acronyms.md"},

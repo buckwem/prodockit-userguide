@@ -32,7 +32,18 @@ content, and release schedule.
 ## Choose how to install
 
 The three routes start from different situations. \index{Tasks!Choose an installation route} matching the
-project you already have; you do not need to complete the others.
+project you already have; you do not need to complete the others. Start with
+the [Installing prodockit decision tree](installing.md) when you are unsure
+which route matches the project.
+
+All three routes use Python 3.14 and isolated `.venv` virtual environments.
+Bootstrap and Manual install begin with a setup environment in the `GitHub`
+projects directory, then create a separate build environment inside the
+project. Adoption starts with an existing project and uses its project
+environment. Follow the creation and activation commands in the route you
+choose before installing any Python packages. Conda, Poetry, uv, and
+differently named environments can also work, but their creation, activation,
+and package commands must be adapted from the `.venv` examples in this guide.
 
 <div class="grid cards one-column" markdown>
 

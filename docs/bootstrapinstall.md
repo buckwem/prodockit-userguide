@@ -56,10 +56,11 @@ the project and the separate environment used to run `prodockit bootstrap` disti
 
 /// steps
 
-//// step | Install Python
+//// step | Install Python 3.14
 
 Python is the one prerequisite `prodockit bootstrap` cannot install because Python is
-needed to run the command itself.
+needed to run the command itself. Install Python 3.14 and confirm that exact
+release before creating the environment.
 
 === ":material-apple: macOS"
 
@@ -67,8 +68,8 @@ needed to run the command itself.
     installed. Close and reopen Terminal after installing it, then run:
 
     ``` bash
-    brew install python
-    "$(brew --prefix)/bin/python3" --version
+    brew install python@3.14
+    "$(brew --prefix python@3.14)/bin/python3.14" --version
     ```
 
     Naming Homebrew's Python avoids accidentally using the older Python that
@@ -76,7 +77,7 @@ needed to run the command itself.
 
 === ":fontawesome-brands-windows: Windows"
 
-    Install the current 64-bit Python from
+    Install the 64-bit Python 3.14 release from
     [python.org](https://www.python.org/downloads/){target="_blank"}. On the
     first installer screen, tick **Add python.exe to PATH**. On the final
     screen, select **Disable path length limit**.
@@ -84,12 +85,11 @@ needed to run the command itself.
     Open PowerShell and check the installation:
 
     ``` powershell
-    python --version
+    py -3.14 --version
     ```
 
-    If this opens the Microsoft Store, Windows is finding its placeholder
-    command rather than the Python you installed. Repeat the installer with
-    **Add python.exe to PATH** selected, then open a new PowerShell window.
+    If PowerShell cannot find `py`, repeat the installer with the Python
+    Launcher selected, then open a new PowerShell window.
 
 === ":material-linux: Linux (Ubuntu)"
 
@@ -97,27 +97,29 @@ needed to run the command itself.
 
     ``` bash
     sudo apt update
-    sudo apt install python3 python3-venv python3-pip
-    python3 --version
+    sudo apt install python3.14 python3.14-venv python3-pip
+    python3.14 --version
     ```
 
     Ubuntu packages the virtual-environment support separately, so
-    `python3-venv` is required even when `python3` is already present.
+    `python3.14-venv` is required even when `python3.14` is already present.
+
+Each check must report `Python 3.14` before you continue.
 
 ////
 
 //// step | Create the environment that runs prodockit bootstrap
 
-Choose a top-level directory in which to keep your projects. The examples use
-`GitLab`; you can call it `GitHub` or `Projects` instead. Create a small Python
-environment named `.venv` in that directory and install prodockit into it.
+Create a top-level `GitHub` directory in which to keep your projects. Create a
+small Python setup environment named `.venv` in that directory and install
+prodockit into it.
 
 === ":material-apple: macOS"
 
     ``` bash
-    mkdir -p ~/GitLab
-    cd ~/GitLab
-    "$(brew --prefix)/bin/python3" -m venv .venv
+    mkdir -p ~/GitHub
+    cd ~/GitHub
+    "$(brew --prefix python@3.14)/bin/python3.14" -m venv .venv
     source .venv/bin/activate
     python -m pip install --upgrade pip
     python -m pip install --upgrade prodockit
@@ -135,9 +137,9 @@ environment named `.venv` in that directory and install prodockit into it.
     Then create and activate the environment:
 
     ``` powershell
-    New-Item -ItemType Directory -Force ~\GitLab | Out-Null
-    cd ~\GitLab
-    python -m venv .venv
+    New-Item -ItemType Directory -Force ~\GitHub | Out-Null
+    Set-Location ~\GitHub
+    py -3.14 -m venv .venv
     .\.venv\Scripts\Activate.ps1
     python -m pip install --upgrade pip
     python -m pip install --upgrade prodockit
@@ -146,9 +148,9 @@ environment named `.venv` in that directory and install prodockit into it.
 === ":material-linux: Linux (Ubuntu)"
 
     ``` bash
-    mkdir -p ~/GitLab
-    cd ~/GitLab
-    python3 -m venv .venv
+    mkdir -p ~/GitHub
+    cd ~/GitHub
+    python3.14 -m venv .venv
     source .venv/bin/activate
     python -m pip install --upgrade pip
     python -m pip install --upgrade prodockit
@@ -156,6 +158,15 @@ environment named `.venv` in that directory and install prodockit into it.
 
 The prompt should now begin with `(.venv)`. Confirm that the expected command
 and version are active:
+
+``` bash
+python --version
+```
+
+It must still report `Python 3.14`. From this point, use `python -m pip` only
+while this environment is active. Conda, Poetry, uv, and other environment
+managers require you to adapt the creation, activation, and package commands;
+the bootstrap stages and this guide assume the `.venv` layout shown here.
 
 === ":material-apple: macOS"
 
@@ -178,11 +189,12 @@ and version are active:
     prodockit --version
     ```
 
-!!! important "There will eventually be two environments"
-    This top-level `.venv` contains prodockit. During stage 16, `prodockit bootstrap`
-    creates another `.venv` inside the project for the project's own build
-    packages. Keep them separate. Run `prodockit bootstrap` from the top-level environment;
-    use the project environment later when editing and building the document.
+!!! important "Bootstrap creates the build environment"
+    This top-level `GitHub/.venv` contains prodockit for setup. During stage
+    16, `prodockit bootstrap` creates another `.venv` inside the project for
+    the project's own build packages. Keep them separate. Run `prodockit
+    bootstrap` from the top-level environment; use the project environment
+    later when editing and building the document.
 
 ////
 
@@ -323,7 +335,7 @@ and run the same apply command again.
 === ":material-apple: macOS"
 
     ``` bash
-    cd ~/GitLab
+    cd ~/GitHub
     source .venv/bin/activate
     prodockit bootstrap --apply
     ```
@@ -331,7 +343,7 @@ and run the same apply command again.
 === ":fontawesome-brands-windows: Windows"
 
     ``` powershell
-    cd ~\GitLab
+    Set-Location ~\GitHub
     .\.venv\Scripts\Activate.ps1
     prodockit bootstrap --apply
     ```
@@ -339,7 +351,7 @@ and run the same apply command again.
 === ":material-linux: Linux (Ubuntu)"
 
     ``` bash
-    cd ~/GitLab
+    cd ~/GitHub
     source .venv/bin/activate
     prodockit bootstrap --apply
     ```

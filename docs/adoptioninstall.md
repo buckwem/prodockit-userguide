@@ -24,9 +24,9 @@ of your own and want a formal-looking document as a head start, use
 of prodockit-template yourself, use [Manual install](installtooling.md).
 
 !!! info "For an existing documentation project"
-    Adoption assumes that Git, SSH, your preferred editor, and the project's
-    normal Python environment already work. It does not configure or change
-    them, and it never commits or pushes your work.
+    Adoption assumes that Git, SSH, and your preferred editor already work.
+    It uses the project's Python 3.14 environment but does not configure Git,
+    SSH, or the editor, and it never commits or pushes your work.
 
 !!! important "Start with a working build"
     Build the existing website before adopting prodockit. A successful
@@ -112,7 +112,56 @@ Replace the example path with the real project directory. If `git status`
 lists unfinished changes, commit them through the project's normal workflow
 or note them carefully before continuing. Adoption does not commit them.
 
-Build the unmodified site:
+////
+
+//// step | Prepare and activate Python 3.14
+
+Install Python 3.14 before changing the project. The [Manual install Python
+instructions](installtooling.md#install-python-314) give the platform-specific
+installation and verification commands. Return here only when the check
+reports `Python 3.14`.
+
+If the project does not have a Python environment, create its `.venv` now. If
+it already has one, omit the creation command and activate it:
+
+=== ":material-apple: macOS"
+
+    ``` bash
+    "$(brew --prefix python@3.14)/bin/python3.14" -m venv .venv
+    source .venv/bin/activate
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    In PowerShell:
+
+    ``` powershell
+    py -3.14 -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    ```
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ``` bash
+    python3.14 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+The prompt normally begins with `(.venv)` after activation. Verify the active
+interpreter before continuing:
+
+``` bash
+python --version
+```
+
+It must report `Python 3.14`. An existing environment built with another
+Python release must be rebuilt through the project's normal maintenance
+process. If the project uses another environment manager such as Conda,
+Poetry, or uv, a different environment name, or does not use `pip`, adapt the
+creation, activation, and package commands; do not create a competing `.venv`
+merely for adoption.
+
+Build the unmodified site with the environment active:
 
 === "Zensical project"
 
@@ -130,60 +179,16 @@ Fix an unsuccessful baseline build before adoption.
 
 ////
 
-//// step | Activate the project's environment
-
-Use the Python environment the project already uses. For the common `.venv`
-name:
-
-=== ":material-apple: macOS"
-
-    ``` bash
-    source .venv/bin/activate
-    ```
-
-=== ":fontawesome-brands-windows: Windows"
-
-    In PowerShell:
-
-    ``` powershell
-    .\.venv\Scripts\Activate.ps1
-    ```
-
-=== ":material-linux: Linux (Ubuntu)"
-
-    ``` bash
-    source .venv/bin/activate
-    ```
-
-The prompt normally begins with `(.venv)` after activation. If the project
-uses a different environment name or an environment manager, activate that
-environment instead. Do not create a second environment merely for adoption.
-
-////
-
 //// step | Install or update prodockit
 
 Install the command into the active project environment.
 
-=== ":material-apple: macOS"
+``` bash
+python -m pip install --upgrade prodockit
+```
 
-    ``` bash
-    pip3 install --upgrade prodockit
-    ```
-
-=== ":fontawesome-brands-windows: Windows"
-
-    In PowerShell:
-
-    ``` powershell
-    python -m pip install --upgrade prodockit
-    ```
-
-=== ":material-linux: Linux (Ubuntu)"
-
-    ``` bash
-    python -m pip install --upgrade prodockit
-    ```
+Using `python -m pip` ensures the package is installed by the active Python
+3.14 environment instead of a system-level `pip` command.
 
 Confirm that the command comes from the environment you activated:
 

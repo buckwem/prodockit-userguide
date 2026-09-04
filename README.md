@@ -33,9 +33,15 @@ This content used to live in `docs/starthere/` inside prodockit-template itself,
 ## Building locally
 
 ```bash
-pip install -r requirements.txt
+python3.14 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 zensical serve
 ```
+
+On Windows, create the environment with `py -3.14 -m venv .venv` and activate
+it with `.\.venv\Scripts\Activate.ps1`. These commands assume Python 3.14 and
+the `.venv` layout; adapt them when using another environment manager.
 
 ## Contributing
 

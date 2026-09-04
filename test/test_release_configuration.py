@@ -163,15 +163,26 @@ def test_manual_install_explains_both_repository_starting_points() -> None:
     assert 'git commit -m "Initial commit"' in install
     assert "git push -u origin main" in install
     assert "git log -1 --oneline" in install
-    assert '{"4. Manual install" = "installtooling.md"}' in config
+    assert '{"5. Manual install" = "installtooling.md"}' in config
 
 
-def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
+def test_installing_page_leads_the_three_install_approaches() -> None:
+    installing = _text("docs/installing.md")
     adoption = _text("docs/adoptioninstall.md")
     bootstrap = _text("docs/bootstrapinstall.md")
     about = _text("docs/about.md")
     config = _text("zensical.toml")
 
+    assert "# Installing prodockit" in installing
+    assert "images/installing-prodockit-decision-tree-components.png" in installing
+    assert installing.count("{ .documentation-diagram }") == 1
+    assert "[Adoption install](adoptioninstall.md)" in installing
+    assert "[Bootstrap Install](bootstrapinstall.md)" in installing
+    assert "[Manual install](installtooling.md)" in installing
+    assert "GitHub/.venv" in installing
+    assert "MkDocs" not in installing
+    assert "[Additional tooling](additionaltooling.md)" in installing
+    assert "not a fourth installation route" in installing
     assert "# Adoption install" in adoption
     assert "/// steps" in adoption
     assert "prodockit adopt --configure" in adoption
@@ -183,7 +194,6 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
     assert "tools/mermaid/package.json" in adoption
     assert "tools/mathjax/tex2svg.js" in adoption
     assert "prodockit init-tools --dir ../prodockit-tools-reference" in adoption
-    assert "pip3 install --upgrade prodockit" in adoption
     assert "python -m pip install --upgrade prodockit" in adoption
     assert "prodockit>=" not in adoption
     assert "prodockit>=" not in bootstrap
@@ -205,9 +215,20 @@ def test_adoption_and_bootstrap_install_precede_manual_install() -> None:
     assert "www.youtube-nocookie.com/embed/ZlabtdA-gZE" in about
     assert "www.youtube.com/embed/ZlabtdA-gZE" not in about
     assert about.count("/// steps") >= 2
-    assert config.index('{"2. Adoption install" = "adoptioninstall.md"}') < config.index(
-        '{"3. Bootstrap Install" = "bootstrapinstall.md"}'
-    ) < config.index('{"4. Manual install" = "installtooling.md"}')
+    assert config.index('{"2. Installing prodockit" = "installing.md"}') < config.index(
+        '{"3. Adoption install" = "adoptioninstall.md"}'
+    ) < config.index('{"4. Bootstrap Install" = "bootstrapinstall.md"}') < config.index(
+        '{"5. Manual install" = "installtooling.md"}'
+    )
+    decision_tree = _text("tools/documentation-diagrams/site-diagrams.drawio")
+    assert "installing-prodockit-decision-tree" in decision_tree
+    assert 'pageWidth="1440"' in decision_tree
+    assert decision_tree.count("fontSize=22;fontFamily=Inter") >= 7
+    assert decision_tree.count("entryX=0;entryY=0.5") >= 4
+    assert "MkDocs" not in decision_tree
+    assert (
+        ROOT / "docs/images/installing-prodockit-decision-tree-components.png"
+    ).is_file()
     assert '[project.markdown_extensions."prodockit.steps"]' in config
 
 
@@ -241,12 +262,46 @@ def test_guide_defers_product_versions_to_extensions_reference() -> None:
     )
 
     versioned_product = re.compile(
-        r"\b(?:prodockit|Zensical|Pandoc|Node\.js|Python|MathJax)\s+v?\d+\.\d+",
+        r"\b(?:prodockit|Zensical|Pandoc|Node\.js|MathJax)\s+v?\d+\.\d+",
         re.IGNORECASE,
     )
     assert not versioned_product.search(guide)
     assert not re.search(r"prodockit\s*[<>=]=?\s*\d", guide, re.IGNORECASE)
     assert not re.search(r"nodesource\.com/setup_\d+", guide, re.IGNORECASE)
+    assert set(re.findall(r"\bPython\s+v?(\d+\.\d+)", guide, re.IGNORECASE)) == {
+        "3.14"
+    }
+
+
+def test_install_routes_require_python_314_and_an_active_venv() -> None:
+    about = _text("docs/about.md")
+    adoption = _text("docs/adoptioninstall.md")
+    bootstrap = _text("docs/bootstrapinstall.md")
+    manual = _text("docs/installtooling.md")
+    editing = _text("docs/startediting.md")
+
+    for route in (adoption, bootstrap, manual):
+        assert "Python 3.14" in route
+        assert "python -m pip" in route
+        assert "source .venv/bin/activate" in route
+        assert r".\.venv\Scripts\Activate.ps1" in route
+        assert "Conda" in route
+
+    assert manual.index("## Install Python 3.14") < manual.index(
+        "## Create the setup environment"
+    ) < manual.index(
+        "## Install Visual Studio Code"
+    )
+    assert '"$(brew --prefix python@3.14)/bin/python3.14" -m venv .venv' in manual
+    assert "py -3.14 -m venv .venv" in manual
+    assert "python3.14 -m venv .venv" in manual
+    assert "Python 3.14 and isolated `.venv`" in about
+    assert "## Create the setup environment" in manual
+    assert "GitHub/.venv" in manual
+    assert "GitHub/.venv" in bootstrap
+    assert "creates another `.venv` inside the project" in bootstrap
+    assert "create a new `.venv` in the current\nproject directory" in manual
+    assert "every new terminal prompt begins with `(.venv)`" in editing
 
 
 def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
@@ -317,24 +372,24 @@ def test_guide_is_split_into_top_level_workflow_sections() -> None:
     assert '{"Customise" = [' in config
     assert '{"Build and test" = [' in config
     assert config.count(
-        '{"10. Document appearance and structure" = "customise.md"}'
+        '{"11. Document appearance and structure" = "customise.md"}'
     ) == 1
     assert config.count(
-        '{"11. Prodockit authoring features" = "customisecontent.md"}'
+        '{"12. Prodockit authoring features" = "customisecontent.md"}'
     ) == 1
-    assert config.count('{"12. Build and publish" = "customisebuild.md"}') == 1
+    assert config.count('{"13. Build and publish" = "customisebuild.md"}') == 1
     assert '"testing.md"' not in config
     install = config[config.index('{"Install" = [') : config.index('{"Edit" = [')]
     build = config[
         config.index('{"Build and test" = [') : config.index('{"Reference" = [')
     ]
-    assert '{"5. Additional tooling" = "additionaltooling.md"}' in install
-    assert '{"5. Additional tooling" = "additionaltooling.md"}' not in build
+    assert '{"6. Additional tooling" = "additionaltooling.md"}' in install
+    assert '{"6. Additional tooling" = "additionaltooling.md"}' not in build
     numbers = [
         int(number)
         for number in re.findall(r'\{"(\d+)\. [^"]+" = "[^"]+"\}', config)
     ]
-    assert numbers == list(range(1, 13))
+    assert numbers == list(range(1, 14))
 
 
 def test_additional_tooling_is_an_optional_follow_on() -> None:
