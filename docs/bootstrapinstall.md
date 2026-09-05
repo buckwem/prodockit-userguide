@@ -302,10 +302,22 @@ Each phase and stage has a prominent heading. Before a change, `prodockit bootst
 what it will do and asks for confirmation. Press ++enter++ to accept the
 default **Yes**, or enter `n` to skip that action.
 
+!!! warning "A typed `yes` means a manual step is due"
+    An ordinary automated action accepts ++enter++. If Bootstrap instead asks
+    you to type the complete word `yes`, stop and check the instructions
+    immediately above the prompt: you should have completed and verified the
+    stated manual action before authorising Bootstrap to continue.
+
 Routine installer output is replaced by a progress indicator so you can see
 that work is continuing. Commands that require interaction, such as
 `ssh-keygen` and `ssh-add`, keep control of the terminal. If a command fails,
 its full output and recovery advice are displayed.
+
+On macOS, Bootstrap also adds VS Code's application-owned command directory to
+`~/.zprofile`. The current run can use `code` immediately, and new terminal
+windows inherit it without requiring the Command Palette's **Shell Command:
+Install 'code' command in PATH** action. Existing profile content and an
+already-working `code` command are left unchanged.
 
 You will normally need to help with these points:
 
@@ -317,6 +329,10 @@ You will normally need to help with these points:
 - create a blank private repository if the named repository does not exist;
 - authorise access to a private Pages site in the browser; and
 - approve the first build, commit, and push.
+
+Bootstrap saves the selected Mermaid and maths choices in the new project's
+`.prodockit-components.toml`. A later `pdk adopt` run can therefore inspect or
+repair that toolchain without asking you to configure those choices again.
 
 !!! note "A browser sign-in page means the private site exists"
     A private GitLab Pages address may redirect to a GitLab authorisation page.
