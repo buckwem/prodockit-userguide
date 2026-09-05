@@ -166,6 +166,13 @@ separately before applying it. Both questions default to **No**. A newer
 Prodockit is not automatically preferred over the release paired with the
 selected template.
 
+`.prodockit-components.toml` belongs to the project: Template Sync does not
+copy it from the template or overwrite it. Its Adopt prerequisite uses saved
+choices when the file exists. For an older project without the file, it uses
+the same Mermaid and mathematics selections inferred from the existing
+Zensical configuration as `prodockit adopt` and `prodockit diag`, then saves
+the local record only after the integration stage is approved.
+
 If either confirmation is declined, or installation, handoff, Adopt, or
 verification fails, the template files, applied-release stamp, and update
 branch remain unchanged. Correct the reported problem and rerun the same

@@ -3,6 +3,7 @@
 
 # Environments
 .venv
+.prodockit-quarantine/
 
 # Node (mermaid-cli, used by `prodockit pdf` to pre-render mermaid diagrams
 # for the PDF - WeasyPrint has no JS engine to run Mermaid.js the way the
