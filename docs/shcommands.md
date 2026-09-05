@@ -107,7 +107,8 @@ The forward slash `/` separates directories on both macOS and Linux.
 
 The **current directory** is the directory a command works from unless you give
 it another path. Before running a project command, confirm that you are in the
-project directory—the one containing `zensical.toml` or `mkdocs.yml`.
+project directory—the one containing a Zensical configuration such as
+`zensical.toml`, or a legacy `mkdocs.yml` file that Zensical reads directly.
 
 | Command | What it does |
 |---|---|
