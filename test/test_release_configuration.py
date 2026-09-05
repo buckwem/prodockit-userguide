@@ -38,8 +38,10 @@ def test_python_artifact_builds_use_the_version_file() -> None:
     assert f"image: python:{version}" in gitlab
 
 
-def test_dependency_drift_automation_is_not_shipped() -> None:
+def test_retired_automation_and_paths_are_not_shipped() -> None:
     assert not (ROOT / ".github" / "workflows" / "drift.yml").exists()
+    assert not (ROOT / "docs" / "javascript").exists()
+    assert not (ROOT / "sync_repo_icon.py").exists()
     gitlab = _text(".gitlab-ci.yml")
     assert "\ndrift:" not in gitlab
     assert "DRIFT_TOKEN" not in gitlab
