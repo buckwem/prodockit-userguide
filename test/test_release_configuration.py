@@ -18,12 +18,12 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.55.0" in requirements
-    assert "prodockit[testing]>=0.55.0" in test_requirements
+    assert "prodockit[index]>=0.59.0" in requirements
+    assert "prodockit[testing]>=0.59.0" in test_requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
-    assert "zensical>=0.0.57" in requirements
+    assert "zensical>=0.0.59" in requirements
     assert "zensical==" not in requirements
 
 
@@ -38,8 +38,10 @@ def test_python_artifact_builds_use_the_version_file() -> None:
     assert f"image: python:{version}" in gitlab
 
 
-def test_dependency_drift_automation_is_not_shipped() -> None:
+def test_retired_automation_and_paths_are_not_shipped() -> None:
     assert not (ROOT / ".github" / "workflows" / "drift.yml").exists()
+    assert not (ROOT / "docs" / "javascript").exists()
+    assert not (ROOT / "sync_repo_icon.py").exists()
     gitlab = _text(".gitlab-ci.yml")
     assert "\ndrift:" not in gitlab
     assert "DRIFT_TOKEN" not in gitlab

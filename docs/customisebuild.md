@@ -157,6 +157,25 @@ If the preview is appropriate, apply it on the branch prepared by the command:
 prodockit template-sync --apply
 ```
 
+Before changing a template file, the command checks the selected template's
+paired Prodockit release and the complete supported toolchain. If the active
+environment needs a different Prodockit version, it shows the exact install,
+upgrade, or downgrade and asks for confirmation. It then continues under that
+version in a fresh process, previews the work needed by Adopt, and asks
+separately before applying it. Both questions default to **No**. A newer
+Prodockit is not automatically preferred over the release paired with the
+selected template.
+
+If either confirmation is declined, or installation, handoff, Adopt, or
+verification fails, the template files, applied-release stamp, and update
+branch remain unchanged. Correct the reported problem and rerun the same
+command; completed prerequisites are reassessed and skipped. For an explicitly
+unattended update, opt in to both environment changes:
+
+``` bash
+prodockit template-sync --apply --accept-prodockit --accept-adopt
+```
+
 The manifest distinguishes template-owned files from your content. The merge
 preserves every existing project-owned file and every existing
 `project.extra.pdf_*` value. It can add a new setting, but it does not reset
@@ -258,8 +277,10 @@ prodockit pins --check --offline
 //// step | Apply only the update you intend to review
 
 Use `prodockit template-sync --apply` for a template update or `prodockit pins`
-for a dependency update. Do not combine both unless they must be released
-together.
+for an independent dependency update. Template sync already aligns the
+versions and supported toolchain declared by the selected template, so do not
+run a separate pin update unless it is intentional and will be reviewed with
+the same release.
 
 ////
 

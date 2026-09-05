@@ -10,4 +10,4 @@
 # prodockit_* fixtures this suite uses for the built PDF, plus the shared
 # Mermaid/TeX rendering checks. Replaces the loose pytest/pymupdf pins that
 # were here, and the local copy of those checks (see #27).
-prodockit[testing]>=0.55.0
+prodockit[testing]>=0.59.0
