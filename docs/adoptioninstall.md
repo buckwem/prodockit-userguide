@@ -51,7 +51,10 @@ The standard adoption adds:
 The standard extensions provide the building blocks for professional and
 academic documents, including numbering and cross-references, citations and
 bibliographies, glossaries and indexes, enhanced tables, steps, and directory
-trees. Existing Markdown does not have to use every feature.
+trees. Adopt preserves an existing choice between bibliography-backed
+citations and inline, hand-written citations rather than enabling both. When a
+project has neither implementation, it selects bibliography-backed citations
+as the standard default. Existing Markdown does not have to use every feature.
 
 For a new selection, Mermaid and mathematics are off by default. A document
 using neither does not need Node.js, Mermaid CLI, MathJax, or a browser
@@ -62,13 +65,13 @@ choices as inferred rather than pretending that a saved choices file exists.
 
 ## How the stages work
 
-The command presents seven stages in four phases, using the same prominent
+The command presents eight stages in four phases, using the same prominent
 phase and stage headings as `prodockit bootstrap`:
 
 | Phase | What `prodockit adopt` checks |
 | --- | --- |
 | Assess | A supported project configuration and the active project environment |
-| Integrate | The prodockit dependency, standard extensions, and shared website stylesheet |
+| Integrate | The prodockit dependency, standard extensions, shared website stylesheet, and saved component choices |
 | Optional renderers | Mermaid diagrams and mathematical notation, according to the saved choices |
 | Verify | Whether the selected components are ready for a clean local build |
 
@@ -240,9 +243,10 @@ notation that MathJax must render. Selecting one does not select the other.
 The answers are saved in `.prodockit-components.toml`. Commit this small,
 project-owned file so colleagues and automated builds use the same choices.
 If an older project has no file, `prodockit adopt --dry-run` preserves and
-reports the choices inferred from its Zensical configuration. An approved
-integration stage then saves them in the file. Run `--configure` when the
-inference does not express what the document needs.
+reports the choices inferred from its Zensical configuration. The separate
+**Component choices** stage then saves them in the file when you approve it;
+it does not imply that extensions or styles need changing. Run `--configure`
+when the inference does not express what the document needs.
 
 You can change the choices later by running `--configure` again. Command-line
 options can also make an explicit selection for one run:
@@ -379,14 +383,17 @@ The standard extensions are:
 ``` text
 prodockit.headings
 prodockit.refs
-prodockit.citations
 prodockit.glossary
-prodockit.bibliography
 prodockit.tables
 prodockit.steps
 prodockit.tree
 prodockit.index
 ```
+
+Also retain one citation implementation. Use `prodockit.bibliography` for
+BibTeX/CSL-backed references, or `prodockit.citations` for hand-written inline
+reference entries. Adopt preserves either valid choice and adds
+`prodockit.bibliography` only when neither is configured.
 
 When mathematics is selected, retain or add `pymdownx.arithmatex` with
 `generic` enabled and load `javascripts/mathjax.js` followed by

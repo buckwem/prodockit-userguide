@@ -171,7 +171,9 @@ copy it from the template or overwrite it. Its Adopt prerequisite uses saved
 choices when the file exists. For an older project without the file, it uses
 the same Mermaid and mathematics selections inferred from the existing
 Zensical configuration as `prodockit adopt` and `prodockit diag`, then saves
-the local record only after the integration stage is approved.
+the local record only after the separate **Component choices** stage is
+approved. That manifest-only stage does not mean the project's extensions or
+styles need changing.
 
 If either confirmation is declined, or installation, handoff, Adopt, or
 verification fails, the template files, applied-release stamp, and update
