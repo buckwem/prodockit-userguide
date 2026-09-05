@@ -53,8 +53,12 @@ academic documents, including numbering and cross-references, citations and
 bibliographies, glossaries and indexes, enhanced tables, steps, and directory
 trees. Existing Markdown does not have to use every feature.
 
-Mermaid and mathematics are off by default. A document using neither does not
-need Node.js, Mermaid CLI, MathJax, or a browser renderer.
+For a new selection, Mermaid and mathematics are off by default. A document
+using neither does not need Node.js, Mermaid CLI, MathJax, or a browser
+renderer. In an older project without `.prodockit-components.toml`, Adopt
+instead infers established selections from the Mermaid and mathematics
+configuration already present in the Zensical configuration. It labels those
+choices as inferred rather than pretending that a saved choices file exists.
 
 ## How the stages work
 
@@ -233,8 +237,12 @@ Answer **Yes** to Mermaid only when the Markdown contains `mermaid` fenced
 blocks. Answer **Yes** to mathematics only when the document contains TeX
 notation that MathJax must render. Selecting one does not select the other.
 
-The answers are saved in `.prodockit-components.toml`. Commit this small file
-with the project so colleagues and automated builds use the same choices.
+The answers are saved in `.prodockit-components.toml`. Commit this small,
+project-owned file so colleagues and automated builds use the same choices.
+If an older project has no file, `prodockit adopt --dry-run` preserves and
+reports the choices inferred from its Zensical configuration. An approved
+integration stage then saves them in the file. Run `--configure` when the
+inference does not express what the document needs.
 
 You can change the choices later by running `--configure` again. Command-line
 options can also make an explicit selection for one run:
