@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 # Adoption install
 
 `prodockit adopt` lets you \index{Tasks!Adopt an existing document} by adding prodockit's authoring components to an existing
-Zensical or MkDocs document. It keeps the project's own template, structure,
+Zensical document. It keeps the project's own template, structure,
 appearance, Git history, editor, remote repository, and publishing workflow.
 The command first reports what is needed, lets you choose Mermaid diagrams and
 mathematical notation independently, and applies only the stages you approve.
@@ -39,8 +39,8 @@ The standard adoption adds:
 
 - a `prodockit` requirement to the project's existing requirements
     file, or a new `requirements.txt` when the project has none;
-- the standard prodockit Markdown extensions to the existing Zensical or
-    MkDocs configuration;
+- the standard prodockit Markdown extensions to the existing project
+    configuration;
 - `docs/stylesheets/pdk.css`, loaded before the project's own
     stylesheets so its existing rules can still override the shared styles;
 - `.prodockit-components.toml`, recording the optional renderers selected for
@@ -80,10 +80,12 @@ change is described before anything is written.
 Before changing packages or configuration, make sure the project builds and
 that you understand any work already waiting to be committed.
 
-Change to the repository directory containing one supported configuration:
+Change to the repository directory containing one configuration that Zensical
+can read:
 
 - `zensical.toml`, `zensical.yml`, or `zensical.yaml`; or
-- `mkdocs.yml` or `mkdocs.yaml`.
+- a legacy `mkdocs.yml` or `mkdocs.yaml` configuration file, which Zensical
+    can use directly.
 
 === ":material-apple: macOS"
 
@@ -161,19 +163,11 @@ Poetry, or uv, a different environment name, or does not use `pip`, adapt the
 creation, activation, and package commands; do not create a competing `.venv`
 merely for adoption.
 
-Build the unmodified site with the environment active:
+Build the unmodified site with Zensical and the environment active:
 
-=== "Zensical project"
-
-    ``` bash
-    zensical build --clean
-    ```
-
-=== "MkDocs project"
-
-    ``` bash
-    mkdocs build --clean
-    ```
+``` bash
+zensical build --clean
+```
 
 Fix an unsuccessful baseline build before adoption.
 
@@ -302,19 +296,11 @@ before building the result.
 
 //// step | Build and review the result
 
-Build the adopted site from its real content and configuration:
+Build the adopted site from its real content and configuration with Zensical:
 
-=== "Zensical project"
-
-    ``` bash
-    zensical build --clean
-    ```
-
-=== "MkDocs project"
-
-    ``` bash
-    mkdocs build --clean
-    ```
+``` bash
+zensical build --clean
+```
 
 Open the local result and check representative pages. The project's own
 stylesheet remains later in the configuration than `pdk.css`, so its
@@ -375,7 +361,7 @@ to make the message disappear.
 | File | Result required after manual integration |
 | --- | --- |
 | The existing requirements file | Retain its current packages and include a `prodockit` dependency. |
-| `zensical.toml`, `zensical.yml`, `zensical.yaml`, `mkdocs.yml`, or `mkdocs.yaml` | Retain the project's settings; enable the standard prodockit extensions and load `stylesheets/pdk.css` before the project's own stylesheets. |
+| The Zensical configuration file: `zensical.toml`, `zensical.yml`, `zensical.yaml`, or a legacy `mkdocs.yml` or `mkdocs.yaml` file read by Zensical | Retain the project's settings; enable the standard prodockit extensions and load `stylesheets/pdk.css` before the project's own stylesheets. |
 | `tools/mermaid/package.json` | Retain project-specific scripts and dependencies; include `@mermaid-js/mermaid-cli` when Mermaid was selected. |
 | `tools/mathjax/package.json` | Retain project-specific scripts and dependencies; include `mathjax-full` when mathematics was selected. |
 | `tools/mathjax/tex2svg.js` | Preserve intentional local changes while ensuring the script still reads TeX from standard input and writes an SVG to standard output. |
@@ -454,10 +440,9 @@ git diff
 git status --short
 ```
 
-For an MkDocs project, replace the Zensical build command with
-`mkdocs build --clean`. The adoption report should now show the selected
-components as configured. Review the combined changes through the project's
-normal development process before committing them.
+The adoption report should now show the selected components as configured.
+Review the combined changes through the project's normal development process
+before committing them.
 
 ## Resume safely if work stops
 
@@ -497,7 +482,7 @@ again:
 
 The command reassesses the live files and continues only with stages that
 still need work. It does not overwrite an existing project stylesheet or
-remove existing Zensical or MkDocs settings.
+remove existing Zensical settings.
 
 ## Help with common problems {: #adoption-help-with-common-problems }
 
@@ -509,9 +494,9 @@ environment before it can find project-local commands.
 
 ### More than one configuration is found
 
-Adoption needs one active Zensical or MkDocs configuration. Remove an obsolete
-duplicate only after checking which file the existing build actually uses. Do
-not delete a configuration merely to make the warning disappear.
+Adoption needs one active configuration that Zensical can read. Remove an
+obsolete duplicate only after checking which file the existing build actually
+uses. Do not delete a configuration merely to make the warning disappear.
 
 ### The build changes unexpectedly
 

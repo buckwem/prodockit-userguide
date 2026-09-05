@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 
 A \index{docs-as-code} workflow uses plain-text Markdown, version control, and
 automated builds to create documentation. This guide helps you add prodockit
-to an existing Zensical or MkDocs site, or use
+to an existing Zensical site, or use
 [prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}
 as a head start for a new professional website and PDF.
 
@@ -50,7 +50,7 @@ and package commands must be adapted from the `.venv` examples in this guide.
 -   :material-clock-fast:{ .lg .middle } **\index{Installation!Adoption install}**
 
     Use [`prodockit adopt`](adoptioninstall.md) when you already have a working
-    Zensical or MkDocs document and want to add prodockit's components without
+    Zensical document and want to add prodockit's components without
     replacing your own template, editor, Git setup, or publishing workflow.
 
     [:octicons-arrow-right-24: Use Adoption install](adoptioninstall.md)
@@ -167,7 +167,7 @@ After choosing an installation route, work through the guide in this order.
 //// step | Set up the computer and project
 
 Choose [Adoption install](adoptioninstall.md) to add prodockit to an existing
-Zensical or MkDocs document. Choose
+Zensical document. Choose
 [Bootstrap Install](bootstrapinstall.md) for an automated formal-document head
 start when you do not have a template, or [Manual install](installtooling.md)
 to set up prodockit-template yourself.

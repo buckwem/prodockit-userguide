@@ -275,6 +275,23 @@ def test_guide_defers_product_versions_to_extensions_reference() -> None:
     }
 
 
+def test_guide_uses_zensical_commands_with_legacy_config_names_only() -> None:
+    guide = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted((ROOT / "docs").rglob("*.md"))
+    )
+    without_legacy_config_names = re.sub(
+        r"mkdocs\.ya?ml", "", guide, flags=re.IGNORECASE
+    )
+
+    assert "mkdocs" not in without_legacy_config_names.lower()
+    assert not re.search(
+        r"\bmkdocs\s+(?:build|serve|new|gh-deploy)\b", guide, re.IGNORECASE
+    )
+    assert "legacy `mkdocs.yml` or `mkdocs.yaml` configuration file" in guide
+    assert "which Zensical\n    can use directly" in guide
+
+
 def test_install_routes_require_python_314_and_an_active_venv() -> None:
     about = _text("docs/about.md")
     adoption = _text("docs/adoptioninstall.md")
