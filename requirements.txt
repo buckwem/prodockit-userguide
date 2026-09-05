@@ -14,11 +14,11 @@ pymdown-extensions>=11.0.2
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
 # prodockit.index in zensical.toml.
 #
-# A minimum rather than an exact pin: 0.60.2 is the coordinated release floor
-# that detects mixed-Python environments, aligns Prodockit and the supported
-# toolchain before applying a template update, preserves inferred renderer
-# choices, and accepts valid CI Python environments without VIRTUAL_ENV.
-# Newer releases remain acceptable.
+# A minimum rather than an exact pin: 0.60.3 is the coordinated release floor
+# that keeps Adopt, Diagnostics, and Template Sync aligned, preserves an
+# existing bibliography or inline-citation choice, and reports saved component
+# choices separately from extension and stylesheet readiness. Newer releases
+# remain acceptable.
 #
 # `prodockit pins` could not manage this line before 0.17.5: its matcher
 # expected the version straight after the package name, and the `[index]`
@@ -26,7 +26,7 @@ pymdown-extensions>=11.0.2
 # rather than failing to parse (prodockit-extensions#156). Needs 0.17.5+
 # installed to pin or check this line - see "Pinning build inputs" in
 # customisebuild.md.
-prodockit[index]>=0.60.2
+prodockit[index]>=0.60.3
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI
