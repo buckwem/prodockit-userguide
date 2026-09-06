@@ -2,6 +2,7 @@
 
 import re
 import subprocess
+import tomllib
 from pathlib import Path
 
 from jinja2 import Environment
@@ -18,12 +19,14 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
-    assert "prodockit[index]>=0.60.3" in requirements
-    assert "prodockit[testing]>=0.60.3" in test_requirements
+    versions = tomllib.loads(_text(".prodockit-toolchain.toml"))["versions"]
+    assert f"prodockit[index]>={versions['prodockit']}" in requirements
+    assert f"prodockit[testing]>={versions['prodockit']}" in test_requirements
     assert "prodockit[index]==" not in requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
-    assert "zensical>=0.0.59" in requirements
+    assert f"zensical>={versions['zensical']}" in requirements
+    assert f"markdown=={versions['markdown']}" in requirements
     assert "zensical==" not in requirements
 
 
