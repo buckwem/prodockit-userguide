@@ -67,6 +67,11 @@ For anything beyond a small fix (typos, broken links), please open an issue firs
 
 ## Reporting bugs and requesting features
 
+During release cascades, keep `.prodockit-toolchain.toml`, `requirements.txt`
+and CI declarations aligned using `prodockit pins`. The manifest records the
+supported combination; the explicit Markdown requirement prevents an immediate
+Adopt alignment after installation.
+
 Please use the issue templates when opening an issue - they help make sure we get the information needed to act on it.
 
 ## License
