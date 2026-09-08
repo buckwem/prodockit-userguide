@@ -86,6 +86,7 @@ extra_css = [
 # config matches the fix there, so the two projects stay in step even
 # though this page's own formula was not observed to fail without it.
 extra_javascript = [
+  "javascripts/pdk.js",
   "javascripts/mathjax.js",
   "javascripts/vendor/mathjax/tex-svg-full.js",
   "javascripts/extra.js"

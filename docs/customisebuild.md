@@ -229,8 +229,8 @@ also checks that each declared file matches the copy supplied by the installed
 Prodockit release. The check changes nothing.
 
 For example, the Prodockit documentation repositories share managed website
-and PDF styles in `pdk.css` and `pdk-pdf.css`. Preview a missing or different
-copy directly with:
+and PDF styles in `pdk.css` and `pdk-pdf.css`, plus shared website behaviour in
+`pdk.js`. Preview a missing or different copy directly with:
 
 ``` bash
 prodockit shared-files --check
@@ -241,7 +241,7 @@ result:
 
 ``` bash
 prodockit shared-files --apply
-git diff -- docs/stylesheets/pdk.css docs/stylesheets/pdk-pdf.css
+git diff -- docs/stylesheets/pdk.css docs/stylesheets/pdk-pdf.css docs/javascripts/pdk.js
 ```
 
 Commit the restored file only after reviewing the difference. The shared-file
