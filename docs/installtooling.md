@@ -36,11 +36,19 @@ that release.
 
 === ":material-apple: macOS"
 
-    Install Homebrew from [brew.sh](https://brew.sh){target="_blank"} if it is
-    not already present. Close and reopen Terminal after installing it, then
-    run:
+    If Homebrew is not installed, use its official installer. Follow every
+    post-install instruction it prints so that `brew` is added to your shell.
+
+    [:simple-homebrew: Install Homebrew](https://brew.sh/){ .md-button .homebrew-button target="_blank" rel="noopener" }
+
+    **After Homebrew finishes installing, close Terminal completely and reopen
+    it. The current terminal will not know about the new `brew` command.**
+
+    In the reopened terminal, check that Homebrew is available, then install
+    Python 3.14:
 
     ``` bash
+    brew --version
     brew install python@3.14
     "$(brew --prefix python@3.14)/bin/python3.14" --version
     ```
@@ -138,7 +146,12 @@ Start with installing [Visual Studio Code](https://code.visualstudio.com){target
 === ":material-apple: macOS"
 
     1. Open the **Terminal** application.
-    1. You are likely to already have [Homebrew](https://brew.sh){target="_blank"} installed, but if not, follow the instructions on [brew.sh](https://brew.sh){target="_blank"} to install it.  **Close and reopen your Terminal after installing it.** As the installer adds `brew` to your `PATH`, and a session that was already open won't pick that up.
+    1. Confirm that the Homebrew checked in
+        [Install Python 3.14](#install-python-314) is still available:
+
+        ``` bash
+        brew --version
+        ```
 
     1. Use the Homebrew package manager to install Visual Studio Code in your Terminal:
         ``` bash
