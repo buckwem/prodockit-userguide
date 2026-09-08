@@ -552,7 +552,7 @@ def test_customise_content_introduces_authoring_extensions() -> None:
 
     assert "# Document appearance and structure" in customise
     assert "# Prodockit authoring features" in content
-    assert "Most document-wide changes are made in one of four places" in customise
+    assert "Most document-wide changes are made in one of six places" in customise
     assert "## Navigation structure" in customise
     assert "## Customise front page" in customise
     assert "## Customise PDF generation" in customise
