@@ -64,10 +64,19 @@ release before creating the environment.
 
 === ":material-apple: macOS"
 
-    Install [Homebrew](https://brew.sh){target="_blank"} if it is not already
-    installed. Close and reopen Terminal after installing it, then run:
+    If Homebrew is not installed, use its official installer. Follow every
+    post-install instruction it prints so that `brew` is added to your shell.
+
+    [:simple-homebrew: Install Homebrew](https://brew.sh/){ .md-button .homebrew-button target="_blank" rel="noopener" }
+
+    **After Homebrew finishes installing, close Terminal completely and reopen
+    it. The current terminal will not know about the new `brew` command.**
+
+    In the reopened terminal, check that Homebrew is available, then install
+    Python 3.14:
 
     ``` bash
+    brew --version
     brew install python@3.14
     "$(brew --prefix python@3.14)/bin/python3.14" --version
     ```

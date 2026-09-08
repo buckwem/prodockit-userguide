@@ -159,7 +159,20 @@ automated pipeline.
 
     === ":material-apple: macOS"
 
+        If Homebrew is not installed, use its official installer. Follow every
+        post-install instruction it prints so that `brew` is added to your shell.
+
+        [:simple-homebrew: Install Homebrew](https://brew.sh/){ .md-button .homebrew-button target="_blank" rel="noopener" }
+
+        **After Homebrew finishes installing, close Terminal completely and
+        reopen it. The current terminal will not know about the new `brew`
+        command.**
+
+        In the reopened terminal, check that Homebrew is available, then install
+        Vale:
+
         ``` bash
+        brew --version
         brew install vale
         ```
 
@@ -244,7 +257,19 @@ runs in a browser. For regular use, install a desktop or command-line tool:
 
 === ":material-apple: macOS"
 
+    If Homebrew is not installed, use its official installer. Follow every
+    post-install instruction it prints so that `brew` is added to your shell.
+
+    [:simple-homebrew: Install Homebrew](https://brew.sh/){ .md-button .homebrew-button target="_blank" rel="noopener" }
+
+    **After Homebrew finishes installing, close Terminal completely and reopen
+    it. The current terminal will not know about the new `brew` command.**
+
+    In the reopened terminal, check that Homebrew is available, then install
+    ImageOptim:
+
     ``` bash
+    brew --version
     brew install --cask imageoptim
     ```
 

@@ -330,6 +330,48 @@ def test_install_routes_require_python_314_and_an_active_venv() -> None:
     assert "every new terminal prompt begins with `(.venv)`" in editing
 
 
+def test_homebrew_install_actions_are_prominent_and_consistent() -> None:
+    bootstrap = _text("docs/bootstrapinstall.md")
+    manual = _text("docs/installtooling.md")
+    additional = _text("docs/additionaltooling.md")
+    css = _text("docs/stylesheets/extra.css")
+    button = (
+        "[:simple-homebrew: Install Homebrew](https://brew.sh/)"
+        '{ .md-button .homebrew-button target="_blank" rel="noopener" }'
+    )
+
+    assert bootstrap.count(button) == 1
+    assert manual.count(button) == 1
+    assert additional.count(button) == 2
+    assert (
+        bootstrap.index(button)
+        < bootstrap.index("brew --version")
+        < bootstrap.index("brew install python@3.14")
+    )
+    assert manual.index(button) < manual.index("brew --version") < manual.index(
+        "brew install python@3.14"
+    )
+
+    vale = additional[
+        additional.index("### Add shared checks with Vale") : additional.index(
+            "## Convert an existing document to Markdown"
+        )
+    ]
+    imageoptim = additional[additional.index("## Optimise images before committing") :]
+    assert vale.index(button) < vale.index("brew --version") < vale.index(
+        "brew install vale"
+    )
+    assert imageoptim.index(button) < imageoptim.index(
+        "brew --version"
+    ) < imageoptim.index("brew install --cask imageoptim")
+
+    assert ".md-typeset .homebrew-button" in css
+    assert "background-color: #fbb040" in css
+    assert "color: #171717" in css
+    assert ".homebrew-button:is(:hover, :focus)" in css
+    assert "brew.sh/install.sh" not in "\n".join((bootstrap, manual, additional))
+
+
 def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
     environment = Environment(autoescape=False)
     context = {
