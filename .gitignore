@@ -52,3 +52,9 @@ docs/.prodockit-pdf-mermaid/
 # Pandoc/WeasyPrint temp artefacts occasionally left in the project root by
 # an interrupted `prodockit pdf` run - never wanted in the repository.
 toPdfViaTempFile*.pdf
+
+# Installed by `prodockit adopt`
+tools/mermaid/node_modules/
+
+# Installed by `prodockit adopt`
+tools/mathjax/node_modules/

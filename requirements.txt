@@ -14,13 +14,11 @@ pymdown-extensions>=11.0.2
 # (prodockit.pdf.index) built from every \index{Term} marker in docs/ - see
 # prodockit.index in zensical.toml.
 #
-# A minimum rather than an exact pin: 0.61.3 is the coordinated release floor.
-# It retains the project-environment safeguards, tested Pandoc 3.10.1 pin,
-# Windows terminal-refresh guidance and CRLF-safe managed-file checks, while
-# keeping Bootstrap's preserved template history outside the project and
-# reporting missing environments, Node.js or npm before Adopt can leave a
-# renderer installation half-finished. The supported combination is recorded
-# in .prodockit-toolchain.toml.
+# A minimum rather than an exact pin: 0.61.6 is the coordinated release floor.
+# It retains the environment and renderer safeguards from 0.61.3 and adds the
+# managed pdk.js asset, user-managed extra.js boundary, and configuration
+# repair used by Adopt, Diagnostics, and Template Sync. The supported
+# combination is recorded in .prodockit-toolchain.toml.
 #
 # `prodockit pins` could not manage this line before 0.17.5: its matcher
 # expected the version straight after the package name, and the `[index]`
@@ -28,7 +26,7 @@ pymdown-extensions>=11.0.2
 # rather than failing to parse (prodockit-extensions#156). Needs 0.17.5+
 # installed to pin or check this line - see "Pinning build inputs" in
 # customisebuild.md.
-prodockit[index]>=0.61.3
+prodockit[index]>=0.61.6
 # prodockit.pdf shells out to the `pandoc`/`weasyprint` CLI binaries, not
 # their Python APIs - pandoc itself isn't pip-installable (see
 # .github/workflows/docs.yml's setup-pandoc step), but weasyprint's CLI

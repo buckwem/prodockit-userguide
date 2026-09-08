@@ -1,7 +1,7 @@
 # Copyright (c) 2026 Mark Buckwell and contributors
 # SPDX-License-Identifier: MIT
 
-"""The shared website and PDF styles follow the installed Prodockit release."""
+"""Managed website, PDF, and JavaScript assets follow Prodockit."""
 
 from pathlib import Path
 
@@ -15,15 +15,35 @@ from prodockit.shared_files import MANIFEST, inspect
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_shared_stylesheets_match_the_installed_release() -> None:
+def test_shared_assets_match_the_installed_release() -> None:
     states = inspect(ROOT)
 
-    assert [state.file.source for state in states] == ["pdk.css", "pdk-pdf.css"]
+    assert [state.file.source for state in states] == [
+        "pdk.css",
+        "pdk-pdf.css",
+        "pdk.js",
+    ]
     assert [state.file.target for state in states] == [
         "docs/stylesheets/pdk.css",
         "docs/stylesheets/pdk-pdf.css",
+        "docs/javascripts/pdk.js",
     ]
     assert all(state.status == "current" for state in states)
+
+
+def test_javascript_assets_have_the_required_ownership_and_order() -> None:
+    config = (ROOT / "zensical.toml").read_text(encoding="utf-8")
+    managed = '"javascripts/pdk.js"'
+    mathjax_config = '"javascripts/mathjax.js"'
+    mathjax_bundle = '"javascripts/vendor/mathjax/tex-svg-full.js"'
+    user_managed = '"javascripts/extra.js"'
+
+    assert config.index(managed) < config.index(mathjax_config)
+    assert config.index(mathjax_config) < config.index(mathjax_bundle)
+    assert config.index(mathjax_bundle) < config.index(user_managed)
+    assert (ROOT / "docs" / "javascripts" / "extra.js").read_text(
+        encoding="utf-8"
+    ) == ""
 
 
 @pytest.mark.parametrize("state", ["different", "missing"])
