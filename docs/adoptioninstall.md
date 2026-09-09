@@ -556,10 +556,22 @@ project stylesheet.
 
 ### An optional renderer fails to install
 
-A temporary npm or network error can be retried safely with
-`prodockit adopt --apply`. If the document does not contain that kind of
+A temporary npm or network error can usually be retried with
+`prodockit adopt --apply` after the command has finished. If Adopt warns that
+an installer or its child processes may still be running, do not immediately
+start another installation: wait for it to finish or follow the displayed
+recovery instructions. Earlier completed activities are checked again and
+retained. If the document does not contain that kind of
 content, run `prodockit adopt --configure`, turn the unused renderer off, and
 apply again.
+
+### Fonts could not be verified
+
+An unverified font check means the inspection could not finish; it does not
+prove that your fonts are missing. Follow the message about the font inspection
+tool or environment, then rerun `pdk diag`. A successful check must identify
+Inter and JetBrains Mono themselves, not a substitute font. If the fonts really
+are missing, run `pdk adopt --apply` to review the PDF runtime repair.
 
 ## Where to go next {: #adoptioninstall-where-to-go-next }
 

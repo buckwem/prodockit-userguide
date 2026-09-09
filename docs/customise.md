@@ -82,8 +82,28 @@ prodockit sync-repo
 ```
 
 The command updates `repo_url`, `repo_name`, `edit_uri`, the repository icon,
-and the badges in `README.md`. It does not change the Git remote or push any
-files. Review the reported changes and `git diff` before committing them.
+and an existing badge block in `README.md`. Missing configuration entries are
+created safely; you do not need to uncomment or insert them in an editor.
+For a fresh site's incomplete details, an interactive run asks you to confirm
+the detected repository, website title and proposed website address. A proposed
+address does not prove that the website has been published. Existing custom
+domains are preserved unless you explicitly request a different address.
+
+If the project has no README, create a starter one at the same time:
+
+``` bash
+prodockit sync-repo --create-readme
+```
+
+You can also supply details directly, substituting your own title and address:
+
+``` bash
+prodockit sync-repo --site-name "My report" --site-url "https://your-account.github.io/your-repository/"
+```
+
+`--check` never prompts or changes files. The command does not change the Git remote,
+enable hosting or push files. Review the reported changes and
+`git diff` before committing them.
 
 The [command-line guide](https://prodockit.org/command-line/){target="_blank"}
 provides the full `sync-repo` reference.
