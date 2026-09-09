@@ -58,3 +58,6 @@ tools/mermaid/node_modules/
 
 # Installed by `prodockit adopt`
 tools/mathjax/node_modules/
+
+# Installed by `prodockit adopt`
+/.prodockit-adopt-backups/
