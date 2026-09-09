@@ -1,6 +1,7 @@
 """Release floors, canonical domains, and coordinated documentation."""
 
 import re
+import json
 import subprocess
 import tomllib
 from pathlib import Path
@@ -32,6 +33,26 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
 
 def test_diagnostic_recovery_directory_is_ignored() -> None:
     assert ".prodockit-quarantine/" in _text(".gitignore").splitlines()
+
+
+def test_adopt_release_keeps_renderers_selected_and_declares_browser() -> None:
+    components = tomllib.loads(_text(".prodockit-components.toml"))["components"]
+    assert components == {"mermaid": True, "maths": True}
+    manifest = json.loads(_text("tools/mermaid/package.json"))
+    lock = json.loads(_text("tools/mermaid/package-lock.json"))
+    assert "puppeteer" in manifest["dependencies"]
+    assert lock["packages"][""]["dependencies"] == manifest["dependencies"]
+    assert "/.prodockit-adopt-backups/" in _text(".gitignore").splitlines()
+
+
+def test_adopt_guidance_describes_runtime_provisioning_and_review() -> None:
+    adoption = _text("docs/adoptioninstall.md")
+    assert "eleven activities in four phases" in adoption
+    assert "Homebrew" in adoption
+    assert ".prodockit-adopt.toml" in adoption
+    assert ".prodockit-adopt-backups/renderers/" in adoption
+    assert "pdk diag" in adoption
+    assert "eight stages" not in adoption
 
 
 def test_python_artifact_builds_use_the_version_file() -> None:

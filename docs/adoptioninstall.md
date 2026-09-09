@@ -15,7 +15,7 @@ SPDX-License-Identifier: MIT
 Zensical document. It keeps the project's own template, structure,
 appearance, Git history, editor, remote repository, and publishing workflow.
 The command first reports what is needed, lets you choose Mermaid diagrams and
-mathematical notation independently, and applies only the stages you approve.
+mathematical notation independently, and applies only the activities you approve.
 
 Use this route when the document already builds and you want to add prodockit
 without starting again from prodockit-template. If you do not have a template
@@ -24,7 +24,7 @@ of your own and want a formal-looking document as a head start, use
 of prodockit-template yourself, use [Manual install](installtooling.md).
 
 !!! info "For an existing documentation project"
-    Adoption assumes that Git, SSH, and your preferred editor already work.
+    Adoption does not require Git, SSH, or an editor to build a local document.
     It uses the project's Python 3.14 environment but does not configure Git,
     SSH, or the editor, and it never commits or pushes your work.
 
@@ -49,7 +49,12 @@ The standard adoption adds:
 - `.prodockit-components.toml`, recording the optional renderers selected for
     the project; and
 - project-local Mermaid and MathJax tooling only when those options are
-    selected.
+    selected;
+- the supported Python packages, Pandoc, native PDF libraries and fonts, with
+    upgrades or downgrades when necessary; and
+- `.prodockit-adopt.toml`, a record of reviewed template settings. Existing
+    author values are preserved; unknown new settings are commented for review.
+    Delete the ledger to review settings again, not to reset software checks.
 
 The standard extensions provide the building blocks for professional and
 academic documents, including numbering and cross-references, citations and
@@ -62,24 +67,30 @@ as the standard default. Existing Markdown does not have to use every feature.
 For a new selection, Mermaid and mathematics are off by default. A document
 using neither does not need Node.js, Mermaid CLI, MathJax, or a browser
 renderer. In an older project without `.prodockit-components.toml`, Adopt
-instead infers established selections from the Mermaid and mathematics
-configuration already present in the Zensical configuration. It labels those
+instead infers established selections from project-local renderer files,
+including incomplete installations. Zensical's starter configuration alone
+does not enable either renderer. It labels those
 choices as inferred rather than pretending that a saved choices file exists.
 
-## How the stages work
+## How the activities work
 
-The command presents eight stages in four phases, using the same prominent
-phase and stage headings as `prodockit bootstrap`:
+The command presents eleven activities in four phases, using the same prominent
+phase and activity headings as `prodockit bootstrap`:
 
 | Phase | What `prodockit adopt` checks |
 | --- | --- |
 | Assess | A supported project configuration and the active project environment |
-| Integrate | The prodockit dependency, standard extensions, shared website stylesheet, and saved component choices |
-| Optional renderers | Mermaid diagrams and mathematical notation, according to the saved choices |
+| Integrate | Supported software versions, native PDF libraries/fonts, standard settings and assets, citation style, and component choices |
+| Optional renderers | Node.js/npm, Mermaid and its browser, and MathJax, according to the saved choices |
 | Verify | Whether the selected components are ready for a clean local build |
 
-A satisfied stage is reported as `ok` and left alone. A stage needing a local
+A satisfied activity is reported as `ok` and left alone. An activity needing a local
 change is described before anything is written.
+
+Adopt installs the required runtime on Windows, Ubuntu and macOS; it may ask
+for administrator approval. On macOS, install [Homebrew](https://brew.sh/)
+first and complete its shell setup. Windows can repair missing WinGet support.
+Node.js and a browser are installed only when selected renderers need them.
 
 ## Complete the adoption
 
@@ -219,7 +230,7 @@ This first report is read-only. Near the top, check:
 - **Mermaid** and **maths** show the expected current choices; and
 - **Excluded** lists Git, SSH, remotes, editors, commits, and pushes.
 
-The phases then show what is already correct and which selected stages need
+The phases then show what is already correct and which selected activities need
 work. No files or packages are changed.
 
 ////
@@ -246,8 +257,8 @@ notation that MathJax must render. Selecting one does not select the other.
 The answers are saved in `.prodockit-components.toml`. Commit this small,
 project-owned file so colleagues and automated builds use the same choices.
 If an older project has no file, `prodockit adopt --dry-run` preserves and
-reports the choices inferred from its Zensical configuration. The separate
-**Component choices** stage then saves them in the file when you approve it;
+reports the choices inferred from its existing renderer files. The separate
+**Component choices** activity then saves them in the file when you approve it;
 it does not imply that extensions or styles need changing. Run `--configure`
 when the inference does not express what the document needs.
 
@@ -271,7 +282,7 @@ prodockit adopt --dry-run
 
 The preview identifies each file and optional toolchain that needs attention,
 but makes no changes. Add `--verbose` when you need the detailed files and
-commands behind the concise stage descriptions:
+commands behind the concise activity descriptions:
 
 ``` bash
 prodockit adopt --dry-run --verbose
@@ -282,7 +293,7 @@ optional-renderer choices are the ones you expect.
 
 ////
 
-//// step | Apply the reviewed stages
+//// step | Apply the reviewed activities
 
 Run:
 
@@ -290,16 +301,16 @@ Run:
 prodockit adopt --apply
 ```
 
-The command asks before each stage that writes files or installs an optional
+The command asks before each activity that writes files or installs an optional
 renderer. Press ++enter++ to accept the default **Yes**, or enter `n` to skip
-that stage.
+that activity.
 
 If Mermaid or mathematics is selected, its Node packages are installed below
 `tools/`. They belong to this project and are not installed globally for
 unrelated documents. Routine installer output is hidden while work continues;
 full output and recovery advice are shown if a command fails.
 
-The command stops after changing local project files. It does not commit,
+The command verifies the selected software and project configuration. It does not commit,
 push, alter a remote, or publish the site.
 
 If prodockit keeps an existing file or says that a configuration form cannot
@@ -311,10 +322,17 @@ before building the result.
 
 //// step | Build and review the result
 
+Follow any highlighted environment-refresh instructions before checking the
+result. On macOS, reactivate the project's environment with
+`source .venv/bin/activate`. If Windows requests a restart, fully close and
+reopen the terminal, return to the project and run
+`.\.venv\Scripts\Activate.ps1`.
+
 Build the adopted site from its real content and configuration with Zensical:
 
 ``` bash
-zensical build --clean
+pdk diag
+zensical build --clean --strict
 ```
 
 Open the local result and check representative pages. The project's own
@@ -341,7 +359,7 @@ Run the assessment once more:
 prodockit adopt
 ```
 
-The selected stages should now report `ok`, followed by:
+The selected activities should now report `ok`, followed by:
 
 ``` text
 All selected prodockit components are configured.
@@ -357,6 +375,14 @@ document features.
 ///
 
 ## Manually integrate files prodockit preserves {: #adoptioninstall-manual-integration }
+
+The supported Mermaid/MathJax manifests, lockfiles and helper scripts are
+aligned to the installed release. Adopt saves replaced versions under
+`.prodockit-adopt-backups/renderers/`; it does not promise to merge arbitrary
+custom renderer dependencies or scripts. Keep separate tooling for customised
+renderers and review the backup before restoring any changes. The manual
+comparison below is for reviewing those differences, not for bypassing the
+supported-version check.
 
 Manually integrate preserved files when adoption reports that a
 shared file contains project changes that it must not overwrite.
@@ -469,9 +495,9 @@ before committing them.
 ## Resume safely if work stops
 
 Resume an interrupted adoption by running the command again; it
-reassesses completed stages before proposing further changes.
+reassesses completed activities before proposing further changes.
 
-The stages are idempotent: a completed stage is checked and left alone. If a
+The activities are idempotent: a completed activity is checked and left alone. If a
 network failure, closed terminal, or package-service error interrupts the
 installation, return to the project, activate its environment, and apply
 again:
@@ -502,7 +528,7 @@ again:
     prodockit adopt --apply
     ```
 
-The command reassesses the live files and continues only with stages that
+The command reassesses the live files and continues only with activities that
 still need work. It does not overwrite an existing project stylesheet or
 remove existing Zensical settings.
 

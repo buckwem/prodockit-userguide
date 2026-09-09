@@ -196,9 +196,18 @@ pdf_header_footer_color = "#555555"
 pdf_header_footer_divider_color = "#e2e8f0"
 
 # ----------------------------------------------------------------------------
+# Explicit website and PDF defaults maintained by Adopt.
+# ----------------------------------------------------------------------------
+heading_numbering = true
+website_heading_numbering = true
+pdf_double_sided = false
+pdf_margin_inner = "2cm"
+pdf_margin_outer = "2cm"
+pdf_include_table_of_contents = true
+pdf_table_of_contents_title = "Table of Contents"
+
 # Markdown extensions - mirrors prodockit-template's own config, since every
 # page here demonstrates one of these features live.
-# ----------------------------------------------------------------------------
 [project.markdown_extensions.abbr]
 [project.markdown_extensions.admonition]
 [project.markdown_extensions.attr_list]
@@ -272,3 +281,17 @@ types = [
 # registered via the `modules = [...]` option instead.
 module_name = "macros"
 on_error_fail = true
+
+# prodockit-adopt setting: ["project", "markdown_extensions", "prodockit.bibliography", "bib_file"]
+# New template setting: review before enabling; merge into the named table.
+# In ["project"."markdown_extensions"."prodockit.bibliography"]:
+# "bib_file" = "references.bib"
+
+# prodockit-adopt setting: ["project", "markdown_extensions", "prodockit.bibliography", "csl_style"]
+# New template setting: review before enabling; merge into the named table.
+# In ["project"."markdown_extensions"."prodockit.bibliography"]:
+# "csl_style" = "harvard-cite-them-right.csl"
+
+# prodockit-adopt setting: ["project", "markdown_extensions", "prodockit.index"]
+# New template setting: review before enabling; merge into the named table.
+# ["project"."markdown_extensions"."prodockit.index"]
