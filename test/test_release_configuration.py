@@ -55,6 +55,16 @@ def test_adopt_guidance_describes_runtime_provisioning_and_review() -> None:
     assert "eight stages" not in adoption
 
 
+def test_repository_setup_documents_editor_free_options_and_safe_recovery() -> None:
+    customise = _text("docs/customise.md")
+    for option in ("--create-readme", "--site-name", "--site-url"):
+        assert option in customise
+    assert "does not prove that the website has been published" in customise
+    adoption = _text("docs/adoptioninstall.md")
+    assert "child processes may still be running" in adoption
+    assert "Fonts could not be verified" in adoption
+
+
 def test_python_artifact_builds_use_the_version_file() -> None:
     version = _text(".python-version").strip()
     github = _text(".github/workflows/docs.yml")
