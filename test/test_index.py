@@ -11,6 +11,9 @@ import pytest
 
 
 INDEX_TITLE = "Index"
+GIT_COMMIT_ENTRY = re.compile(
+    r"(?ms)^Git(?:,[ \t]*[\d, ]+)?[ \t]*$.*?^commit,[ \t]*[\d, ]+[ \t]*$"
+)
 
 
 def test_index_generation_is_configured_on_the_index_extension(prodockit_config):
@@ -32,14 +35,18 @@ def _index_text(page_texts):
     pytest.fail(f"No PDF page begins with the exact title {INDEX_TITLE!r}")
 
 
+def test_nested_index_entry_allows_a_parent_without_a_page_number():
+    assert GIT_COMMIT_ENTRY.search("Git \ncommit, 21 \n")
+    assert GIT_COMMIT_ENTRY.search("Git, 21 \ncommit, 21 \n")
+
+
 def test_built_pdf_contains_representative_live_index_entries(prodockit_pdf_page_texts):
     index_text = _index_text(prodockit_pdf_page_texts)
 
     # Plain term, nested Parent!Child term, and code-styled term respectively.
     assert re.search(r"(?m)^docs-as-code,\s*\d+", index_text)
-    assert re.search(
-        r"(?ms)^Git,\s*\d+\s*$.*?^commit,\s*[\d, ]+$", index_text
-    )
+    # A parent term has no page number when only its children are indexed.
+    assert GIT_COMMIT_ENTRY.search(index_text)
     assert re.search(
         r"(?ms)^Shell commands,\s*\d+\s*$.*?^grep\s*,\s*[\d, ]+$", index_text
     )

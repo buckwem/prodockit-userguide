@@ -1,5 +1,12 @@
 # Userguide releases
 
+## 1.18.18 (2026-09-13)
+
+- Replace the four duplicated installation chapters with a concise Getting
+  started page that directs readers to the prodockit reference manual.
+- Renumber navigation and update cross-links, guide descriptions, and PDF index
+  checks for the shorter authoring-focused guide.
+
 ## 1.18.17 (2026-09-13)
 
 - Install the required PDF fonts and font verification tools in both publishing
