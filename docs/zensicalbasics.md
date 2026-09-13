@@ -216,9 +216,8 @@ graph LR
 ```
 
 The website renders Mermaid in the browser. The PDF needs the optional Mermaid
-renderer installed through the chosen [path in the prodockit reference
-manual](https://prodockit.org/choosing-installation/){target="_blank"}. If the PDF
-shows definition text instead of a diagram, use
+renderer installed through the chosen [installation path](gettingstarted.md).
+If the PDF shows definition text instead of a diagram, use
 [the editing help](startediting.md#mermaid-or-mathematics-appears-as-source-text).
 
 !!! note "Consider a drawing tool for architecture diagrams"

@@ -27,7 +27,7 @@ nav = [
   {"About" = [
     {"1. About this guide" = "about.md"}
   ]},
-  {"Install" = [
+  {"Getting started" = [
     {"2. Getting started" = "gettingstarted.md"},
     {"3. Additional tooling" = "additionaltooling.md"}
   ]},

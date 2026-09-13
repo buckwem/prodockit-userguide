@@ -72,7 +72,7 @@ The easiest way to open one is Visual Studio Code's own integrated terminal:
 This integrated terminal also activates your project virtual environment
 automatically (a self-contained folder holding this project's Python packages),
 as long as you selected its `.venv` interpreter once. Follow the
-[prodockit reference manual](https://prodockit.org/installation/){target="_blank"}
+[Getting started](gettingstarted.md)
 to create the environment, and check that every new terminal prompt begins
 with `(.venv)` before running a Python, Zensical, or prodockit command.
 
@@ -680,8 +680,7 @@ the other is not.
 2. Run `zensical build --clean --strict` and check the website.
 3. Run `prodockit pdf` and read any renderer warning printed in the terminal.
 
-Return to your chosen [path in the prodockit reference
-manual](https://prodockit.org/choosing-installation/){target="_blank"} if the
+Return to your chosen [installation path](gettingstarted.md) if the
 required renderer was skipped during setup.
 
 ### The website and PDF do not have exactly the same layout
@@ -718,20 +717,18 @@ If `prodockit pdf` errors out or produces a PDF missing content:
     active virtual environment.
 4. If the document uses \index{Zensical!Mermaid} diagrams or mathematics,
     confirm that those options and their toolchains were installed through
-    your chosen [path in the prodockit reference
-    manual](https://prodockit.org/choosing-installation/){target="_blank"}.
+    your chosen [installation path](gettingstarted.md).
 5. If the error says WeasyPrint cannot load a library, return to the
-    [installation troubleshooting in the prodockit reference
-    manual](https://prodockit.org/troubleshooting-installs/){target="_blank"}.
-    Reinstalling the Python package alone
-    does not install its operating-system graphics libraries.
+    [installation guidance](gettingstarted.md), including its troubleshooting
+    link. Reinstalling the Python package alone does not install its
+    operating-system graphics libraries.
 
 ### Published site shows old content or a 404
 
 1. Check the pipeline (GitLab **CI/CD > Pipelines**) or workflow (GitHub **Actions** tab) actually ran, and succeeded, for your latest commit - if it's still running, or failed, the old version stays published.
 2. Confirm your change actually reached the default branch (`main`) - a commit sitting on a feature branch, or a merge/pull request you haven't merged yet, never triggers a rebuild. See [Organise larger changes with branches and issues](#organise-larger-changes-with-branches-and-issues).
 3. Hard refresh the published page (`Ctrl+Shift+R`/`Cmd+Shift+R`) - your browser can cache the old version just as easily as it caches the local preview.
-4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after creating a repository in a new GitHub account; see the [prodockit reference manual](https://prodockit.org/choosing-installation/){target="_blank"} for the setup route you chose.
+4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after creating a repository in a new GitHub account; see [Getting started](gettingstarted.md) for the setup route you chose.
 5. On GitLab specifically, if the pipeline succeeds but no Pages site ever appears, check that the **Pages** feature itself hasn't been disabled for the project: **Settings > General > Visibility, project features, permissions**, and make sure **Pages** is toggled on. Unlike GitHub, GitLab doesn't need a separate "source" setting - Pages deploys automatically from the `pages` job in `.gitlab-ci.yml` once the feature is enabled, which it is by default.
 
 ## Prepare the final report
