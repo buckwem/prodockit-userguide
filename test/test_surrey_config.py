@@ -16,14 +16,19 @@ def test_committed_config_excludes_analytics_and_consent() -> None:
     assert "project.markdown_extensions" in config
 
 
-def test_gitlab_build_uses_the_committed_config_for_both_outputs() -> None:
+def test_gitlab_build_prepares_surrey_source_for_both_outputs() -> None:
     pipeline = (ROOT / ".gitlab-ci.yml").read_text(encoding="utf-8")
 
     assert "tools/surrey_config.py" not in pipeline
     assert ".zensical-surrey.toml" not in pipeline
     assert "GOOGLE_ANALYTICS_ID" not in pipeline
+    assert "python tools/surrey_getting_started.py verify" in pipeline
+    assert "python tools/surrey_getting_started.py prepare" in pipeline
     assert "zensical build --clean --strict" in pipeline
     assert "prodockit pdf" in pipeline
+    assert pipeline.index("python tools/surrey_getting_started.py prepare") < pipeline.index(
+        "zensical build --clean --strict"
+    )
     assert pipeline.index("zensical build --clean --strict") < pipeline.index(
         "prodockit pdf"
     )
