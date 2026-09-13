@@ -224,7 +224,7 @@ def test_getting_started_replaces_the_duplicated_install_manual() -> None:
         )
 
     assert "# Getting started" in guide
-    assert "https://prodockit.org/introduction/" in guide
+    assert "https://prodockit.org/gettingstarted/" in guide
     assert "https://prodockit.org/choosing-installation/" in guide
     assert "https://prodockit.org/installation/" in guide
     assert "https://prodockit.org/getting-started/" in guide
@@ -237,6 +237,26 @@ def test_getting_started_replaces_the_duplicated_install_manual() -> None:
     assert "[Getting started](gettingstarted.md)" in about
     assert '{"2. Getting started" = "gettingstarted.md"}' in config
     assert '[project.markdown_extensions."prodockit.steps"]' in config
+
+
+def test_other_guide_pages_link_to_the_local_getting_started_entry() -> None:
+    installation_routes = (
+        "gettingstarted/",
+        "introduction/",
+        "choosing-installation/",
+        "installation/",
+        "getting-started/",
+        "manual-install/",
+        "troubleshooting-installs/",
+    )
+    for path in (ROOT / "docs").rglob("*.md"):
+        if path.name == "gettingstarted.md":
+            continue
+        text = path.read_text(encoding="utf-8")
+        assert not any(
+            f"https://prodockit.org/{route}" in text
+            for route in installation_routes
+        ), path
 
 
 
@@ -376,7 +396,7 @@ def test_guide_is_split_into_top_level_workflow_sections() -> None:
     config = _text("zensical.toml")
 
     assert '{"Guide" = [' not in config
-    assert '{"Install" = [' in config
+    assert '{"Getting started" = [' in config
     assert '{"Edit" = [' in config
     assert '{"Basics" = [' in config
     assert '{"Customise" = [' in config
@@ -385,7 +405,7 @@ def test_guide_is_split_into_top_level_workflow_sections() -> None:
     assert config.count('{"9. Prodockit authoring features" = "customisecontent.md"}') == 1
     assert config.count('{"10. Build and publish" = "customisebuild.md"}') == 1
     assert '"testing.md"' not in config
-    install = config[config.index('{"Install" = [') : config.index('{"Edit" = [')]
+    install = config[config.index('{"Getting started" = [') : config.index('{"Edit" = [')]
     build = config[
         config.index('{"Build and test" = [') : config.index('{"Reference" = [')
     ]

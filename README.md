@@ -26,7 +26,7 @@ An installation-path summary and a guide to authoring, customisation,
 building, and publishing for [prodockit-template](https://github.com/buckwem/prodockit-template)
 and other Zensical projects built on the [prodockit](https://github.com/buckwem/prodockit-extensions)
 package. For installation procedures, use the
-[prodockit reference manual](https://prodockit.org/introduction/).
+[prodockit reference manual](https://prodockit.org/gettingstarted/).
 
 Read it live at **[docs.prodockit.org](https://docs.prodockit.org/)**.
 

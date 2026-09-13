@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 # Getting started
 
 Use this page to choose how to add prodockit to a Zensical project. The
-[prodockit reference manual](https://prodockit.org/introduction/){target="_blank"}
+[prodockit reference manual](https://prodockit.org/gettingstarted/){target="_blank"}
 contains the maintained installation instructions for each path, including
 prerequisites, platform-specific commands, verification, and troubleshooting.
 Complete one path there, then return to this User Guide for the everyday
@@ -39,6 +39,9 @@ It establishes the supported Python and a setup environment outside the
 project. Follow the chosen path in the prodockit reference manual for the
 project-specific environment and checks; do not rely on copied commands from
 this User Guide.
+
+If an installation check fails, use the [installation troubleshooting in the
+prodockit reference manual](https://prodockit.org/troubleshooting-installs/){target="_blank"}.
 
 ## Continue with this guide
 

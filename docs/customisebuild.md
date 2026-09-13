@@ -88,7 +88,7 @@ covers the website command in detail.
 
 \index{Build!Diagram and maths rendering} requires Node.js renderers for the PDF.
 MathJax also needs a local browser bundle for the website. The selected
-[path in the prodockit reference manual](https://prodockit.org/choosing-installation/){target="_blank"}
+[installation path](gettingstarted.md)
 prepares these when the options are selected; a template project
 already contains their manifests.
 
@@ -121,8 +121,7 @@ are absent, WeasyPrint may substitute another font without failing.
 
 The template uses Inter for body text and JetBrains Mono for code. Install the
 `.ttf` or `.otf` desktop versions, not `.woff` web-font files. The
-[prodockit reference manual](https://prodockit.org/choosing-installation/){target="_blank"}
-covers the operating-system steps.
+[Getting started](gettingstarted.md) section covers the operating-system steps.
 
 After changing a font:
 
