@@ -1,5 +1,14 @@
 # Userguide releases
 
+## Unreleased
+
+- Align build and test requirements with Prodockit 0.65.3 and Zensical 0.0.61.
+- Cascade managed renderer dependencies, including the patched MathJax XML
+  dependency and browser-based website checks before PDF generation.
+- Regenerate MathJax website assets during builds to include the
+  instant-navigation fix. PDF table headers now match website defaults and
+  respect explicit alignment.
+
 ## 1.18.16 (2026-09-09)
 
 - Raise the Prodockit build and testing floor to 0.63.0, including installer
