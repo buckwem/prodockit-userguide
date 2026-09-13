@@ -11,6 +11,8 @@ replaces the single Getting started nav entry, and resolves links from the
 imported pages to reference-manual pages outside this section. Do not edit the
 copied Markdown here to add Surrey-specific wording; that belongs in the
 Extensions manual using its `is_surrey` macro (stage 2 of userguide issue #206).
+The Surrey preparation omits the overview's final “Support prodockit” / “Buy
+me a coffee” subsection without changing this pinned source file.
 
 To refresh, review the upstream `zensical.toml` Getting started nav at a
 specific release commit, update this snapshot and `manifest.toml` together,

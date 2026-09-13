@@ -27,6 +27,7 @@ START_MARKER = "# Surrey Getting started overlay (generated; do not commit)\n"
 LINK = re.compile(r"(?P<open>!?\[[^\]]*\]\()(?P<url>[^\s)]+)(?P<close>[^)]*\))")
 NAV = re.compile(r"^nav = \[\n.*?^\]\n", re.MULTILINE | re.DOTALL)
 NUMBERED = re.compile(r"^\d+\.\s+")
+SUPPORT_SECTION = re.compile(r"^## Support prodockit\s*$", re.MULTILINE)
 
 
 def manifest() -> dict:
@@ -91,6 +92,20 @@ def rewrite_external_links(markdown: str, page: str, included: set[str]) -> str:
         return match.group("open") + absolute + match.group("close")
 
     return LINK.sub(replace, markdown)
+
+
+def omit_surrey_support_section(markdown: str) -> str:
+    """Leave the pinned overview intact but omit its donation subsection."""
+    matches = list(SUPPORT_SECTION.finditer(markdown))
+    if len(matches) != 1:
+        raise ValueError("Expected one Support prodockit section in the pinned overview")
+    start = matches[0].start()
+    following = re.search(r"^## (?!#)", markdown[matches[0].end() :], re.MULTILINE)
+    end = matches[0].end() + following.start() if following else len(markdown)
+    removed = markdown[start:end]
+    if "Buy me a coffee" not in removed:
+        raise ValueError("The support section no longer contains the expected donation link")
+    return markdown[:start].rstrip() + "\n\n" + markdown[end:].lstrip()
 
 
 def _render_nav(items: list[dict | str], indent: int = 0) -> str:
@@ -177,7 +192,10 @@ def prepare(data: dict, *, preview: bool = False) -> None:
     outputs: dict[Path, bytes] = {}
     for page in included:
         source = SOURCE / "docs" / page
-        text = rewrite_external_links(source.read_text(encoding="utf-8"), page, included)
+        text = source.read_text(encoding="utf-8")
+        if page == "gettingstarted.md":
+            text = omit_surrey_support_section(text)
+        text = rewrite_external_links(text, page, included)
         outputs[ROOT / "docs" / page] = text.encode("utf-8")
     for asset in data["assets"]:
         outputs[ROOT / "docs" / asset] = (SOURCE / "docs" / asset).read_bytes()

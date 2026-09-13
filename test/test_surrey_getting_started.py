@@ -59,6 +59,16 @@ def test_external_manual_links_are_rewritten_only_inside_imported_pages() -> Non
             assert target is None or target in included, (page, match.group("url"))
 
 
+def test_donation_section_is_removed_only_from_surrey_copy() -> None:
+    source = (surrey.SOURCE / "docs/gettingstarted.md").read_text(encoding="utf-8")
+    copied = surrey.omit_surrey_support_section(source)
+    assert "## Project status" in copied
+    assert "## Support prodockit" not in copied
+    assert "Buy me a coffee" not in copied
+    assert "## Support prodockit" in source
+    assert "Buy me a coffee" in source
+
+
 def test_surrey_nav_preserves_upstream_numbering_and_relabels_following_pages() -> None:
     config_text = (ROOT / "zensical.toml").read_text(encoding="utf-8")
     if config_text.startswith(surrey.START_MARKER):
@@ -106,6 +116,9 @@ def test_built_surrey_pages_have_local_targets_and_assets() -> None:
         assert html.is_file(), html
         article = BeautifulSoup(html.read_text(encoding="utf-8"), "html.parser").select_one(".md-content")
         assert article is not None
+        if page == "gettingstarted.md":
+            assert "Buy me a coffee" not in article.get_text(" ", strip=True)
+            assert "Support prodockit" not in article.get_text(" ", strip=True)
         for element in article.select("a[href], img[src]"):
             url = element.get("href") or element.get("src")
             parsed = urlsplit(url)
