@@ -63,7 +63,7 @@ pages:
     # loads them from a CDN at view time, but WeasyPrint has no such fallback
     # - it needs the files installed to embed them, and silently substitutes
     # a generic font rather than erroring if they are missing.
-    - apt-get install -y libpango-1.0-0 fonts-inter fonts-jetbrains-mono
+    - apt-get install -y libpango-1.0-0 fontconfig fonts-inter fonts-jetbrains-mono
     - curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
     - apt-get install -y nodejs
     - curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg

@@ -2,6 +2,8 @@
 
 ## 1.18.17 (2026-09-13)
 
+- Install the required PDF fonts and font verification tools in both publishing
+  workflows, preventing missing-font diagnostics failures on fresh runners.
 - Align build and test requirements with Prodockit 0.65.3 and Zensical 0.0.61.
 - Cascade managed renderer dependencies, including the patched MathJax XML
   dependency and browser-based website checks before PDF generation.

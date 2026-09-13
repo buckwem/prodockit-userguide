@@ -78,6 +78,19 @@ def test_repository_setup_documents_editor_free_options_and_safe_recovery() -> N
     assert "Fonts could not be verified" in adoption
 
 
+def test_publishing_installs_pdf_fonts_before_diagnostics() -> None:
+    for workflow in (".github/workflows/docs.yml", ".gitlab-ci.yml"):
+        text = _text(workflow)
+        install_lines = [
+            line for line in text.splitlines()
+            if "apt-get install" in line and "libpango-1.0-0" in line
+        ]
+        assert len(install_lines) == 1, workflow
+        for package in ("fontconfig", "fonts-inter", "fonts-jetbrains-mono"):
+            assert package in install_lines[0].split(), (workflow, package)
+        assert text.index(install_lines[0]) < text.index("pdk diag"), workflow
+
+
 def test_python_artifact_builds_use_the_version_file() -> None:
     version = _text(".python-version").strip()
     github = _text(".github/workflows/docs.yml")
