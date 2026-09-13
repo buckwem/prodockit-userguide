@@ -1,6 +1,7 @@
 """The Surrey overlay must leave the public guide and its links intact."""
 
 import re
+import subprocess
 import tomllib
 from pathlib import Path
 
@@ -56,7 +57,12 @@ def test_external_manual_links_are_rewritten_only_inside_imported_pages() -> Non
 
 
 def test_surrey_nav_preserves_upstream_numbering_and_relabels_following_pages() -> None:
-    canonical = tomllib.loads((ROOT / "zensical.toml").read_text(encoding="utf-8"))
+    config_text = (ROOT / "zensical.toml").read_text(encoding="utf-8")
+    if config_text.startswith(surrey.START_MARKER):
+        config_text = subprocess.check_output(
+            ["git", "show", "HEAD:zensical.toml"], cwd=ROOT, text=True
+        )
+    canonical = tomllib.loads(config_text)
     data = surrey.manifest()
     nav = surrey.surrey_nav(canonical, data)
     assert nav[0] == {"Home": ["index.md"]}
@@ -71,7 +77,11 @@ def test_surrey_nav_preserves_upstream_numbering_and_relabels_following_pages() 
 
 
 def test_other_guide_pages_link_only_to_the_local_start_page() -> None:
-    for page in (ROOT / "docs").glob("*.md"):
+    tracked = subprocess.check_output(
+        ["git", "ls-files", "docs/*.md"], cwd=ROOT, text=True
+    ).splitlines()
+    for relative in tracked:
+        page = ROOT / relative
         if page.name == "gettingstarted.md":
             continue
         text = page.read_text(encoding="utf-8")
