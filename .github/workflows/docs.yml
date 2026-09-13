@@ -126,7 +126,9 @@ jobs:
             sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$list"
             echo "mirrorlist now:"; cat "$list"
           fi
-      - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0
+      # Diagnostics verifies the actual PDF font families, not fallback fonts.
+      # Keep these prerequisites aligned with the GitLab publishing job.
+      - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0 fontconfig fonts-inter fonts-jetbrains-mono
         timeout-minutes: 8
       - run: curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
       - run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
