@@ -11,10 +11,11 @@ SPDX-License-Identifier: MIT
 
 # Additional tooling
 
-The three installation routes provide everything needed to write, build, and
-publish a document. This page contains optional tools that may make particular
-authoring tasks easier. Choose only the sections that match your work; none is
-required before you continue with the guide.
+The [installation route you chose](gettingstarted.md) provides everything
+needed to write, build, and publish a document. This page contains optional
+tools that may make particular authoring tasks easier. Choose only the
+sections that match your work; none is required before you continue with the
+guide.
 
 ## Choose what you need
 
@@ -29,9 +30,8 @@ required before you continue with the guide.
 
 !!! note
 
-    Bootstrap Install already adds LTeX+ to Visual Studio Code. Start with that
-    writing check and add Code Spell Checker or Vale only if it serves a
-    different need.
+    If your selected setup already installed LTeX+, start with that writing
+    check and add Code Spell Checker or Vale only if it serves a different need.
 
 ## Work with GitLab or GitHub in Visual Studio Code
 

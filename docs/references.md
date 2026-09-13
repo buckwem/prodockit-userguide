@@ -70,7 +70,7 @@ MSYS2 (n.d.) *MSYS2 documentation*. Available at: https://www.msys2.org/docs/ (A
 NodeSource (n.d.) *Node.js binary distributions*. Available at: https://github.com/nodesource/distributions (Accessed: 25 August 2026).
 {: #nodesourcenodate .reference data-cite-text="NodeSource, n.d." }
 
-prodockit (2026) *prodockit Extensions Guide*. Available at: https://prodockit.org/ (Accessed: 25 August 2026).
+prodockit (2026) *prodockit reference manual*. Available at: https://prodockit.org/ (Accessed: 25 August 2026).
 {: #prodockit2026 .reference data-cite-text="prodockit, 2026" }
 
 PyMdown Extensions (n.d.) *PyMdown Extensions documentation*. Available at: https://facelessuser.github.io/pymdown-extensions/ (Accessed: 25 August 2026).

@@ -87,8 +87,9 @@ covers the website command in detail.
 ## Diagrams and maths {: #customisebuild-diagrams-and-maths }
 
 \index{Build!Diagram and maths rendering} requires Node.js renderers for the PDF.
-MathJax also needs a local browser bundle for the website. Bootstrap and
-Adoption install these when the options are selected; a template project
+MathJax also needs a local browser bundle for the website. The selected
+[path in the prodockit reference manual](https://prodockit.org/choosing-installation/){target="_blank"}
+prepares these when the options are selected; a template project
 already contains their manifests.
 
 If the document uses these features and the dependencies have not yet been
@@ -119,8 +120,9 @@ must find the actual desktop font files on the machine doing the build. If they
 are absent, WeasyPrint may substitute another font without failing.
 
 The template uses Inter for body text and JetBrains Mono for code. Install the
-`.ttf` or `.otf` desktop versions, not `.woff` web-font files. Bootstrap and
-Manual install cover the operating-system steps.
+`.ttf` or `.otf` desktop versions, not `.woff` web-font files. The
+[prodockit reference manual](https://prodockit.org/choosing-installation/){target="_blank"}
+covers the operating-system steps.
 
 After changing a font:
 
@@ -383,12 +385,12 @@ Then inspect the website and PDF. Check navigation, references, captions,
 diagrams, maths, page breaks, fonts, links, and the latest changed content.
 Authors normally rely on the supplied publishing pipeline for its automated
 checks. Maintainers who need to run or extend that test suite should use the
-[Extensions testing guide](https://prodockit.org/devcons/testing/){target="_blank"}.
+[testing guidance in the prodockit reference manual](https://prodockit.org/devcons/testing/){target="_blank"}.
 
 ## Where to go next {: #customisebuild-where-to-go-next }
 
 Build and inspect both outputs before publishing or submitting. Return to the
-Extensions Guide for
+prodockit reference manual for
 [command-line details](https://prodockit.org/command-line/){target="_blank"},
 [PDF options](https://prodockit.org/pdf/){target="_blank"}, or
 [publishing configuration](https://prodockit.org/publishing/){target="_blank"}.

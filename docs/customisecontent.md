@@ -17,7 +17,7 @@ writing. They are already enabled in the template and work in both outputs
 unless a section says otherwise.
 
 Use this page to get a feature working. Follow its link to the
-[Extensions Guide](https://prodockit.org/extensions/){target="_blank"} when you
+[prodockit reference manual](https://prodockit.org/extensions/){target="_blank"} when you
 need every option or the generated HTML details.
 
 | When you want to… | Use |
@@ -469,5 +469,5 @@ for validation rules and the remaining cell options.
 
 Continue to [Build and publish](customisebuild.md) to change how the website and
 PDF are built and published. Use the
-[Extensions Guide](https://prodockit.org/extensions/){target="_blank"} when a
+[prodockit reference manual](https://prodockit.org/extensions/){target="_blank"} when a
 feature needs an option not covered by this author workflow.
