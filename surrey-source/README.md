@@ -14,4 +14,20 @@ Extensions manual using its `is_surrey` macro (stage 2 of userguide issue #206).
 
 To refresh, review the upstream `zensical.toml` Getting started nav at a
 specific release commit, update this snapshot and `manifest.toml` together,
-then run the source verification and both GitHub and Surrey build tests.
+then run the source verification and both GitHub and Surrey build tests. For
+the current snapshot, an Extensions checkout can be checked without network
+access using:
+
+```sh
+python tools/surrey_getting_started.py verify-upstream \
+  --extensions-checkout /path/to/prodockit-extensions
+```
+
+Run `python tools/surrey_getting_started.py verify` in CI to check that the
+declared files are present. The GitLab pipeline then runs `prepare` on its
+ephemeral checkout. For local comparison, create a **disposable worktree**
+from the User Guide branch and run `prepare --preview` there before
+`zensical serve`. The command intentionally replaces that worktree's
+`docs/gettingstarted.md` and `zensical.toml`; never run it in a checkout
+containing work you need to preserve. The ordinary GitHub preview should run
+from an unprepared checkout.

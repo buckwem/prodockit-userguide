@@ -4,6 +4,9 @@ import re
 import subprocess
 import tomllib
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
+from bs4 import BeautifulSoup
 
 from tools import surrey_getting_started as surrey
 
@@ -90,3 +93,33 @@ def test_other_guide_pages_link_only_to_the_local_start_page() -> None:
             r"installation|getting-started|manual-install|troubleshooting-installs)/",
             text,
         ), page
+
+
+def test_built_surrey_pages_have_local_targets_and_assets() -> None:
+    if not (ROOT / "zensical.toml").read_text(encoding="utf-8").startswith(surrey.START_MARKER):
+        return  # The normal GitHub build intentionally has only the summary.
+    public = ROOT / "public"
+    assert public.is_dir()
+    for page in surrey.page_paths(surrey.manifest()):
+        route = page.removesuffix(".md")
+        html = public / route / "index.html"
+        assert html.is_file(), html
+        article = BeautifulSoup(html.read_text(encoding="utf-8"), "html.parser").select_one(".md-content")
+        assert article is not None
+        for element in article.select("a[href], img[src]"):
+            url = element.get("href") or element.get("src")
+            parsed = urlsplit(url)
+            if parsed.scheme or parsed.netloc or not parsed.path:
+                continue
+            if parsed.path.startswith("/"):
+                target = public / parsed.path.lstrip("/")
+            else:
+                target = html.parent / unquote(parsed.path)
+            target = target.resolve()
+            assert target.is_relative_to(public.resolve()), (html, url)
+            if url.endswith("/") or not target.suffix:
+                target = target / "index.html"
+            assert target.is_file(), (html, url, target)
+            if parsed.fragment and target.suffix == ".html":
+                destination = BeautifulSoup(target.read_text(encoding="utf-8"), "html.parser")
+                assert destination.find(id=unquote(parsed.fragment)) is not None, (html, url)

@@ -158,13 +158,13 @@ def prepare(data: dict, *, preview: bool = False) -> None:
     if config_text.startswith(START_MARKER):
         print("Surrey Getting started overlay already prepared")
         return
-    for tracked in (config_path, ROOT / "docs/gettingstarted.md"):
-        original = subprocess.check_output(
-            ["git", "show", f"HEAD:{tracked.relative_to(ROOT).as_posix()}"],
-            cwd=ROOT,
-        )
-        if tracked.read_bytes() != original:
-            raise ValueError(f"Refusing to overwrite modified canonical file: {tracked}")
+    # sync-repo may legitimately update repository metadata in the disposable
+    # GitLab checkout before this step. The nav shape is validated below; only
+    # the landing Markdown itself must still match the committed summary.
+    landing = ROOT / "docs/gettingstarted.md"
+    original = subprocess.check_output(["git", "show", "HEAD:docs/gettingstarted.md"], cwd=ROOT)
+    if landing.read_bytes() != original:
+        raise ValueError(f"Refusing to overwrite modified canonical file: {landing}")
     config = tomllib.loads(config_text)
     nav = surrey_nav(config, data)
     replacement = "nav = " + _render_nav(nav) + "\n"
