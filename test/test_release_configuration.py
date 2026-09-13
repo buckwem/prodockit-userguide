@@ -58,14 +58,6 @@ def test_mathjax_cascade_includes_browser_checks_and_patched_xml() -> None:
         assert text.index("prodockit init-mathjax") < text.index("zensical build")
 
 
-def test_adopt_guidance_describes_runtime_provisioning_and_review() -> None:
-    adoption = _text("docs/adoptioninstall.md")
-    assert "eleven activities in four phases" in adoption
-    assert "Homebrew" in adoption
-    assert ".prodockit-adopt.toml" in adoption
-    assert ".prodockit-adopt-backups/renderers/" in adoption
-    assert "pdk diag" in adoption
-    assert "eight stages" not in adoption
 
 
 def test_repository_setup_documents_editor_free_options_and_safe_recovery() -> None:
@@ -73,9 +65,6 @@ def test_repository_setup_documents_editor_free_options_and_safe_recovery() -> N
     for option in ("--create-readme", "--site-name", "--site-url"):
         assert option in customise
     assert "does not prove that the website has been published" in customise
-    adoption = _text("docs/adoptioninstall.md")
-    assert "child processes may still be running" in adoption
-    assert "Fonts could not be verified" in adoption
 
 
 def test_publishing_installs_pdf_fonts_before_diagnostics() -> None:
@@ -203,7 +192,6 @@ def test_new_042_behaviour_is_documented() -> None:
     customise_words = re.sub(r"\s+", " ", customise)
     content = _text("docs/customisecontent.md")
     build = _text("docs/customisebuild.md")
-    install = _text("docs/installtooling.md")
     editing = _text("docs/startediting.md")
 
     assert "forward cross-page" in content
@@ -212,99 +200,45 @@ def test_new_042_behaviour_is_documented() -> None:
     assert "prodockit template-sync --apply" in build
     assert "preserves every existing" in build
     assert "`project.extra.pdf_*` value" in build
-    assert "[Bootstrap Install](bootstrapinstall.md)" in install
-    assert "`prodockit bootstrap`" in install
     assert "generated root files" in editing
 
 
-def test_manual_install_explains_both_repository_starting_points() -> None:
-    install = _text("docs/installtooling.md")
-    config = _text("zensical.toml")
-
-    assert "# Manual install" in install
-    assert "### Path 1: start from the template" in install
-    assert "### Path 2: clone the existing repository" in install
-    assert "## Help with common problems {: #installtooling-help-with-common-problems }" in install
-    assert "git remote add origin" in install
-    assert 'git commit -m "Initial commit"' in install
-    assert "git push -u origin main" in install
-    assert "git log -1 --oneline" in install
-    assert '{"5. Manual install" = "installtooling.md"}' in config
 
 
-def test_installing_page_leads_the_three_install_approaches() -> None:
-    installing = _text("docs/installing.md")
-    adoption = _text("docs/adoptioninstall.md")
-    bootstrap = _text("docs/bootstrapinstall.md")
+def test_getting_started_replaces_the_duplicated_install_manual() -> None:
+    guide = _text("docs/gettingstarted.md")
     about = _text("docs/about.md")
     config = _text("zensical.toml")
 
-    assert "# Installing prodockit" in installing
-    assert "images/installing-prodockit-decision-tree-components.png" in installing
-    assert installing.count("{ .documentation-diagram }") == 1
-    assert "[Adoption install](adoptioninstall.md)" in installing
-    assert "[Bootstrap Install](bootstrapinstall.md)" in installing
-    assert "[Manual install](installtooling.md)" in installing
-    assert "GitHub/.venv" in installing
-    assert "MkDocs" not in installing
-    assert "[Additional tooling](additionaltooling.md)" in installing
-    assert "not a fourth installation route" in installing
-    assert "# Adoption install" in adoption
-    assert "/// steps" in adoption
-    assert "prodockit adopt --configure" in adoption
-    assert "prodockit adopt --dry-run" in adoption
-    assert "prodockit adopt --apply" in adoption
-    assert "Git, SSH, remotes, editors, commits, and pushes" in adoption
-    assert "## Where to go next {: #adoptioninstall-where-to-go-next }" in adoption
-    assert "## Manually integrate files prodockit preserves" in adoption
-    assert "tools/mermaid/package.json" in adoption
-    assert "tools/mathjax/tex2svg.js" in adoption
-    assert "prodockit init-tools --dir ../prodockit-tools-reference" in adoption
-    assert "python -m pip install --upgrade prodockit" in adoption
-    assert "prodockit>=" not in adoption
-    assert "prodockit>=" not in bootstrap
-    assert "prodockit>=0.43.2" not in bootstrap
-    assert "# Bootstrap Install" in bootstrap
-    assert "/// steps" in bootstrap
-    assert "prodockit bootstrap --configure" in bootstrap
-    assert "prodockit bootstrap --check" in bootstrap
-    assert "prodockit bootstrap --dry-run" in bootstrap
-    assert "prodockit bootstrap --apply" in bootstrap
-    assert "## Where to go next {: #bootstrapinstall-where-to-go-next }" in bootstrap
-    assert "prodockit-template" in bootstrap
-    assert "The repository already contains work" in bootstrap
-    assert "All 23 stages are set up." in bootstrap
-    assert "[Adoption install](adoptioninstall.md)" in about
-    assert "[Bootstrap Install](bootstrapinstall.md)" in about
-    assert "recommended" not in about.lower()
-    assert "formal-looking document as a head start" in about
-    assert "www.youtube-nocookie.com/embed/ZlabtdA-gZE" in about
-    assert "www.youtube.com/embed/ZlabtdA-gZE" not in about
-    assert about.count("/// steps") >= 2
-    assert config.index('{"2. Installing prodockit" = "installing.md"}') < config.index(
-        '{"3. Adoption install" = "adoptioninstall.md"}'
-    ) < config.index('{"4. Bootstrap Install" = "bootstrapinstall.md"}') < config.index(
-        '{"5. Manual install" = "installtooling.md"}'
-    )
-    decision_tree = _text("tools/documentation-diagrams/site-diagrams.drawio")
-    assert "installing-prodockit-decision-tree" in decision_tree
-    assert 'pageWidth="1440"' in decision_tree
-    assert decision_tree.count("fontSize=22;fontFamily=Inter") >= 7
-    assert decision_tree.count("entryX=0;entryY=0.5") >= 4
-    assert "MkDocs" not in decision_tree
-    assert (
-        ROOT / "docs/images/installing-prodockit-decision-tree-components.png"
-    ).is_file()
+    for old_page in (
+        "installing.md",
+        "adoptioninstall.md",
+        "bootstrapinstall.md",
+        "installtooling.md",
+    ):
+        assert not (ROOT / "docs" / old_page).exists()
+        assert old_page not in config
+        assert old_page not in "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in (ROOT / "docs").glob("*.md")
+        )
+
+    assert "# Getting started" in guide
+    assert "https://prodockit.org/introduction/" in guide
+    assert "https://prodockit.org/choosing-installation/" in guide
+    assert "https://prodockit.org/installation/" in guide
+    assert "https://prodockit.org/getting-started/" in guide
+    assert "https://prodockit.org/manual-install/" in guide
+    for path in ("Adopt Prodockit", "Build a template site", "Build site manually"):
+        assert path in guide
+    assert "[Start editing](startediting.md)" in guide
+    assert "[Additional tooling](additionaltooling.md)" in guide
+    assert "## Choose how to install" in about
+    assert "[Getting started](gettingstarted.md)" in about
+    assert '{"2. Getting started" = "gettingstarted.md"}' in config
     assert '[project.markdown_extensions."prodockit.steps"]' in config
 
 
-def test_adoption_guide_uses_the_current_shared_stylesheet_name() -> None:
-    adoption = _text("docs/adoptioninstall.md")
-
-    assert "prodockit.css" not in adoption
-    assert adoption.count("pdk.css") >= 3
-    assert "docs/stylesheets/pdk.css" in adoption
-    assert "stylesheets/pdk.css" in adoption
 
 
 def test_start_editing_explains_how_to_rebuild_a_broken_environment() -> None:
@@ -352,44 +286,22 @@ def test_guide_uses_zensical_commands_with_legacy_config_names_only() -> None:
     assert not re.search(
         r"\bmkdocs\s+(?:build|serve|new|gh-deploy)\b", guide, re.IGNORECASE
     )
-    assert "legacy `mkdocs.yml` or `mkdocs.yaml` configuration file" in guide
-    assert "which Zensical\n    can use directly" in guide
+    assert "legacy `mkdocs.yml` file that Zensical reads directly" in guide
 
 
-def test_install_routes_require_python_314_and_an_active_venv() -> None:
-    about = _text("docs/about.md")
-    adoption = _text("docs/adoptioninstall.md")
-    bootstrap = _text("docs/bootstrapinstall.md")
-    manual = _text("docs/installtooling.md")
+def test_install_preparation_is_deferred_to_extensions() -> None:
+    guide = _text("docs/gettingstarted.md")
     editing = _text("docs/startediting.md")
 
-    for route in (adoption, bootstrap, manual):
-        assert "Python 3.14" in route
-        assert "python -m pip" in route
-        assert "source .venv/bin/activate" in route
-        assert r".\.venv\Scripts\Activate.ps1" in route
-        assert "Conda" in route
-
-    assert manual.index("## Install Python 3.14") < manual.index(
-        "## Create the setup environment"
-    ) < manual.index(
-        "## Install Visual Studio Code"
-    )
-    assert '"$(brew --prefix python@3.14)/bin/python3.14" -m venv .venv' in manual
-    assert "py -3.14 -m venv .venv" in manual
-    assert "python3.14 -m venv .venv" in manual
-    assert "Python 3.14 and isolated `.venv`" in about
-    assert "## Create the setup environment" in manual
-    assert "GitHub/.venv" in manual
-    assert "GitHub/.venv" in bootstrap
-    assert "creates another `.venv` inside the project" in bootstrap
-    assert "create a new `.venv` in the current\nproject directory" in manual
-    assert "every new terminal prompt begins with `(.venv)`" in editing
+    assert "https://prodockit.org/installation/" in guide
+    assert "supported Python" in guide
+    assert "project-specific" in guide
+    assert "Python 3.14" in editing
+    assert "every new terminal prompt begins" in editing
+    assert "pip install" not in guide
 
 
-def test_homebrew_install_actions_are_prominent_and_consistent() -> None:
-    bootstrap = _text("docs/bootstrapinstall.md")
-    manual = _text("docs/installtooling.md")
+def test_optional_homebrew_install_actions_remain_prominent() -> None:
     additional = _text("docs/additionaltooling.md")
     css = _text("docs/stylesheets/extra.css")
     button = (
@@ -397,18 +309,7 @@ def test_homebrew_install_actions_are_prominent_and_consistent() -> None:
         '{ .md-button .homebrew-button target="_blank" rel="noopener" }'
     )
 
-    assert bootstrap.count(button) == 1
-    assert manual.count(button) == 1
     assert additional.count(button) == 2
-    assert (
-        bootstrap.index(button)
-        < bootstrap.index("brew --version")
-        < bootstrap.index("brew install python@3.14")
-    )
-    assert manual.index(button) < manual.index("brew --version") < manual.index(
-        "brew install python@3.14"
-    )
-
     vale = additional[
         additional.index("### Add shared checks with Vale") : additional.index(
             "## Convert an existing document to Markdown"
@@ -421,12 +322,9 @@ def test_homebrew_install_actions_are_prominent_and_consistent() -> None:
     assert imageoptim.index(button) < imageoptim.index(
         "brew --version"
     ) < imageoptim.index("brew install --cask imageoptim")
-
     assert ".md-typeset .homebrew-button" in css
     assert "background-color: #fbb040" in css
     assert "color: #171717" in css
-    assert ".homebrew-button:is(:hover, :focus)" in css
-    assert "brew.sh/install.sh" not in "\n".join((bootstrap, manual, additional))
 
 
 def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
@@ -455,36 +353,23 @@ def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
         re.IGNORECASE,
     )
 
-    context["is_surrey"] = True
-    surrey = environment.from_string(_text("docs/installtooling.md")).render(context)
-    assert "University of Surrey GitLab" in surrey
-    assert "gitlab.surrey.ac.uk" in surrey
 
 
-def test_install_platform_tabs_are_separate_and_consistently_ordered() -> None:
+def test_optional_tooling_platform_tabs_are_consistently_ordered() -> None:
+    source = _text("docs/additionaltooling.md")
+    labels = re.findall(
+        r'^\s*=== "(:(?:material-apple|fontawesome-brands-windows|material-linux): [^"]+)"$',
+        source,
+        flags=re.MULTILINE,
+    )
     expected_group = [
         ":material-apple: macOS",
         ":fontawesome-brands-windows: Windows",
         ":material-linux: Linux (Ubuntu)",
     ]
-
-    for path in (
-        "docs/adoptioninstall.md",
-        "docs/bootstrapinstall.md",
-        "docs/installtooling.md",
-        "docs/additionaltooling.md",
-    ):
-        source = _text(path)
-        labels = re.findall(
-            r'^\s*=== "(:(?:material-apple|fontawesome-brands-windows|material-linux): [^"]+)"$',
-            source,
-            flags=re.MULTILINE,
-        )
-        assert "macOS /" not in source
-        assert '<div class="grid cards one-column" markdown>' not in source
-        assert labels
-        assert len(labels) % 3 == 0
-        assert labels == expected_group * (len(labels) // 3)
+    assert labels
+    assert len(labels) % 3 == 0
+    assert labels == expected_group * (len(labels) // 3)
 
 
 def test_guide_is_split_into_top_level_workflow_sections() -> None:
@@ -496,45 +381,33 @@ def test_guide_is_split_into_top_level_workflow_sections() -> None:
     assert '{"Basics" = [' in config
     assert '{"Customise" = [' in config
     assert '{"Build and test" = [' in config
-    assert config.count(
-        '{"11. Document appearance and structure" = "customise.md"}'
-    ) == 1
-    assert config.count(
-        '{"12. Prodockit authoring features" = "customisecontent.md"}'
-    ) == 1
-    assert config.count('{"13. Build and publish" = "customisebuild.md"}') == 1
+    assert config.count('{"8. Document appearance and structure" = "customise.md"}') == 1
+    assert config.count('{"9. Prodockit authoring features" = "customisecontent.md"}') == 1
+    assert config.count('{"10. Build and publish" = "customisebuild.md"}') == 1
     assert '"testing.md"' not in config
     install = config[config.index('{"Install" = [') : config.index('{"Edit" = [')]
     build = config[
         config.index('{"Build and test" = [') : config.index('{"Reference" = [')
     ]
-    assert '{"6. Additional tooling" = "additionaltooling.md"}' in install
-    assert '{"6. Additional tooling" = "additionaltooling.md"}' not in build
+    assert '{"2. Getting started" = "gettingstarted.md"}' in install
+    assert '{"3. Additional tooling" = "additionaltooling.md"}' in install
+    assert '{"3. Additional tooling" = "additionaltooling.md"}' not in build
     numbers = [
         int(number)
         for number in re.findall(r'\{"(\d+)\. [^"]+" = "[^"]+"\}', config)
     ]
-    assert numbers == list(range(1, 14))
+    assert numbers == list(range(1, 11))
 
 
 def test_additional_tooling_is_an_optional_follow_on() -> None:
-    about = _text("docs/about.md")
+    guide = _text("docs/gettingstarted.md")
     additional = _text("docs/additionaltooling.md")
 
-    assert "it is not a fourth installation route" in about
-    assert "Choose only the sections that match your work" in additional
+    assert "[Additional tooling](additionaltooling.md) is optional" in guide
+    assert "[installation route you chose](gettingstarted.md)" in additional
+    assert "sections that match your work" in additional
     assert "SSH remains the preferred connection" in additional
     assert "[Start editing](startediting.md)" in additional
-
-    for path in (
-        "docs/adoptioninstall.md",
-        "docs/bootstrapinstall.md",
-        "docs/installtooling.md",
-    ):
-        source = _text(path)
-        where_next = source[source.index("## Where to go next") :]
-        assert "[Additional tooling](additionaltooling.md)" in where_next
-        assert "[Start editing](startediting.md)" in where_next
 
 
 def test_edit_section_follows_the_author_workflow() -> None:
@@ -730,9 +603,7 @@ def test_index_balances_task_and_subject_entries() -> None:
 
     assert 8 <= len(set(tasks)) <= 15
     for task in (
-        "Adopt an existing document",
-        "Bootstrap a new project",
-        "Install manually",
+        "Choose an installation route",
         "Preview a website",
         "Save and push changes",
         "Publish a document",

@@ -12,8 +12,8 @@ SPDX-License-Identifier: MIT
 # About this guide
 
 A \index{docs-as-code} workflow uses plain-text Markdown, version control, and
-automated builds to create documentation. This guide helps you add prodockit
-to an existing Zensical site, or use
+automated builds to create documentation. This guide helps you work with a
+Prodockit-enabled Zensical site or use
 [prodockit-template](https://github.com/buckwem/prodockit-template){target="_blank"}
 as a head start for a new professional website and PDF.
 
@@ -31,48 +31,10 @@ content, and release schedule.
 
 ## Choose how to install
 
-The three routes start from different situations. \index{Tasks!Choose an installation route} matching the
-project you already have; you do not need to complete the others. Start with
-the [Installing prodockit decision tree](installing.md) when you are unsure
-which route matches the project.
-
-All three routes use Python 3.14 and isolated `.venv` virtual environments.
-Bootstrap and Manual install begin with a setup environment in the `GitHub`
-projects directory, then create a separate build environment inside the
-project. Adoption starts with an existing project and uses its project
-environment. Follow the creation and activation commands in the route you
-choose before installing any Python packages. Conda, Poetry, uv, and
-differently named environments can also work, but their creation, activation,
-and package commands must be adapted from the `.venv` examples in this guide.
-
-<div class="grid cards one-column" markdown>
-
--   :material-clock-fast:{ .lg .middle } **\index{Installation!Adoption install}**
-
-    Use [`prodockit adopt`](adoptioninstall.md) when you already have a working
-    Zensical document and want to add prodockit's components without
-    replacing your own template, editor, Git setup, or publishing workflow.
-
-    [:octicons-arrow-right-24: Use Adoption install](adoptioninstall.md)
-
--   :material-rocket-launch:{ .lg .middle } **\index{Installation!Bootstrap Install}**
-
-    Use [`prodockit bootstrap`](bootstrapinstall.md) when you do not have a template of your
-    own and want a formal-looking document as a head start. It installs the
-    supported tools and sets up prodockit-template in recoverable stages.
-
-    [:octicons-arrow-right-24: Use Bootstrap Install](bootstrapinstall.md)
-
--   :material-tools:{ .lg .middle } **\index{Installation!Manual install}**
-
-    Follow the [manual instructions](installtooling.md) when you want the same
-    prodockit-template head start but need or prefer to install and configure
-    every tool yourself. Commands are explained for macOS, Windows, and
-    Ubuntu Linux.
-
-    [:octicons-arrow-right-24: Use Manual install](installtooling.md)
-
-</div>
+\index{Tasks!Choose an installation route} in [Getting started](gettingstarted.md).
+It summarises the choices and points to the maintained Prodockit Extensions
+installation manual. Complete one route there before following the authoring
+and publishing instructions in this User Guide.
 
 ## How docs-as-code works
 
@@ -166,14 +128,11 @@ After choosing an installation route, work through the guide in this order.
 
 //// step | Set up the computer and project
 
-Choose [Adoption install](adoptioninstall.md) to add prodockit to an existing
-Zensical document. Choose
-[Bootstrap Install](bootstrapinstall.md) for an automated formal-document head
-start when you do not have a template, or [Manual install](installtooling.md)
-to set up prodockit-template yourself.
+Use [Getting started](gettingstarted.md) to choose an installation path and
+follow the corresponding Prodockit Extensions instructions.
 
-[Additional tooling](additionaltooling.md) is an optional follow-on after any
-of these routes; it is not a fourth installation route.
+[Additional tooling](additionaltooling.md) is an optional follow-on after
+installation, not another installation path.
 
 ////
 
@@ -208,16 +167,9 @@ website and PDF. The
 
 <div class="grid cards one-column" markdown>
 
--   :material-clock-fast:{ .lg .middle } **Already have a documentation site?**
+-   :material-sign-direction:{ .lg .middle } **Ready to begin?**
 
-    Keep its template and continue to [Adoption install](adoptioninstall.md).
-
--   :material-rocket-launch:{ .lg .middle } **Need a formal-looking head start?**
-
-    Continue to [Bootstrap Install](bootstrapinstall.md).
-
--   :material-tools:{ .lg .middle } **Need the individual setup commands?**
-
-    Continue to [Manual install](installtooling.md).
+    [Choose an installation path](gettingstarted.md), then return here for
+    the writing and publishing workflow.
 
 </div>

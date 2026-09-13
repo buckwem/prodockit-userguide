@@ -38,13 +38,13 @@ def test_built_pdf_contains_representative_live_index_entries(prodockit_pdf_page
     # Plain term, nested Parent!Child term, and code-styled term respectively.
     assert re.search(r"(?m)^docs-as-code,\s*\d+", index_text)
     assert re.search(
-        r"(?ms)^Git,\s*\d+\s*$.*?^ssh key pair,\s*[\d, ]+$", index_text
+        r"(?ms)^Git,\s*\d+\s*$.*?^commit,\s*[\d, ]+$", index_text
     )
     assert re.search(
         r"(?ms)^Shell commands,\s*\d+\s*$.*?^grep\s*,\s*[\d, ]+$", index_text
     )
     assert re.search(
-        r"(?ms)^Tasks\s*$.*?^Adopt an existing document,\s*\d+", index_text
+        r"(?ms)^Tasks\s*$.*?^Choose an installation route,\s*\d+", index_text
     )
     assert re.search(
         r"(?ms)^Tasks\s*$.*?^Update from prodockit-template,\s*\d+", index_text

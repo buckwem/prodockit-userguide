@@ -69,7 +69,12 @@ The easiest way to open one is Visual Studio Code's own integrated terminal:
     * Command Palette (`Ctrl+Shift+P`/`Cmd+Shift+P`) > **View: Toggle Terminal**.
 3. A panel opens at the bottom of the window, already sitting in your project folder - defaulting to PowerShell on Windows, or your shell of choice (bash/zsh) on macOS and Linux.
 
-This integrated terminal also activates your Python 3.14 virtual environment automatically (a self-contained folder holding just this project's Python packages, kept separate from everything else on your computer), as long as you've selected the `.venv` interpreter once - see [Create the Python environment and install Zensical](installtooling.md#install-python-and-zensical). Check that every new terminal prompt begins with `(.venv)` before running a Python, Zensical, or prodockit command.
+This integrated terminal also activates your project virtual environment
+automatically (a self-contained folder holding this project's Python packages),
+as long as you selected its `.venv` interpreter once. Follow the
+[prodockit reference manual](https://prodockit.org/installation/){target="_blank"}
+to create the environment, and check that every new terminal prompt begins
+with `(.venv)` before running a Python, Zensical, or prodockit command.
 
 If you'd rather use your system's own terminal application instead of Visual Studio Code's, you need to navigate to your project folder and activate the virtual environment yourself:
 
@@ -675,10 +680,9 @@ the other is not.
 2. Run `zensical build --clean --strict` and check the website.
 3. Run `prodockit pdf` and read any renderer warning printed in the terminal.
 
-Return to [Adoption install](adoptioninstall.md),
-[Bootstrap Install](bootstrapinstall.md), or
-[Manual install](installtooling.md#install-the-two-toolchains) if the required
-renderer was skipped during setup.
+Return to your chosen [path in the prodockit reference
+manual](https://prodockit.org/choosing-installation/){target="_blank"} if the
+required renderer was skipped during setup.
 
 ### The website and PDF do not have exactly the same layout
 
@@ -713,12 +717,13 @@ If `prodockit pdf` errors out or produces a PDF missing content:
 3. Make sure the dependencies from `requirements.txt` are installed in the
     active virtual environment.
 4. If the document uses \index{Zensical!Mermaid} diagrams or mathematics,
-    confirm that those options were enabled during
-    [Adoption install](adoptioninstall.md), or that their toolchains were
-    installed by [Bootstrap Install](bootstrapinstall.md) or
-    [Manual install](installtooling.md#install-the-two-toolchains).
-5. If the error says WeasyPrint cannot load a library, return to the common
-    problems for the installation route. Reinstalling the Python package alone
+    confirm that those options and their toolchains were installed through
+    your chosen [path in the prodockit reference
+    manual](https://prodockit.org/choosing-installation/){target="_blank"}.
+5. If the error says WeasyPrint cannot load a library, return to the
+    [installation troubleshooting in the prodockit reference
+    manual](https://prodockit.org/troubleshooting-installs/){target="_blank"}.
+    Reinstalling the Python package alone
     does not install its operating-system graphics libraries.
 
 ### Published site shows old content or a 404
@@ -726,7 +731,7 @@ If `prodockit pdf` errors out or produces a PDF missing content:
 1. Check the pipeline (GitLab **CI/CD > Pipelines**) or workflow (GitHub **Actions** tab) actually ran, and succeeded, for your latest commit - if it's still running, or failed, the old version stays published.
 2. Confirm your change actually reached the default branch (`main`) - a commit sitting on a feature branch, or a merge/pull request you haven't merged yet, never triggers a rebuild. See [Organise larger changes with branches and issues](#organise-larger-changes-with-branches-and-issues).
 3. Hard refresh the published page (`Ctrl+Shift+R`/`Cmd+Shift+R`) - your browser can cache the old version just as easily as it caches the local preview.
-4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after creating a repository in a new GitHub account - see [Choose how to get the project](installtooling.md#cloning-the-prodockit-template) in Manual install.
+4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after creating a repository in a new GitHub account; see the [prodockit reference manual](https://prodockit.org/choosing-installation/){target="_blank"} for the setup route you chose.
 5. On GitLab specifically, if the pipeline succeeds but no Pages site ever appears, check that the **Pages** feature itself hasn't been disabled for the project: **Settings > General > Visibility, project features, permissions**, and make sure **Pages** is toggled on. Unlike GitHub, GitLab doesn't need a separate "source" setting - Pages deploys automatically from the `pages` job in `.gitlab-ci.yml` once the feature is enabled, which it is by default.
 
 ## Prepare the final report
