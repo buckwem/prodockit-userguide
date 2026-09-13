@@ -16,6 +16,25 @@ def _text(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
 
 
+def _canonical_text(path: str) -> str:
+    """Read committed source when CI has prepared its Surrey-only overlay."""
+    if not _text("zensical.toml").startswith("# Surrey Getting started overlay"):
+        return _text(path)
+    return subprocess.check_output(
+        ["git", "show", f"HEAD:{path}"], cwd=ROOT, text=True
+    )
+
+
+def _canonical_guide_pages() -> list[str]:
+    if not _text("zensical.toml").startswith("# Surrey Getting started overlay"):
+        return [str(path.relative_to(ROOT)) for path in sorted((ROOT / "docs").glob("*.md"))]
+    return subprocess.check_output(
+        ["git", "ls-tree", "-r", "--name-only", "HEAD", "docs"],
+        cwd=ROOT,
+        text=True,
+    ).splitlines()
+
+
 def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
@@ -206,9 +225,9 @@ def test_new_042_behaviour_is_documented() -> None:
 
 
 def test_getting_started_replaces_the_duplicated_install_manual() -> None:
-    guide = _text("docs/gettingstarted.md")
+    guide = _canonical_text("docs/gettingstarted.md")
     about = _text("docs/about.md")
-    config = _text("zensical.toml")
+    config = _canonical_text("zensical.toml")
 
     for old_page in (
         "installing.md",
@@ -249,10 +268,10 @@ def test_other_guide_pages_link_to_the_local_getting_started_entry() -> None:
         "manual-install/",
         "troubleshooting-installs/",
     )
-    for path in (ROOT / "docs").rglob("*.md"):
-        if path.name == "gettingstarted.md":
+    for path in _canonical_guide_pages():
+        if not path.endswith(".md") or path == "docs/gettingstarted.md":
             continue
-        text = path.read_text(encoding="utf-8")
+        text = _canonical_text(path)
         assert not any(
             f"https://prodockit.org/{route}" in text
             for route in installation_routes
@@ -277,8 +296,9 @@ def test_start_editing_explains_how_to_rebuild_a_broken_environment() -> None:
 
 def test_guide_defers_product_versions_to_extensions_reference() -> None:
     guide = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in sorted((ROOT / "docs").glob("*.md"))
+        _canonical_text(path)
+        for path in _canonical_guide_pages()
+        if path.endswith(".md") and path.count("/") == 1
     )
 
     versioned_product = re.compile(
@@ -310,7 +330,7 @@ def test_guide_uses_zensical_commands_with_legacy_config_names_only() -> None:
 
 
 def test_install_preparation_is_deferred_to_extensions() -> None:
-    guide = _text("docs/gettingstarted.md")
+    guide = _canonical_text("docs/gettingstarted.md")
     editing = _text("docs/startediting.md")
 
     assert "https://prodockit.org/installation/" in guide
@@ -362,8 +382,9 @@ def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
         "word_count": "",
     }
     standard = "\n".join(
-        environment.from_string(path.read_text(encoding="utf-8")).render(context)
-        for path in sorted((ROOT / "docs").glob("*.md"))
+        environment.from_string(_canonical_text(path)).render(context)
+        for path in _canonical_guide_pages()
+        if path.endswith(".md") and path.count("/") == 1
     )
 
     assert not re.search(
@@ -393,7 +414,7 @@ def test_optional_tooling_platform_tabs_are_consistently_ordered() -> None:
 
 
 def test_guide_is_split_into_top_level_workflow_sections() -> None:
-    config = _text("zensical.toml")
+    config = _canonical_text("zensical.toml")
 
     assert '{"Guide" = [' not in config
     assert '{"Getting started" = [' in config
@@ -420,7 +441,7 @@ def test_guide_is_split_into_top_level_workflow_sections() -> None:
 
 
 def test_additional_tooling_is_an_optional_follow_on() -> None:
-    guide = _text("docs/gettingstarted.md")
+    guide = _canonical_text("docs/gettingstarted.md")
     additional = _text("docs/additionaltooling.md")
 
     assert "[Additional tooling](additionaltooling.md) is optional" in guide

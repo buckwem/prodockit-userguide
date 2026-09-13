@@ -1,0 +1,41 @@
+# Source: buckwem/prodockit-extensions, release 0.65.4.
+# Refresh only after reviewing the upstream Getting started navigation and
+# running the source verification and both build variants.
+repository = "https://github.com/buckwem/prodockit-extensions"
+revision = "133ab36e4f857840957f6633da751ae580041ba8"
+version = "0.65.4"
+assets = [
+  "assets/diagrams/1.1-prodockit-output-relationship.png",
+  "assets/diagrams/2.1-installation-approaches.png",
+  "assets/diagrams/4.1-build-or-update-site.png",
+  "assets/diagrams/command-output-anatomy.svg",
+  "assets/diagrams/5.1-template-file-ownership.png",
+]
+
+[[pages]]
+title = "prodockit overview"
+path = "gettingstarted.md"
+
+[[pages]]
+title = "Choose your install"
+path = "choosing-installation.md"
+
+[[pages]]
+title = "Prepare to install"
+path = "installation.md"
+
+[[pages]]
+title = "Adopt prodockit"
+path = "getting-started.md"
+
+[[pages]]
+title = "Build a template site"
+path = "devcons/bootstrap.md"
+
+[[pages]]
+title = "Build site manually"
+path = "manual-install.md"
+
+[[pages]]
+title = "Troubleshooting"
+path = "troubleshooting-installs.md"

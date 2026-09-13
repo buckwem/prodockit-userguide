@@ -90,6 +90,12 @@ pages:
     - prodockit config --check
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
+    # In Surrey CI, replace the single Getting started summary with the
+    # pinned reference-manual section in this disposable checkout. Other
+    # GitLab hosts keep the canonical summary. The PDF below reads this same
+    # prepared tree and navigation as the website.
+    - python tools/surrey_getting_started.py verify
+    - python tools/surrey_getting_started.py prepare
     - zensical build --clean --strict
     # The PDF consumes this completed analytics-free site, then adds the
     # finished file to public/ without another Zensical build.

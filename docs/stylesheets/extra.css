@@ -18,3 +18,21 @@
   margin-right: 0.3em;
   vertical-align: -0.15em;
 }
+
+/* The imported Getting started choice cards use the reference manual's
+   installation-route-grid class. Keep their action buttons aligned. */
+@media screen and (min-width: 60em) {
+  .md-typeset .grid.cards.installation-route-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.md-typeset .grid.cards.installation-route-grid > ul > li {
+  display: flex;
+  flex-direction: column;
+}
+
+.md-typeset .grid.cards.installation-route-grid > ul > li > p:last-child {
+  margin-top: auto;
+  padding-top: 0.8rem;
+}
