@@ -1,6 +1,6 @@
 # Userguide releases
 
-## Unreleased
+## 1.18.17 (2026-09-13)
 
 - Align build and test requirements with Prodockit 0.65.3 and Zensical 0.0.61.
 - Cascade managed renderer dependencies, including the patched MathJax XML
