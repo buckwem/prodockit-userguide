@@ -45,6 +45,19 @@ def test_adopt_release_keeps_renderers_selected_and_declares_browser() -> None:
     assert "/.prodockit-adopt-backups/" in _text(".gitignore").splitlines()
 
 
+def test_mathjax_cascade_includes_browser_checks_and_patched_xml() -> None:
+    manifest = json.loads(_text("tools/mathjax/package.json"))
+    lock = json.loads(_text("tools/mathjax/package-lock.json"))
+    assert "puppeteer-core" in manifest["dependencies"]
+    assert lock["packages"][""]["dependencies"] == manifest["dependencies"]
+    assert manifest["overrides"]["@xmldom/xmldom"] == "0.9.12"
+    assert lock["packages"]["node_modules/@xmldom/xmldom"]["version"] == "0.9.12"
+    for workflow in (".github/workflows/docs.yml", ".gitlab-ci.yml"):
+        text = _text(workflow)
+        assert text.index("npm ci --prefix tools/mathjax") < text.index("prodockit init-mathjax")
+        assert text.index("prodockit init-mathjax") < text.index("zensical build")
+
+
 def test_adopt_guidance_describes_runtime_provisioning_and_review() -> None:
     adoption = _text("docs/adoptioninstall.md")
     assert "eleven activities in four phases" in adoption
