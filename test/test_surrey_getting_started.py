@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_snapshot_is_complete_and_pinned() -> None:
     data = surrey.manifest()
     surrey.verify_snapshot(data)
-    assert data["version"] == "0.65.4"
+    assert data["version"] == "0.65.5"
     assert len(data["revision"]) == 40
     assert len(data["pages"]) == 7
     assert data["pages"][0]["path"] == "gettingstarted.md"
@@ -48,8 +48,11 @@ def test_external_manual_links_are_rewritten_only_inside_imported_pages() -> Non
     )
     result = surrey.rewrite_external_links(source, "devcons/bootstrap.md", included)
     assert "[local](../installation.md#installation-preparation)" in result
-    assert "[manual](https://prodockit.org/commands/bootstrap/#cmd-bootstrap-phases)" in result
-    assert "[site](https://prodockit.org/publishing/)" in result
+    assert (
+        '[manual](https://prodockit.org/commands/bootstrap/#cmd-bootstrap-phases)'
+        '{target="_blank" rel="noopener"}'
+    ) in result
+    assert '[site](https://prodockit.org/publishing/){target="_blank" rel="noopener"}' in result
 
     for page in included:
         markdown = (surrey.SOURCE / "docs" / page).read_text(encoding="utf-8")
@@ -122,6 +125,9 @@ def test_built_surrey_pages_have_local_targets_and_assets() -> None:
         for element in article.select("a[href], img[src]"):
             url = element.get("href") or element.get("src")
             parsed = urlsplit(url)
+            if parsed.netloc == "prodockit.org":
+                assert element.get("target") == "_blank", (html, url)
+                continue
             if parsed.scheme or parsed.netloc or not parsed.path:
                 continue
             if parsed.path.startswith("/"):
@@ -136,3 +142,59 @@ def test_built_surrey_pages_have_local_targets_and_assets() -> None:
             if parsed.fragment and target.suffix == ".html":
                 destination = BeautifulSoup(target.read_text(encoding="utf-8"), "html.parser")
                 assert destination.find(id=unquote(parsed.fragment)) is not None, (html, url)
+
+
+def test_imported_pages_render_the_selected_host_text() -> None:
+    if not (ROOT / "zensical.toml").read_text(encoding="utf-8").startswith(surrey.START_MARKER):
+        return  # The GitHub site publishes the canonical summary, not these pages.
+
+    from macros import _detect_is_surrey
+
+    def article(page: str) -> BeautifulSoup:
+        html = ROOT / "public" / page / "index.html"
+        content = BeautifulSoup(html.read_text(encoding="utf-8"), "html.parser").select_one(".md-content")
+        assert content is not None
+        assert "{%" not in content.get_text(" ", strip=True)
+        return content
+
+    choose = article("choosing-installation").get_text(" ", strip=True)
+    adopt = article("getting-started").get_text(" ", strip=True)
+    bootstrap = article("devcons/bootstrap")
+    manual = article("manual-install").get_text(" ", strip=True)
+    troubleshooting = article("troubleshooting-installs").get_text(" ", strip=True)
+
+    if _detect_is_surrey():
+        assert "Coursework with a prepared repository" in choose
+        assert "This stage publishes your working local site on Surrey GitLab Pages." in adopt
+        assert "This stage publishes your working local site on GitHub Pages or GitLab Pages." not in adopt
+        assert bootstrap.select_one('a[href="https://gitlab.surrey.ac.uk/mb0105/prodockit-template"]')
+        assert "use Surrey GitLab for your coursework" in manual
+        assert "Check the connection to Surrey GitLab" in troubleshooting
+        assert "Check the connection to GitLab or GitHub" not in troubleshooting
+    else:
+        assert "Coursework with a prepared repository" not in choose
+        assert "This stage publishes your working local site on GitHub Pages or GitLab Pages." in adopt
+        assert "This stage publishes your working local site on Surrey GitLab Pages." not in adopt
+        assert bootstrap.select_one('a[href="https://github.com/buckwem/prodockit-template"]')
+        assert "chosen Git host; you do not need both GitHub and GitLab" in manual
+        assert "Check the connection to GitLab or GitHub" in troubleshooting
+        assert "Check the connection to Surrey GitLab" not in troubleshooting
+
+
+def test_imported_pdf_renders_the_selected_host_text() -> None:
+    if not (ROOT / "zensical.toml").read_text(encoding="utf-8").startswith(surrey.START_MARKER):
+        return  # The canonical GitHub PDF has no imported section.
+
+    import pymupdf
+
+    from macros import _detect_is_surrey
+
+    pdf = ROOT / "docs/site_documentation.pdf"
+    assert pdf.is_file()
+    with pymupdf.open(pdf) as document:
+        text = " ".join(page.get_text() for page in document)
+
+    assert "Buy me a coffee" not in text
+    assert ("Coursework with a prepared repository" in text) == _detect_is_surrey()
+    assert ("Surrey GitLab Pages" in text) == _detect_is_surrey()
+    assert ("GitHub Pages or GitLab Pages" in text) != _detect_is_surrey()

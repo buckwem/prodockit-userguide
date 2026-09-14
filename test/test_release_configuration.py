@@ -6,6 +6,7 @@ import subprocess
 import tomllib
 from pathlib import Path
 
+from bs4 import BeautifulSoup
 from jinja2 import Environment
 
 
@@ -48,6 +49,37 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     assert f"zensical>={versions['zensical']}" in requirements
     assert f"markdown=={versions['markdown']}" in requirements
     assert "zensical==" not in requirements
+
+
+def test_page_outline_uses_the_right_sidebar() -> None:
+    config = tomllib.loads(_text("zensical.toml"))
+    assert "toc.integrate" not in config["project"]["theme"]["features"]
+
+    # Start editing is present in both the canonical and Surrey builds.
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    assert page.select_one('.md-sidebar--secondary[data-md-type="toc"]') is not None
+
+
+def test_canonical_manual_links_open_in_new_tabs() -> None:
+    checked = 0
+    for page in _canonical_guide_pages():
+        if not page.endswith(".md"):
+            continue
+        for match in re.finditer(
+            r"\]\(https://prodockit\.org/[^)]*\)(\{[^}]*\})?",
+            _canonical_text(page),
+        ):
+            checked += 1
+            assert match.group(1) and 'target="_blank"' in match.group(1), page
+    assert checked > 10
+
+    rendered = 0
+    for html in (ROOT / "public").rglob("*.html"):
+        page = BeautifulSoup(html.read_text(encoding="utf-8"), "html.parser")
+        for link in page.select('a[href^="https://prodockit.org/"]'):
+            rendered += 1
+            assert link.get("target") == "_blank", (html, link.get("href"))
+    assert rendered > 10
 
 
 def test_diagnostic_recovery_directory_is_ignored() -> None:

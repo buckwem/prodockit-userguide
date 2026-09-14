@@ -1,9 +1,9 @@
-# Source: buckwem/prodockit-extensions, release 0.65.4.
+# Source: buckwem/prodockit-extensions, release 0.65.5.
 # Refresh only after reviewing the upstream Getting started navigation and
 # running the source verification and both build variants.
 repository = "https://github.com/buckwem/prodockit-extensions"
-revision = "133ab36e4f857840957f6633da751ae580041ba8"
-version = "0.65.4"
+revision = "47701d85862e3abaea04f7f9140b3ae05b75871c"
+version = "0.65.5"
 assets = [
   "assets/diagrams/1.1-prodockit-output-relationship.png",
   "assets/diagrams/2.1-installation-approaches.png",
