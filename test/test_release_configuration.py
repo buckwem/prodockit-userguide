@@ -73,6 +73,14 @@ def test_canonical_manual_links_open_in_new_tabs() -> None:
             assert match.group(1) and 'target="_blank"' in match.group(1), page
     assert checked > 10
 
+    rendered = 0
+    for html in (ROOT / "public").rglob("*.html"):
+        page = BeautifulSoup(html.read_text(encoding="utf-8"), "html.parser")
+        for link in page.select('a[href^="https://prodockit.org/"]'):
+            rendered += 1
+            assert link.get("target") == "_blank", (html, link.get("href"))
+    assert rendered > 10
+
 
 def test_diagnostic_recovery_directory_is_ignored() -> None:
     assert ".prodockit-quarantine/" in _text(".gitignore").splitlines()
