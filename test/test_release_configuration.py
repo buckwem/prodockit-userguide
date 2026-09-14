@@ -60,6 +60,20 @@ def test_page_outline_uses_the_right_sidebar() -> None:
     assert page.select_one('.md-sidebar--secondary[data-md-type="toc"]') is not None
 
 
+def test_canonical_manual_links_open_in_new_tabs() -> None:
+    checked = 0
+    for page in _canonical_guide_pages():
+        if not page.endswith(".md"):
+            continue
+        for match in re.finditer(
+            r"\]\(https://prodockit\.org/[^)]*\)(\{[^}]*\})?",
+            _canonical_text(page),
+        ):
+            checked += 1
+            assert match.group(1) and 'target="_blank"' in match.group(1), page
+    assert checked > 10
+
+
 def test_diagnostic_recovery_directory_is_ignored() -> None:
     assert ".prodockit-quarantine/" in _text(".gitignore").splitlines()
 

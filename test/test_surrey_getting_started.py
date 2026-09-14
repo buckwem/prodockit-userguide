@@ -48,8 +48,11 @@ def test_external_manual_links_are_rewritten_only_inside_imported_pages() -> Non
     )
     result = surrey.rewrite_external_links(source, "devcons/bootstrap.md", included)
     assert "[local](../installation.md#installation-preparation)" in result
-    assert "[manual](https://prodockit.org/commands/bootstrap/#cmd-bootstrap-phases)" in result
-    assert "[site](https://prodockit.org/publishing/)" in result
+    assert (
+        '[manual](https://prodockit.org/commands/bootstrap/#cmd-bootstrap-phases)'
+        '{target="_blank" rel="noopener"}'
+    ) in result
+    assert '[site](https://prodockit.org/publishing/){target="_blank" rel="noopener"}' in result
 
     for page in included:
         markdown = (surrey.SOURCE / "docs" / page).read_text(encoding="utf-8")
@@ -122,6 +125,9 @@ def test_built_surrey_pages_have_local_targets_and_assets() -> None:
         for element in article.select("a[href], img[src]"):
             url = element.get("href") or element.get("src")
             parsed = urlsplit(url)
+            if parsed.netloc == "prodockit.org":
+                assert element.get("target") == "_blank", (html, url)
+                continue
             if parsed.scheme or parsed.netloc or not parsed.path:
                 continue
             if parsed.path.startswith("/"):

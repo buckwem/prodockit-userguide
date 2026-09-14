@@ -89,7 +89,12 @@ def rewrite_external_links(markdown: str, page: str, included: set[str]) -> str:
             absolute += f"?{parsed.query}"
         if parsed.fragment:
             absolute += f"#{parsed.fragment}"
-        return match.group("open") + absolute + match.group("close")
+        return (
+            match.group("open")
+            + absolute
+            + match.group("close")
+            + '{target="_blank" rel="noopener"}'
+        )
 
     return LINK.sub(replace, markdown)
 
