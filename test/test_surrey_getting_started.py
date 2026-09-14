@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_snapshot_is_complete_and_pinned() -> None:
     data = surrey.manifest()
     surrey.verify_snapshot(data)
-    assert data["version"] == "0.65.4"
+    assert data["version"] == "0.65.5"
     assert len(data["revision"]) == 40
     assert len(data["pages"]) == 7
     assert data["pages"][0]["path"] == "gettingstarted.md"

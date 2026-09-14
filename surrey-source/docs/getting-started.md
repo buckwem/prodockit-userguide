@@ -41,7 +41,8 @@ as well as the colours. Keep your existing site's content and configuration;
 do not copy new-site examples over them.
 
 After Stage 6, the routes separate again. Stage 7a helps a new project save its
-files and publish through GitHub or GitLab Pages. Stage 7b helps an existing
+files and publish through {% if is_surrey %}Surrey GitLab Pages{% else %}GitHub or GitLab Pages{% endif %}.
+Stage 7b helps an existing
 project review Adopt's changes and follow its own release process. You can
 stop after local testing if you are not ready to commit or publish.
 
@@ -694,7 +695,12 @@ Choose the next stage for your site:
 
 ### Stage 7a — Publish the website **Clean**{: .install-clean} {: #stage-6-save-and-publish-optional }
 
+{% if is_surrey %}
+This stage publishes your working local site on Surrey GitLab Pages.
+{% else %}
 This stage publishes your working local site on GitHub Pages or GitLab Pages.
+{% endif %}
+
 Stay in the project directory with its environment active. If the site is
 already published, keep its existing workflow and use its normal review process.
 
@@ -721,6 +727,18 @@ Using an editor for this review is optional; the commands below work without one
 
 Use your host's tab. Skip settings that are already correct.
 
+{% if is_surrey %}
+=== ":fontawesome-brands-gitlab: Surrey GitLab"
+
+    Sign in to [Surrey GitLab](https://gitlab.surrey.ac.uk) using
+    **Surrey Login**, then open your project. Keep its existing Pages job in
+    `.gitlab-ci.yml`. If Adopt created `.gitlab-pdk.yml`, first follow
+    [Merge the build instructions](#merge-adopt-build-instructions).
+    If the project has no Pages job, follow
+    [the GitLab publishing workflow setup](devcons/continuous-integration.md)
+    before continuing. Adopt does not create an active GitLab pipeline.
+
+{% else %}
 === "GitHub"
 
     1. Open your repository on GitHub.
@@ -738,6 +756,7 @@ Use your host's tab. Skip settings that are already correct.
     Keep your existing Pages job in `.gitlab-ci.yml`. If none exists, follow
     [the GitLab publishing workflow setup](devcons/continuous-integration.md)
     before continuing. Adopt does not create an active GitLab pipeline.
+{% endif %}
 
 ////
 
@@ -791,6 +810,16 @@ If there is nothing new to commit or push, check the latest deployment instead.
 
 Wait for a successful deployment, then open the published site:
 
+{% if is_surrey %}
+=== ":fontawesome-brands-gitlab: Surrey GitLab"
+
+    1. Open the project's **Build > Pipelines** page on
+       [Surrey GitLab](https://gitlab.surrey.ac.uk) and check that the Pages
+       job for your latest commit succeeds.
+    2. Return to the project's front page and click its **GitLab Pages**
+       link to open the website.
+
+{% else %}
 === "GitHub"
 
     1. Open the repository's **Actions** tab.
@@ -804,6 +833,7 @@ Wait for a successful deployment, then open the published site:
     1. Open the project's **Build > Pipelines** page.
     2. Open the pipeline for your latest commit and check that its Pages job succeeds.
     3. Return to the repository's front page and click the **GitLab Pages** link to open your site.
+{% endif %}
 
 Check the pages, navigation and any diagrams or maths. If publishing fails,
 use [Troubleshooting](troubleshooting-installs.md) before retrying.
@@ -905,6 +935,13 @@ matches a trusted Zensical baseline. Otherwise, it preserves the existing workfl
 and creates a separate proposal if one is not already present. GitLab workflows
 are always preserved, with proposed changes supplied separately.
 
+{% if is_surrey %}
+=== ":fontawesome-brands-gitlab: Surrey GitLab"
+
+    Merge the relevant instructions from `./.gitlab-pdk.yml` into
+    `./.gitlab-ci.yml` in your Surrey GitLab project.
+
+{% else %}
 === ":fontawesome-brands-github: GitHub"
 
     Merge the relevant instructions from `./pdk.yml` into `./.github/workflows/docs.yml`.
@@ -915,6 +952,7 @@ are always preserved, with proposed changes supplied separately.
 === ":fontawesome-brands-gitlab: GitLab"
 
     Merge the relevant instructions from `./.gitlab-pdk.yml` into `./.gitlab-ci.yml`.
+{% endif %}
 
 This is a manual merge, not a file replacement. Bring across the required
 dependency installation and build commands while keeping your existing
