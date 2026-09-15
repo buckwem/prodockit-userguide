@@ -730,32 +730,68 @@ Use your host's tab. Skip settings that are already correct.
 {% if is_surrey %}
 === ":fontawesome-brands-gitlab: Surrey GitLab"
 
-    Sign in to [Surrey GitLab](https://gitlab.surrey.ac.uk) using
-    **Surrey Login**, then open your project. Keep its existing Pages job in
-    `.gitlab-ci.yml`. If Adopt created `.gitlab-pdk.yml`, first follow
-    [Merge the build instructions](#merge-adopt-build-instructions).
-    If the project has no Pages job, follow
-    [the GitLab publishing workflow setup](devcons/continuous-integration.md)
-    before continuing. Adopt does not create an active GitLab pipeline.
+    1. Sign in to [Surrey GitLab](https://gitlab.surrey.ac.uk) with
+       **Surrey Login** and open the project that will publish your site.
+    2. In the project sidebar, open **Settings > General** and expand
+       **Visibility, project features, permissions**. Check that **Pages** is
+       on. If you turn it on, select **Save changes**. If you cannot change the
+       setting, ask the project owner; do not make the repository public.
+    3. Return to the project repository and look in its top-level file list
+       for `.gitlab-ci.yml`. Open it if it exists; GitLab reads this file to
+       decide which pipeline jobs to run.
+    4. In `.gitlab-ci.yml`, look for a job named `pages` or one with a
+       `pages:` setting. Check that it publishes the built `public/` directory.
+       Keep the existing job, branch rules, and project-specific settings.
+    5. If Adopt created `.gitlab-pdk.yml` beside the other project files,
+       follow [Merge the build instructions](#merge-adopt-build-instructions)
+       to bring its proposed build commands into `.gitlab-ci.yml`. Do not
+       replace the whole CI file or add a second Pages job.
+    6. If `.gitlab-ci.yml` is missing or has no Pages job, follow
+       [the GitLab publishing workflow setup](devcons/continuous-integration.md)
+       before continuing, then check the file again. Adopt does not create
+       an active GitLab pipeline.
 
 {% else %}
-=== "GitHub"
+=== ":fontawesome-brands-github: GitHub"
 
     1. Open your repository on GitHub.
-    2. Open **Settings > Pages**.
+    2. Open **Settings > Pages**. If **Settings** is unavailable, ask a
+       repository administrator to configure Pages.
     3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+       Do not choose **Deploy from a branch**. GitHub may suggest a new
+       workflow; skip that suggestion when your repository has one already.
+    4. Return to the repository's **Code** tab and open
+       `.github/workflows/docs.yml`, or the existing workflow that builds
+       your website. Keep its triggers and deployment settings.
+    5. If Adopt created `pdk.yml` in the repository root, follow
+       [Merge the build instructions](#merge-adopt-build-instructions) to
+       bring its proposed build commands into the existing workflow. Do not
+       add a second publishing workflow.
+    6. If there is no website workflow, follow
+       [GitHub Pages setup](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+       before continuing. The later steps in this stage check the build,
+       commit the files, and start the deployment.
 
-    Use the existing `.github/workflows/docs.yml`; do not add a duplicate.
-    If Adopt created `pdk.yml`, first follow
-    [Merge the build instructions](#merge-adopt-build-instructions).
-    If it is missing or Pages settings are unavailable, follow
-    [GitHub Pages setup](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+=== ":fontawesome-brands-gitlab: GitLab"
 
-=== "GitLab"
-
-    Keep your existing Pages job in `.gitlab-ci.yml`. If none exists, follow
-    [the GitLab publishing workflow setup](devcons/continuous-integration.md)
-    before continuing. Adopt does not create an active GitLab pipeline.
+    1. Sign in to GitLab and open the project that will publish your site.
+    2. In the project sidebar, open **Settings > General**, expand
+       **Visibility, project features, permissions**, and check that **Pages**
+       is on. If you turn it on, select **Save changes**. Ask the project owner
+       if you cannot change this setting; do not make the repository public.
+    3. Return to the project repository and open `.gitlab-ci.yml` from its
+       top-level file list, if the file exists.
+    4. Look for a job named `pages` or one with a `pages:` setting. Check that
+       it publishes the built `public/` directory. Keep the existing job,
+       branch rules, and project-specific settings.
+    5. If Adopt created `.gitlab-pdk.yml`, follow
+       [Merge the build instructions](#merge-adopt-build-instructions) to bring
+       its proposed build commands into `.gitlab-ci.yml`. Do not replace the
+       whole file or add a second Pages job.
+    6. If `.gitlab-ci.yml` is missing or has no Pages job, follow
+       [the GitLab publishing workflow setup](devcons/continuous-integration.md)
+       before continuing, then check the file again. Adopt does not create
+       an active GitLab pipeline.
 {% endif %}
 
 ////
@@ -813,14 +849,17 @@ Wait for a successful deployment, then open the published site:
 {% if is_surrey %}
 === ":fontawesome-brands-gitlab: Surrey GitLab"
 
-    1. Open the project's **Build > Pipelines** page on
-       [Surrey GitLab](https://gitlab.surrey.ac.uk) and check that the Pages
-       job for your latest commit succeeds.
-    2. Return to the project's front page and click its **GitLab Pages**
-       link to open the website.
+    1. Open your project on [Surrey GitLab](https://gitlab.surrey.ac.uk), then
+       select **Build > Pipelines** in the project sidebar.
+    2. Open the pipeline for the commit you just pushed.
+    3. Check that its Pages job completed successfully. If it failed, open the
+       job log and resolve the reported error before continuing.
+    4. Select **Deploy > Pages** in the project sidebar to find the published
+       website address.
+    5. Open that address in a new browser tab and check the site.
 
 {% else %}
-=== "GitHub"
+=== ":fontawesome-brands-github: GitHub"
 
     1. Open the repository's **Actions** tab.
     2. Open the documentation run for your latest commit and wait for success.
@@ -828,11 +867,16 @@ Wait for a successful deployment, then open the published site:
     4. Tick **Use your GitHub Pages website** and save the change.
     5. Click the website link now shown in the **About** panel to open your site.
 
-=== "GitLab"
+=== ":fontawesome-brands-gitlab: GitLab"
 
-    1. Open the project's **Build > Pipelines** page.
-    2. Open the pipeline for your latest commit and check that its Pages job succeeds.
-    3. Return to the repository's front page and click the **GitLab Pages** link to open your site.
+    1. Open your project on GitLab, then select **Build > Pipelines** in the
+       project sidebar.
+    2. Open the pipeline for the commit you just pushed.
+    3. Check that its Pages job completed successfully. If it failed, open the
+       job log and resolve the reported error before continuing.
+    4. Select **Deploy > Pages** in the project sidebar to find the published
+       website address.
+    5. Open that address in a new browser tab and check the site.
 {% endif %}
 
 Check the pages, navigation and any diagrams or maths. If publishing fails,
