@@ -93,6 +93,14 @@ def test_surrey_nav_puts_about_first_and_preserves_upstream_numbering() -> None:
     assert (ROOT / "docs/gettingstarted.md").read_text(encoding="utf-8").startswith("---")
 
 
+def test_built_surrey_top_menu_places_about_before_getting_started() -> None:
+    if not (ROOT / "zensical.toml").read_text(encoding="utf-8").startswith(surrey.START_MARKER):
+        return  # The canonical GitHub site has its own navigation build.
+    home = BeautifulSoup((ROOT / "public/index.html").read_text(encoding="utf-8"), "html.parser")
+    labels = [link.get_text(" ", strip=True) for link in home.select(".md-tabs__link")]
+    assert labels.index("About") < labels.index("Getting started")
+
+
 def test_other_guide_pages_link_only_to_the_local_start_page() -> None:
     tracked = subprocess.check_output(
         ["git", "ls-files", "docs/*.md"], cwd=ROOT, text=True
