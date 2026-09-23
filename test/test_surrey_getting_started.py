@@ -72,7 +72,7 @@ def test_donation_section_is_removed_only_from_surrey_copy() -> None:
     assert "Buy me a coffee" in source
 
 
-def test_surrey_nav_preserves_upstream_numbering_and_relabels_following_pages() -> None:
+def test_surrey_nav_puts_about_first_and_preserves_upstream_numbering() -> None:
     config_text = (ROOT / "zensical.toml").read_text(encoding="utf-8")
     if config_text.startswith(surrey.START_MARKER):
         config_text = subprocess.check_output(
@@ -82,12 +82,13 @@ def test_surrey_nav_preserves_upstream_numbering_and_relabels_following_pages() 
     data = surrey.manifest()
     nav = surrey.surrey_nav(canonical, data)
     assert nav[0] == {"Home": ["index.md"]}
-    assert next(iter(nav[1])) == "Getting started"
-    section = nav[1]["Getting started"]
+    assert nav[1] == {"About": [{"About this guide": "about.md"}]}
+    assert next(iter(nav[2])) == "Getting started"
+    section = nav[2]["Getting started"]
     assert [next(iter(item.values())) for item in section[:7]] == surrey.page_paths(data)
     assert next(iter(section[0])) == "1. prodockit overview"
     assert section[-1] == {"8. Additional tooling": "additionaltooling.md"}
-    assert nav[2] == {"About": [{"9. About this guide": "about.md"}]}
+    assert nav[3] == {"Edit": [{"9. Start editing": "startediting.md"}]}
     assert tomllib.loads("[project]\nnav = " + surrey._render_nav(nav))["project"]["nav"] == nav
     assert (ROOT / "docs/gettingstarted.md").read_text(encoding="utf-8").startswith("---")
 
