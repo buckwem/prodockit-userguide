@@ -5,12 +5,11 @@
 as raw source instead of rendered images (issue #23).
 
 WeasyPrint has no JS engine, so unlike the website - which renders both
-client-side via Mermaid.js and MathJax - the PDF build shells out to
-mermaid-cli and mathjax-full to pre-render them to static images.
-prodockit.pdf deliberately leaves the content unrendered rather than
-failing the build when those aren't found, which is the right default for
-a project that uses neither, but means a project that *does* use them gets
-a quietly broken PDF and no error.
+client-side via Mermaid.js and MathJax - the PDF build uses its own
+project-local renderers to pre-render them to static images.
+Prodockit now prepares its project-local renderers on demand and fails the
+build if needed rendering cannot be completed. These checks still verify
+the resulting document rather than relying only on successful preparation.
 
 The detection itself now comes from `prodockit.testing`, and the fixtures
 from its pytest plugin (issue #27). This file previously carried its own
@@ -18,53 +17,14 @@ copy of both. That copy matched only arrow syntax, so an unrendered
 entity-relationship diagram - whose `||--o{` cardinality syntax has no
 arrowhead at all - would have passed silently; the library version handles
 it. What remains here is the part that is genuinely specific to this
-project: which fences it configures, and the actual diagram on its own
-Diagrams page.
+project: the actual diagram on its own Diagrams page.
 """
 
-import pytest
-from prodockit.pdf.config import _find_mmdc_bin, _find_tex2svg_script
 from prodockit.testing import (
     assert_no_unrendered_mermaid,
     assert_no_unrendered_tex,
     contains_unrendered_mermaid,
 )
-
-
-def _fence_is_configured(config, fence_name):
-    extensions = config.get("project", {}).get("markdown_extensions", {})
-    fences = extensions.get("pymdownx", {}).get("superfences", {}).get("custom_fences", [])
-    return any(fence.get("name") == fence_name for fence in fences)
-
-
-def _arithmatex_is_configured(config):
-    extensions = config.get("project", {}).get("markdown_extensions", {})
-    return "arithmatex" in extensions.get("pymdownx", {})
-
-
-# --- Config vs tooling: fails fast, and names the cause --------------------
-
-
-def test_mermaid_renderer_is_available_when_the_mermaid_fence_is_configured(prodockit_config):
-    """Fails fast, and names the cause, when tools/mermaid isn't installed -
-    rather than leaving it to be inferred from odd-looking PDF content."""
-    if not _fence_is_configured(prodockit_config, "mermaid"):
-        pytest.skip("no mermaid custom fence configured in zensical.toml")
-    assert _find_mmdc_bin(None) is not None, (
-        "zensical.toml configures the mermaid fence, but no mmdc binary was found - "
-        "run `prodockit init-tools` and `npm ci --prefix tools/mermaid`, or Mermaid "
-        "diagrams will silently render as raw source in the PDF (issue #23)"
-    )
-
-
-def test_maths_renderer_is_available_when_arithmatex_is_configured(prodockit_config):
-    if not _arithmatex_is_configured(prodockit_config):
-        pytest.skip("pymdownx.arithmatex not configured in zensical.toml")
-    assert _find_tex2svg_script(None) is not None, (
-        "zensical.toml enables pymdownx.arithmatex, but no tex2svg script was found - "
-        "run `prodockit init-tools` and `npm ci --prefix tools/mathjax`, or maths will "
-        "silently render as raw LaTeX in the PDF (issue #23)"
-    )
 
 
 # --- The built PDF ---------------------------------------------------------

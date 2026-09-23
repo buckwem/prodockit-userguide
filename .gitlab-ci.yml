@@ -73,9 +73,9 @@ pages:
     - npm ci --prefix tools/mermaid
     - npm ci --prefix tools/mathjax
     - pip install -r requirements.txt -r testrequirements.txt
-    # Generate the ignored website assets through Prodockit's maintained
-    # implementation rather than duplicating its MathJax configuration here.
-    - prodockit init-mathjax
+    # Generate the guide's ignored, pinned local website MathJax assets.
+    # The PDF prepares its separate renderer on first use.
+    - python tools/prepare_website_mathjax.py
     # Fail early when the Python environment, project inputs or complete
     # website/PDF rendering toolchain is incompatible or incomplete.
     - pdk diag

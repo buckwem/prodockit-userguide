@@ -241,8 +241,8 @@ Place the generated list where it belongs:
 
 The template points to `harvard-cite-them-right.csl`; change `csl_style` under
 `[project.markdown_extensions."prodockit.bibliography"]` when another style is
-required. Pandoc must be installed for website and PDF builds using this
-extension. See the
+required. `pdk pdf` prepares its own Pandoc runtime on first PDF use; a
+website-only build does not need that PDF preparation. See the
 [`prodockit.bibliography` reference](https://prodockit.org/extensions/bibliography/){target="_blank"}
 for `.bib` files, CSL styles, locators, and multiple bibliographies.
 

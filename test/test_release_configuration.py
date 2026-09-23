@@ -41,9 +41,14 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     test_requirements = _text("testrequirements.txt")
 
     versions = tomllib.loads(_text(".prodockit-toolchain.toml"))["versions"]
-    assert f"prodockit[index]>={versions['prodockit']}" in requirements
+    pdf_requirements = _text("pdf-requirements.txt")
+    assert f"prodockit>={versions['prodockit']}" in requirements
     assert f"prodockit[testing]>={versions['prodockit']}" in test_requirements
-    assert "prodockit[index]==" not in requirements
+    assert "prodockit[index]" not in requirements
+    assert "weasyprint" not in requirements
+    assert "pymupdf" not in requirements
+    assert "weasyprint==69.0" in pdf_requirements
+    assert "pymupdf>=1.24" in pdf_requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
     assert f"zensical>={versions['zensical']}" in requirements
@@ -105,8 +110,8 @@ def test_mathjax_cascade_includes_browser_checks_and_patched_xml() -> None:
     assert lock["packages"]["node_modules/@xmldom/xmldom"]["version"] == "0.9.12"
     for workflow in (".github/workflows/docs.yml", ".gitlab-ci.yml"):
         text = _text(workflow)
-        assert text.index("npm ci --prefix tools/mathjax") < text.index("prodockit init-mathjax")
-        assert text.index("prodockit init-mathjax") < text.index("zensical build")
+        assert text.index("npm ci --prefix tools/mathjax") < text.index("python tools/prepare_website_mathjax.py")
+        assert text.index("python tools/prepare_website_mathjax.py") < text.index("zensical build")
 
 
 
@@ -250,7 +255,7 @@ def test_new_042_behaviour_is_documented() -> None:
     assert "10pt inline or fenced code" in customise_words
     assert "prodockit template-sync --apply" in build
     assert "preserves every existing" in build
-    assert "`project.extra.pdf_*` value" in build
+    assert "`pdk-pdf.toml`" in build
     assert "generated root files" in editing
 
 

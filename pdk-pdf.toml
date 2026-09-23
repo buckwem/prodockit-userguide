@@ -1,0 +1,31 @@
+# Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
+# SPDX-License-Identifier: MIT
+
+schema_version = 1
+
+[document]
+# Preserve the website copyright separately. This HTML footer has its own
+# credit line and clickable links in the PDF.
+copyright = 'Author: Mark Buckwell and contributors. Licensed under the MIT License.<br>Made with <a href="https://zensical.org/">Zensical</a> and <a href="https://prodockit.org/">prodockit</a>.'
+extra_css = ["stylesheets/pdk-pdf.css", "stylesheets/print.css"]
+page_size = "A4"
+double_sided = false
+
+[margins]
+top = "2cm"
+right = "2cm"
+# The two-line footer needs more printable space than the template's 2cm
+# bottom margin (issue #49).
+bottom = "2.5cm"
+left = "2cm"
+inner = "2cm"
+outer = "2cm"
+
+[header_footer]
+font_size = "10pt"
+color = "#555555"
+divider_color = "#e2e8f0"
+
+[table_of_contents]
+include = true
+title = "Table of Contents"

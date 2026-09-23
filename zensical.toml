@@ -146,20 +146,6 @@ example = "fontawesome/solid/flask"
 quote = "fontawesome/solid/quote-left"
 
 [project.extra]
-pdf_extra_css = ["stylesheets/pdk-pdf.css", "stylesheets/print.css"]
-
-# Overrides `copyright` for the PDF's own running footer only, leaving the
-# website's copyright text untouched - adds a "Made with Zensical and
-# prodockit" credit line, since the live site's own equivalent credit
-# comes from overrides/partials/copyright.html instead (prodockit has no
-# reach into the website's own Jinja partials). A real HTML fragment - a
-# real <br> forces the line break, and the two <a> links render as real,
-# clickable links in the PDF, not flattened to plain text - see
-# "Copyright text" in prodockit-extensions' pdf.md. Under the previous
-# mechanism (a CSS content string with a literal `\A `
-# escape), this same value would render literally instead of as a line
-# break with real links.
-pdf_copyright = 'Author: Mark Buckwell and contributors. Licensed under the MIT License.<br>Made with <a href="https://zensical.org/">Zensical</a> and <a href="https://prodockit.org/">prodockit</a>.'
 
 # Reference/acronym/glossary list spacing - kept in sync with
 # prodockit-template's own copies so acronyms.md/glossary.md/references.md
@@ -170,37 +156,9 @@ reference_spacing_european = "-0.8em"
 reference_indent_global = "1.27cm"
 reference_spacing_global = "2em"
 
-# PDF page size/margins and running header/footer style - explicitly set to
-# match prodockit-template's own values (which were themselves prodockit.pdf's
-# defaults), so a reader comparing this guide's PDF against one built from
-# the template sees the same page layout, other than the bottom margin below.
-pdf_page_size = "A4"
-pdf_margin_top = "2cm"
-pdf_margin_right = "2cm"
-# Deeper than the other three margins, and deeper than prodockit-template's
-# own "2cm" - this project's footer is two lines (a copyright line and a
-# "Made with" credit), and a top-aligned footer grows downward as it gains
-# lines, eating into whatever the margin doesn't use. At 2cm the second
-# line cleared the paper edge by only ~6mm - within the 5-6mm most
-# consumer/office printers cannot print to, so it was at real risk of being
-# cropped on paper despite looking correct on screen (issue #49). Matches
-# the fix prodockit-extensions made to its own default in extensions#139.
-pdf_margin_bottom = "2.5cm"
-pdf_margin_left = "2cm"
-pdf_header_footer_font_size = "10pt"
-pdf_header_footer_color = "#555555"
-pdf_header_footer_divider_color = "#e2e8f0"
-
-# ----------------------------------------------------------------------------
-# Explicit website and PDF defaults maintained by Adopt.
-# ----------------------------------------------------------------------------
+# Website and shared heading defaults maintained by Adopt.
 heading_numbering = true
 website_heading_numbering = true
-pdf_double_sided = false
-pdf_margin_inner = "2cm"
-pdf_margin_outer = "2cm"
-pdf_include_table_of_contents = true
-pdf_table_of_contents_title = "Table of Contents"
 
 # Markdown extensions - mirrors prodockit-template's own config, since every
 # page here demonstrates one of these features live.
