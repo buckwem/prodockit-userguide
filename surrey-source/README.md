@@ -13,6 +13,8 @@ wording is authored in the Extensions manual using its `is_surrey` macro; keep
 this snapshot byte-identical to that release. The Surrey preparation omits the
 overview's final “Support prodockit” / “Buy
 me a coffee” subsection without changing this pinned source file.
+It also replaces the old Linux icon in Surrey RemoteLabs tab labels with the
+User Guide's theme-aware stag icon when copying the pages.
 
 To refresh, review the upstream `zensical.toml` Getting started nav at a
 specific release commit, update this snapshot and `manifest.toml` together,
