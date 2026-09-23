@@ -158,6 +158,7 @@ smart_enable = "all"
 [project.markdown_extensions.pymdownx.emoji]
 emoji_index = "zensical.extensions.emoji.twemoji"
 emoji_generator = "zensical.extensions.emoji.to_svg"
+# Includes the stag icons in overrides/.icons/stag (e.g. :stag-stag_icon_32:).
 options.custom_icons = ["overrides/.icons"]
 [project.markdown_extensions.pymdownx.highlight]
 anchor_linenums = true
