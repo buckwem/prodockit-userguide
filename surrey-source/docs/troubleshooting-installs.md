@@ -29,7 +29,7 @@ the checks most likely to help.
 | Prodockit does not start, or it reports an unexpected project or version | • [Open the correct project folder](#directory-holds-projects)<br>• [Activate this project's environment](#wrong-virtual-environment)<br>• [Make the command available](#installtooling-command-not-recognised) |
 | `pdk diag` reports the wrong Python or says installed packages are missing | • [Activate this project's environment](#wrong-virtual-environment)<br>• [Recreate it with the correct Python](#wrong-python)<br>• Rerun diagnostics before installing anything |
 | An installation appears stuck, times out, or stops part-way through | • [Recover the interrupted installation](#installtooling-download-fails)<br>• [Check the connection](#git-host-unreachable)<br>• Repeat only the failed command or stage |
-| Diagram, mathematics, or PDF setup fails | • [Repair Node.js](#installtooling-npm-missing)<br>• [Repair WeasyPrint](#installtooling-weasyprint-libraries)<br>• [Bring project versions into step](#toolchain-not-aligned) |
+| Diagram, mathematics, or PDF setup fails | • [Build a PDF without optional renderers](#pdf-without-renderers)<br>• [Repair Node.js](#installtooling-npm-missing)<br>• [Repair WeasyPrint](#installtooling-weasyprint-libraries)<br>• [Bring project versions into step](#toolchain-not-aligned) |
 | Template Sync remains on `Checking this project...`, or Git cannot clone, pull, or push | • [Check the connection to {% if is_surrey %}Surrey GitLab{% else %}GitLab or GitHub{% endif %}](#git-host-unreachable)<br>• [Check the SSH key](#installtooling-git-permission-denied)<br>• [Check an existing project folder](#installtooling-directory-exists) |
 | `pdk diag` reports warnings after Prodockit was upgraded | • [Activate this project's environment](#wrong-virtual-environment)<br>• [Bring project versions into step](#toolchain-not-aligned)<br>• Rerun `pdk diag` |
 
@@ -313,87 +313,77 @@ backup first.
 
 ## Repair WeasyPrint and its graphics libraries {: #installtooling-weasyprint-libraries }
 
-Activate the project environment and repeat the direct import check:
+On macOS and Ubuntu, activate the project environment and let Prodockit prepare
+and check the project's PDF-only Python packages:
 
 ``` bash
-python -c "import weasyprint; print(weasyprint.__version__)"
+pdk pdf --prepare weasyprint
 ```
 
-An error ending in `cannot load library` means the platform-specific Pango
+There, an error ending in `cannot load library` means the platform-specific Pango
 libraries are missing or cannot be found. Return to [Stage 4 — Create the
 project environment](manual-install.md#stage-4-create-the-project-environment)
 and repeat the graphics-library instructions for the operating system.
-Installing the Python package again does not install those external libraries.
+Repeating the Python-package installation does not install those external
+libraries.
 
-On Windows, preview Prodockit's guarded repair first:
-
-``` powershell
-pdk diag --dry-run --apply-check renderer.weasyprint
-```
-
-If the proposed Pango directory and architecture are correct, apply only that
-repair:
+On Windows x64, do not install or repair MSYS2/Pango for ProDockit. The PDF
+command uses the official standalone WeasyPrint 70 runtime in the project's
+validated cache. Force acquisition or repair with:
 
 ``` powershell
-pdk diag --apply --apply-check renderer.weasyprint
+pdk pdf --prepare weasyprint
 ```
 
-Windows native setup uses the same bounded MSYS2 recovery in Adopt, guided
-Bootstrap and this repair. It performs a full MSYS2 upgrade before installing
-Pango, so close other MSYS2 terminals and package managers first. Signature
-errors trigger a refresh of existing signing keys, then a signed keyring update
-and full upgrade if the error persists. Signature checks stay enabled.
-
-If recovery stops, review `%LOCALAPPDATA%\prodockit\logs\msys2-setup.log`
-for the selected architecture, MSYS2 directory, failed phase and exit status.
-Check the system clock and [MSYS2's update guidance](https://www.msys2.org/docs/updating/).
-A lock or unverified process shutdown stops automatic retries; wait for other
-installers to finish. Do not delete lock files, disable signature checks or
-remove the MSYS2 installation to work around the error.
-
-The DLL architecture must match `python.exe`, not necessarily the computer.
-An x64 Python requires `C:\msys64\ucrt64\bin`; an ARM64 Python requires the
-CLANGARM64 libraries. Mixing them commonly produces Windows error `0xc1`.
-
-If setting the value manually in PowerShell, the variable name requires the
-`$env:` prefix:
-
-``` powershell
-$env:WEASYPRINT_DLL_DIRECTORIES = 'C:\msys64\ucrt64\bin'
-[Environment]::SetEnvironmentVariable('WEASYPRINT_DLL_DIRECTORIES', 'C:\msys64\ucrt64\bin', 'User')
-```
-
-Typing `WEASYPRINT_DLL_DIRECTORIES = ...` without `$env:` attempts to run a
-command with that name. Check the import with Python; do not type
-`WeasyPrint = 69.0`, which invokes the WeasyPrint command with `=` as an input
-filename:
-
-``` powershell
-python -c "import weasyprint; print(weasyprint.__version__)"
-```
-
-If the value was persisted but not active in the current PowerShell, close the
-terminal completely, reopen it, activate `.venv`, and rerun `pdk diag`.
+`pdk diag` reports the cached version, digest, path and health without making a
+network request. A failed acquisition preserves the last-known-good runtime;
+the error names the download, digest, archive, probe, or unsupported
+architecture boundary that stopped activation.
 
 ## Repair the Node.js installation {: #installtooling-npm-missing }
 
-Open a new terminal first, then check both commands:
+Open a new terminal first, then check Node directly:
 
 ``` bash
 node --version
-npm --version
 ```
 
-If only `npm` is missing, return to [Install
+If the command is missing, return to [Install
 Node.js](manual-install.md#install-nodejs) and use the supported installer for
-the operating system rather than combining Node.js from one source with npm
-from another.
+the operating system. The project-local MathJax adapter needs Node.js but does
+not use npm or a `node_modules` directory.
 
-If Adopt stops with `mermaid was selected but npm is not available`, no
-project rollback is needed. Install or repair Node.js, open a new terminal,
-activate the project environment, confirm both version commands above, and
-rerun `pdk adopt --apply`. Completed Adopt stages are detected and are not
-needlessly repeated.
+## Build a PDF without optional renderers {: #pdf-without-renderers }
+
+If your account cannot install Node.js, you can still generate a local PDF
+that does not use MathJax, provided the other PDF prerequisites (including
+Pango on macOS or Linux) are available. Mermaid itself is Python-only; the
+following route removes both optional renderer requirements so the document
+does not prepare either one:
+
+1. Remove Mermaid diagrams and MathJax notation from the Markdown that the
+   website builds. Check included pages as well as the page you edited.
+2. Check `pdk-pdf.toml`: neither `[mathjax]` nor `[mermaid]` should set
+   `preload = true`. Comment out those overrides or set `preload = false`.
+3. Rebuild the website from the project root so the PDF sees the new content:
+
+    ```bash
+    zensical build --clean --strict
+    ```
+
+4. Build the PDF without forcing optional components:
+
+    ```bash
+    pdk pdf
+    ```
+
+Do not run `pdk pdf --prepare all` for this route: it deliberately prepares
+MathJax even when the document has no maths and therefore still needs Node.js.
+If `pdk pdf` asks for Node.js after these checks, search the built pages for
+remaining maths or a MathJax preload override.
+{% if is_surrey %}On Surrey RemoteLabs, Pango is also unavailable to
+unprivileged accounts, so use the Surrey GitLab build for the PDF instead of
+attempting a local render.{% endif %}
 
 ## Recover a failed or interrupted installation {: #installtooling-download-fails }
 
@@ -404,25 +394,24 @@ usually recognise components that finished successfully and continue with the
 missing work.
 
 Bootstrap hides routine installer output and shows how long the current
-command has been running. If a Homebrew, pip, npm, apt, winget, or font command
+command has been running. If a Homebrew, pip, apt, or winget command
 has made no progress for an unusually long time, interrupt it once with
 ++ctrl+c++. Do not interrupt while the package manager says it is writing,
 linking, or configuring files.
 
-Run the failed command again. This recovered the Homebrew font installation
-during testing:
+Run the failed command again. For example, rerun the native library installation
+when a macOS WeasyPrint import reports missing Pango libraries:
 
 ``` bash
-brew install --cask font-inter font-jetbrains-mono
+brew install pango
 ```
 
 Before repeating a larger stage, check what completed. Useful examples are:
 
 ``` bash
-brew list --formula pandoc pango
-brew list --cask font-inter font-jetbrains-mono
+brew list --formula pango
 python -m pip check
-npm --version
+node --version
 ```
 
 Bootstrap and Adopt are designed to resume: rerunning them rechecks completed
@@ -447,35 +436,16 @@ before applying them, and rerun diagnostics. A template project can instead
 start with `pdk template-sync`; its preview shows the compatible Prodockit
 release and the Adopt stages it will offer to apply before the template update.
 
-Do not upgrade Pandoc or another renderer simply because a newer release
-exists. Keep the version declared by the installed Prodockit combination—for
-the current release, Pandoc 3.10.1—until Pins or diagnostics reports a changed
-tested default.
+Do not install or upgrade host Pandoc for Prodockit. `pdk pdf` prepares the
+version declared by `pdk-pdf.toml` in the project cache and both PDF and
+bibliography processing use that exact runtime.
 
 ## Check PDF fonts {: #installtooling-fonts }
 
-If the PDF uses an unexpected font, or Bootstrap says that fonts could not be
-verified, distinguish these two cases:
-
-- **Missing:** the PDF font resolver selected a substitute instead of Inter or
-  JetBrains Mono. Run `pdk adopt --apply` and approve the PDF runtime repair.
-- **Unverified:** the inspection command could not run or returned no usable
-  evidence. This does not prove the fonts are absent; do not repeatedly reinstall
-  fonts just because their per-user directory is empty.
-
-Check the actual family selected for each font:
-
-```bash
-fc-match -f "%{family}" Inter
-fc-match -f "%{family}" "JetBrains Mono"
-```
-
-The results should name the requested families, not substitutes such as DejaVu
-Sans. The font resolver includes configured system and per-user locations.
-If `fc-match` is not found, macOS users can run `brew install fontconfig`;
-Ubuntu users can run `sudo apt install fontconfig`. On Windows, run
-`pdk adopt --apply` to repair the selected Pango runtime and follow its
-environment-refresh instructions. Then rerun Bootstrap or Adopt to verify.
+PDF fonts are project-local; host font installation and `fc-match` do not affect
+the result. Run `pdk pdf --prepare fonts` to validate or replace the active
+verified cache entry, then rebuild. `pdk diag` reports the cache version, path,
+digest, and whether all required font files pass their health check.
 
 ## Correct diagnostic findings {: #diagnostic-corrections }
 
@@ -485,7 +455,7 @@ route shown by each check in \ref{tab-first-site-diagnostic-corrections}:
 | Diagnostic finding | Where to correct it |
 | --- | --- |
 | Starter site title, example website address, or missing repository link | Run `pdk adopt --apply` and answer the final questions. If an existing remote has changed, use `pdk sync-repo --create-readme`. |
-| Missing PDF libraries, fonts, or renderer prerequisites | Run `pdk adopt --dry-run`, review the proposed repair, then run `pdk adopt --apply`. Refresh the environment before rerunning diagnostics. |
+| Missing PDF libraries, fonts, or renderer prerequisites | Let `pdk pdf` prepare project-local runtimes on first use, or run `pdk pdf --prepare COMPONENT`. Install only a specifically reported host prerequisite such as Node or macOS/Linux Pango. |
 | Missing ignore rules for local or generated files | Run `pdk adopt --apply` for the baseline rules. Custom output paths need matching ignore rules. |
 | Generated files already tracked by Git | Review them before removing them from Git tracking, retaining local copies. Ignore rules alone do not fix this; diagnostics never deletes files. |
 | A stock workflow installs only Zensical | Run `pdk adopt --apply` to review its repair. |

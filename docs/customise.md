@@ -197,15 +197,14 @@ layouts.
 ### Extra CSS and JavaScript
 
 The project loads managed Prodockit assets before user-managed overrides. It
-also keeps the generated MathJax configuration before the local MathJax
-bundle:
+also keeps the managed MathJax configuration before the website runtime:
 
 ``` toml
 extra_css = ["stylesheets/pdk.css", "stylesheets/extra.css"]
 extra_javascript = [
     "javascripts/pdk.js",
     "javascripts/mathjax.js",
-    "javascripts/vendor/mathjax/tex-svg-full.js",
+    "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
     "javascripts/extra.js",
 ]
 ```
@@ -215,11 +214,9 @@ extra_javascript = [
 Template Sync. Keep it last so project-specific code can build on or override
 the managed behaviour.
 
-In this guide, `tools/prepare_website_mathjax.py` generates `mathjax.js` and
-copies `vendor/mathjax/tex-svg-full.js` and its licence from the pinned
-MathJax npm package. Keep the configuration before the bundle. Prefer a
-versioned local copy of a library to a floating CDN address so builds remain
-reproducible and work offline.
+The website follows Zensical's MathJax 3 setup. `mathjax.js` is a committed
+Prodockit-managed file; keep it before the browser runtime. PDF maths uses a
+separate, verified MathJax 4 cache prepared by `pdk pdf`, with no npm install.
 
 Load the managed PDF defaults before your PDF-only overrides in
 `pdk-pdf.toml`:
@@ -502,12 +499,8 @@ docs/ - document source
     javascripts/ - managed behaviour, user extensions, and MathJax files
         pdk.js - managed shared website behaviour
         extra.js - user-managed JavaScript extension point
-        mathjax.js - generated MathJax configuration
-        vendor/ - files installed from third-party packages
-            mathjax/ - MathJax bundle and licence from npm
-                tex-svg-full.js - local MathJax browser bundle
-                LICENSE - MathJax licence
-tools/ - Mermaid and mathematics renderers
+        mathjax.js - managed MathJax website configuration
+tools/ - project-specific build helpers
 test/ - website and PDF checks
 zensical.toml - website configuration, navigation, and extensions
 pdk-pdf.toml - PDF-only layout, footer, and stylesheet policy

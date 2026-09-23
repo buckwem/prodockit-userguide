@@ -31,31 +31,22 @@ pages:
     # clone fetches no tags, so the line would silently disappear. The GitLab
     # counterpart of `fetch-depth: 0` in the GitHub workflow.
     #
-    # Note prodockit-template needs none of this: its cover uses the PDF-only
-    # {RELEASE} marker, resolved from the releases API rather than git tags.
     GIT_DEPTH: "0"
-    # mermaid-cli drives Chrome through Puppeteer to rasterise diagrams for
-    # the PDF (WeasyPrint has no JS engine to run Mermaid.js the way the live
-    # site does). Point it at the apt-installed Chrome below rather than
-    # letting Puppeteer download its own.
-    #
-    # PUPPETEER_SKIP_DOWNLOAD, not the older
-    # PUPPETEER_SKIP_CHROMIUM_DOWNLOAD - Puppeteer renamed it, and
-    # mermaid-cli ^11.4.2 resolves to puppeteer 25.x, which honours only the
-    # new name. Under the old one the skip silently does nothing and a full
-    # Chrome build is downloaded on every run before being discarded.
-    #
-    # Set here rather than as `export` lines in `script:` so they apply to
-    # the whole job regardless of step order.
-    PANDOC_VERSION: "3.10.1"   # not the image's - see the comment in .github/workflows/docs.yml
-    PUPPETEER_SKIP_DOWNLOAD: "true"
-    PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
+    # Prodockit owns the verified project-local Pandoc and renderer cache.
+    PANDOC_VERSION: "3.10.1"
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  cache:
+    key:
+      prefix: "${CI_JOB_IMAGE}-pdk-pdf-0.72.0"
+      files:
+        - pdk-pdf.toml
+        - pdf-requirements.txt
+    paths:
+      - .cache/pip/
+      - .prodockit/cache/pdf/
   script:
     - apt-get update
-    - apt-get install -y curl gnupg ca-certificates
-    # Upstream release rather than the image's - see PANDOC_VERSION.
-    - curl -fsSL -o /tmp/pandoc.deb "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-amd64.deb"
-    - apt-get install -y /tmp/pandoc.deb
+    - apt-get install -y curl ca-certificates
     # libpango: WeasyPrint needs it at runtime. GitHub's ubuntu-24.04 image
     # already carries it; this slimmer Debian-based image does not.
     #
@@ -63,19 +54,11 @@ pages:
     # loads them from a CDN at view time, but WeasyPrint has no such fallback
     # - it needs the files installed to embed them, and silently substitutes
     # a generic font rather than erroring if they are missing.
-    - apt-get install -y libpango-1.0-0 fontconfig fonts-inter fonts-jetbrains-mono
+    - apt-get install -y libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fontconfig fonts-inter fonts-jetbrains-mono
     - curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
     - apt-get install -y nodejs
-    - curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
-    - echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
-    - apt-get update
-    - apt-get install -y google-chrome-stable
-    - npm ci --prefix tools/mermaid
-    - npm ci --prefix tools/mathjax
     - pip install -r requirements.txt -r testrequirements.txt
-    # Generate the guide's ignored, pinned local website MathJax assets.
-    # The PDF prepares its separate renderer on first use.
-    - python tools/prepare_website_mathjax.py
+    - pdk pdf --prepare all
     # Fail early when the Python environment, project inputs or complete
     # website/PDF rendering toolchain is incompatible or incomplete.
     - pdk diag

@@ -6,23 +6,10 @@
 .prodockit-quarantine/
 /.prodockit/cache/
 
-# Node (mermaid-cli, used by `prodockit pdf` to pre-render mermaid diagrams
-# for the PDF - WeasyPrint has no JS engine to run Mermaid.js the way the
-# live site does). Installed with `npm ci --prefix tools/mermaid`.
-tools/mermaid/node_modules
-
-# Node (mathjax-full, used by `prodockit pdf` to pre-render TeX maths for
-# the PDF, same reason). Installed with `npm ci --prefix tools/mathjax`.
-tools/mathjax/node_modules
-
-# MathJax bundle for the *website* - third-party code and generated
-# configuration, neither of which belongs in this repository. Copied from
-# tools/mathjax's pinned install so the site and the PDF typeset through
-# the same MathJax (prodockit-extensions#263). `prodockit bootstrap` writes
-# these on a developer's machine; CI installs them the same way (see
-# .github/workflows/docs.yml, .gitlab-ci.yml).
+# Retired npm directories are ignored if left over from an older checkout.
+tools/mermaid/node_modules/
+tools/mathjax/node_modules/
 docs/javascripts/vendor/
-docs/javascripts/mathjax.js
 
 # Artifacts
 __pycache__
@@ -53,12 +40,6 @@ docs/.prodockit-pdf-mermaid/
 # Pandoc/WeasyPrint temp artefacts occasionally left in the project root by
 # an interrupted `prodockit pdf` run - never wanted in the repository.
 toPdfViaTempFile*.pdf
-
-# Installed by `prodockit adopt`
-tools/mermaid/node_modules/
-
-# Installed by `prodockit adopt`
-tools/mathjax/node_modules/
 
 # Installed by `prodockit adopt`
 /.prodockit-adopt-backups/

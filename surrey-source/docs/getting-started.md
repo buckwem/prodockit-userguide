@@ -34,6 +34,7 @@ Use the badges beside stage and step titles to follow your route:
 - **Clean**{: .install-clean}: only for a new site in an empty directory.
 - **Update**{: .install-update}: only for an existing Zensical site, with or without Prodockit.
 - **Optional**{: .bg-green}: skip when already completed or not needed.
+- **Privileged**{: .install-privileged}: installing host software needs administrator or `sudo` access.
 - [Go to](#stage-1-prepare-the-project-environment){ .install-go }: click to jump to another section.
 
 Steps without a path badge apply to both routes. The words identify the path
@@ -46,7 +47,7 @@ Stage 7b helps an existing
 project review Adopt's changes and follow its own release process. You can
 stop after local testing if you are not ready to commit or publish.
 
-### Stage 1 — Prepare the setup environment {: #stage-1-prepare-the-project-environment }
+### Stage 1 — Prepare the setup environment **Privileged**{: .install-privileged} {: #stage-1-prepare-the-project-environment }
 
 Python 3.14 must be installed before either a clean installation or an update.
 An existing Zensical site may use an older Python version; installing or
@@ -108,6 +109,20 @@ Run each line in turn. **If `cd` fails, stop and correct the path before continu
     cd prodockit-project
     ```
 
+{% if is_surrey %}
+=== ":material-linux: Surrey RemoteLabs"
+
+    ```bash
+    deactivate
+    cd ~/repos
+    mkdir -p <module ID>-report
+    cd <module ID>-report
+    ```
+
+    Replace `<module ID>` with your actual module identifier before running
+    the commands. Do not type the angle brackets literally.
+{% endif %}
+
 ////
 
 //// step | Create and activate the project environment
@@ -139,6 +154,15 @@ commands use this site's packages rather than another project's.
     source .venv/bin/activate
     ```
 
+{% if is_surrey %}
+=== ":material-linux: Surrey RemoteLabs"
+
+    ```bash
+    python -m venv .venv
+    source .venv/bin/activate
+    ```
+{% endif %}
+
 ////
 
 //// step | Verify the project environment
@@ -169,6 +193,16 @@ installing Zensical:
     python --version
     python -c 'import sys; print(sys.prefix)'
     ```
+
+{% if is_surrey %}
+=== ":material-linux: Surrey RemoteLabs"
+
+    ```bash
+    pwd
+    python --version
+    python -c 'import sys; print(sys.prefix)'
+    ```
+{% endif %}
 
 The results should show your project folder, Python 3.14 and that folder's
 `.venv`—not `~/repos/.venv`. If they do not, correct the directory and activate
@@ -387,21 +421,12 @@ Install Prodockit, choose the features you need, then check the completed setup.
 
 !!! info "Why are we not installing and configuring by hand?"
 
-    With Mermaid and mathematical notation selected, the setup involves around
-    230 individual software packages and tools: around 30 Python packages,
-    around 195 JavaScript packages, plus Python, Node.js, npm, Pandoc and a
-    browser for drawing diagrams. These figures include the supporting packages
-    installed automatically, not just the tools named in the commands. System
-    libraries and fonts are additional, and totals vary by platform and release.
-    There are also around 50 configuration entries to check or add in
-    `zensical.toml`, counting extension sections and website/PDF settings.
-    The exact work depends on your platform and what is already configured.
-
-    Installing compatible versions, connecting the tools and checking all those
-    settings by hand takes time. Missed commands, failed downloads and small
-    configuration mistakes make it easy to end up with a partly working site.
-    Adopt automates this work, checks what is already present and lets you rerun
-    it after a failure instead of starting the whole process again.
+    Adopt aligns the Python packages, managed assets and project configuration,
+    while preserving author-owned content and settings. It does not install the
+    PDF generator or its host prerequisites. The first `pdk pdf` build prepares
+    only the verified project-local runtimes the completed document actually
+    uses. Pandoc is shared by citations and PDF processing, so the instructions
+    below prepare it separately without installing the rest of the PDF toolchain.
 
 /// steps
 
@@ -450,9 +475,11 @@ pdk adopt --configure
 Both default to **No** for a new site. Existing installations or saved choices
 may already enable them; check before accepting.
 
-If either is selected, Adopt will check Node.js and npm and offer installation
-or repair. You do not need to install them manually first. On macOS, Homebrew
-must already be available; administrator approval may be needed.
+Adopt records the selection without installing a renderer. The first `pdk pdf`
+prepares the selected project-local cache. Mermaid needs only Python; PDF
+mathematics also needs Node.js on `PATH`, installed separately, but not npm.
+The optional installation steps in Stage 6 prepare those requirements when
+this machine will generate PDFs locally.
 
 ////
 
@@ -543,6 +570,29 @@ any paths Adopt added. Use the activation path it prints if yours has another na
 
 ////
 
+//// step | Prepare project-local Pandoc **Optional**{: .bg-green}
+
+Complete this step when the adopted document uses Prodockit citations or a
+bibliography, or when you intend to generate PDFs locally. Otherwise skip it;
+the starter adopted site has no citation file and its website does not need
+Pandoc.
+
+Install the verified Pandoc release in this project's ignored cache:
+
+```bash
+pdk pdf --prepare pandoc
+```
+
+Prodockit downloads, verifies and selects Pandoc; do not install it with
+Homebrew, Winget or apt, and do not rely on a system `pandoc` command from
+`PATH`.
+
+This preparation is supported on Windows ARM64 even though local PDF generation
+is not. On that platform, use Pandoc for the website build and let the GitLab
+pipeline generate the PDFs.
+
+////
+
 //// step | Diagnose the adopted site
 
 Check the environment, installed tools and project setup without changing files.
@@ -618,11 +668,12 @@ For an existing site, also check its pages, styling and navigation. Press
 
 ///
 
-### Stage 6 — Add downloadable outputs
+### Stage 6 — Add downloadable outputs **Optional**{: .bg-green}
 
 Create downloadable PDFs of your document and its source. For an existing
 site, keep working download links and use the output filenames printed by the commands.
-If you do not need downloads, skip to the route choices at the end of this stage.
+The whole stage is optional. If you do not need downloads, skip to the route
+choices at the end of this stage.
 
 !!! note "Local downloads and published downloads are different"
 
@@ -630,6 +681,64 @@ If you do not need downloads, skip to the route choices at the end of this stage
     regenerate PDFs; configure publishing to keep online downloads up to date.
 
 /// steps
+
+//// step | Install PDF host software
+
+Complete this step only when this machine will generate PDFs locally. Skip it
+for website-only work and on Windows ARM64, where the GitLab pipeline generates
+the PDFs.
+
+A PDF containing mathematics needs both Pango and Node.js on macOS or Ubuntu;
+the supported Windows x64 PDF runtime needs only Node.js:
+
+=== ":material-apple: macOS"
+
+    ```bash
+    brew install pango node
+    export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib"
+    ```
+
+=== ":fontawesome-brands-windows: Windows x64"
+
+    ```powershell
+    winget install OpenJS.NodeJS.LTS
+    ```
+
+    Close and reopen PowerShell, return to the project, and reactivate its
+    virtual environment.
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ```bash
+    sudo apt update
+    sudo apt install -y libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 nodejs
+    ```
+
+For a PDF without mathematics, omit `node` or `nodejs`. Verify Node when it is
+needed:
+
+```bash
+node --version
+```
+
+No npm packages, browser or MSYS2 installation is required.
+
+////
+
+//// step | Prepare PDF components
+
+With the host software installed, download, verify and cache every configured
+PDF component:
+
+```bash
+pdk pdf --prepare all
+```
+
+Skip this step on Windows ARM64. If you prefer lazy preparation, an ordinary
+`pdk pdf` prepares only the components used by the document on its first local
+PDF build.
+
+////
 
 //// step | Generate the rendered PDF
 
@@ -814,7 +923,7 @@ git status --short --untracked-files=all
 ```
 
 Include source, configuration and the publishing workflow—not `.venv`,
-`node_modules`, generated website output, caches, backups or private files.
+generated website output, caches, backups or private files.
 
 ////
 
@@ -921,13 +1030,14 @@ Review them for changes that could affect the rest of your project.
 
 | File or group | Overall change | How existing files are handled |
 |---|---|---|
-| `zensical.toml` | Add or align authoring extensions, website/PDF settings and stylesheet/script ordering. Save site and repository details you confirm. | Edit the existing TOML with TOML Kit, then validate with `tomllib` before saving. Preserve unrelated settings and comments; update settings required for the selected components. New, unrecognised template settings are added as commented suggestions, subject to [Adopt's exclusions and review ledger](commands/adopt.md#template-settings-and-the-review-ledger). |
+| `zensical.toml` | Add or align authoring extensions and website stylesheet/script ordering. Save site and repository details you confirm. | Edit the existing TOML with TOML Kit, then validate with `tomllib` before saving. Preserve unrelated settings and comments; PDF-only settings are migrated by `pdk pdf` on first use. New, unrecognised template settings are added as commented suggestions, subject to [Adopt's exclusions and review ledger](commands/adopt.md#template-settings-and-the-review-ledger). |
 | Existing YAML site configuration, such as `mkdocs.yml` | Apply the supported authoring and asset settings when the project uses YAML instead of TOML. | Update supported settings in the existing text and validate the result before saving. Unsupported structures stop the update rather than being guessed. The [template-settings ledger](commands/adopt.md#template-settings-and-the-review-ledger) applies to TOML, not YAML. |
 | `requirements.txt`, `requirements/docs.txt` or `docs/requirements.txt` | Record the Python packages and supported versions needed to reproduce the site. | Choose the first existing file in this order, or create `requirements.txt`. Update recognised package declarations and append missing ones; retain unrelated dependencies. |
+| `pdf-requirements.txt` | Record Python packages used only by PDF generation. | `pdk pdf` creates or migrates this file on first use, moves legacy WeasyPrint out of base requirements, then installs and validates the PDF packages. Adopt leaves it alone. |
 | Other recognised version declarations, including `pyproject.toml` when present | Align supported package versions already declared in the project. | Use [`pdk pins`](commands/pins.md), the command that aligns recorded software versions, to change recognised version values, not replace the whole file. Build automation (CI) files are excluded from this pass and handled separately below. |
 | `.python-version` | Record the supported Python version. | Replace the file's contents with the release's supported Python version. This does not replace the Python interpreter itself. |
 | `.gitignore` | Exclude environments, generated files, renderer dependencies and Adopt backups. | Append missing ignore rules without removing existing rules. Ignore rules do not untrack files already committed to Git. |
-| `docs/stylesheets/extra.css`, `docs/stylesheets/print.css` | Provide places for your website and PDF customisations. | Create starter files only when missing; preserve existing contents. |
+| `docs/stylesheets/extra.css` | Provide a place for website customisations. | Create the starter file only when missing; preserve existing contents. `pdk pdf` creates a missing PDF-only `print.css` on first use. |
 | `docs/javascripts/extra.js` | Provide a place for your custom JavaScript. | Create an empty file if missing. Preserve custom contents. If it exactly matches the recognised old stock script, allowing for line endings, clear it after installing that behaviour in `pdk.js`. |
 | Configured [citation-style file (`.csl`)](extensions/bibliography.md) | Supply the supported citation style when needed. | Preserve an existing file. Install a missing recognised standard style from its trusted source or validated cache. A missing custom style requires attention rather than substitution. |
 | `.github/workflows/docs.yml` | Add the Prodockit dependency installation and optional MathJax restoration to a stock website build. | Replace only when the entire file's [SHA-256 fingerprint matches the trusted Zensical baseline](commands/adopt.md#build-workflow-protection). Leave an already aligned file unchanged. Otherwise, preserve your workflow and place a proposed replacement at `./pdk.yml` in the project root, creating it only if absent. **Manually edit `.github/workflows/docs.yml` to merge the required changes**; the proposal is not activated automatically. Follow [Step 2 — Merge the build instructions](#merge-adopt-build-instructions). |
@@ -948,9 +1058,7 @@ third-party software; these are the project-local files managed for Prodockit.
 | `.prodockit-components.toml` | Save the selected optional components. | Write a generated manifest containing the selected component choices; do not use this file for unrelated custom settings. |
 | `.prodockit-adopt.toml` | Record which template settings have already been processed. | Read the [review ledger](commands/adopt.md#template-settings-and-the-review-ledger), skip previously processed settings, then save the updated ledger after valid configuration has been written. Deleting it allows settings to be reviewed again on a later run. |
 | `docs/stylesheets/pdk.css`, `docs/stylesheets/pdk-pdf.css`, `docs/javascripts/pdk.js` | Install the [managed styles and behaviour](commands/shared-files.md) supplied by Prodockit. | Replace these managed files with the installed release's copies when the activity runs. Put your customisations in the [user-managed files](stylesheets.md#keep-managed-and-author-styles-separate) in the first table, not here. |
-| `tools/mermaid/package.json`, `tools/mermaid/package-lock.json` | Align the selected Mermaid renderer with the release. | Compare with the bundled files. Before replacing changed files, save their original bytes in [checksum-named backup folders](commands/adopt.md#selected-renderer-versions-and-backups) under `.prodockit-adopt-backups/renderers/mermaid/`. |
-| `tools/mathjax/package.json`, `tools/mathjax/package-lock.json`, `tools/mathjax/tex2svg.js` | Align the selected maths renderer with the release. | Use the same compare, backup and replace process, under `.prodockit-adopt-backups/renderers/mathjax/`. |
-| `docs/javascripts/mathjax.js` and MathJax assets under `docs/javascripts/vendor/` | Generate the selected website maths configuration and runtime assets with [`pdk init-mathjax`](commands/init-mathjax.md). | Regenerate these installed assets from the MathJax setup; treat them as generated files, not places for custom edits. |
+| `.prodockit/cache/pdf/` | Cache verified PDF-only Pandoc, fonts, Mermaid and MathJax runtimes on demand. | `pdk pdf` manages this ignored project-local cache; use `pdk pdf --prepare COMPONENT` to prepare a component explicitly. Website maths remains configured separately according to Zensical's MathJax instructions. |
 | `pdk.yml` | Propose GitHub build instructions for manual merging. | Create at the project root only when an existing GitHub workflow is not recognised and no proposal exists. Never overwrite an existing proposal; the root-level file is not an active GitHub workflow. |
 | `.gitlab-pdk.yml` | Propose GitLab build instructions for manual merging. | Create only when `.gitlab-ci.yml` exists and no proposal is present. Never overwrite an existing proposal. Its hidden example job does not run by itself. |
 /// table-caption | <
@@ -960,11 +1068,9 @@ Prodockit-specific files to review after adoption
 ///
 
 Adopt can also change installed packages in the active environment (usually
-`.venv/`), renderer `node_modules/`, browser/download caches and system tooling
-or environment settings. Separately approved repository setup can initialise
+`.venv/`). Separately approved repository setup can initialise
 `.git/` and update local Git identity and remote settings. These are local
-installation changes, not source files to add to your commit. Renderer backups
-are not a general backup of every file Adopt changes.
+installation changes, not source files to add to your commit.
 
 Do not commit local environments, caches, backups or private files.
 

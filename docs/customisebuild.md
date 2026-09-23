@@ -86,22 +86,19 @@ covers the website command in detail.
 
 ## Diagrams and maths {: #customisebuild-diagrams-and-maths }
 
-\index{Build!Diagram and maths rendering} requires Node.js renderers for the PDF.
-MathJax also needs a local browser bundle for the website. The selected
-[installation path](gettingstarted.md)
-prepares these when the options are selected; a template project
-already contains their manifests.
+\index{Build!Diagram and maths rendering} needs no npm packages or browser for
+the PDF. Prodockit downloads and verifies project-local Mermaid and MathJax
+runtimes on first use. PDF maths needs Node.js on `PATH` to run MathJax's SVG
+adapter; the website uses Zensical's MathJax configuration and a browser CDN.
 
-If the document uses these features and the dependencies have not yet been
-installed, run:
+To prepare all PDF components ahead of the first build, run:
 
 ``` bash
-npm ci --prefix tools/mermaid
-npm ci --prefix tools/mathjax
-python tools/prepare_website_mathjax.py
+pdk pdf --prepare all
 ```
 
-A document that uses neither feature does not need Node.js for them.
+A document with no maths does not need Node.js for PDF rendering. Ordinary
+`pdk pdf` prepares only the components it uses.
 
 !!! warning "Inspect the output, not only the exit code"
     Missing renderers can leave Mermaid definitions or TeX source visible in
