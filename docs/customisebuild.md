@@ -98,7 +98,7 @@ installed, run:
 ``` bash
 npm ci --prefix tools/mermaid
 npm ci --prefix tools/mathjax
-prodockit init-mathjax
+python tools/prepare_website_mathjax.py
 ```
 
 A document that uses neither feature does not need Node.js for them.
@@ -187,9 +187,9 @@ prodockit template-sync --apply --accept-prodockit --accept-adopt
 ```
 
 The manifest distinguishes template-owned files from your content. The merge
-preserves every existing project-owned file and every existing
-`project.extra.pdf_*` value. It can add a new setting, but it does not reset
-your page size, margins, duplex choice, or other existing PDF configuration.
+preserves every existing project-owned file and the PDF policy in
+`pdk-pdf.toml`. It can add a new setting, but it does not reset your page
+size, margins, duplex choice, or other existing PDF configuration.
 
 Review the staged changes and rebuild both outputs before committing. The
 [template-sync guide](https://prodockit.org/devcons/template-sync/){target="_blank"}

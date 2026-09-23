@@ -80,7 +80,7 @@ def test_both_publishing_workflows_enforce_prodockit_checks() -> None:
         assert workflow.index("pip install -r requirements.txt -r testrequirements.txt") < (
             workflow.index("pdk diag")
         )
-        assert workflow.index("prodockit init-mathjax") < workflow.index("pdk diag")
+        assert workflow.index("python tools/prepare_website_mathjax.py") < workflow.index("pdk diag")
         assert workflow.index("pdk diag") < workflow.index(
             "prodockit pins --check --offline"
         )

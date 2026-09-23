@@ -713,8 +713,9 @@ If `prodockit pdf` errors out or produces a PDF missing content:
 1. Run `zensical build --clean --strict` first. The PDF command requires a
     completed website and reports any generated page that is missing.
 2. Check the error message in the terminal - it usually names the file and the problem directly, and anything the underlying tool printed appears beneath it.
-3. Make sure the dependencies from `requirements.txt` are installed in the
-    active virtual environment.
+3. Make sure the website dependencies from `requirements.txt` are installed
+    in the active virtual environment. On first PDF use, `prodockit pdf`
+    installs and validates the PDF-only packages in `pdf-requirements.txt`.
 4. If the document uses \index{Zensical!Mermaid} diagrams or mathematics,
     confirm that those options and their toolchains were installed through
     your chosen [installation path](gettingstarted.md).

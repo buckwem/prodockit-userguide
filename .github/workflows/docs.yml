@@ -137,10 +137,9 @@ jobs:
       - run: npm ci --prefix tools/mermaid
       - run: npm ci --prefix tools/mathjax
       - run: pip install -r requirements.txt -r testrequirements.txt
-      # Generate the ignored website configuration, bundle and licence from
-      # the pinned npm installation through the same implementation used by
-      # bootstrap and local builds.
-      - run: prodockit init-mathjax
+      # Generate the guide's ignored, pinned local website MathJax assets.
+      # The PDF prepares its separate renderer on first use.
+      - run: python tools/prepare_website_mathjax.py
       # Fail early when the Python environment, project inputs or complete
       # website/PDF rendering toolchain is incompatible or incomplete.
       - run: pdk diag
