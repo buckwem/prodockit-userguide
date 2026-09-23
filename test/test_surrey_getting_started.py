@@ -72,6 +72,19 @@ def test_donation_section_is_removed_only_from_surrey_copy() -> None:
     assert "Buy me a coffee" in source
 
 
+def test_surrey_overlay_uses_the_theme_aware_stag_for_remotelabs_tabs() -> None:
+    counts = {"installation.md": 5, "getting-started.md": 3, "devcons/bootstrap.md": 4}
+    for page, count in counts.items():
+        source = (surrey.SOURCE / "docs" / page).read_text(encoding="utf-8")
+        prepared = surrey.use_stag_for_remotelabs(source)
+        assert source.count(surrey.REMOTELABS_TAB) == count
+        assert prepared.count(surrey.STAG_REMOTELABS_TAB) == count
+        assert surrey.REMOTELABS_TAB not in prepared
+
+    icon = ROOT / "overrides/.icons/stag/stag_icon_32.svg"
+    assert 'fill="currentColor"' in icon.read_text(encoding="utf-8")
+
+
 def test_surrey_nav_puts_about_first_and_preserves_upstream_numbering() -> None:
     config_text = (ROOT / "zensical.toml").read_text(encoding="utf-8")
     if config_text.startswith(surrey.START_MARKER):

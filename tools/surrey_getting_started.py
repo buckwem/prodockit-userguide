@@ -28,6 +28,8 @@ LINK = re.compile(r"(?P<open>!?\[[^\]]*\]\()(?P<url>[^\s)]+)(?P<close>[^)]*\))")
 NAV = re.compile(r"^nav = \[\n.*?^\]\n", re.MULTILINE | re.DOTALL)
 NUMBERED = re.compile(r"^\d+\.\s+")
 SUPPORT_SECTION = re.compile(r"^## Support prodockit\s*$", re.MULTILINE)
+REMOTELABS_TAB = '=== ":material-linux: Surrey RemoteLabs"'
+STAG_REMOTELABS_TAB = '=== ":stag-stag_icon_32: Surrey RemoteLabs"'
 
 
 def manifest() -> dict:
@@ -111,6 +113,11 @@ def omit_surrey_support_section(markdown: str) -> str:
     if "Buy me a coffee" not in removed:
         raise ValueError("The support section no longer contains the expected donation link")
     return markdown[:start].rstrip() + "\n\n" + markdown[end:].lstrip()
+
+
+def use_stag_for_remotelabs(markdown: str) -> str:
+    """Use the User Guide's theme-aware stag icon in imported Surrey tabs."""
+    return markdown.replace(REMOTELABS_TAB, STAG_REMOTELABS_TAB)
 
 
 def _render_nav(items: list[dict | str], indent: int = 0) -> str:
@@ -212,6 +219,7 @@ def prepare(data: dict, *, preview: bool = False) -> None:
         if page == "gettingstarted.md":
             text = omit_surrey_support_section(text)
         text = rewrite_external_links(text, page, included)
+        text = use_stag_for_remotelabs(text)
         outputs[ROOT / "docs" / page] = text.encode("utf-8")
     for asset in data["assets"]:
         outputs[ROOT / "docs" / asset] = (SOURCE / "docs" / asset).read_bytes()
