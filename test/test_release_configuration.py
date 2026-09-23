@@ -1,7 +1,6 @@
 """Release floors, canonical domains, and coordinated documentation."""
 
 import re
-import json
 import subprocess
 import tomllib
 from pathlib import Path
@@ -36,7 +35,7 @@ def _canonical_guide_pages() -> list[str]:
     ).splitlines()
 
 
-def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
+def test_required_tool_versions_match_the_supported_renderers() -> None:
     requirements = _text("requirements.txt")
     test_requirements = _text("testrequirements.txt")
 
@@ -47,13 +46,13 @@ def test_required_tool_versions_are_minimums_not_exact_pins() -> None:
     assert "prodockit[index]" not in requirements
     assert "weasyprint" not in requirements
     assert "pymupdf" not in requirements
-    assert "weasyprint==69.0" in pdf_requirements
+    assert f"weasyprint=={versions['weasyprint']}" in pdf_requirements
     assert "pymupdf>=1.24" in pdf_requirements
     assert "prodockit[testing]==" not in test_requirements
     assert "prodockit==" not in requirements
-    assert f"zensical>={versions['zensical']}" in requirements
+    assert f"zensical=={versions['zensical']}" in requirements
+    assert f"pymdown-extensions=={versions['pymdown-extensions']}" in requirements
     assert f"markdown=={versions['markdown']}" in requirements
-    assert "zensical==" not in requirements
 
 
 def test_page_outline_uses_the_right_sidebar() -> None:
@@ -91,27 +90,20 @@ def test_diagnostic_recovery_directory_is_ignored() -> None:
     assert ".prodockit-quarantine/" in _text(".gitignore").splitlines()
 
 
-def test_adopt_release_keeps_renderers_selected_and_declares_browser() -> None:
+def test_pdf_renderers_are_selected_without_legacy_npm_manifests() -> None:
     components = tomllib.loads(_text(".prodockit-components.toml"))["components"]
     assert components == {"mermaid": True, "maths": True}
-    manifest = json.loads(_text("tools/mermaid/package.json"))
-    lock = json.loads(_text("tools/mermaid/package-lock.json"))
-    assert "puppeteer" in manifest["dependencies"]
-    assert lock["packages"][""]["dependencies"] == manifest["dependencies"]
+    assert not (ROOT / "tools/mermaid/package.json").exists()
+    assert not (ROOT / "tools/mathjax/package.json").exists()
     assert "/.prodockit-adopt-backups/" in _text(".gitignore").splitlines()
 
 
-def test_mathjax_cascade_includes_browser_checks_and_patched_xml() -> None:
-    manifest = json.loads(_text("tools/mathjax/package.json"))
-    lock = json.loads(_text("tools/mathjax/package-lock.json"))
-    assert "puppeteer-core" in manifest["dependencies"]
-    assert lock["packages"][""]["dependencies"] == manifest["dependencies"]
-    assert manifest["overrides"]["@xmldom/xmldom"] == "0.9.12"
-    assert lock["packages"]["node_modules/@xmldom/xmldom"]["version"] == "0.9.12"
+def test_pdf_runtime_prepares_without_npm_or_browser() -> None:
     for workflow in (".github/workflows/docs.yml", ".gitlab-ci.yml"):
         text = _text(workflow)
-        assert text.index("npm ci --prefix tools/mathjax") < text.index("python tools/prepare_website_mathjax.py")
-        assert text.index("python tools/prepare_website_mathjax.py") < text.index("zensical build")
+        assert "npm ci" not in text
+        assert "google-chrome" not in text
+        assert text.index("pdk pdf --prepare all") < text.index("pdk diag")
 
 
 

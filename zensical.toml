@@ -58,34 +58,13 @@ extra_css = [
   "stylesheets/branding.css",
   "stylesheets/extra.css",
 ]
-# MathJax is installed rather than fetched from unpkg - the CDN URL was
-# `mathjax@3`, which floats, while `prodockit pdf` renders the PDF through
-# tools/mathjax's exactly-pinned install, so the two agreed only by
-# coincidence. This copy comes from that same pinned install, so the
-# website and the PDF provably typeset through one build. It also removes
-# five third-party requests per page carrying a formula (the bundle, plus
-# the four .woff fonts CommonHTML fetched at runtime).
-#
-# Neither file is committed - both are third-party code/generated
-# configuration, and a repository is redistribution. `prodockit bootstrap`
-# writes them on a developer's machine; CI installs them the same way (see
-# .github/workflows/docs.yml, .gitlab-ci.yml) - see docs/customise.md's
-# "Extra CSS and JavaScript" for the full reasoning
-# (prodockit-extensions#263).
-#
-# javascripts/mathjax.js MUST be listed BEFORE the bundle: MathJax reads
-# `window.MathJax` once, at startup, so a config loaded afterwards is
-# ignored. prodockit-extensions#263 hit exactly this in prodockit-template
-# - arithmatex's `generic = true` (see markdown_extensions below) wraps
-# every formula in a `<div>`/`<span class="arithmatex">`, and without an
-# explicit config MathJax's own defaults are not guaranteed to look
-# inside it, rendering raw TeX with the build reporting success. This
-# config matches the fix there, so the two projects stay in step even
-# though this page's own formula was not observed to fail without it.
+# Website maths follows Zensical's MathJax configuration. The managed
+# configuration loads before the browser runtime; the PDF separately caches
+# MathJax 4 on first use without npm packages.
 extra_javascript = [
   "javascripts/pdk.js",
   "javascripts/mathjax.js",
-  "javascripts/vendor/mathjax/tex-svg-full.js",
+  "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
   "javascripts/extra.js"
 ]
 

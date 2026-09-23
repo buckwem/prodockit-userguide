@@ -11,3 +11,7 @@ target = "docs/stylesheets/pdk-pdf.css"
 [[files]]
 source = "pdk.js"
 target = "docs/javascripts/pdk.js"
+
+[[files]]
+source = "mathjax.js"
+target = "docs/javascripts/mathjax.js"

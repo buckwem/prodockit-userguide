@@ -35,17 +35,8 @@ permissions:
   contents: read
   pages: write
   id-token: write
-# Pandoc comes from the CI image or a setup action rather than
-# requirements.txt, so `prodockit pins` cannot see it and it drifts
-# silently. That is not hypothetical: pandoc 3.1.3 accepted `<pre><code>`
-# containing element markup as a code block and 3.10 does not, so every
-# fenced code block in the PDF reflowed as justified prose on a current
-# pandoc while the build reported success
-# (prodockit-extensions#207). This project was only unaffected because
-# setup-pandoc happened to be installing 3.8.3.
-#
-# Pinned to the same version as prodockit-extensions and
-# prodockit-template, so the family builds its PDFs with one pandoc.
+# Pandoc is prepared by `pdk pdf`; keep the declared version consistent with
+# the supported toolchain so `pdk pins` can detect drift.
 env:
   PANDOC_VERSION: "3.10.1"
 
@@ -64,25 +55,6 @@ jobs:
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
       index_sha: ${{ steps.fingerprint.outputs.index_sha }}
-    env:
-      # Only needed so `prodockit pdf` can pre-render ```mermaid fenced code
-      # blocks to static images via mermaid-cli/Puppeteer, and TeX maths
-      # ($...$/$$...$$) to static images via mathjax-full (pure Node, no
-      # browser needed for that one) - WeasyPrint has no JS engine to run
-      # Mermaid.js/MathJax client-side like the live Zensical site does.
-      # Without these, prodockit.pdf silently leaves both unrendered and the
-      # PDF shows raw diagram/LaTeX source instead - see issue #23. Using the
-      # apt-installed Google Chrome below instead of Puppeteer's own bundled
-      # download avoids guessing at headless-Chrome shared-library package
-      # names.
-      #
-      # PUPPETEER_SKIP_DOWNLOAD, not the older
-      # PUPPETEER_SKIP_CHROMIUM_DOWNLOAD - Puppeteer renamed it, and
-      # mermaid-cli ^11.4.2 resolves to puppeteer 25.x, which only honours
-      # the new name. Using the old name silently downloads a full Chrome
-      # build on every run before falling back to the apt one below.
-      PUPPETEER_SKIP_DOWNLOAD: "true"
-      PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
     steps:
       - uses: actions/configure-pages@v5
       - uses: actions/checkout@v5
@@ -98,9 +70,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - uses: r-lib/actions/setup-pandoc@v2
-        with:
-          pandoc-version: ${{ env.PANDOC_VERSION }}
       # The image's mirrorlist puts `azure.archive.ubuntu.com` first. When
       # that host is down - it was, repeatedly, on 2026-08-18, and it held
       # this workflow for eleven minutes before anyone noticed - apt spends
@@ -128,18 +97,15 @@ jobs:
           fi
       # Diagnostics verifies the actual PDF font families, not fallback fonts.
       # Keep these prerequisites aligned with the GitLab publishing job.
-      - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0 fontconfig fonts-inter fonts-jetbrains-mono
+      - run: sudo apt-get update && sudo apt-get install -y curl ca-certificates libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fontconfig fonts-inter fonts-jetbrains-mono
         timeout-minutes: 8
-      - run: curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
-      - run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-      - run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
-        timeout-minutes: 8
-      - run: npm ci --prefix tools/mermaid
-      - run: npm ci --prefix tools/mathjax
+      - id: pdf-runtime-cache
+        uses: actions/cache@v4
+        with:
+          path: .prodockit/cache/pdf
+          key: pdk-pdf-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pdk-pdf.toml', 'requirements.txt', 'pdf-requirements.txt') }}
       - run: pip install -r requirements.txt -r testrequirements.txt
-      # Generate the guide's ignored, pinned local website MathJax assets.
-      # The PDF prepares its separate renderer on first use.
-      - run: python tools/prepare_website_mathjax.py
+      - run: pdk pdf --prepare all
       # Fail early when the Python environment, project inputs or complete
       # website/PDF rendering toolchain is incompatible or incomplete.
       - run: pdk diag

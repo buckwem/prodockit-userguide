@@ -1,4 +1,4 @@
 # Python packages used only when building this guide's PDFs.
 # Keep WeasyPrint exact because changes can alter pagination and the index.
-weasyprint==69.0; sys_platform != "win32"
+weasyprint==70.0; sys_platform != "win32"
 pymupdf>=1.24

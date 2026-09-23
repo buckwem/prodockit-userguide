@@ -1,5 +1,12 @@
 # Userguide releases
 
+## 1.18.19 (2026-09-23)
+
+- Cascade Prodockit 0.72.0 with Zensical 0.0.63, WeasyPrint 70.0 and PyMdown Extensions 12.0.1.
+- Move PDF renderer preparation to the project-local cache and remove Chrome and npm from publishing builds.
+- Use the managed MathJax website configuration and refresh build guidance and renderer checks.
+- Refresh Surrey's pinned installation manual to the Prodockit 0.72.0 release.
+
 ## 1.18.18 (2026-09-13)
 
 - Replace the four duplicated installation chapters with a concise Getting

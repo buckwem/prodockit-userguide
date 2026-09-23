@@ -31,28 +31,12 @@ For anything beyond a small fix (typos, broken links), please open an issue firs
    ```bash
    python -m pip install -r requirements.txt
    ```
-4. Install the MathJax bundle the *website* needs - not committed (it's third-party code; see [Extra CSS and JavaScript](https://buckwem.github.io/prodockit-userguide/customise/#extra-css-and-javascript)), so `zensical serve` shows every formula as raw TeX until this has run once:
-
-   ```bash
-   npm ci --prefix tools/mathjax
-   mkdir -p docs/javascripts/vendor/mathjax
-   cp tools/mathjax/node_modules/mathjax-full/es5/tex-svg-full.js docs/javascripts/vendor/mathjax/
-   cp tools/mathjax/node_modules/mathjax-full/LICENSE docs/javascripts/vendor/mathjax/
-   cat > docs/javascripts/mathjax.js <<'MATHJAX'
-   window.MathJax = {
-     tex: {
-       processEscapes: true,
-       processEnvironments: true,
-     },
-     options: {
-       ignoreHtmlClass: ".*|",
-       processHtmlClass: "arithmatex",
-     },
-   };
-   MATHJAX
-   ```
-5. Preview the site locally: `zensical serve`.
-6. Make a clean, strict website build with `zensical build --clean --strict`. If your change affects the PDF, run `prodockit pdf` afterwards - it reads that completed site rather than building it itself. See [Install tooling](https://buckwem.github.io/prodockit-userguide/installtooling/) for the full setup. The one Mermaid diagram in [Diagrams](https://buckwem.github.io/prodockit-userguide/zensicalbasics/#diagrams) only renders as an image in the PDF if `mermaid-cli` (`mmdc`) is available on your `PATH`; without it, the PDF build silently skips it rather than failing.
+4. Preview the site locally: `zensical serve`. Website maths uses the committed
+   MathJax configuration and Zensical's browser runtime, without npm.
+5. Make a clean, strict website build with `zensical build --clean --strict`.
+   If your change affects the PDF, run `pdk pdf` afterwards. It reads the
+   completed site and prepares project-local renderers on first use. PDF maths
+   requires Node.js on `PATH`; no npm packages or browser are required.
 
 ## Making a change
 

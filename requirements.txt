@@ -1,17 +1,13 @@
 # Copyright (c) 2025-2026 Mark Buckwell, Zensical and contributors
 # SPDX-License-Identifier: MIT
 
-# A minimum version retains the fixes this guide requires while allowing a
-# fresh environment to use a later compatible Zensical release. Use
-# `prodockit pins` to move managed versions together - see "Pinning build
+# Keep the website renderers at the combination validated with this release.
+# `prodockit pins` moves the managed versions together; see "Pinning build
 # inputs" in customisebuild.md.
-zensical>=0.0.61
-# ProDocKit 0.54.0 uses APIs introduced in PyMdown Extensions 11.0.2.
-# Declare the floor directly so fresh and upgraded environments cannot retain
-# an older transitive version that is incompatible with the current build.
-pymdown-extensions>=11.0.2
+zensical==0.0.63
+pymdown-extensions==12.0.1
 # The PDF-only configuration and dependency files require Prodockit's
 # project-level PDF model. The back-of-book index's PyMuPDF requirement is
 # now declared separately in pdf-requirements.txt.
-prodockit>=0.71.0
+prodockit>=0.72.0
 markdown==3.10.3

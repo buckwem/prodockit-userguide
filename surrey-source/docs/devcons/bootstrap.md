@@ -18,7 +18,7 @@ This is not a general Zensical installer; it is the route for building from `pro
 This guide organises what you do into documentation **stages and steps**.
 Bootstrap reports its own work as **phases and activities**, allowing each
 activity to be checked, repaired, and checked again. The [Bootstrap command
-reference](../commands/bootstrap.md#cmd-bootstrap-phases) lists all 23
+reference](../commands/bootstrap.md#cmd-bootstrap-phases) lists all 20
 activities.
 
 ## Start with prodockit-template {: #bootstrap-template }
@@ -56,7 +56,7 @@ content.
 
 ## Install with bootstrap {: #bootstrap-quick-start }
 
-The four stages below prepare the setup environment, assess the proposed work,
+The seven stages below prepare the setup environment, assess the proposed work,
 apply it, and verify the completed project. If you open a new terminal,
 reactivate and verify the appropriate environment as described in section 3.1.
 Each command is safe to repeat: Bootstrap checks before it changes anything,
@@ -84,6 +84,8 @@ Complete section 3.1 in the parent directory that holds your repositories:
 
 Return here with that setup environment active. Bootstrap later creates a
 separate build environment inside the cloned project.
+{% if is_surrey %}On Surrey RemoteLabs, choose the RemoteLabs tabs in section
+3.1; Python is already installed and no privileged setup is needed.{% endif %}
 
 ////
 
@@ -113,6 +115,17 @@ that active environment:
     pip install --upgrade pip
     pip install --upgrade prodockit
     ```
+
+{% if is_surrey %}
+=== ":material-linux: Surrey RemoteLabs"
+
+    ```bash
+    pip install --upgrade pip
+    pip install --upgrade prodockit
+    ```
+
+    These packages go into the active setup `.venv`; no `sudo` is needed.
+{% endif %}
 
 !!! note "If pip or pip3 does not work"
 
@@ -147,11 +160,20 @@ Confirm both the installed version and the command selected by the shell:
     command -v prodockit
     ```
 
+{% if is_surrey %}
+=== ":material-linux: Surrey RemoteLabs"
+
+    ```bash
+    prodockit --version
+    command -v prodockit
+    ```
+{% endif %}
+
 The command path must be inside the setup `.venv`. An older Prodockit command
 from another Python can otherwise shadow the package just installed while
 `pip` still reports success. Do not run the complete `pdk diag` here: it is a
 project-scoped command, so a setup directory which holds project repositories
-is refused before diagnostics start. Stage 4 runs it from the completed project
+is refused before diagnostics start. Stage 7 runs it from the completed project
 and its separate environment.
 
 ////
@@ -285,10 +307,11 @@ what and why; running `--apply` again works only on outstanding activities.
 
 ///
 
-### Stage 4 — Enter and verify the project
+### Stage 4 — Enter the project
 
-Move from the shared setup environment into the project environment, account
-for a required Windows restart, and run the project-level checks.
+Move from the shared setup environment into the project environment and account
+for a required Windows restart. These steps apply to every project, including a
+website-only project that does not use PDF output.
 
 /// steps
 
@@ -358,6 +381,18 @@ while the prompt already says `(.venv)` does not switch environments.
     source .venv/bin/activate
     ```
 
+{% if is_surrey %}
+=== ":material-linux: Surrey RemoteLabs"
+
+    ```bash
+    deactivate
+    cd /path/to/your-project
+    source .venv/bin/activate
+    ```
+
+    Replace the path with the project directory reported by Bootstrap.
+{% endif %}
+
 ////
 
 //// step | Confirm the project environment
@@ -372,22 +407,181 @@ repositories on every host.
 
 ////
 
+///
+
+### Stage 5 — Install PDF host software **Privileged**{: .install-privileged} **Optional**{: .bg-green}
+
+Complete this stage only when this machine will generate PDFs and its host
+software is missing. Installing Pango or Node.js needs administrator or `sudo`
+access. Skip this stage for website-only work and on Windows ARM64{% if is_surrey %},
+or on Surrey RemoteLabs without privileged access{% endif %}. The GitLab build
+can generate both PDFs.
+
+/// steps
+
+//// step | Install Pango and Node.js
+
+Pango is needed for local PDFs on macOS and Ubuntu; Node.js is needed only
+when the PDF contains MathJax notation. Mermaid needs no Node.js. If the
+software is already present, verify it and skip installation. A website-only
+project needs neither prerequisite.
+
+=== ":material-apple: macOS"
+
+    ```bash
+    brew install pango node
+    export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib"
+    brew list --versions pango node
+    node --version
+    ```
+
+=== ":fontawesome-brands-windows: Windows"
+
+    This step is for Windows x64 only. Do not run it on Windows ARM64; use the
+    GitLab build for PDF generation instead. The supported Windows x64 path
+    uses a verified project-local WeasyPrint runtime and needs no Pango or
+    MSYS2 installation. Install Node.js only for PDF mathematics:
+
+    ```powershell
+    winget install OpenJS.NodeJS.LTS
+    ```
+
+    Close and reopen PowerShell after installation, return to the project,
+    reactivate its virtual environment, and verify with `node --version`.
+
+=== ":material-linux: Linux (Ubuntu)"
+
+    ```bash
+    sudo apt update
+    sudo apt install -y libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 nodejs
+    dpkg-query -W libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 nodejs
+    node --version
+    ```
+
+{% if is_surrey %}
+=== ":material-linux: Surrey RemoteLabs"
+
+    Pango and Node.js are not installed on the RemoteLabs image, and a student
+    account cannot install them. You can still build and preview the website.
+    A local PDF containing Mermaid or MathJax examples cannot be generated
+    there; the Surrey GitLab CI workflow has the software needed to render
+    those examples in its PDF build. Do not try to run `sudo apt` on RemoteLabs.
+{% endif %}
+
+For a PDF without mathematics, omit `node` or `nodejs` from the installation
+command and verification. No npm packages, browser or MSYS2 are required.
+
+////
+
+///
+
+### Stage 6 — Build the PDF downloads **Optional**{: .bg-green}
+
+Complete this stage only when you need local PDF output and have any required
+host software. Skip it for website-only work and on Windows ARM64; use a
+supported CI runner for PDF generation instead. Build the source bundle last;
+Stage 7's `zensical serve` refreshes the site with both downloads.
+
+{% if is_surrey %}
+!!! note "Surrey RemoteLabs: use GitLab for PDFs"
+
+    RemoteLabs does not provide Pango or Node.js, and student accounts cannot
+    install them. Build and preview the website locally, but skip these local
+    PDF steps. The Surrey GitLab CI workflow generates both PDF downloads on
+    its supported runner; check them on the published site.
+{% endif %}
+
+/// steps
+
+//// step | Build the website for PDF rendering
+
+Build a clean website and treat every warning as an error:
+
+```bash
+zensical build --clean --strict
+```
+
+Stop and correct any failure before continuing. `pdk pdf` consumes this
+completed Zensical build; it does not replace the website build.
+
+////
+
+//// step | Build the rendered document PDF
+
+Generate the rendered document from the completed website. On the first run,
+`pdk pdf` automatically installs the project's committed PDF-only Python
+requirements and prepares verified project-local Pandoc and font caches. It
+also prepares Mermaid or MathJax only if the built content uses them (or their
+PDF configuration requests preloading). Later runs reuse healthy caches.
+This automatic preparation does not install the host Pango or Node.js software
+covered in Stage 5.
+
+```bash
+pdk pdf
+```
+
+The rendered PDF is written to `docs/site_documentation.pdf`.
+
+////
+
+//// step | Build the source bundle
+
+Generate the separate PDF containing the project's source files:
+
+```bash
+pdk source-bundle
+```
+
+Check `docs/source_bundle.pdf`. When Stage 7 starts `zensical serve`, it builds
+the current site and makes both PDF download buttons available for review.
+
+////
+
+///
+
+### Stage 7 — Verify the project
+
+Check the active project environment and its configuration, then inspect the
+website and any optional PDF downloads that were built.
+
+/// steps
+
 //// step | Run project diagnostics
 
 ```bash
 pdk diag
 ```
 
-Bootstrap installs and verifies Pandoc **3.10.1** inside the project
-environment, even if the system has a newer Pandoc. It leaves the system
-installation alone and records Mermaid and maths as the project's selected components
-in `.prodockit-components.toml`. A later `pdk adopt` can therefore repair their
-installed software without asking you to configure those choices first.
+Bootstrap leaves every PDF runtime to `pdk pdf`, which prepares verified
+project-local caches on first use. Mermaid and maths are optional components
+and are not selected by default in the template's
+`.prodockit-components.toml`; content that uses
+them can still trigger preparation. Bootstrap does not block completion on
+optional PDF system prerequisites; the first applicable PDF build checks them.
 
 The `Project` line must name the clone rather than its parent setup directory.
 Add `--verbose` for resolved evidence or `--json` when attaching the report to
 a support request. If Diagnostics reports a failure, stop and resolve it before
 continuing; do not apply an update from the wrong environment.
+
+////
+
+//// step | Serve and verify the project
+
+Start the local website:
+
+```bash
+zensical serve
+```
+
+Open the address printed by Zensical in a browser and check the website. For
+the standard template, also select both download buttons and confirm that the
+rendered document PDF and source-bundle PDF open successfully. Inspect the
+rendered PDF's layout, diagrams, mathematics and references. A website-only
+project has no PDF downloads to check. On Windows ARM64, verify the website
+locally and check both PDFs from the successful GitLab build instead.
+
+Press `Ctrl+C` in the terminal when the browser checks are complete.
 
 ////
 
@@ -405,8 +599,8 @@ report and leave any available update for the maintenance workflow.
 
 ## Understand the completed project {: #bootstrap-completed-project }
 
-The four documentation stages above describe what you do. Bootstrap groups its
-23 activities into seven phases covering preflight, core tools, Git and the
+The seven documentation stages above describe what you do. Bootstrap groups its
+20 activities into seven phases covering preflight, core tools, Git and the
 host, the project, the build toolchain, the editor, and publication. Use the
 [phase and activity inventory](../commands/bootstrap.md#cmd-bootstrap-phases)
 when you need to identify an activity reported by the command.

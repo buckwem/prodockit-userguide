@@ -1,7 +1,7 @@
 # Surrey Getting started source snapshot
 
 This directory contains the Getting started Markdown pages and their referenced
-diagrams from `buckwem/prodockit-extensions` 0.65.6 at the commit recorded in
+diagrams from `buckwem/prodockit-extensions` 0.72.0 at the commit recorded in
 `manifest.toml`. The source is MIT-licensed; see `LICENSE.md`. These files are
 kept outside `docs/` so the public GitHub User Guide still publishes its short
 `docs/gettingstarted.md` summary.

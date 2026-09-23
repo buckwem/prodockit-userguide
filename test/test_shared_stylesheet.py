@@ -22,11 +22,13 @@ def test_shared_assets_match_the_installed_release() -> None:
         "pdk.css",
         "pdk-pdf.css",
         "pdk.js",
+        "mathjax.js",
     ]
     assert [state.file.target for state in states] == [
         "docs/stylesheets/pdk.css",
         "docs/stylesheets/pdk-pdf.css",
         "docs/javascripts/pdk.js",
+        "docs/javascripts/mathjax.js",
     ]
     assert all(state.status == "current" for state in states)
 
@@ -35,7 +37,7 @@ def test_javascript_assets_have_the_required_ownership_and_order() -> None:
     config = (ROOT / "zensical.toml").read_text(encoding="utf-8")
     managed = '"javascripts/pdk.js"'
     mathjax_config = '"javascripts/mathjax.js"'
-    mathjax_bundle = '"javascripts/vendor/mathjax/tex-svg-full.js"'
+    mathjax_bundle = '"https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"'
     user_managed = '"javascripts/extra.js"'
 
     assert config.index(managed) < config.index(mathjax_config)
@@ -80,7 +82,7 @@ def test_both_publishing_workflows_enforce_prodockit_checks() -> None:
         assert workflow.index("pip install -r requirements.txt -r testrequirements.txt") < (
             workflow.index("pdk diag")
         )
-        assert workflow.index("python tools/prepare_website_mathjax.py") < workflow.index("pdk diag")
+        assert workflow.index("pdk pdf --prepare all") < workflow.index("pdk diag")
         assert workflow.index("pdk diag") < workflow.index(
             "prodockit pins --check --offline"
         )
