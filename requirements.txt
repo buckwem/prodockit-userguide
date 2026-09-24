@@ -4,10 +4,10 @@
 # Keep the website renderers at the combination validated with this release.
 # `prodockit pins` moves the managed versions together; see "Pinning build
 # inputs" in customisebuild.md.
-zensical==0.0.63
+zensical==0.0.64
 pymdown-extensions==12.0.1
 # The PDF-only configuration and dependency files require Prodockit's
 # project-level PDF model. The back-of-book index's PyMuPDF requirement is
 # now declared separately in pdf-requirements.txt.
-prodockit>=0.72.0
+prodockit>=0.73.0
 markdown==3.10.3

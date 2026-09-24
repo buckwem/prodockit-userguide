@@ -37,7 +37,7 @@ pages:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   cache:
     key:
-      prefix: "${CI_JOB_IMAGE}-pdk-pdf-0.72.0"
+      prefix: "${CI_JOB_IMAGE}-pdk-pdf-0.73.0"
       files:
         - pdk-pdf.toml
         - pdf-requirements.txt
