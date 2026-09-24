@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_snapshot_is_complete_and_pinned() -> None:
     data = surrey.manifest()
     surrey.verify_snapshot(data)
-    assert data["version"] == "0.72.0"
+    assert data["version"] == "0.73.0"
     assert len(data["revision"]) == 40
     assert len(data["pages"]) == 7
     assert data["pages"][0]["path"] == "gettingstarted.md"
@@ -72,14 +72,12 @@ def test_donation_section_is_removed_only_from_surrey_copy() -> None:
     assert "Buy me a coffee" in source
 
 
-def test_surrey_overlay_uses_the_theme_aware_stag_for_remotelabs_tabs() -> None:
+def test_pinned_surrey_pages_use_the_theme_aware_stag_for_remotelabs_tabs() -> None:
     counts = {"installation.md": 5, "getting-started.md": 3, "devcons/bootstrap.md": 4}
     for page, count in counts.items():
         source = (surrey.SOURCE / "docs" / page).read_text(encoding="utf-8")
-        prepared = surrey.use_stag_for_remotelabs(source)
-        assert source.count(surrey.REMOTELABS_TAB) == count
-        assert prepared.count(surrey.STAG_REMOTELABS_TAB) == count
-        assert surrey.REMOTELABS_TAB not in prepared
+        assert source.count('=== ":stag-stag_icon_32: Surrey RemoteLabs"') == count
+        assert '=== ":material-linux: Surrey RemoteLabs"' not in source
 
     icon = ROOT / "overrides/.icons/stag/stag_icon_32.svg"
     assert 'fill="currentColor"' in icon.read_text(encoding="utf-8")

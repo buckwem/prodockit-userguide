@@ -1,5 +1,11 @@
 # Userguide releases
 
+## 1.18.21 (2026-09-24)
+
+- Cascade Prodockit 0.73.0 and qualified Zensical 0.0.64 for website and PDF builds.
+- Refresh Surrey's pinned Getting started pages to the 0.73.0 release, including the academic-year GitLab path guidance.
+- Add theme-aware stag icons across the guide and its Surrey RemoteLabs tabs.
+
 ## 1.18.20 (2026-09-23)
 
 - Place About before Getting started in Surrey's top menu while preserving the imported manual's section numbering.

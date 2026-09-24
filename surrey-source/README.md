@@ -1,7 +1,7 @@
 # Surrey Getting started source snapshot
 
 This directory contains the Getting started Markdown pages and their referenced
-diagrams from `buckwem/prodockit-extensions` 0.72.0 at the commit recorded in
+diagrams from `buckwem/prodockit-extensions` 0.73.0 at the commit recorded in
 `manifest.toml`. The source is MIT-licensed; see `LICENSE.md`. These files are
 kept outside `docs/` so the public GitHub User Guide still publishes its short
 `docs/gettingstarted.md` summary.
@@ -13,8 +13,8 @@ wording is authored in the Extensions manual using its `is_surrey` macro; keep
 this snapshot byte-identical to that release. The Surrey preparation omits the
 overview's final “Support prodockit” / “Buy
 me a coffee” subsection without changing this pinned source file.
-It also replaces the old Linux icon in Surrey RemoteLabs tab labels with the
-User Guide's theme-aware stag icon when copying the pages.
+The upstream pages already use the User Guide's theme-aware stag icon for
+Surrey RemoteLabs tabs.
 
 To refresh, review the upstream `zensical.toml` Getting started nav at a
 specific release commit, update this snapshot and `manifest.toml` together,
