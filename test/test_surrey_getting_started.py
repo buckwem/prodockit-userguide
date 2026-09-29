@@ -17,10 +17,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_snapshot_is_complete_and_pinned() -> None:
     data = surrey.manifest()
     surrey.verify_snapshot(data)
-    assert data["version"] == "0.73.0"
+    assert data["version"] == "0.73.1"
     assert len(data["revision"]) == 40
     assert len(data["pages"]) == 7
     assert data["pages"][0]["path"] == "gettingstarted.md"
+    bootstrap = (surrey.SOURCE / "docs/devcons/bootstrap.md").read_text(encoding="utf-8")
+    assert "pdk boot --configure" in bootstrap
 
     assets = set(data["assets"])
     for page in surrey.page_paths(data):
