@@ -1,5 +1,37 @@
 /* Add project-specific website and PDF styles below this line. */
 
+/* Keep route and prerequisite labels when the reference Getting started
+   content is copied into the User Guide. These are site-specific styles,
+   not part of Prodockit's managed pdk.css. */
+.install-privileged {
+  background-color: #7b3448;
+  color: #fff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.md-typeset .install-clean,
+.md-typeset .install-update,
+.md-typeset a.install-go {
+  color: #ffffff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.md-typeset .install-clean { background-color: #7040a0; }
+.md-typeset .install-update { background-color: #a34300; }
+.md-typeset a.install-go {
+  background-color: var(--md-primary-fg-color);
+  white-space: nowrap;
+}
+.md-typeset a.install-go:hover,
+.md-typeset a.install-go:focus-visible {
+  text-decoration: underline;
+}
+
 /* Homebrew's amber brand colour with dark text keeps its installation action
    recognisable and legible in both website colour schemes. */
 .md-typeset .homebrew-button {
