@@ -403,9 +403,28 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 
 === "GitLab"
 
-    The simplest way to find your site is from the project itself, rather than working out the URL by hand: open your project on the GitLab website and look for the **GitLab Pages** link, shown on the project overview page once Pages has deployed at least once (also always available under **Deploy > Pages** in the sidebar). Click it.
+    On GitLab.com, open your project and select **Deploy > Pages** in the
+    sidebar. After the pipeline succeeds, open the active deployment URL shown
+    there. This is more reliable than guessing the address, especially when
+    the project uses a unique Pages domain.
+
+    If the site asks you to sign in, use an account allowed by the project's
+    Pages access settings. Check those settings before sharing the URL: a
+    private repository does not, by itself, tell you who can view its Pages
+    site.
+
+    !!! note "Working out the address yourself"
+        With a path-based GitLab.com Pages address, a project site uses
+        `https://<namespace>.gitlab.io/<project-name>/`. A project using a
+        unique domain has a different address, such as
+        `https://<project-name>-<unique-id>.gitlab.io/`. Use the exact URL
+        shown under **Deploy > Pages**.
 
 {% if is_surrey %}
+=== "Surrey GitLab"
+
+    The simplest way to find your site is from the project itself, rather than working out the URL by hand: open your project on Surrey GitLab and look for the **GitLab Pages** link, shown on the project overview page once Pages has deployed at least once (also available under **Deploy > Pages** in the sidebar). Click it.
+
     1. The first time you visit, GitLab prompts you to authorise GitLab Pages access to your project:
 
         ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="40%" .screenshot }
@@ -417,15 +436,6 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 
     2. Your browser redirects to a URL with an extra, unique key added, such as [https://prodockit-template-4f75ad.pages.surrey.ac.uk/](https://prodockit-template-4f75ad.pages.surrey.ac.uk/){target="_blank"}. This confirms that you (specifically, someone with access to the underlying GitLab project) can view the page - GitLab Pages sites aren't public by default.
 
-    This confirms that someone with access to the underlying GitLab project can
-    view its private Pages site.
-{% else %}
-    The Pages address opens after the deployment finishes. A private GitLab
-    service may ask you to sign in or authorise Pages before it displays the
-    site; complete that request with the account that can access the project.
-{% endif %}
-
-{% if is_surrey %}
     !!! note "Working out the address yourself"
         If you'd rather not click through, use the Surrey GitLab Pages address
         for the namespace that owns the project.
@@ -434,9 +444,6 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
         `https://<user-id>.pages.surrey.ac.uk/<repo-name>`; for a project in a
         subgroup, it is
         `https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>`.
-{% else %}
-    !!! note "Working out the address yourself"
-        If you'd rather not click through, most GitLab Pages addresses follow the form `https://`*namespace*`.gitlab.io/`*repository-name*, though a self-hosted instance may use its own domain - check **Settings > Pages** on your project for the exact one.
 {% endif %}
 
 === "GitHub"
