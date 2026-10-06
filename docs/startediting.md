@@ -32,10 +32,11 @@ Generate the PDF and any source bundle locally. Check them before publishing.
 
 ////
 
-//// step | Save and push the change
+//// step | Save and propose the change
 
-Commit a labelled snapshot with Git, then push it through SSH to GitLab or
-GitHub.
+Create a branch, commit a labelled snapshot with Git, and push that branch
+through SSH to GitLab or GitHub. Open a merge or pull request into the
+protected `main` branch.
 
 ////
 
@@ -47,8 +48,8 @@ Wait for the automated build to pass, then open the published website and PDF.
 
 ///
 
-Branches and issues are optional tools for larger or shared changes. The final
-sections explain those tools and provide help with common problems.
+Issues help organise larger or shared changes. The final sections explain
+those tools and provide help with common problems.
 
 ## Preview the website locally
 
@@ -129,6 +130,25 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
         Your prompt now starts with `(.venv)`, confirming it's active.
 
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    1. Open **Terminal** from the applications menu.
+    2. Navigate to your project folder with `cd`:
+
+        ```bash
+        cd path/to/your/project
+        ```
+
+    3. Activate the virtual environment:
+
+        ```bash
+        source .venv/bin/activate
+        ```
+
+        Your prompt now starts with `(.venv)`, confirming it's active.
+{% endif %}
+
 
 After activation, `python --version` must report `Python 3.14`. If you use
 Conda, Poetry, uv, or a differently named environment, substitute its
@@ -167,13 +187,13 @@ appear in them.
 
     ``` bash
     zensical build --clean --strict
-    prodockit pdf
+    pdk pdf
     ```
 
 3. If the project provides a **Source** download, build that document too:
 
     ``` bash
-    prodockit source-bundle
+    pdk source-bundle
     ```
 
 4. Open `docs/site_documentation.pdf` and, when created,
@@ -231,15 +251,30 @@ branch.
 
 ## Save and push your updates {: #synchronise-your-updates }
 
-\index{Tasks!Save and push changes} you want to keep. Save the file, \index{Git!commit}
-it (record a labelled snapshot in the project's history), and **push** it
-(upload that snapshot with \index{Git!push} to GitLab or GitHub). You can use Visual Studio Code's
-Source Control view or type Git commands directly.
+\index{Tasks!Save and push changes} you want to keep. Because `main` is
+protected, create a \index{Git!branch} for your change before committing. Then
+\index{Git!commit} it (record a labelled snapshot in the project's history)
+and **push** the branch (upload it with \index{Git!push} to GitLab or GitHub).
+You can use Visual Studio Code's Source Control view or type Git commands
+directly. If you've already edited files on `main`, creating a branch carries
+your uncommitted edits with you.
 
 === "Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
-    2. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file.
+    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **:material-plus: Create new branch...**{: .bg-blue}, and enter a descriptive name such as `add-section-3`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on a change branch, keep using it.
+
+        !!! note "Restoring a missing active branch name"
+            If no branch name appears, right-click the status bar and turn on
+            **Source Control Checkout**.
+
+            If it still does not appear, open the integrated terminal
+            (**View** > **Terminal**) and run `git branch --show-current`.
+            If the result is `main`, use the Command Palette
+            (`Ctrl+Shift+P` / `Cmd+Shift+P`) to run **Git: Create Branch...**.
+            If Git says this is not a repository, open the cloned project
+            folder with **File** > **Open Folder...**, then try again.
+    3. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file.
 
         ![Initial commit](images/initial-commit.png){ width="40%" .screenshot }
         /// figure-caption
@@ -248,8 +283,8 @@ Source Control view or type Git commands directly.
         Initial commit
         ///
 
-    3. Type a short, descriptive message in the message box (for example, "Add section 2 draft") - this is the label future-you (or a marker) will see when looking back through the history.
-    4. Press the **Commit**{: .bg-blue} button and select **Save All and Commit Changes**{: .bg-blue}. This records the snapshot on your computer only - you haven't sent anything anywhere yet.
+    4. Type a short, descriptive message in the message box (for example, "Add section 2 draft") - this is the label future-you (or a marker) will see when looking back through the history.
+    5. Press the **Commit**{: .bg-blue} button and select **Save All & Commit Changes**{: .bg-blue}. This records the snapshot on your branch, on your computer only - you haven't sent anything anywhere yet.
 
         ![Commit changes](images/commit-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -258,7 +293,7 @@ Source Control view or type Git commands directly.
         Commit changes
         ///
 
-    5. Press **Sync Changes**{: .bg-blue} to push your commit to GitLab or GitHub (and pull down anyone else's changes too).
+    6. Press **Publish Branch**{: .bg-blue} to push a new branch to GitLab or GitHub. For later commits on the same branch, use **Sync Changes**{: .bg-blue}.
 
         ![Sync changes](images/sync-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -269,19 +304,28 @@ Source Control view or type Git commands directly.
 
 === "Command line"
 
-    1. Check what's changed - this lists every file you've added, edited, or deleted since your last commit:
+    1. Check your current branch and what's changed:
 
         ```bash
+        git branch --show-current
         git status
         ```
 
-    2. Stage the files you want to commit - "staging" means marking them so Git includes them in the next commit (use `git add .` to stage everything shown by `git status` in one go):
+    2. If you are on `main`, create and switch to a change branch before committing. Any uncommitted edits come with you:
+
+        ```bash
+        git switch -c add-section-3
+        ```
+
+        If you are already on a change branch, stay on it.
+
+    3. Stage the files you want to commit - "staging" means marking them so Git includes them in the next commit (use `git add .` to stage everything shown by `git status` in one go):
 
         ```bash
         git add docs/section1.md
         ```
 
-    3. Commit the staged changes with a short, descriptive message:
+    4. Commit the staged changes with a short, descriptive message:
 
         ```bash
         git commit -m "Add section 2 draft"
@@ -289,15 +333,63 @@ Source Control view or type Git commands directly.
 
         This records the snapshot on your computer only - you haven't sent anything anywhere yet.
 
-    4. Push your commit to your GitLab or GitHub remote, uploading it so it's backed up and visible online:
+    5. Push the new branch to your GitLab or GitHub remote, telling Git to track it there:
 
         ```bash
-        git push
+        git push -u origin add-section-3
         ```
 
+        Substitute your branch name if it differs. For later commits on the
+        same branch, a plain `git push` is enough.
+
+Pushing a branch does not publish the website. Open a merge request on GitLab
+or a pull request on GitHub from your branch into `main`, wait for the checks,
+and merge it when approved. The protected `main` branch cannot be pushed to
+directly. See [Merging your branch back](#merging-your-branch-back) for the
+review steps.
 
 !!! note
     Commit little and often. Small, clearly described commits are easier to review, easier to revert if something goes wrong, and give you a much more useful history to look back on than one huge commit at the deadline.
+
+### If you committed and tried to push from `main`
+
+If the push was rejected because `main` is protected, your commit is still on
+your computer. You do not need to undo it or commit the files again. Create a
+branch from the current commit, then push that branch instead. Do not force-push
+`main`.
+
+=== "Visual Studio Code"
+
+    1. Check that the active branch is still `main`. Click its name in the
+        status bar and select **:material-plus: Create new branch...**{: .bg-blue}. Enter a name such as
+        `add-section-3`. The new branch includes the commit you already made.
+    2. Open :gitlab-branch: **Source Control** and select **Publish Branch**{: .bg-blue} to push the new
+        branch. Then open a merge request on GitLab or a pull request on GitHub
+        to bring it into `main`.
+
+=== "Command line"
+
+    1. Check that you are still on `main`, then create a branch at your current
+        commit:
+
+        ```bash
+        git branch --show-current
+        git switch -c add-section-3
+        ```
+
+    2. Push the new branch and open a merge request or pull request into `main`:
+
+        ```bash
+        git push -u origin add-section-3
+        ```
+
+Your local `main` may still point to the commit; that is expected. Continue
+working on the new branch, and do not try to push `main` again.
+
+If the push to `main` **succeeded**, the commit is already on the remote
+`main` branch. Do not make a second branch just to push the same commit. Check
+with your repository maintainer, because the expected branch protection may
+not be enabled.
 
 ## Confirm the published website and documents
 
@@ -309,14 +401,33 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 
     Check first, rather than refreshing a page that hasn't been built yet: **Build > Pipelines** in the sidebar on GitLab, or the **Actions** tab on GitHub. A running pipeline or workflow shows a spinner or a yellow dot; wait for it to turn green.
 
-=== "GitLab"
+=== ":fontawesome-brands-gitlab: GitLab"
 
-    The simplest way to find your site is from the project itself, rather than working out the URL by hand: open your project on the GitLab website and look for the **GitLab Pages** link, shown on the project overview page once Pages has deployed at least once (also always available under **Deploy > Pages** in the sidebar). Click it.
+    On GitLab.com, open your project and select **Deploy > Pages** in the
+    sidebar. After the pipeline succeeds, open the active deployment URL shown
+    there. This is more reliable than guessing the address, especially when
+    the project uses a unique Pages domain.
+
+    If the site asks you to sign in, use an account allowed by the project's
+    Pages access settings. Check those settings before sharing the URL: a
+    private repository does not, by itself, tell you who can view its Pages
+    site.
+
+    !!! note "Working out the address yourself"
+        With a path-based GitLab.com Pages address, a project site uses
+        `https://<namespace>.gitlab.io/<project-name>/`. A project using a
+        unique domain has a different address, such as
+        `https://<project-name>-<unique-id>.gitlab.io/`. Use the exact URL
+        shown under **Deploy > Pages**.
 
 {% if is_surrey %}
+=== ":fontawesome-brands-gitlab: Surrey GitLab"
+
+    The simplest way to find your site is from the project itself, rather than working out the URL by hand: open your project on Surrey GitLab and look for the **GitLab Pages** link, shown on the project overview page once Pages has deployed at least once (also available under **Deploy > Pages** in the sidebar). Click it.
+
     1. The first time you visit, GitLab prompts you to authorise GitLab Pages access to your project:
 
-        ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="40%" .screenshot }
+        ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="80%" .screenshot }
         /// figure-caption
             attrs: {id: figure-authorise-gitlab-pages}
 
@@ -325,24 +436,17 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 
     2. Your browser redirects to a URL with an extra, unique key added, such as [https://prodockit-template-4f75ad.pages.surrey.ac.uk/](https://prodockit-template-4f75ad.pages.surrey.ac.uk/){target="_blank"}. This confirms that you (specifically, someone with access to the underlying GitLab project) can view the page - GitLab Pages sites aren't public by default.
 
-    This confirms that someone with access to the underlying GitLab project can
-    view its private Pages site.
-{% else %}
-    The Pages address opens after the deployment finishes. A private GitLab
-    service may ask you to sign in or authorise Pages before it displays the
-    site; complete that request with the account that can access the project.
+    !!! note "Working out the address yourself"
+        If you'd rather not click through, use the Surrey GitLab Pages address
+        for the namespace that owns the project.
+
+        For a personal project, the URL is
+        `https://<user-id>.pages.surrey.ac.uk/<repo-name>`; for a project in a
+        subgroup, it is
+        `https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>`.
 {% endif %}
 
-{% if is_surrey %}
-    !!! note "Working out the address yourself"
-        If you'd rather not click through, University of Surrey Pages addresses
-        follow the form `https://`*namespace*`.pages.surrey.ac.uk/`*repository-name*.
-{% else %}
-    !!! note "Working out the address yourself"
-        If you'd rather not click through, most GitLab Pages addresses follow the form `https://`*namespace*`.gitlab.io/`*repository-name*, though a self-hosted instance may use its own domain - check **Settings > Pages** on your project for the exact one.
-{% endif %}
-
-=== "GitHub"
+=== ":fontawesome-brands-github: GitHub"
 
     1. Go to your GitHub Pages address, in the form `https://`*username*`.github.io/`*repository-name*. This template's own site is at [https://template.prodockit.org](https://template.prodockit.org/){target="_blank"}.
     2. Unlike GitLab Pages, GitHub Pages sites are publicly accessible by default, even when the source repository is private - so no separate authorisation step is normally needed to view a GitHub Pages site once it's built.
@@ -368,80 +472,29 @@ local output appears stale.
 
 ## Organise larger changes with branches and issues
 
-Organise work with branches and issues after you are comfortable
-with the basic commit-and-push cycle. A branch isolates a change until it is
-ready, while an issue records what needs doing.
+Use a branch for every change to protected `main`. For larger or shared work,
+an issue also records what needs doing and can link to the branch.
 
 ### Working with branches
 
-A \index{Git!branch} is a parallel, isolated copy of your files where you can work without affecting the "real", published version until you're ready. For anything more than a small tweak - a new section, a bigger restructure - it's worth developing it on its own branch rather than directly on your default branch (usually `main`). That keeps `main` (and therefore the published website and PDF) stable while you're mid-change, and makes an unfinished idea easy to abandon without cleaning up half-done edits.
-
-=== "Visual Studio Code"
-
-    1. Click the branch name in the bottom-left of the status bar (it normally reads `main`).
-    2. Select **Create new branch...** and give it a short, descriptive name (for example, `add-section-3`).
-    3. Visual Studio Code switches you onto the new branch. Edit, save, and commit as usual (see [Save and push your updates](#synchronise-your-updates)) - your commits go onto this branch, not `main`.
-    4. The first time you press **Sync Changes**{: .bg-blue}, Visual Studio Code offers to **Publish Branch**{: .bg-blue} instead - accept this to push the new branch to GitLab or GitHub.
-
-=== "Command line"
-
-    1. Create and switch to a new branch in one step:
-
-        ```bash
-        git switch -c add-section-3
-        ```
-
-    2. Commit as usual (see [Save and push your updates](#synchronise-your-updates)) - your commits go onto this branch, not `main`.
-    3. Push it, telling Git to track this new branch on the remote the first time:
-
-        ```bash
-        git push -u origin add-section-3
-        ```
-
-        After that first push, a plain `git push` is enough.
+A branch is a parallel, isolated line of work that keeps `main` (and therefore
+the published website and PDF) stable while you edit. Follow
+[Save and push your updates](#synchronise-your-updates) to create and publish
+one, even if you have already started editing.
 
 
 ### Merging your branch back
 
-Once you're happy with the branch, bring it into your default branch so it's published.
+Once you're happy with the branch, use the hosting service to merge it into
+protected `main`:
 
-=== "Merge or pull request"
+1. Open your project on GitLab or GitHub in a browser.
+2. Open a merge request (GitLab) or pull request (GitHub) from your branch into `main` - both platforms show a prompt for this as soon as you push a new branch, or you can start one from the **Merge requests**/**Pull requests** section of the sidebar.
+3. Review the changes and wait for the required checks to pass. Ask for any required approval.
+4. Click **Merge**{: .bg-blue} on the merge/pull request page when it is ready. Do not try to merge locally and push directly to protected `main`.
 
-    1. Open your project on GitLab or GitHub in a browser.
-    2. Open a merge request (GitLab) or pull request (GitHub) from your branch into `main` - both platforms show a prompt for this as soon as you push a new branch, or you can start one from the **Merge requests**/**Pull requests** section of the sidebar.
-    3. This gives you, or a collaborator, a chance to review the diff before it goes live.
-    4. Once you're happy, click the **Merge**{: .bg-blue} button on the merge/pull request page - GitLab or GitHub does the rest.
-
-=== "Merge locally"
-
-    If you're working alone and don't need a review step first:
-
-    1. Switch to your default branch:
-
-        ```bash
-        git switch main
-        ```
-
-    2. Pull down the latest version, in case anything's changed since you branched:
-
-        ```bash
-        git pull
-        ```
-
-    3. Merge your branch into it:
-
-        ```bash
-        git merge add-section-3
-        ```
-
-    4. Push the result:
-
-        ```bash
-        git push
-        ```
-
-
-Either way, once the merge reaches `main`, the [CI/CD pipeline](#automated-builds) rebuilds and republishes the website and PDF automatically, the same as any other push to `main`.
+Once the merge reaches `main`, the [CI/CD pipeline](#automated-builds)
+rebuilds and republishes the website and PDF automatically.
 
 !!! tip
     Delete the branch once you've merged it - neither GitLab nor GitHub need it anymore, and it keeps your branch list tidy. Both offer a **Delete branch** button right after you merge a merge request or pull request.
@@ -500,6 +553,15 @@ Both commands are installed *inside* the virtual environment, not system-wide, s
     cd path/to/your-project
     source .venv/bin/activate
     ```
+
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    ``` bash
+    cd path/to/your-project
+    source .venv/bin/activate
+    ```
+{% endif %}
 
 
 The prompt gains a `(.venv)` prefix when it works. This bites most often after a step that told you to close and reopen your terminal to pick up a `PATH` change - the new window has lost the virtual environment as well.
@@ -588,6 +650,27 @@ than overwriting it.
     `hash -r` is bash's equivalent of zsh's `rehash`: it discards cached
     command locations before the checks resolve `pdk` again.
 
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    ``` bash
+    deactivate
+    mv .venv .venv-broken
+
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt -r testrequirements.txt
+    python -m pip install --upgrade prodockit
+
+    hash -r
+    command -v pdk
+    python -m pip show prodockit
+    pdk --version
+    ```
+{% endif %}
+
 The command lookup should point inside the new `.venv`, and the two version
 checks should agree. Run `zensical build --clean --strict` as a final check.
 Delete the backup only after the rebuilt environment has passed these checks
@@ -604,6 +687,14 @@ and you are certain it contains no local file you still need:
     ``` powershell
     Remove-Item -Recurse -Force .venv-broken
     ```
+
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    ``` bash
+    rm -rf .venv-broken
+    ```
+{% endif %}
 
 ### Local preview isn't updating
 

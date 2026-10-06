@@ -83,7 +83,7 @@ def test_pinned_surrey_pages_use_the_theme_aware_stag_for_remotelabs_tabs() -> N
     assert 'fill="currentColor"' in icon.read_text(encoding="utf-8")
 
 
-def test_surrey_nav_puts_about_first_and_preserves_upstream_numbering() -> None:
+def test_surrey_nav_numbers_about_and_imported_pages_like_rendered_headings() -> None:
     config_text = (ROOT / "zensical.toml").read_text(encoding="utf-8")
     if config_text.startswith(surrey.START_MARKER):
         config_text = subprocess.check_output(
@@ -93,13 +93,13 @@ def test_surrey_nav_puts_about_first_and_preserves_upstream_numbering() -> None:
     data = surrey.manifest()
     nav = surrey.surrey_nav(canonical, data)
     assert nav[0] == {"Home": ["index.md"]}
-    assert nav[1] == {"About": [{"About this guide": "about.md"}]}
+    assert nav[1] == {"About": [{"1. About this guide": "about.md"}]}
     assert next(iter(nav[2])) == "Getting started"
     section = nav[2]["Getting started"]
     assert [next(iter(item.values())) for item in section[:7]] == surrey.page_paths(data)
-    assert next(iter(section[0])) == "1. prodockit overview"
-    assert section[-1] == {"8. Additional tooling": "additionaltooling.md"}
-    assert nav[3] == {"Edit": [{"9. Start editing": "startediting.md"}]}
+    assert next(iter(section[0])) == "2. prodockit overview"
+    assert section[-1] == {"9. Additional tooling": "additionaltooling.md"}
+    assert nav[3] == {"Edit": [{"10. Start editing": "startediting.md"}]}
     assert tomllib.loads("[project]\nnav = " + surrey._render_nav(nav))["project"]["nav"] == nav
     assert (ROOT / "docs/gettingstarted.md").read_text(encoding="utf-8").startswith("---")
 

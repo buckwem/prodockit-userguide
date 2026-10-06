@@ -503,6 +503,25 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
     assert "### The website and PDF do not have exactly the same layout" in editing
+    assert "git switch -c add-section-3" in editing
+    assert "git push -u origin add-section-3" in editing
+    assert "Publish Branch" in editing
+    assert "merge request on GitLab" in editing
+    assert '=== "Merge locally"' not in editing
+
+
+def test_surrey_pages_address_forms_are_documented() -> None:
+    editing = _text("docs/startediting.md")
+    gitlab_tab = editing.split('=== ":fontawesome-brands-gitlab: GitLab"', 1)[1].split(
+        "{% if is_surrey %}", 1
+    )[0]
+    surrey_tab = editing.split(
+        '{% if is_surrey %}\n=== ":fontawesome-brands-gitlab: Surrey GitLab"', 1
+    )[1].split("{% endif %}", 1)[0]
+    assert "gitlab.io" in gitlab_tab
+    assert "pages.surrey.ac.uk" not in gitlab_tab
+    assert "https://<user-id>.pages.surrey.ac.uk/<repo-name>" in surrey_tab
+    assert "https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>" in surrey_tab
     assert "### The word count leaves out unexpected content" in editing
     assert "After updating prodockit" in editing
 
