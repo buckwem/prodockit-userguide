@@ -264,7 +264,7 @@ your uncommitted edits with you.
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
     2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **Create new branch...**, and enter a descriptive name such as `add-section-3`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on a change branch, keep using it.
 
-        !!! note "Restoring a missing active branchname"
+        !!! note "Restoring a missing active branch name"
             If no branch name appears, right-click the status bar and turn on
             **Source Control Checkout**.
 
