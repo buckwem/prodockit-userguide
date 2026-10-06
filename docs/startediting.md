@@ -427,7 +427,7 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 
     1. The first time you visit, GitLab prompts you to authorise GitLab Pages access to your project:
 
-        ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="40%" .screenshot }
+        ![Authorise GitLab Pages](images/authorise-gitlab-pages.png){ width="80%" .screenshot }
         /// figure-caption
             attrs: {id: figure-authorise-gitlab-pages}
 
