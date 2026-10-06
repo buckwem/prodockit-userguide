@@ -187,13 +187,13 @@ appear in them.
 
     ``` bash
     zensical build --clean --strict
-    prodockit pdf
+    pdk pdf
     ```
 
 3. If the project provides a **Source** download, build that document too:
 
     ``` bash
-    prodockit source-bundle
+    pdk source-bundle
     ```
 
 4. Open `docs/site_documentation.pdf` and, when created,
