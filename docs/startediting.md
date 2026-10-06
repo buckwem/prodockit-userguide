@@ -363,7 +363,7 @@ branch from the current commit, then push that branch instead. Do not force-push
     1. Check that the active branch is still `main`. Click its name in the
         status bar and select **Create new branch...**. Enter a name such as
         `add-section-3`. The new branch includes the commit you already made.
-    2. Open **Source Control** and select **Publish Branch** to push the new
+    2. Open :gitlab-branch: **Source Control** and select **Publish Branch** to push the new
         branch. Then open a merge request on GitLab or a pull request on GitHub
         to bring it into `main`.
 
