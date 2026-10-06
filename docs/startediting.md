@@ -357,8 +357,13 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 
 {% if is_surrey %}
     !!! note "Working out the address yourself"
-        If you'd rather not click through, University of Surrey Pages addresses
-        follow the form `https://`*namespace*`.pages.surrey.ac.uk/`*repository-name*.
+        If you'd rather not click through, use the Surrey GitLab Pages address
+        for the namespace that owns the project.
+
+        For a personal project, the URL is
+        `https://<user-id>.pages.surrey.ac.uk/<repo-name>`; for a project in a
+        subgroup, it is
+        `https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>`.
 {% else %}
     !!! note "Working out the address yourself"
         If you'd rather not click through, most GitLab Pages addresses follow the form `https://`*namespace*`.gitlab.io/`*repository-name*, though a self-hosted instance may use its own domain - check **Settings > Pages** on your project for the exact one.
