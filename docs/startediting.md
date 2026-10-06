@@ -401,7 +401,7 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
 
     Check first, rather than refreshing a page that hasn't been built yet: **Build > Pipelines** in the sidebar on GitLab, or the **Actions** tab on GitHub. A running pipeline or workflow shows a spinner or a yellow dot; wait for it to turn green.
 
-=== "GitLab"
+=== ":fontawesome-brands-gitlab: GitLab"
 
     On GitLab.com, open your project and select **Deploy > Pages** in the
     sidebar. After the pipeline succeeds, open the active deployment URL shown
@@ -421,7 +421,7 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
         shown under **Deploy > Pages**.
 
 {% if is_surrey %}
-=== "Surrey GitLab"
+=== ":fontawesome-brands-gitlab: Surrey GitLab"
 
     The simplest way to find your site is from the project itself, rather than working out the URL by hand: open your project on Surrey GitLab and look for the **GitLab Pages** link, shown on the project overview page once Pages has deployed at least once (also available under **Deploy > Pages** in the sidebar). Click it.
 
@@ -446,7 +446,7 @@ branch and the \index{continuous integration!pipeline} rebuilds the website and 
         `https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>`.
 {% endif %}
 
-=== "GitHub"
+=== ":fontawesome-brands-github: GitHub"
 
     1. Go to your GitHub Pages address, in the form `https://`*username*`.github.io/`*repository-name*. This template's own site is at [https://template.prodockit.org](https://template.prodockit.org/){target="_blank"}.
     2. Unlike GitLab Pages, GitHub Pages sites are publicly accessible by default, even when the source repository is private - so no separate authorisation step is normally needed to view a GitHub Pages site once it's built.
