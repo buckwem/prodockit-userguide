@@ -512,10 +512,16 @@ def test_edit_section_follows_the_author_workflow() -> None:
 
 def test_surrey_pages_address_forms_are_documented() -> None:
     editing = _text("docs/startediting.md")
-    note_start = '{% if is_surrey %}\n    !!! note "Working out the address yourself"'
-    surrey_note = editing.split(note_start, 1)[1].split("{% else %}", 1)[0]
-    assert "https://<user-id>.pages.surrey.ac.uk/<repo-name>" in surrey_note
-    assert "https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>" in surrey_note
+    gitlab_tab = editing.split('=== ":fontawesome-brands-gitlab: GitLab"', 1)[1].split(
+        "{% if is_surrey %}", 1
+    )[0]
+    surrey_tab = editing.split(
+        '{% if is_surrey %}\n=== ":fontawesome-brands-gitlab: Surrey GitLab"', 1
+    )[1].split("{% endif %}", 1)[0]
+    assert "gitlab.io" in gitlab_tab
+    assert "pages.surrey.ac.uk" not in gitlab_tab
+    assert "https://<user-id>.pages.surrey.ac.uk/<repo-name>" in surrey_tab
+    assert "https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>" in surrey_tab
     assert "### The word count leaves out unexpected content" in editing
     assert "After updating prodockit" in editing
 
