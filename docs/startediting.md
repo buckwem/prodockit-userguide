@@ -262,7 +262,16 @@ your uncommitted edits with you.
 === "Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
-    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **Create new branch...**, and enter a descriptive name such as `add-section-3`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on a change branch, keep using it.
+    2. Check which branch is active. The name may appear at the bottom-left of
+        Visual Studio Code's status bar. If you cannot see it, open the
+        integrated terminal (**View** > **Terminal**) and run
+        `git branch --show-current`. If Git says this is not a repository, use
+        **File** > **Open Folder...** to open the cloned project folder, then
+        check again. If the branch is `main`, open the Command Palette
+        (`Ctrl+Shift+P` / `Cmd+Shift+P`), run **Git: Create Branch...**, and
+        enter a descriptive name such as `add-section-3`. Visual Studio Code
+        switches to that branch, taking your uncommitted edits with it. If you
+        are already on a change branch, keep using it.
     3. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file.
 
         ![Initial commit](images/initial-commit.png){ width="40%" .screenshot }
