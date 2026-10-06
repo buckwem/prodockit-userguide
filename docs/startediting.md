@@ -351,6 +351,46 @@ review steps.
 !!! note
     Commit little and often. Small, clearly described commits are easier to review, easier to revert if something goes wrong, and give you a much more useful history to look back on than one huge commit at the deadline.
 
+### If you committed and tried to push from `main`
+
+If the push was rejected because `main` is protected, your commit is still on
+your computer. You do not need to undo it or commit the files again. Create a
+branch from the current commit, then push that branch instead. Do not force-push
+`main`.
+
+=== "Visual Studio Code"
+
+    1. Check that the active branch is still `main`. Click its name in the
+        status bar and select **Create new branch...**. Enter a name such as
+        `add-section-3`. The new branch includes the commit you already made.
+    2. Open **Source Control** and select **Publish Branch** to push the new
+        branch. Then open a merge request on GitLab or a pull request on GitHub
+        to bring it into `main`.
+
+=== "Command line"
+
+    1. Check that you are still on `main`, then create a branch at your current
+        commit:
+
+        ```bash
+        git branch --show-current
+        git switch -c add-section-3
+        ```
+
+    2. Push the new branch and open a merge request or pull request into `main`:
+
+        ```bash
+        git push -u origin add-section-3
+        ```
+
+Your local `main` may still point to the commit; that is expected. Continue
+working on the new branch, and do not try to push `main` again.
+
+If the push to `main` **succeeded**, the commit is already on the remote
+`main` branch. Do not make a second branch just to push the same commit. Check
+with your repository maintainer, because the expected branch protection may
+not be enabled.
+
 ## Confirm the published website and documents
 
 \index{Tasks!Check published outputs} after the commit reaches the default
