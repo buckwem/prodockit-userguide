@@ -262,7 +262,7 @@ your uncommitted edits with you.
 === "Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
-    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **Create new branch...**, and enter a descriptive name such as `add-section-3`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on a change branch, keep using it.
+    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **:material-plus: Create new branch...**{: .bg-blue}, and enter a descriptive name such as `add-section-3`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on a change branch, keep using it.
 
         !!! note "Restoring a missing active branch name"
             If no branch name appears, right-click the status bar and turn on
@@ -284,7 +284,7 @@ your uncommitted edits with you.
         ///
 
     4. Type a short, descriptive message in the message box (for example, "Add section 2 draft") - this is the label future-you (or a marker) will see when looking back through the history.
-    5. Press the **Commit**{: .bg-blue} button and select **Save All and Commit Changes**{: .bg-blue}. This records the snapshot on your branch, on your computer only - you haven't sent anything anywhere yet.
+    5. Press the **Commit**{: .bg-blue} button and select **Save All & Commit Changes**{: .bg-blue}. This records the snapshot on your branch, on your computer only - you haven't sent anything anywhere yet.
 
         ![Commit changes](images/commit-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -361,7 +361,7 @@ branch from the current commit, then push that branch instead. Do not force-push
 === "Visual Studio Code"
 
     1. Check that the active branch is still `main`. Click its name in the
-        status bar and select **Create new branch...**. Enter a name such as
+        status bar and select **:material-plus: Create new branch...**{: .bg-blue}. Enter a name such as
         `add-section-3`. The new branch includes the commit you already made.
     2. Open :gitlab-branch: **Source Control** and select **Publish Branch**{: .bg-blue} to push the new
         branch. Then open a merge request on GitLab or a pull request on GitHub
