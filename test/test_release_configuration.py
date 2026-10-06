@@ -503,6 +503,11 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
     assert "### The website and PDF do not have exactly the same layout" in editing
+    assert "git switch -c add-section-3" in editing
+    assert "git push -u origin add-section-3" in editing
+    assert "Publish Branch" in editing
+    assert "merge request on GitLab" in editing
+    assert '=== "Merge locally"' not in editing
     assert "### The word count leaves out unexpected content" in editing
     assert "After updating prodockit" in editing
 

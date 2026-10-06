@@ -32,10 +32,11 @@ Generate the PDF and any source bundle locally. Check them before publishing.
 
 ////
 
-//// step | Save and push the change
+//// step | Save and propose the change
 
-Commit a labelled snapshot with Git, then push it through SSH to GitLab or
-GitHub.
+Create a branch, commit a labelled snapshot with Git, and push that branch
+through SSH to GitLab or GitHub. Open a merge or pull request into the
+protected `main` branch.
 
 ////
 
@@ -47,8 +48,8 @@ Wait for the automated build to pass, then open the published website and PDF.
 
 ///
 
-Branches and issues are optional tools for larger or shared changes. The final
-sections explain those tools and provide help with common problems.
+Issues help organise larger or shared changes. The final sections explain
+those tools and provide help with common problems.
 
 ## Preview the website locally
 
@@ -231,15 +232,19 @@ branch.
 
 ## Save and push your updates {: #synchronise-your-updates }
 
-\index{Tasks!Save and push changes} you want to keep. Save the file, \index{Git!commit}
-it (record a labelled snapshot in the project's history), and **push** it
-(upload that snapshot with \index{Git!push} to GitLab or GitHub). You can use Visual Studio Code's
-Source Control view or type Git commands directly.
+\index{Tasks!Save and push changes} you want to keep. Because `main` is
+protected, create a \index{Git!branch} for your change before committing. Then
+\index{Git!commit} it (record a labelled snapshot in the project's history)
+and **push** the branch (upload it with \index{Git!push} to GitLab or GitHub).
+You can use Visual Studio Code's Source Control view or type Git commands
+directly. If you've already edited files on `main`, creating a branch carries
+your uncommitted edits with you.
 
 === "Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
-    2. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file.
+    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **Create new branch...**, and enter a descriptive name such as `add-section-3`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on a change branch, keep using it.
+    3. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file.
 
         ![Initial commit](images/initial-commit.png){ width="40%" .screenshot }
         /// figure-caption
@@ -248,8 +253,8 @@ Source Control view or type Git commands directly.
         Initial commit
         ///
 
-    3. Type a short, descriptive message in the message box (for example, "Add section 2 draft") - this is the label future-you (or a marker) will see when looking back through the history.
-    4. Press the **Commit**{: .bg-blue} button and select **Save All and Commit Changes**{: .bg-blue}. This records the snapshot on your computer only - you haven't sent anything anywhere yet.
+    4. Type a short, descriptive message in the message box (for example, "Add section 2 draft") - this is the label future-you (or a marker) will see when looking back through the history.
+    5. Press the **Commit**{: .bg-blue} button and select **Save All and Commit Changes**{: .bg-blue}. This records the snapshot on your branch, on your computer only - you haven't sent anything anywhere yet.
 
         ![Commit changes](images/commit-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -258,7 +263,7 @@ Source Control view or type Git commands directly.
         Commit changes
         ///
 
-    5. Press **Sync Changes**{: .bg-blue} to push your commit to GitLab or GitHub (and pull down anyone else's changes too).
+    6. Press **Publish Branch**{: .bg-blue} to push a new branch to GitLab or GitHub. For later commits on the same branch, use **Sync Changes**{: .bg-blue}.
 
         ![Sync changes](images/sync-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -269,19 +274,28 @@ Source Control view or type Git commands directly.
 
 === "Command line"
 
-    1. Check what's changed - this lists every file you've added, edited, or deleted since your last commit:
+    1. Check your current branch and what's changed:
 
         ```bash
+        git branch --show-current
         git status
         ```
 
-    2. Stage the files you want to commit - "staging" means marking them so Git includes them in the next commit (use `git add .` to stage everything shown by `git status` in one go):
+    2. If you are on `main`, create and switch to a change branch before committing. Any uncommitted edits come with you:
+
+        ```bash
+        git switch -c add-section-3
+        ```
+
+        If you are already on a change branch, stay on it.
+
+    3. Stage the files you want to commit - "staging" means marking them so Git includes them in the next commit (use `git add .` to stage everything shown by `git status` in one go):
 
         ```bash
         git add docs/section1.md
         ```
 
-    3. Commit the staged changes with a short, descriptive message:
+    4. Commit the staged changes with a short, descriptive message:
 
         ```bash
         git commit -m "Add section 2 draft"
@@ -289,12 +303,20 @@ Source Control view or type Git commands directly.
 
         This records the snapshot on your computer only - you haven't sent anything anywhere yet.
 
-    4. Push your commit to your GitLab or GitHub remote, uploading it so it's backed up and visible online:
+    5. Push the new branch to your GitLab or GitHub remote, telling Git to track it there:
 
         ```bash
-        git push
+        git push -u origin add-section-3
         ```
 
+        Substitute your branch name if it differs. For later commits on the
+        same branch, a plain `git push` is enough.
+
+Pushing a branch does not publish the website. Open a merge request on GitLab
+or a pull request on GitHub from your branch into `main`, wait for the checks,
+and merge it when approved. The protected `main` branch cannot be pushed to
+directly. See [Merging your branch back](#merging-your-branch-back) for the
+review steps.
 
 !!! note
     Commit little and often. Small, clearly described commits are easier to review, easier to revert if something goes wrong, and give you a much more useful history to look back on than one huge commit at the deadline.
@@ -368,80 +390,29 @@ local output appears stale.
 
 ## Organise larger changes with branches and issues
 
-Organise work with branches and issues after you are comfortable
-with the basic commit-and-push cycle. A branch isolates a change until it is
-ready, while an issue records what needs doing.
+Use a branch for every change to protected `main`. For larger or shared work,
+an issue also records what needs doing and can link to the branch.
 
 ### Working with branches
 
-A \index{Git!branch} is a parallel, isolated copy of your files where you can work without affecting the "real", published version until you're ready. For anything more than a small tweak - a new section, a bigger restructure - it's worth developing it on its own branch rather than directly on your default branch (usually `main`). That keeps `main` (and therefore the published website and PDF) stable while you're mid-change, and makes an unfinished idea easy to abandon without cleaning up half-done edits.
-
-=== "Visual Studio Code"
-
-    1. Click the branch name in the bottom-left of the status bar (it normally reads `main`).
-    2. Select **Create new branch...** and give it a short, descriptive name (for example, `add-section-3`).
-    3. Visual Studio Code switches you onto the new branch. Edit, save, and commit as usual (see [Save and push your updates](#synchronise-your-updates)) - your commits go onto this branch, not `main`.
-    4. The first time you press **Sync Changes**{: .bg-blue}, Visual Studio Code offers to **Publish Branch**{: .bg-blue} instead - accept this to push the new branch to GitLab or GitHub.
-
-=== "Command line"
-
-    1. Create and switch to a new branch in one step:
-
-        ```bash
-        git switch -c add-section-3
-        ```
-
-    2. Commit as usual (see [Save and push your updates](#synchronise-your-updates)) - your commits go onto this branch, not `main`.
-    3. Push it, telling Git to track this new branch on the remote the first time:
-
-        ```bash
-        git push -u origin add-section-3
-        ```
-
-        After that first push, a plain `git push` is enough.
+A branch is a parallel, isolated line of work that keeps `main` (and therefore
+the published website and PDF) stable while you edit. Follow
+[Save and push your updates](#synchronise-your-updates) to create and publish
+one, even if you have already started editing.
 
 
 ### Merging your branch back
 
-Once you're happy with the branch, bring it into your default branch so it's published.
+Once you're happy with the branch, use the hosting service to merge it into
+protected `main`:
 
-=== "Merge or pull request"
+1. Open your project on GitLab or GitHub in a browser.
+2. Open a merge request (GitLab) or pull request (GitHub) from your branch into `main` - both platforms show a prompt for this as soon as you push a new branch, or you can start one from the **Merge requests**/**Pull requests** section of the sidebar.
+3. Review the changes and wait for the required checks to pass. Ask for any required approval.
+4. Click **Merge**{: .bg-blue} on the merge/pull request page when it is ready. Do not try to merge locally and push directly to protected `main`.
 
-    1. Open your project on GitLab or GitHub in a browser.
-    2. Open a merge request (GitLab) or pull request (GitHub) from your branch into `main` - both platforms show a prompt for this as soon as you push a new branch, or you can start one from the **Merge requests**/**Pull requests** section of the sidebar.
-    3. This gives you, or a collaborator, a chance to review the diff before it goes live.
-    4. Once you're happy, click the **Merge**{: .bg-blue} button on the merge/pull request page - GitLab or GitHub does the rest.
-
-=== "Merge locally"
-
-    If you're working alone and don't need a review step first:
-
-    1. Switch to your default branch:
-
-        ```bash
-        git switch main
-        ```
-
-    2. Pull down the latest version, in case anything's changed since you branched:
-
-        ```bash
-        git pull
-        ```
-
-    3. Merge your branch into it:
-
-        ```bash
-        git merge add-section-3
-        ```
-
-    4. Push the result:
-
-        ```bash
-        git push
-        ```
-
-
-Either way, once the merge reaches `main`, the [CI/CD pipeline](#automated-builds) rebuilds and republishes the website and PDF automatically, the same as any other push to `main`.
+Once the merge reaches `main`, the [CI/CD pipeline](#automated-builds)
+rebuilds and republishes the website and PDF automatically.
 
 !!! tip
     Delete the branch once you've merged it - neither GitLab nor GitHub need it anymore, and it keeps your branch list tidy. Both offer a **Delete branch** button right after you merge a merge request or pull request.
