@@ -130,6 +130,25 @@ If you'd rather use your system's own terminal application instead of Visual Stu
 
         Your prompt now starts with `(.venv)`, confirming it's active.
 
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    1. Open **Terminal** from the applications menu.
+    2. Navigate to your project folder with `cd`:
+
+        ```bash
+        cd path/to/your/project
+        ```
+
+    3. Activate the virtual environment:
+
+        ```bash
+        source .venv/bin/activate
+        ```
+
+        Your prompt now starts with `(.venv)`, confirming it's active.
+{% endif %}
+
 
 After activation, `python --version` must report `Python 3.14`. If you use
 Conda, Poetry, uv, or a differently named environment, substitute its
@@ -477,6 +496,15 @@ Both commands are installed *inside* the virtual environment, not system-wide, s
     source .venv/bin/activate
     ```
 
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    ``` bash
+    cd path/to/your-project
+    source .venv/bin/activate
+    ```
+{% endif %}
+
 
 The prompt gains a `(.venv)` prefix when it works. This bites most often after a step that told you to close and reopen your terminal to pick up a `PATH` change - the new window has lost the virtual environment as well.
 
@@ -564,6 +592,27 @@ than overwriting it.
     `hash -r` is bash's equivalent of zsh's `rehash`: it discards cached
     command locations before the checks resolve `pdk` again.
 
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    ``` bash
+    deactivate
+    mv .venv .venv-broken
+
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt -r testrequirements.txt
+    python -m pip install --upgrade prodockit
+
+    hash -r
+    command -v pdk
+    python -m pip show prodockit
+    pdk --version
+    ```
+{% endif %}
+
 The command lookup should point inside the new `.venv`, and the two version
 checks should agree. Run `zensical build --clean --strict` as a final check.
 Delete the backup only after the rebuilt environment has passed these checks
@@ -580,6 +629,14 @@ and you are certain it contains no local file you still need:
     ``` powershell
     Remove-Item -Recurse -Force .venv-broken
     ```
+
+{% if is_surrey %}
+=== ":stag-stag_icon_32: Surrey RemoteLabs"
+
+    ``` bash
+    rm -rf .venv-broken
+    ```
+{% endif %}
 
 ### Local preview isn't updating
 
