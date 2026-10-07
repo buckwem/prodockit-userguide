@@ -205,9 +205,7 @@ the dashboard compares their server-recorded creation times
     the system, and which outside systems connect to it. Draw the diagram in
     your project's chosen tool. Save its editable source in the project, export
     an image under `docs/`, and insert it in the Markdown with descriptive
-    alternative text. Follow [Add a caption](zensicalbasics.md#images) for a
-    numbered figure and [diagram guidance](zensicalbasics.md#diagrams) for
-    drawing-tool advice.
+    alternative text and a caption as shown in the next section.
 3. Save the Markdown with `Ctrl+S` on Windows/Linux or `Cmd+S` on macOS. To
     see the file as ordinary Markdown beside its source, press `Ctrl+K V` on
     Windows/Linux or `Cmd+K V` on macOS. This built-in preview is useful for
@@ -218,6 +216,92 @@ the dashboard compares their server-recorded creation times
     file under **Changes**. The side-by-side diff shows the earlier version
     beside your edits. Review the diagram source and exported image there as
     well, and make sure unrelated files are not part of the change.
+
+### Insert an image with a caption
+
+Keep the drawing you can edit and the image you publish as separate files. For
+this example, save `system-context-example.pptx` **or**
+`system-context-example.drawio` under `tools/documentation-diagrams/`, then
+export `docs/images/system-context-example.png`. The example below uses the
+editable `tools/documentation-diagrams/system-context-example.drawio` source
+in this guide. The `.png` is what the website and PDF display; the source file
+lets you revise it later. If your project uses different folders, adjust the
+paths consistently.
+
+=== "PowerPoint"
+
+    1. Save the editable presentation as
+        `tools/documentation-diagrams/system-context-example.pptx`. Put the
+        whole diagram on one slide using shapes, text, and connectors.
+    2. Select only the diagram objects (`Ctrl`-click on Windows or
+        `Command`-click on macOS). On **Shape Format**, choose **Group** >
+        **Group**, so the exported image includes all the labels and arrows
+        but not the empty slide around them.
+    3. Right-click the group (Control-click on macOS), choose **Save as
+        Picture**, select **PNG**, and save it as
+        `docs/images/system-context-example.png`.
+    4. Open the exported PNG. Check that nothing is cut off, there is little
+        empty space, and the smallest labels are readable at the size you
+        intend to use in the document. If it looks blurry, enlarge the
+        drawing before exporting again; do not stretch a small PNG in Markdown.
+
+=== "draw.io"
+
+    1. In the downloadable draw.io application, save the editable diagram as
+        `tools/documentation-diagrams/system-context-example.drawio`.
+    2. Choose **File** > **Export As** > **PNG**. Set **Zoom** to `200%` for
+        readable text. Set **Size** to the diagram bounds, rather than a whole
+        mostly empty page, and use a small **Border Width** such as `20`.
+        Leave **Grid** off; use a light background so text remains legible in
+        both website colour schemes and the PDF.
+    3. Click **Export** and save the PNG as
+        `docs/images/system-context-example.png`. Open it and check the crop,
+        labels, arrows, and text size before inserting it.
+
+In a Markdown file such as `docs/system-context.md`, the path to that PNG is
+`images/system-context-example.png`, relative to the Markdown file. Add a
+sentence that refers to the figure, then put the `figure-caption` block
+immediately after the image:
+
+``` markdown
+The portal's external interactions are shown in \ref{figure-system-context-example}.
+
+![System context: an author submits a document to the document portal, which shares content with a reader and uses an identity service to authenticate users.](images/system-context-example.png){ width="90%" }
+/// figure-caption
+    attrs: {id: figure-system-context-example}
+
+System context of the document portal
+///
+```
+
+The alternative text explains the image to a reader who cannot see it. The
+stable `id` makes the `\ref{...}` work even if earlier figures are added or
+removed. The `width` limits the displayed size; it cannot restore detail to
+an undersized export. Here is the example as it should render:
+
+The portal's external interactions are shown in \ref{figure-system-context-example}.
+
+![System context: an author submits a document to the document portal, which shares content with a reader and uses an identity service to authenticate users.](images/system-context-example.png){ width="90%" }
+/// figure-caption
+    attrs: {id: figure-system-context-example}
+
+System context of the document portal
+///
+
+Open this page with `zensical serve` and check the image, numbered caption,
+and reference in the website. Then build the PDF as described under
+[Build and check the downloadable documents](#build-the-pdf) and check that
+the same image fits, its smallest labels remain readable, and the caption and
+reference have the expected number. Visual Studio Code's built-in Markdown
+preview does not verify the final caption rendering. For more options, see
+[Add a caption](zensicalbasics.md#images),
+[Caption a figure](customisecontent.md#caption-a-figure), and the
+[drawing-tool guidance](zensicalbasics.md#diagrams).
+
+Before committing, open :gitlab-branch: **Source Control** in Visual Studio
+Code. Make sure the changed Markdown file, the exported PNG, and its editable
+`.pptx` or `.drawio` source are all included on your issue branch; do not
+commit only the image and leave the drawing behind.
 
 ## Preview the website locally
 

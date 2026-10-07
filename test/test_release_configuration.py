@@ -3,6 +3,7 @@
 import re
 import subprocess
 import tomllib
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -468,6 +469,42 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     assert "academic development" not in standard_content
     assert "module dashboard" in surrey_content
     assert "https://" not in "\n".join(str(badge) for badge in badges)
+
+
+def test_edit_image_example_has_source_export_caption_and_reference() -> None:
+    source = _text("docs/startediting.md")
+    edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
+    image = source.index("### Insert an image with a caption")
+    preview = source.index("## Preview the website locally")
+    section = source[image:preview]
+
+    assert edit < image < preview
+    assert section.index('=== "PowerPoint"') < section.index('=== "draw.io"')
+    assert "Save as\n        Picture" in section
+    assert "**File** > **Export As** > **PNG**" in section
+    assert section.count("/// figure-caption") == 2
+    assert section.count("attrs: {id: figure-system-context-example}") == 2
+    assert section.count(r"\ref{figure-system-context-example}") == 2
+    assert "alternative text" in section
+    assert "Source Control" in section
+
+    diagram = ROOT / "tools/documentation-diagrams/system-context-example.drawio"
+    exported = ROOT / "docs/images/system-context-example.png"
+    assert ET.parse(diagram).getroot().tag == "mxfile"
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1400
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    assert page.select_one("#insert-an-image-with-a-caption") is not None
+    assert [label.get_text() for label in page.select("#insert-an-image-with-a-caption ~ .tabbed-set .tabbed-labels label")[:2]] == [
+        "PowerPoint", "draw.io"
+    ]
+    figure = page.select_one("figure#figure-system-context-example")
+    assert figure is not None
+    assert figure.select_one('img[src="../images/system-context-example.png"]') is not None
+    assert "System context of the document portal" in figure.get_text()
+    assert page.select_one('a.prodockit-ref[href="#figure-system-context-example"]') is not None
 
 
 
