@@ -1,5 +1,30 @@
 /* Add project-specific website and PDF styles below this line. */
 
+/* Keep inline Visual Studio Code button icons with their labels. */
+.md-typeset .bg-blue {
+  white-space: nowrap;
+}
+
+/* Surrey-only measurement markers describe a practice, not a result. */
+.md-typeset .measurement-badge {
+  display: inline-block;
+  white-space: nowrap;
+  border: 1.5px solid currentColor;
+  border-radius: 0.35em;
+  padding: 0.05em 0.45em;
+  color: var(--md-default-fg-color);
+  background: var(--md-code-bg-color);
+  font-size: 0.82em;
+  font-weight: 700;
+  line-height: 1.45;
+  vertical-align: 0.06em;
+}
+
+.md-typeset .measurement-badge::before {
+  content: "◈";
+  margin-right: 0.22em;
+}
+
 /* Keep route and prerequisite labels when the reference Getting started
    content is copied into the User Guide. These are site-specific styles,
    not part of Prodockit's managed pdk.css. */

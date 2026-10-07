@@ -1,0 +1,40 @@
+<mxfile host="Electron" version="26.2.15" pages="1">
+  <diagram id="system-context-example" name="system-context-example">
+    <mxGraphModel dx="1000" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1000" pageHeight="600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="author" value="Author" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4f5f6;strokeColor=#68757b;strokeWidth=2;fontColor=#263238;fontSize=22;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="170" width="180" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="portal" value="Document&lt;br&gt;portal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5ed;strokeColor=#159e59;strokeWidth=3;fontColor=#173a29;fontSize=23;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="155" width="250" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="reader" value="Reader" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4f5f6;strokeColor=#68757b;strokeWidth=2;fontColor=#263238;fontSize=22;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="710" y="170" width="180" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="identity" value="Identity&lt;br&gt;service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4f5f6;strokeColor=#68757b;strokeWidth=2;fontColor=#263238;fontSize=21;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="365" y="390" width="200" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="author-label" value="submits&lt;br&gt;document" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#263238;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="225" y="125" width="110" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="reader-label" value="shares&lt;br&gt;content" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#263238;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="595" y="125" width="110" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="identity-label" value="authenticates users" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#263238;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="485" y="315" width="190" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="author-portal" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#36454f;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="author" target="portal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="portal-reader" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#36454f;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="portal" target="reader">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="portal-identity" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#36454f;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="portal" target="identity">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
