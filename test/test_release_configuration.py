@@ -585,6 +585,9 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "## Trouble shooting" not in editing
     assert "- [ ] The issue describes this work" in editing
     assert "- [ ] Check the list of files you are about to stage" in editing
+    assert '!!! note "When you cannot build the PDF locally"' in editing
+    assert "After the branch is merged and the" in editing
+    assert "Open the published PDF from the website's **Download PDF** button" in editing
     assert "## Prepare the final report" not in editing
     assert editing.count('=== ":material-microsoft-visual-studio-code: Visual Studio Code"') == 2
     assert editing.count('=== ":material-console: Command line"') == 2

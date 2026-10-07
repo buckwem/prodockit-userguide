@@ -431,8 +431,10 @@ Leave `zensical serve` running in its terminal while you write - it watches your
 
 Build downloadable documents separately because `zensical serve`
 updates the website preview but does not regenerate the PDF or
-source bundle. Build these documents before committing a change that should
-appear in them.
+source bundle. If your local environment can build them, do so before
+committing a change that should appear in them. Otherwise, follow the
+[pre-commit checklist](#review-before-committing) and check the PDF after the
+merge.
 
 1. Confirm that the terminal is in the project directory and its virtual
     environment is active.
@@ -472,7 +474,7 @@ Run these commands again whenever the downloadable documents need to reflect
 new edits. The automated build repeats them after a change reaches the default
 branch.
 
-## Review your work before committing
+## Review your work before committing {: #review-before-committing }
 
 Use this checklist after editing and building, but before you stage and commit
 the change. Check the result against the issue's description and acceptance
@@ -488,12 +490,12 @@ criteria, not just the files you intended to edit.
     reference usually means an id is missing or mistyped.
 - [ ] For diagrams, compare labels and connections with the surrounding text.
     Include both the exported image and its editable drawing source.
-- [ ] The clean website build passed. Rebuild the PDF and, if your project
-    provides it, the Source download after the final edit; test the download
-    buttons locally.
-- [ ] Open the PDF and check the changed content again. Pay attention to page
-    breaks, wide tables, fonts, diagrams, mathematics, and page references.
-    If affected, also check the word count and index.
+- [ ] The clean website build passed. If your project provides a Source
+    download, rebuild and test it after the final edit.
+- [ ] If a local PDF build is available, rebuild and open the PDF. Check the
+    changed content, page breaks, wide tables, fonts, diagrams, mathematics,
+    and page references; if affected, also check the word count and index.
+    Test the PDF download button locally.
 - [ ] Check the list of files you are about to stage. It should contain only
     the files needed for this issue; review the staged diff before committing.
 
@@ -501,6 +503,13 @@ The website and PDF use different layout engines, so a correct website preview
 does not prove the PDF is correct. If a check fails, fix it and repeat the
 affected checks before committing. [Save and push your updates](#synchronise-your-updates)
 once the checklist is complete.
+
+!!! note "When you cannot build the PDF locally"
+    Complete the other checks and continue with the commit and review. Mark
+    PDF layout as a check still to do. After the branch is merged and the
+    automated build succeeds, open the [published PDF](#confirm-the-published-website-and-documents)
+    and inspect the changed pages. If the layout is wrong or the PDF is
+    missing, raise a follow-up issue and fix it on a new branch.
 
 Local checks are preparation, not a substitute for course checkpoints or
 instructor-controlled clean-setup/build validation. Follow any scheduled
@@ -723,6 +732,11 @@ open after the merge, check that the request targeted `main` and its description
 used your issue number (for example, `Closes #12`). Close it manually only
 after confirming the agreed work is on `main`; add a link to the merged request
 so the issue retains its history.
+
+Open the published PDF from the website's **Download PDF** button and check the
+changed pages and layout. This check is especially important if you could not
+build the PDF locally before committing. If the build failed, wait for a
+successful pipeline before trusting the published file.
 
 !!! warning "The first build takes longer than you'd expect"
     Every build installs the whole toolchain from scratch - Node.js, Chrome, Pandoc, the Python environment - so even a routine rebuild takes several minutes, and the very first one on a fresh project can easily run into the mid-teens. A blank page or a 404 on your first visit almost always means the build simply hasn't finished yet, not that something is broken.
