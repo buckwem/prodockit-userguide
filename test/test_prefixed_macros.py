@@ -15,9 +15,10 @@ LEGACY_NAMES = re.compile(
 )
 
 
-def test_canonical_markdown_uses_only_prefixed_prodockit_macros() -> None:
-    for page in (ROOT / "docs").rglob("*.md"):
-        assert LEGACY_NAMES.search(page.read_text(encoding="utf-8")) is None, page
+def test_canonical_and_surrey_markdown_use_only_prefixed_prodockit_macros() -> None:
+    for docs in (ROOT / "docs", ROOT / "surrey-source" / "docs"):
+        for page in docs.rglob("*.md"):
+            assert LEGACY_NAMES.search(page.read_text(encoding="utf-8")) is None, page
 
 
 def test_reference_style_setting_is_retained() -> None:

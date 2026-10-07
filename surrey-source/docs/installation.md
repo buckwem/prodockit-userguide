@@ -2,7 +2,7 @@
 icon: lucide/package-plus
 ---
 
-{{ heading_counter_reset(page) }}
+{{ pdk_heading_counter_reset(page) }}
 
 # Prepare to install
 
@@ -267,14 +267,51 @@ Verify both the version and the interpreter selected by the shell.
     ```bash
     python --version
     command -v python
+    python -c 'import sys; print(sys.prefix)'
     ```
 {% endif %}
 
 The version must report Python 3.14 and the executable path must be inside the
-parent repositories directory's `.venv`. If either check points elsewhere,
-repeat the activation step. The route you follow next will say when to keep
-using this setup environment and when to create or activate a project-local
-one.
+parent repositories directory's `.venv`. If `python` resolves to an alias,
+follow Step 5, then repeat this check; activating the environment again will
+not remove the alias. If a check points elsewhere without an alias, repeat the
+activation step. {% if is_surrey %}On Surrey RemoteLabs, the printed prefix
+must also be that `.venv`; if it names `/usr`, follow Step 5 and repeat this
+check.{% endif %} The route you follow next will say when to keep using this
+setup environment and when to create or activate a project-local one.
+
+////
+
+//// step | Fix the Python alias when needed **Optional**{: .bg-green}
+
+If Step 4 detects a `python` alias that overrides `.venv`, remove it in the
+current Bash terminal.
+
+{% if is_surrey %}This is normally needed on Surrey RemoteLabs, where the
+login shell may alias `python` to `/usr/bin/python3`. It also applies if you
+set a `python` alias yourself.{% endif %}
+
+```bash
+unalias python 2>/dev/null || true
+```
+
+This corrects the current terminal only. Repeat Step 4 now; its version,
+executable and prefix should all point to the activated `.venv`. If the
+prefix is still wrong and no alias remains, reactivate the environment and
+repeat Step 4.
+
+To make the fix persist for future interactive Bash logins, optionally run
+this command once. It appends the line to your account's `~/.bashrc` only if
+it is not already present, preserving the file's existing content:
+
+```bash
+grep -qxF 'unalias python 2>/dev/null || true' ~/.bashrc 2>/dev/null || printf '\n%s\n' 'unalias python 2>/dev/null || true' >> ~/.bashrc
+```
+
+To verify the `~/.bashrc` change, log out and back in, activate `.venv`, then
+repeat Step 4. If you skip the persistent change, repeat the current-terminal
+command in Step 5 whenever a new login restores the alias. Prodockit does not
+change your shell setup.
 
 ////
 
