@@ -55,9 +55,10 @@ Generate the PDF and any source bundle locally. Check them before publishing.
 
 ////
 
-//// step | Save and propose the change
+//// step | Review, save, and propose the change
 
-Commit a labelled snapshot on your issue branch and push it through SSH to
+Use the pre-commit checklist, then commit a labelled snapshot on your issue
+branch and push it through SSH to
 GitLab or GitHub. Open a merge or pull request into the protected `main`
 branch, linking it to the issue.
 
@@ -82,18 +83,18 @@ for the measurement definitions and your own results.
 
 | Measurement | Section | Specific task |
 | --- | --- | --- |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.1: protected pull or merge request route" title="M2.1 — protected PR/MR route">M2.1</span> — PR/MR route | [4.6 Review and merge](#merging-your-branch-back) | Bring changes into `main` through a merge or pull request. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.1: protected pull or merge request route" title="M2.1 — protected PR/MR route">M2.1</span> — PR/MR route | [4.7 Review and merge](#merging-your-branch-back) | Bring changes into `main` through a merge or pull request. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span> — Protected by midpoint | [4.2.1 Protect `main`](#check-that-main-is-protected) | Check that `main` is protected by the module midpoint. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span> — Protection sustained | [4.2.1 Protect `main`](#check-that-main-is-protected) | Keep protection enabled through the deadline; recheck after settings change. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.4: no direct push to main" title="M2.4 — no direct push">M2.4</span> — No direct push | [4.5 Save and push](#synchronise-your-updates) | Push the issue branch, not directly to `main`. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.4: no direct push to main" title="M2.4 — no direct push">M2.4</span> — No direct push | [4.6 Save and push](#synchronise-your-updates) | Push the issue branch, not directly to `main`. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span> — CI by midpoint | [4.2.1 Protect `main`](#check-that-main-is-protected) | Have a CI configuration on `main` by the midpoint. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span> — CI sustained | [4.7.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the setup-to-midpoint weeks. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span> — CI sustained | [4.8.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the setup-to-midpoint weeks. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span> — Checks required | [4.2.1 Protect `main`](#check-that-main-is-protected) | Require passing checks or a pipeline before a request can merge. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span> — Validation passes | [4.7.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the midpoint-to-deadline weeks. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span> — Work-item link | [4.6 Review and merge](#merging-your-branch-back) | Link the issue in the request description, for example with `Closes #12`. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span> — Validation passes | [4.8.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the midpoint-to-deadline weeks. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span> — Work-item link | [4.7 Review and merge](#merging-your-branch-back) | Link the issue in the request description, for example with `Closes #12`. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [4.2.2 Raise the issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [4.6 Review and merge](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [4.6 Review and merge](#merging-your-branch-back) | Resolve review discussions before merging the request. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [4.7 Review and merge](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [4.7 Review and merge](#merging-your-branch-back) | Resolve review discussions before merging the request. |
 
 The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment
 validation checks are not covered by these editing steps. Follow your module's
@@ -430,8 +431,10 @@ Leave `zensical serve` running in its terminal while you write - it watches your
 
 Build downloadable documents separately because `zensical serve`
 updates the website preview but does not regenerate the PDF or
-source bundle. Build these documents before committing a change that should
-appear in them.
+source bundle. If your local environment can build them, do so before
+committing a change that should appear in them. Otherwise, follow the
+[pre-commit checklist](#review-before-committing) and check the PDF after the
+merge.
 
 1. Confirm that the terminal is in the project directory and its virtual
     environment is active.
@@ -453,44 +456,6 @@ appear in them.
     diagrams, mathematics, and the index rather than relying only on the
     website preview.
 
-### Use the author checklist
-
-Before saving and pushing a substantial change, check what a reader will
-actually receive rather than checking only the Markdown source:
-
-- Open every page you changed in the local website preview. Check its heading
-    appears in the navigation, and follow any links you added.
-- Look for `?` or `??` where a citation, glossary term, section, figure, or
-    table reference should appear. These markers normally mean that an id is
-    missing or mistyped.
-- Check that images have useful alternative text and that figures and tables
-    have the expected captions and numbers.
-- For a diagram such as the system context drawing, compare its labels and
-    connections with the surrounding explanation. Check that the editable
-    drawing source and exported image are both included in the change.
-- Open the PDF and check the same changed content again. Pay particular
-    attention to page breaks, wide tables, landscape pages, fonts, diagrams,
-    mathematics, and references to page numbers.
-- If the change affects the cover page or appendixes, check the displayed word
-    count and the generated index as well.
-- Follow the PDF and Source download buttons in the local website when those
-    files are part of the published project.
-
-The website and PDF use the same source but different layout engines. A correct
-website preview therefore does not prove that the PDF is correct, and the
-reverse is also true.
-
-Local checks are preparation, not a substitute for course checkpoints or
-instructor-controlled clean-setup/build validation. Follow any scheduled
-validation instructions for those measurements and retain the required
-evidence at the specified points in the project.
-
-!!! warning "Recheck after maintenance"
-    After updating prodockit, another dependency, or files from
-    `prodockit-template`, rebuild both outputs and repeat this checklist. A
-    maintenance update can change generated output even when none of the
-    document's Markdown files changed.
-
 The front-page download buttons already point to these files. They are generated
 locally and excluded from Git, so a fresh clone does not contain them and a
 normal commit does not upload them. Refresh the local website after building to
@@ -509,6 +474,53 @@ Run these commands again whenever the downloadable documents need to reflect
 new edits. The automated build repeats them after a change reaches the default
 branch.
 
+## Review your work before committing {: #review-before-committing }
+
+Use this checklist after editing and building, but before you stage and commit
+the change. Check the result against the issue's description and acceptance
+criteria, not just the files you intended to edit.
+
+- [ ] The issue describes this work, and your active branch is the issue branch,
+    not `main`.
+- [ ] All edited files are saved. Review each changed file and its diff; remove
+    accidental edits, generated files, temporary files, and credentials.
+- [ ] Every changed page looks right in the local website preview. Check its
+    navigation entry, new links, captions, figure and table numbers, useful
+    image alternative text, and references. A `?` or `??` in place of a
+    reference usually means an id is missing or mistyped.
+- [ ] For diagrams, compare labels and connections with the surrounding text.
+    Include both the exported image and its editable drawing source.
+- [ ] The clean website build passed. If your project provides a Source
+    download, rebuild and test it after the final edit.
+- [ ] If a local PDF build is available, rebuild and open the PDF. Check the
+    changed content, page breaks, wide tables, fonts, diagrams, mathematics,
+    and page references; if affected, also check the word count and index.
+    Test the PDF download button locally.
+- [ ] Check the list of files you are about to stage. It should contain only
+    the files needed for this issue; review the staged diff before committing.
+
+The website and PDF use different layout engines, so a correct website preview
+does not prove the PDF is correct. If a check fails, fix it and repeat the
+affected checks before committing. [Save and push your updates](#synchronise-your-updates)
+once the checklist is complete.
+
+!!! note "When you cannot build the PDF locally"
+    Complete the other checks and continue with the commit and review. Mark
+    PDF layout as a check still to do. After the branch is merged and the
+    automated build succeeds, open the [published PDF](#confirm-the-published-website-and-documents)
+    and inspect the changed pages. If the layout is wrong or the PDF is
+    missing, raise a follow-up issue and fix it on a new branch.
+
+Local checks are preparation, not a substitute for course checkpoints or
+instructor-controlled clean-setup/build validation. Follow any scheduled
+validation instructions and retain the required evidence.
+
+!!! warning "Recheck after maintenance"
+    After updating prodockit, another dependency, or files from
+    `prodockit-template`, rebuild both outputs and repeat this checklist. A
+    maintenance update can change generated output even when none of the
+    document's Markdown files changed.
+
 ## Save and push your updates {: #synchronise-your-updates }
 
 \index{Tasks!Save and push changes} you want to keep. Stay on the
@@ -520,7 +532,7 @@ You can use Visual Studio Code's Source Control view or type Git commands
 directly. If you've already edited files on `main`, creating a branch carries
 your uncommitted edits with you.
 
-=== "Visual Studio Code"
+=== ":material-microsoft-visual-studio-code: Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
     2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **:material-plus: Create new branch...**{: .bg-blue}, and enter a name that identifies your issue, such as `12-system-context`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on the issue branch, keep using it.
@@ -563,7 +575,7 @@ your uncommitted edits with you.
         Sync changes
         ///
 
-=== "Command line"
+=== ":material-console: Command line"
 
     1. Check your current branch and what's changed:
 
@@ -625,7 +637,7 @@ your computer. You do not need to undo it or commit the files again. Create a
 branch from the current commit, then push that branch instead. Do not force-push
 `main`.
 
-=== "Visual Studio Code"
+=== ":material-microsoft-visual-studio-code: Visual Studio Code"
 
     1. Check that the active branch is still `main`. Click its name in the
         status bar and select **:material-plus: Create new branch...**{: .bg-blue}. Enter a name such as
@@ -634,7 +646,7 @@ branch from the current commit, then push that branch instead. Do not force-push
         branch. Then open a merge request on GitLab or a pull request on GitHub
         to bring it into `main`.
 
-=== "Command line"
+=== ":material-console: Command line"
 
     1. Check that you are still on `main`, then create a branch at your current
         commit:
@@ -720,6 +732,11 @@ open after the merge, check that the request targeted `main` and its description
 used your issue number (for example, `Closes #12`). Close it manually only
 after confirming the agreed work is on `main`; add a link to the merged request
 so the issue retains its history.
+
+Open the published PDF from the website's **Download PDF** button and check the
+changed pages and layout. This check is especially important if you could not
+build the PDF locally before committing. If the build failed, wait for a
+successful pipeline before trusting the published file.
 
 !!! warning "The first build takes longer than you'd expect"
     Every build installs the whole toolchain from scratch - Node.js, Chrome, Pandoc, the Python environment - so even a routine rebuild takes several minutes, and the very first one on a fresh project can easily run into the mid-teens. A blank page or a 404 on your first visit almost always means the build simply hasn't finished yet, not that something is broken.
@@ -1098,16 +1115,6 @@ If `prodockit pdf` errors out or produces a PDF missing content:
 3. Hard refresh the published page (`Ctrl+Shift+R`/`Cmd+Shift+R`) - your browser can cache the old version just as easily as it caches the local preview.
 4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after creating a repository in a new GitHub account; see [Getting started](gettingstarted.md) for the setup route you chose.
 5. On GitLab specifically, if the pipeline succeeds but no Pages site ever appears, check that the **Pages** feature itself hasn't been disabled for the project: **Settings > General > Visibility, project features, permissions**, and make sure **Pages** is toggled on. Unlike GitHub, GitLab doesn't need a separate "source" setting - Pages deploys automatically from the `pages` job in `.gitlab-ci.yml` once the feature is enabled, which it is by default.
-
-## Prepare the final report
-
-\index{Tasks!Prepare a final report} before submission by removing the "Start
-Here" stub page. See [Start here](https://template.prodockit.org/starthere/starthere/){target="_blank"}
-in your own copy of the template for what to comment out in `zensical.toml`
-and what to delete.
-
-!!! Info
-    Once you've removed the stub from your own report, you can still come back to this guidance any time on the independent [prodockit User Guide](https://docs.prodockit.org/){target="_blank"} site.
 
 ## Where to go next {: #startediting-where-to-go-next }
 

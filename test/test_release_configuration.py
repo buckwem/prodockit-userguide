@@ -570,6 +570,7 @@ def test_edit_section_follows_the_author_workflow() -> None:
         "## Start with an issue and edit the source",
         "## Preview the website locally",
         "## Build and check the downloadable documents",
+        "## Review your work before committing",
         "## Save and push your updates",
         "## Review and merge the issue branch",
         "## Confirm the published website and documents",
@@ -582,7 +583,14 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "SSH" in editing
     assert "rm -rf public" not in editing
     assert "## Trouble shooting" not in editing
-    assert "### Use the author checklist" in editing
+    assert "- [ ] The issue describes this work" in editing
+    assert "- [ ] Check the list of files you are about to stage" in editing
+    assert '!!! note "When you cannot build the PDF locally"' in editing
+    assert "After the branch is merged and the" in editing
+    assert "Open the published PDF from the website's **Download PDF** button" in editing
+    assert "## Prepare the final report" not in editing
+    assert editing.count('=== ":material-microsoft-visual-studio-code: Visual Studio Code"') == 2
+    assert editing.count('=== ":material-console: Command line"') == 2
     assert "### A cross-page reference looks stale in the live preview" in editing
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
