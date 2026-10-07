@@ -523,7 +523,7 @@ You can use Visual Studio Code's Source Control view or type Git commands
 directly. If you've already edited files on `main`, creating a branch carries
 your uncommitted edits with you.
 
-=== "Visual Studio Code"
+=== ":material-microsoft-visual-studio-code: Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
     2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **:material-plus: Create new branch...**{: .bg-blue}, and enter a name that identifies your issue, such as `12-system-context`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on the issue branch, keep using it.
@@ -566,7 +566,7 @@ your uncommitted edits with you.
         Sync changes
         ///
 
-=== "Command line"
+=== ":material-console: Command line"
 
     1. Check your current branch and what's changed:
 
@@ -628,7 +628,7 @@ your computer. You do not need to undo it or commit the files again. Create a
 branch from the current commit, then push that branch instead. Do not force-push
 `main`.
 
-=== "Visual Studio Code"
+=== ":material-microsoft-visual-studio-code: Visual Studio Code"
 
     1. Check that the active branch is still `main`. Click its name in the
         status bar and select **:material-plus: Create new branch...**{: .bg-blue}. Enter a name such as
@@ -637,7 +637,7 @@ branch from the current commit, then push that branch instead. Do not force-push
         branch. Then open a merge request on GitLab or a pull request on GitHub
         to bring it into `main`.
 
-=== "Command line"
+=== ":material-console: Command line"
 
     1. Check that you are still on `main`, then create a branch at your current
         commit:

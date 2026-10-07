@@ -586,6 +586,8 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "- [ ] The issue describes this work" in editing
     assert "- [ ] Check the list of files you are about to stage" in editing
     assert "## Prepare the final report" not in editing
+    assert editing.count('=== ":material-microsoft-visual-studio-code: Visual Studio Code"') == 2
+    assert editing.count('=== ":material-console: Command line"') == 2
     assert "### A cross-page reference looks stale in the live preview" in editing
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
