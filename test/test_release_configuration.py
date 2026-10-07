@@ -424,6 +424,52 @@ def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
     )
 
 
+def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
+    source = _text("docs/startediting.md")
+    expected = {
+        "M2.1": "protected pull or merge request route",
+        "M2.2": "protected by midpoint",
+        "M2.3": "protection sustained",
+        "M2.4": "no direct push to main",
+        "M3.1": "CI configured by midpoint",
+        "M3.2": "CI sustained through midpoint",
+        "M3.3": "passing checks required before merge",
+        "M3.4": "latest validation passes through deadline",
+        "M4.1": "work item linkage",
+        "M4.2": "work item precedes change",
+        "M4.3": "individual work uses the merge or pull request route",
+        "M4.4": "feedback resolved",
+    }
+    blocks = re.findall(r"{% if is_surrey %}(.*?){% endif %}", source, re.DOTALL)
+    surrey_content = "\n".join(blocks)
+    standard_content = re.sub(
+        r"{% if is_surrey %}.*?{% endif %}", "", source, flags=re.DOTALL
+    )
+    parsed = BeautifulSoup(surrey_content, "html.parser")
+    badges = parsed.select(".measurement-badge:not(.measurement-badge--example)")
+
+    assert len(badges) == 2 * len(expected)
+    assert parsed.select_one(".measurement-badge--example").get_text() == "M"
+    assert {badge.get_text() for badge in badges} == set(expected)
+    assert all(
+        sum(badge.get_text() == code for badge in badges) == 2
+        for code in expected
+    )
+    table = surrey_content.split("| Measurement | Section | Specific task |", 1)[1].split(
+        "\n\n", 1
+    )[0]
+    assert table.count('| <span class="measurement-badge"') == len(expected)
+    for badge in badges:
+        code = badge.get_text()
+        assert badge.get("role") == "img"
+        assert badge.get("aria-label") == f"Measurement {code}: {expected[code]}"
+        assert badge.get("title")
+    assert "measurement-badge" not in standard_content
+    assert "academic development" not in standard_content
+    assert "module dashboard" in surrey_content
+    assert "https://" not in "\n".join(str(badge) for badge in badges)
+
+
 
 def test_optional_tooling_platform_tabs_are_consistently_ordered() -> None:
     source = _text("docs/additionaltooling.md")
@@ -484,11 +530,12 @@ def test_edit_section_follows_the_author_workflow() -> None:
     editing = _text("docs/startediting.md")
 
     headings = (
+        "## Start with an issue and edit the source",
         "## Preview the website locally",
         "## Build and check the downloadable documents",
         "## Save and push your updates",
+        "## Review and merge the issue branch",
         "## Confirm the published website and documents",
-        "## Organise larger changes with branches and issues",
         "## Help with common problems",
     )
     positions = [editing.index(heading) for heading in headings]
@@ -503,15 +550,29 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
     assert "### The website and PDF do not have exactly the same layout" in editing
-    assert "git switch -c add-section-3" in editing
-    assert "git push -u origin add-section-3" in editing
+    assert "Write the system context section and" in editing
+    assert "### Check that `main` is protected" in editing
+    assert "**Rules** > **Rulesets**" in editing
+    assert "**Repository** > **Branch rules**" in editing
+    assert "configured to run for merge requests" in editing
+    assert "Ctrl+K V" in editing and "Cmd+K V" in editing
+    assert "select the Markdown" in editing and "under **Changes**" in editing
+    assert "git switch -c 12-system-context" in editing
+    assert "git push -u origin 12-system-context" in editing
+    assert "Closes #12" in editing
+    assert "eligible reviewer to record it" in editing
+    assert "resolve discussions before merging" in editing
+    assert "confirm the linked issue is **Closed**" in editing
     assert "Publish Branch" in editing
     assert "merge request on GitLab" in editing
     assert '=== "Merge locally"' not in editing
 
 
 def test_surrey_pages_address_forms_are_documented() -> None:
-    editing = _text("docs/startediting.md")
+    source = _text("docs/startediting.md")
+    editing = source.split(
+        "## Confirm the published website and documents", 1
+    )[1]
     gitlab_tab = editing.split('=== ":fontawesome-brands-gitlab: GitLab"', 1)[1].split(
         "{% if is_surrey %}", 1
     )[0]
@@ -523,7 +584,7 @@ def test_surrey_pages_address_forms_are_documented() -> None:
     assert "https://<user-id>.pages.surrey.ac.uk/<repo-name>" in surrey_tab
     assert "https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>" in surrey_tab
     assert "### The word count leaves out unexpected content" in editing
-    assert "After updating prodockit" in editing
+    assert "After updating prodockit" in source
 
 
 def test_basics_section_is_ordered_for_beginning_authors() -> None:

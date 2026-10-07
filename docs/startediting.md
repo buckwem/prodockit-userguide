@@ -12,13 +12,36 @@ icon: lucide/book-open
 # Start editing
 
 This page introduces the everyday authoring cycle after installation. It shows
-how to preview and check the document before saving a recoverable version in
-GitLab or GitHub, and how to confirm that the published result is current.
+how to record a proposed change in an issue, edit and check the document,
+and bring the change into GitLab or GitHub through a review. It also shows how
+to confirm that the published result is current and the issue is closed.
 Commands are explained for authors who are new to Git or the terminal.
+
+{% if is_surrey %}
+!!! info "Practices measured by your module dashboard"
+    The <span class="measurement-badge measurement-badge--example" role="img" aria-label="Example measurement badge">M</span>
+    badges identify practices measured by the academic development
+    dashboard for your module. They do not mean you have passed a check or earned
+    marks. Use the **Measurements** page in your module's dashboard for the full
+    definitions and your current results; its address depends on the module.
+{% endif %}
 
 ## Follow the everyday cycle
 
 /// steps
+
+//// step | Record the task
+
+Raise an issue describing the change and what a finished result must include.
+Create a branch for that issue before editing.
+
+////
+
+//// step | Edit the source
+
+Update the Markdown file in Visual Studio Code and review the changed lines.
+
+////
 
 //// step | Preview the website
 
@@ -34,22 +57,167 @@ Generate the PDF and any source bundle locally. Check them before publishing.
 
 //// step | Save and propose the change
 
-Create a branch, commit a labelled snapshot with Git, and push that branch
-through SSH to GitLab or GitHub. Open a merge or pull request into the
-protected `main` branch.
+Commit a labelled snapshot on your issue branch and push it through SSH to
+GitLab or GitHub. Open a merge or pull request into the protected `main`
+branch, linking it to the issue.
 
 ////
 
-//// step | Confirm publication
+//// step | Confirm closure and publication
 
-Wait for the automated build to pass, then open the published website and PDF.
+After the merge, check that the issue closed, wait for the automated build to
+pass, then open the published website and PDF.
 
 ////
 
 ///
 
-Issues help organise larger or shared changes. The final sections explain
-those tools and provide help with common problems.
+The example below follows one issue from the first description through its
+Markdown edit, diagram, review, and merge.
+
+{% if is_surrey %}
+For individual work, use this table to find the action behind each badge.
+These are working practices, not a live scorecard; check your module dashboard
+for the measurement definitions and your own results.
+
+| Measurement | Section | Specific task |
+| --- | --- | --- |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.1: protected pull or merge request route" title="M2.1 — protected PR/MR route">M2.1</span> — PR/MR route | [4.6 Review and merge](#merging-your-branch-back) | Bring changes into `main` through a merge or pull request. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span> — Protected by midpoint | [4.2.1 Protect `main`](#check-that-main-is-protected) | Check that `main` is protected by the module midpoint. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span> — Protection sustained | [4.2.1 Protect `main`](#check-that-main-is-protected) | Keep protection enabled through the deadline; recheck after settings change. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.4: no direct push to main" title="M2.4 — no direct push">M2.4</span> — No direct push | [4.5 Save and push](#synchronise-your-updates) | Push the issue branch, not directly to `main`. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span> — CI by midpoint | [4.2.1 Protect `main`](#check-that-main-is-protected) | Have a CI configuration on `main` by the midpoint. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span> — CI sustained | [4.7.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the setup-to-midpoint weeks. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span> — Checks required | [4.2.1 Protect `main`](#check-that-main-is-protected) | Require passing checks or a pipeline before a request can merge. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span> — Validation passes | [4.7.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the midpoint-to-deadline weeks. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span> — Work-item link | [4.6 Review and merge](#merging-your-branch-back) | Link the issue in the request description, for example with `Closes #12`. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [4.2.2 Raise the issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [4.6 Review and merge](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [4.6 Review and merge](#merging-your-branch-back) | Resolve review discussions before merging the request. |
+
+The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment
+validation checks are not covered by these editing steps. Follow your module's
+scheduled checkpoint and validator instructions; a local preview or build does
+not by itself provide that evidence.
+{% endif %}
+
+## Start with an issue and edit the source
+
+An issue records the work before the first edit, so the branch and review have
+a clear purpose. For example, suppose you need to write a **System context**
+section and draw a system context diagram.
+
+### Check that `main` is protected
+
+The project maintainer may already have set this up during installation.
+Before using the issue-and-branch workflow, check the existing rules; do not
+create a second rule or change project settings just because you cannot see
+them. A branch named `main` is not necessarily protected.
+
+=== ":fontawesome-brands-github: GitHub"
+
+    1. In the repository, open **Settings** > **Rules** > **Rulesets**. Look for
+        an active rule targeting `main`. Some repositories use the older
+        **Settings** > **Branches** > **Branch protection rules** instead.
+    2. Check that changes must arrive through a pull request, the expected
+        build/status checks must pass before merge, and force pushes are not
+        allowed. If your course requires approval, check that the rule requires
+        it rather than relying on a reviewer being invited.
+
+=== ":fontawesome-brands-gitlab: GitLab"
+
+    1. Open **Settings** > **Repository** > **Branch rules** and inspect the
+        rule for `main`. Confirm that direct **push and merge** access is
+        restricted, force push is off, and the right people can merge requests.
+    2. Open **Settings** > **Merge requests**. Check whether **Pipelines must
+        succeed** is enabled under merge checks and whether your project has
+        any required approvals. A required-pipeline rule also needs a pipeline
+        configured to run for merge requests; otherwise a request may be
+        blocked because it has no pipeline at all.
+
+Check that the project has a CI configuration (`.github/workflows/` or
+`.gitlab-ci.yml`) **and** that a recent run passed; the presence of a file alone
+does not show that checks are working. If you cannot see the settings, ask a
+maintainer to confirm them. If a required guardrail is missing, ask the
+maintainer to put it in place before you rely on the workflow. Recheck after
+repository-setting changes and before later merges; protection and passing CI
+need to persist, not just exist on the day the project was created.
+{% if is_surrey %}
+
+For your module's measured workflow, have protection in place by the midpoint
+<span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span>
+and keep it enabled through the deadline
+<span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span>.
+Have CI configured on `main` by the midpoint
+<span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span>
+and require its checks to pass before merge
+<span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span>.
+Keep checking that the latest pipeline actually succeeds during the first half
+<span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span>
+and second half
+<span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span>
+of the assessment period; a CI file alone does not meet those checks.
+{% endif %}
+
+### Raise the issue and create a branch
+
+1. Open your project in a browser. On GitHub, select **Issues** > **New issue**.
+    On GitLab, select **Plan** > **Work items** > **New item**, choose **Issue**,
+    and create it. If your GitLab version shows **Issues** directly, use its
+    **New issue** button instead.
+2. Give it a specific title, such as **Write the system context section and
+    diagram**. In the description, record what a reviewer should be able to
+    check:
+
+    - Explain the system boundary, its users, and the external systems it
+        interacts with in the relevant Markdown chapter.
+    - Draw a system context diagram whose labels agree with the text. Keep
+        the editable drawing source as well as the exported image.
+    - Add the diagram to the chapter with useful alternative text and a
+        caption; check it in both the website and PDF.
+
+3. Note the issue number. This example uses `#12`; use the number your project
+    gives you. Before editing, create a branch from `main` named after the
+    issue, such as `12-system-context`. In Visual Studio Code, click the active
+    branch name in the bottom-left status bar and select
+    **:material-plus: Create new branch...**{: .bg-blue}. If the branch name
+    is missing, follow the [branch-name recovery note](#synchronise-your-updates)
+    under **Save and push your updates**.
+    The [command-line route](#synchronise-your-updates) is available too.
+
+Keep the issue open while you work. The merge request or pull request will
+close it when the finished change reaches `main`.
+{% if is_surrey %}
+Create the issue before the merge/pull request, not just before merging it:
+the dashboard compares their server-recorded creation times
+<span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span>.
+{% endif %}
+
+### Edit and review the Markdown file in Visual Studio Code
+
+1. Open the project's folder with **File** > **Open Folder...**. In the
+    **Explorer** sidebar, expand `docs/` and select the `.md` file containing
+    the chapter. If the section needs its own new page, create the Markdown
+    file under `docs/` and add it to the project's navigation in
+    `zensical.toml`.
+2. In the editor, add a **System context** heading at the right level and
+    write a short explanation of what is inside the system boundary, who uses
+    the system, and which outside systems connect to it. Draw the diagram in
+    your project's chosen tool. Save its editable source in the project, export
+    an image under `docs/`, and insert it in the Markdown with descriptive
+    alternative text. Follow [Add a caption](zensicalbasics.md#images) for a
+    numbered figure and [diagram guidance](zensicalbasics.md#diagrams) for
+    drawing-tool advice.
+3. Save the Markdown with `Ctrl+S` on Windows/Linux or `Cmd+S` on macOS. To
+    see the file as ordinary Markdown beside its source, press `Ctrl+K V` on
+    Windows/Linux or `Cmd+K V` on macOS. This built-in preview is useful for
+    prose and basic formatting, but it does not reproduce all of Zensical's
+    captions, numbering, or site styling; check those in the browser preview
+    in the next section.
+4. Click the :gitlab-branch: **Source Control** icon and select the Markdown
+    file under **Changes**. The side-by-side diff shows the earlier version
+    beside your edits. Review the diagram source and exported image there as
+    well, and make sure unrelated files are not part of the change.
 
 ## Preview the website locally
 
@@ -213,6 +381,9 @@ actually receive rather than checking only the Markdown source:
     missing or mistyped.
 - Check that images have useful alternative text and that figures and tables
     have the expected captions and numbers.
+- For a diagram such as the system context drawing, compare its labels and
+    connections with the surrounding explanation. Check that the editable
+    drawing source and exported image are both included in the change.
 - Open the PDF and check the same changed content again. Pay particular
     attention to page breaks, wide tables, landscape pages, fonts, diagrams,
     mathematics, and references to page numbers.
@@ -224,6 +395,11 @@ actually receive rather than checking only the Markdown source:
 The website and PDF use the same source but different layout engines. A correct
 website preview therefore does not prove that the PDF is correct, and the
 reverse is also true.
+
+Local checks are preparation, not a substitute for course checkpoints or
+instructor-controlled clean-setup/build validation. Follow any scheduled
+validation instructions for those measurements and retain the required
+evidence at the specified points in the project.
 
 !!! warning "Recheck after maintenance"
     After updating prodockit, another dependency, or files from
@@ -251,8 +427,9 @@ branch.
 
 ## Save and push your updates {: #synchronise-your-updates }
 
-\index{Tasks!Save and push changes} you want to keep. Because `main` is
-protected, create a \index{Git!branch} for your change before committing. Then
+\index{Tasks!Save and push changes} you want to keep. Stay on the
+\index{Git!branch} you created for the issue. If you have not made one yet,
+create it before committing because `main` is protected. Then
 \index{Git!commit} it (record a labelled snapshot in the project's history)
 and **push** the branch (upload it with \index{Git!push} to GitLab or GitHub).
 You can use Visual Studio Code's Source Control view or type Git commands
@@ -262,7 +439,7 @@ your uncommitted edits with you.
 === "Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
-    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **:material-plus: Create new branch...**{: .bg-blue}, and enter a descriptive name such as `add-section-3`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on a change branch, keep using it.
+    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **:material-plus: Create new branch...**{: .bg-blue}, and enter a name that identifies your issue, such as `12-system-context`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on the issue branch, keep using it.
 
         !!! note "Restoring a missing active branch name"
             If no branch name appears, right-click the status bar and turn on
@@ -274,7 +451,7 @@ your uncommitted edits with you.
             (`Ctrl+Shift+P` / `Cmd+Shift+P`) to run **Git: Create Branch...**.
             If Git says this is not a repository, open the cloned project
             folder with **File** > **Open Folder...**, then try again.
-    3. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file.
+    3. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file. Select each file to review its diff, then stage only the files for this issue with the **:material-plus: Stage Changes** control. For the example, include the Markdown chapter, exported diagram, and editable drawing source.
 
         ![Initial commit](images/initial-commit.png){ width="40%" .screenshot }
         /// figure-caption
@@ -283,8 +460,8 @@ your uncommitted edits with you.
         Initial commit
         ///
 
-    4. Type a short, descriptive message in the message box (for example, "Add section 2 draft") - this is the label future-you (or a marker) will see when looking back through the history.
-    5. Press the **Commit**{: .bg-blue} button and select **Save All & Commit Changes**{: .bg-blue}. This records the snapshot on your branch, on your computer only - you haven't sent anything anywhere yet.
+    4. Type a short, descriptive message in the message box (for example, "Write system context section and diagram") - this is the label future-you (or a marker) will see when looking back through the history.
+    5. Press **Commit**{: .bg-blue} to record the staged files on your branch. This records the snapshot on your computer only - you haven't sent anything anywhere yet.
 
         ![Commit changes](images/commit-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -311,24 +488,29 @@ your uncommitted edits with you.
         git status
         ```
 
-    2. If you are on `main`, create and switch to a change branch before committing. Any uncommitted edits come with you:
+    2. If you are on `main`, create and switch to a branch named for the issue before committing. Any uncommitted edits come with you:
 
         ```bash
-        git switch -c add-section-3
+        git switch -c 12-system-context
         ```
 
         If you are already on a change branch, stay on it.
 
-    3. Stage the files you want to commit - "staging" means marking them so Git includes them in the next commit (use `git add .` to stage everything shown by `git status` in one go):
+    3. Stage the files for this issue - "staging" means marking them so Git includes them in the next commit. Use the paths shown by `git status`; for example, stage the changed Markdown file, exported image, and editable drawing source, but leave unrelated files out:
 
         ```bash
         git add docs/section1.md
+        git add docs/images/system-context.png
+        git add tools/documentation-diagrams/system-context.drawio
+        git status
         ```
+
+        Replace those example paths with the locations used by your project.
 
     4. Commit the staged changes with a short, descriptive message:
 
         ```bash
-        git commit -m "Add section 2 draft"
+        git commit -m "Write system context section and diagram"
         ```
 
         This records the snapshot on your computer only - you haven't sent anything anywhere yet.
@@ -336,17 +518,18 @@ your uncommitted edits with you.
     5. Push the new branch to your GitLab or GitHub remote, telling Git to track it there:
 
         ```bash
-        git push -u origin add-section-3
+        git push -u origin 12-system-context
         ```
 
         Substitute your branch name if it differs. For later commits on the
         same branch, a plain `git push` is enough.
 
-Pushing a branch does not publish the website. Open a merge request on GitLab
-or a pull request on GitHub from your branch into `main`, wait for the checks,
-and merge it when approved. The protected `main` branch cannot be pushed to
-directly. See [Merging your branch back](#merging-your-branch-back) for the
-review steps.
+Pushing a branch does not publish the website or close its issue. Open a merge
+request on GitLab or a pull request on GitHub from your branch into `main`,
+include `Closes #12` in its description (using your actual issue number), wait
+for the checks, and merge it when approved. The protected `main` branch cannot
+be pushed to directly. See [Merging your branch back](#merging-your-branch-back)
+for the review steps.
 
 !!! note
     Commit little and often. Small, clearly described commits are easier to review, easier to revert if something goes wrong, and give you a much more useful history to look back on than one huge commit at the deadline.
@@ -362,7 +545,7 @@ branch from the current commit, then push that branch instead. Do not force-push
 
     1. Check that the active branch is still `main`. Click its name in the
         status bar and select **:material-plus: Create new branch...**{: .bg-blue}. Enter a name such as
-        `add-section-3`. The new branch includes the commit you already made.
+        `12-system-context`. The new branch includes the commit you already made.
     2. Open :gitlab-branch: **Source Control** and select **Publish Branch**{: .bg-blue} to push the new
         branch. Then open a merge request on GitLab or a pull request on GitHub
         to bring it into `main`.
@@ -374,13 +557,13 @@ branch from the current commit, then push that branch instead. Do not force-push
 
         ```bash
         git branch --show-current
-        git switch -c add-section-3
+        git switch -c 12-system-context
         ```
 
     2. Push the new branch and open a merge request or pull request into `main`:
 
         ```bash
-        git push -u origin add-section-3
+        git push -u origin 12-system-context
         ```
 
 Your local `main` may still point to the commit; that is expected. Continue
@@ -391,10 +574,68 @@ If the push to `main` **succeeded**, the commit is already on the remote
 with your repository maintainer, because the expected branch protection may
 not be enabled.
 
+## Review and merge the issue branch
+
+The issue created at the start describes the intended result. Keep its branch
+and review connected to that issue until the change reaches protected `main`.
+
+### Working with branches
+
+A branch is a parallel, isolated line of work that keeps `main` (and therefore
+the published website and PDF) stable while you edit. Follow
+[Save and push your updates](#synchronise-your-updates) to create and publish
+one if you did not create it from the issue before editing.
+
+Creating the branch from the issue in GitLab or GitHub is another option:
+GitLab offers **Create branch** on an issue, while GitHub offers it under
+**Development**. Check out that branch locally before editing. Whatever
+method you use, put the closing reference in the merge/pull request
+description so reviewers can see the issue and its acceptance checklist.
+{% if is_surrey %}
+That link also supplies the work-item evidence for
+<span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span>.
+{% endif %}
+
+### Merging your branch back
+
+Once you're happy with the branch, use the hosting service to merge it into
+protected `main`:
+
+1. Open your project on GitLab or GitHub in a browser.
+2. Open a merge request (GitLab) or pull request (GitHub) from your issue branch into `main` - both platforms show a prompt for this as soon as you push a new branch, or you can start one from the **Merge requests**/**Pull requests** section of the sidebar.
+3. Describe the work and include `Closes #12` in the request description, replacing `12` with your issue number. This links the request to the issue and closes it when the change is merged into the default branch. Do not close the issue just because the branch was pushed or the request was opened.
+4. Compare the changed Markdown and diagram files with the issue's checklist. Check that the latest commit has a passing pipeline or required status checks. Respond to review comments, push revisions, and resolve discussions before merging. If your project requires approval, wait for an eligible reviewer to record it; an invitation alone is not an approval.
+5. Recheck that `main` still has the expected protections, then click **Merge**{: .bg-blue} on the merge/pull request page when it is ready. Do not bypass a failed check or try to merge locally and push directly to protected `main`.
+6. Confirm the issue is **Closed** and follow the [published-site checks](#confirm-the-published-website-and-documents). If the issue is still open, follow the recovery guidance there.
+
+{% if is_surrey %}
+The issue branch and merge/pull request route is measured by
+<span class="measurement-badge" role="img" aria-label="Measurement M2.1: protected pull or merge request route" title="M2.1 — protected PR/MR route">M2.1</span>.
+Avoiding a direct push to `main` is measured separately by
+<span class="measurement-badge" role="img" aria-label="Measurement M2.4: no direct push to main" title="M2.4 — no direct push">M2.4</span>.
+For individual work, the dashboard uses
+<span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span>
+to measure whether changes used the merge/pull request route; it does not
+require a second person's approval for this check. Resolve every review
+discussion before merging
+<span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span>.
+{% endif %}
+
+Once the merge reaches `main`, the [CI/CD pipeline](#automated-builds)
+rebuilds and republishes the website and PDF automatically.
+
+!!! tip
+    Delete the branch once you've merged it - neither GitLab nor GitHub need it anymore, and it keeps your branch list tidy. Both offer a **Delete branch** button right after you merge a merge request or pull request.
+
 ## Confirm the published website and documents
 
 \index{Tasks!Check published outputs} after the commit reaches the default
 branch and the \index{continuous integration!pipeline} rebuilds the website and PDF.
+On the merged request, confirm the linked issue is **Closed**. If it remains
+open after the merge, check that the request targeted `main` and its description
+used your issue number (for example, `Closes #12`). Close it manually only
+after confirming the agreed work is on `main`; add a link to the merged request
+so the issue retains its history.
 
 !!! warning "The first build takes longer than you'd expect"
     Every build installs the whole toolchain from scratch - Node.js, Chrome, Pandoc, the Python environment - so even a routine rebuild takes several minutes, and the very first one on a fresh project can easily run into the mid-teens. A blank page or a 404 on your first visit almost always means the build simply hasn't finished yet, not that something is broken.
@@ -469,55 +710,6 @@ adds `site_documentation.pdf` to the site output, making the cover page's
 **Download PDF** button work without another website build. See
 [A clean website build is needed](#a-clean-website-build-is-needed) if the
 local output appears stale.
-
-## Organise larger changes with branches and issues
-
-Use a branch for every change to protected `main`. For larger or shared work,
-an issue also records what needs doing and can link to the branch.
-
-### Working with branches
-
-A branch is a parallel, isolated line of work that keeps `main` (and therefore
-the published website and PDF) stable while you edit. Follow
-[Save and push your updates](#synchronise-your-updates) to create and publish
-one, even if you have already started editing.
-
-
-### Merging your branch back
-
-Once you're happy with the branch, use the hosting service to merge it into
-protected `main`:
-
-1. Open your project on GitLab or GitHub in a browser.
-2. Open a merge request (GitLab) or pull request (GitHub) from your branch into `main` - both platforms show a prompt for this as soon as you push a new branch, or you can start one from the **Merge requests**/**Pull requests** section of the sidebar.
-3. Review the changes and wait for the required checks to pass. Ask for any required approval.
-4. Click **Merge**{: .bg-blue} on the merge/pull request page when it is ready. Do not try to merge locally and push directly to protected `main`.
-
-Once the merge reaches `main`, the [CI/CD pipeline](#automated-builds)
-rebuilds and republishes the website and PDF automatically.
-
-!!! tip
-    Delete the branch once you've merged it - neither GitLab nor GitHub need it anymore, and it keeps your branch list tidy. Both offer a **Delete branch** button right after you merge a merge request or pull request.
-
-### Recording issues and linking them to a branch
-
-Issues are GitLab's and GitHub's built-in way to track things to do - a missing section, a diagram to add, a typo to fix - separately from the writing itself. They're especially useful once more than one person is working on the same report, or if you just want a running to-do list attached to the project instead of a separate document.
-
-1. Open the **Issues** section in the left-hand sidebar of your project on the website, and select **New issue**.
-2. Give it a short title (for example, "Add diagram to section 2") and, optionally, a longer description of what's needed.
-
-Both platforms let you \index{Git!branch!create a branch} directly from an issue, which links the two together from the start:
-
-* On GitLab, open the issue and use the **Create merge request**{: .bg-blue} button (or the dropdown next to it, for **Create branch** only). This creates a branch named after the issue (for example `12-add-diagram-to-section-2`) and links it back to the issue automatically.
-* On GitHub, open the issue and, in the right-hand sidebar under **Development**, select **Create a branch**. This creates a branch linked to the issue, and offers to check it out for you.
-
-If you've already created your branch by hand instead (see [Working with branches](#working-with-branches)), you can still link it to an issue by mentioning the issue number in a commit message:
-
-```bash
-git commit -m "Add diagram to section 2 (#12)"
-```
-
-Using `Closes #12`, `Fixes #12`, or `Resolves #12` instead of just `#12` - in the commit message, or in the merge/pull request description - automatically closes that issue as soon as the commit reaches your default branch.
 
 ## Help with common problems {: #startediting-help-with-common-problems }
 
@@ -818,7 +1010,7 @@ If `prodockit pdf` errors out or produces a PDF missing content:
 ### Published site shows old content or a 404
 
 1. Check the pipeline (GitLab **CI/CD > Pipelines**) or workflow (GitHub **Actions** tab) actually ran, and succeeded, for your latest commit - if it's still running, or failed, the old version stays published.
-2. Confirm your change actually reached the default branch (`main`) - a commit sitting on a feature branch, or a merge/pull request you haven't merged yet, never triggers a rebuild. See [Organise larger changes with branches and issues](#organise-larger-changes-with-branches-and-issues).
+2. Confirm your change actually reached the default branch (`main`) - a commit sitting on a feature branch, or a merge/pull request you haven't merged yet, never triggers a rebuild. See [Review and merge the issue branch](#review-and-merge-the-issue-branch).
 3. Hard refresh the published page (`Ctrl+Shift+R`/`Cmd+Shift+R`) - your browser can cache the old version just as easily as it caches the local preview.
 4. On GitHub specifically, if the workflow fails with `Get Pages site failed... Not Found`, GitHub Pages hasn't been switched on for the repository yet. Go to **Settings > Pages** and change **Build and deployment > Source** from **Deploy from a branch** to **GitHub Actions**, then re-run the failed workflow. This is a one-off step after creating a repository in a new GitHub account; see [Getting started](gettingstarted.md) for the setup route you chose.
 5. On GitLab specifically, if the pipeline succeeds but no Pages site ever appears, check that the **Pages** feature itself hasn't been disabled for the project: **Settings > General > Visibility, project features, permissions**, and make sure **Pages** is toggled on. Unlike GitHub, GitLab doesn't need a separate "source" setting - Pages deploys automatically from the `pages` job in `.gitlab-ci.yml` once the feature is enabled, which it is by default.
