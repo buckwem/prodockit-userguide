@@ -399,16 +399,16 @@ def test_optional_homebrew_install_actions_remain_prominent() -> None:
 def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
     environment = Environment(autoescape=False)
     context = {
-        "acronym_style": lambda: "",
+        "pdk_acronym_style": lambda: "",
         "config": {"site_name": ""},
         "git": {"short_tag": ""},
-        "glossary_style": lambda: "",
-        "heading_counter_reset": lambda _page: "",
+        "pdk_glossary_style": lambda: "",
+        "pdk_heading_counter_reset": lambda _page: "",
         "is_surrey": False,
         "page": None,
-        "reference_style": lambda: "",
-        "repo_url": "",
-        "word_count": "",
+        "pdk_reference_style": lambda: "",
+        "pdk_repo_url": "",
+        "pdk_word_count": "",
     }
     standard = "\n".join(
         environment.from_string(_canonical_text(path)).render(context)
