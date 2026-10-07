@@ -7,7 +7,7 @@ Copyright (c) 2025-2026 Mark Buckwell and contributors
 SPDX-License-Identifier: MIT
 -->
 
-{{ heading_counter_reset(page) }}
+{{ pdk_heading_counter_reset(page) }}
 
 # About this guide
 

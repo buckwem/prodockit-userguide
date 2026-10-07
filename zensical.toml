@@ -210,7 +210,7 @@ types = [
 
 [project.markdown_extensions.zensical.extensions.macros]
 # macros.py here just re-exports prodockit.zensical_macros.define_env() -
-# needed for acronym_style()/glossary_style()/reference_style() (used by
+# needed for pdk_acronym_style()/pdk_glossary_style()/pdk_reference_style() (used by
 # the Reference pages) - see macros.py's own docstring for why this isn't
 # registered via the `modules = [...]` option instead.
 module_name = "macros"
