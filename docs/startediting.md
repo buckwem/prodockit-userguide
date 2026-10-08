@@ -274,30 +274,27 @@ In `docs/index.md`:
 
 ////
 
-//// step | Check the running header and footers
+//// step | Set the PDF footer
 
-1. Check that `site_name` appears in the website and PDF running headers and
-   `copyright` appears in the website footer. No header or footer markup or
-   stylesheet edits are needed.
-2. Update the PDF footer separately: change the author text in
-   `[document].copyright` in `pdk-pdf.toml`. If your generated repository has
-   `pdf_copyright` in `zensical.toml` instead, update that value. Otherwise the
-   PDF footer can still show the template author.
+1. Change the PDF footer author text in `[document].copyright` in
+   `pdk-pdf.toml`. If your generated repository has `pdf_copyright` in
+   `zensical.toml` instead, update that value. Otherwise the PDF footer can
+   still show the template author.
 
 ////
 
 //// step | Finish and validate
 
 1. Update `README.md` to describe your submission.
-2. Build the website and, if your local environment supports it, the PDF:
+2. Run `zensical build --clean --strict`. If your local environment supports
+   PDFs, run `pdk pdf`; otherwise skip it. Then run `zensical serve` and leave
+   it running while you check the site in step 3.
 
-    ```bash
-    zensical build --clean --strict
-    pdk pdf
-    ```
-
-3. Check the Surrey cover, navigation, website and PDF running headers and
-   footers, and automatic metadata. Remove any remaining template placeholders.
+3. Check the Surrey cover, navigation, and automatic metadata. Confirm that
+   `site_name` appears in the website header and `copyright` in its footer. If
+   you built a PDF, check its running header and footer too. No header or footer
+   markup or stylesheet edits are needed. Remove any remaining template
+   placeholders, then stop the preview server with `Ctrl+C`.
 4. If you cannot build a PDF locally, follow the
    [post-merge PDF check](#review-before-committing).
 
