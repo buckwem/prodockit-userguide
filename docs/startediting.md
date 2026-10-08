@@ -218,6 +218,66 @@ the dashboard compares their server-recorded creation times
     beside your edits. Review the diagram source and exported image there as
     well, and make sure unrelated files are not part of the change.
 
+{% if is_surrey %}
+### Perform initial template configuration
+
+Do this once after cloning and preparing your generated coursework repository,
+before replacing the template report content. Make the changes on your issue
+branch so you can review them before committing.
+
+1. **Set the project identity in `zensical.toml`.** Replace `site_name` with
+    your module title. It supplies the website header, the PDF running header,
+    and the shared title on the cover page. Replace the generic
+    `site_description` with a short assignment description, such as
+    `Security Solution Architecture for Crested Eagle Finance`. Set
+    `site_author` to your student serial number. Set `copyright` to
+    `Author: <student serial number>` for the website footer.
+2. **Complete the Surrey cover in `docs/index.md`.** In the Surrey cover
+    branch, replace `module_id - module_name` with your module ID and name,
+    for example `COMM058 - Architectural Thinking for Security`. In the
+    shared author-and-date block below that branch, replace
+    `Insert Name Here` with your student serial number and `Submission Date`
+    with your submission date, for example `11th December 2026`. Confirm
+    the faculty, school, and programme wording against your assignment
+    instructions.
+3. **Keep only the report pages you need.** In `project.nav` in
+    `zensical.toml`, remove entries for unused pages. Depending on your
+    assignment, examples may include `6-operations.md`, `7-examples.md`,
+    `acronyms.md`, `glossary.md`, and `bibliography.md`. Delete each
+    corresponding Markdown file under `docs/`, but keep any page your
+    assignment or citations require. Check for links to pages you remove.
+    Heading and chapter numbers update automatically from the remaining
+    navigation; do not renumber headings by hand.
+4. **Check the running header and footers.** The changed `site_name`
+    updates the website and PDF running headers, and `copyright` updates
+    the website footer; no header or footer markup or stylesheet edits are
+    needed. The current template sets the PDF footer separately: update
+    the author text in `[document].copyright` in `pdk-pdf.toml` as well.
+    If your generated repository instead has `pdf_copyright` in
+    `zensical.toml`, update that value. Otherwise the PDF footer can still
+    show the template author.
+5. **Finish and validate.** Update `README.md` to describe your submission,
+    then build the website and, if your local environment supports it, the
+    PDF:
+
+    ```bash
+    zensical build --clean --strict
+    pdk pdf
+    ```
+
+    Visually check the Surrey cover, navigation, website and PDF running
+    headers and footers, and automatic metadata. Remove any remaining
+    template placeholders. If you cannot build a PDF locally, follow the
+    [post-merge PDF check](#review-before-committing).
+
+Edit `site_name` once in `zensical.toml`; leave the cover's
+automatically supplied title expression in place. Do not replace or hard-code
+the automatically supplied word count, applied template release, repository
+URL, or `is_surrey` value. Do not edit managed Prodockit styles for these
+identity changes; use project-specific styles only if the assignment genuinely
+requires different presentation.
+{% endif %}
+
 ### Insert an image with a caption
 
 Keep the drawing you can edit and the image you publish as separate files. For

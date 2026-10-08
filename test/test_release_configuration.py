@@ -471,6 +471,43 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     assert "https://" not in "\n".join(str(badge) for badge in badges)
 
 
+def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
+    from macros import _detect_is_surrey
+
+    source = _text("docs/startediting.md")
+    edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
+    start = source.index("{% if is_surrey %}\n### Perform initial template configuration")
+    end = source.index("{% endif %}", start)
+    image = source.index("### Insert an image with a caption")
+    section = source[start:end]
+
+    assert edit < start < end < image
+    for expected in (
+        "site_name",
+        "site_description",
+        "site_author",
+        "copyright",
+        "module_id - module_name",
+        "Insert Name Here",
+        "Submission Date",
+        "6-operations.md",
+        "7-examples.md",
+        "acronyms.md",
+        "glossary.md",
+        "bibliography.md",
+        "pdk-pdf.toml",
+        "pdf_copyright",
+        "README.md",
+        "zensical build --clean --strict",
+        "pdk pdf",
+        "automatically supplied word count",
+    ):
+        assert expected in section
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    assert (page.select_one("#perform-initial-template-configuration") is not None) == _detect_is_surrey()
+
+
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:
     source = _text("docs/startediting.md")
     edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
