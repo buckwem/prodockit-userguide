@@ -278,9 +278,9 @@ In `docs/index.md`:
 //// step | Set the PDF footer
 
 1. Open `pdk-pdf.toml` and find `copyright` under `[document]`. Replace
-   `Author: Mark Buckwell and contributors` with
-   `Author: <your student serial number>`. Keep the licence and “Made with”
-   credits unchanged.
+   `Author: Mark Buckwell and contributors. Licensed under the MIT License.`
+   with `Author: <your student serial number>.` Keep the “Made with” credits
+   unchanged.
 
 ////
 

@@ -504,6 +504,8 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
     ):
         assert expected in section
     assert "pdf_copyright" not in section
+    assert "Author: Mark Buckwell and contributors. Licensed under the MIT License." in section
+    assert "Author: <your student serial number>." in section
 
     page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
     heading = page.select_one("#perform-initial-template-configuration")
