@@ -513,6 +513,9 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         actions = [step.find("ol") for step in steps.find_all("li", recursive=False)]
         assert len(actions) == 5
         assert [len(action.find_all("li", recursive=False)) for action in actions] == [4, 4, 3, 2, 4]
+        warning = steps.find_all("li", recursive=False)[2].select_one(".admonition.warning")
+        assert warning is not None
+        assert "brackets and commas" in warning.get_text()
 
 
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:

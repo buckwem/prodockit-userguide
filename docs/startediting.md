@@ -258,6 +258,12 @@ In `docs/index.md`:
 
 //// step | Select the report pages
 
+!!! warning "Check the brackets and commas"
+
+    When removing a `project.nav` entry in step 1, double-check the remaining
+    square brackets, curly brackets, and separating commas. An extra or missing
+    bracket or comma can make `zensical.toml` invalid and stop the website build.
+
 1. In `project.nav` in `zensical.toml`, remove entries for pages your
    assignment does not need. Examples may include `6-operations.md`,
    `7-examples.md`, `acronyms.md`, `glossary.md`, and `bibliography.md`.
