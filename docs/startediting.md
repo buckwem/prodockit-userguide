@@ -288,7 +288,7 @@ In `docs/index.md`:
 
 1. Update `README.md` to describe your submission.
 2. Choose the tab for your local environment and run its commands in order.
-   Leave `zensical serve` running while you check the site in the next step.
+   Leave `zensical serve` running while you check the site in the following step.
 
     === "pdk pdf available"
 
