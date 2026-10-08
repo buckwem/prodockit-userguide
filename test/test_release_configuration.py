@@ -505,7 +505,14 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         assert expected in section
 
     page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
-    assert (page.select_one("#perform-initial-template-configuration") is not None) == _detect_is_surrey()
+    heading = page.select_one("#perform-initial-template-configuration")
+    assert (heading is not None) == _detect_is_surrey()
+    if heading is not None:
+        steps = heading.find_next("ol", class_="prodockit-steps")
+        assert steps is not None
+        actions = [step.find("ol") for step in steps.find_all("li", recursive=False)]
+        assert len(actions) == 5
+        assert [len(action.find_all("li", recursive=False)) for action in actions] == [4, 4, 3, 2, 4]
 
 
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:
