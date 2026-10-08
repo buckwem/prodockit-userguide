@@ -12,13 +12,8 @@
 pages:
   stage: deploy
   image: python:3.14
-  # Required for this job to actually be picked up: the University of
-  # Surrey's shared runner is restricted to jobs tagged "pages" (its own
-  # description says as much) - without this, the job sits "pending"
-  # forever, no compatible runner ever claims it, and nothing indicates why.
-  # Matches prodockit-template's own .gitlab-ci.yml.
-  tags:
-    - pages
+  # The CSEE/mb0105 group runner accepts untagged jobs. Do not request the
+  # instance-wide "pages" runner.
   # Only one deploy at a time. Two pipelines started close together - a
   # release published shortly after its version-bump push, or two pushes in
   # quick succession - can otherwise both be publishing at once and leave the
@@ -34,7 +29,8 @@ pages:
     GIT_DEPTH: "0"
     # Prodockit owns the verified project-local Pandoc and renderer cache.
     PANDOC_VERSION: "3.10.1"
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+    # Keep the PDF runtime cache, not pip's downloaded wheels.
+    PIP_NO_CACHE_DIR: "1"
   cache:
     key:
       prefix: "${CI_JOB_IMAGE}-pdk-pdf-0.74.0"
@@ -42,9 +38,10 @@ pages:
         - pdk-pdf.toml
         - pdf-requirements.txt
     paths:
-      - .cache/pip/
       - .prodockit/cache/pdf/
   script:
+    - df -h / /var/cache/apt/archives
+    - du -sh .prodockit/cache/pdf 2>/dev/null || true
     - apt-get update
     - apt-get install -y curl ca-certificates
     # libpango: WeasyPrint needs it at runtime. GitHub's ubuntu-24.04 image
@@ -69,10 +66,13 @@ pages:
     # byte-identical to this installed Prodockit release. The check is local,
     # offline and non-writing; its failure prints the recovery command.
     - prodockit pins --check --offline
-    # Validate resolved Prodockit settings and their local project inputs.
-    - prodockit config --check
     # Was sync_repo_icon.py, now provided by prodockit itself (#27).
     - prodockit sync-repo
+    # The committed config remains canonical for GitHub. In this disposable
+    # GitLab checkout, use the actual Pages and project URLs for links/PDF.
+    - python tools/surrey_site_config.py
+    # Validate resolved Prodockit settings and their local project inputs.
+    - prodockit config --check
     # In Surrey CI, replace the single Getting started summary with the
     # pinned reference-manual section in this disposable checkout. Other
     # GitLab hosts keep the canonical summary. The PDF below reads this same
