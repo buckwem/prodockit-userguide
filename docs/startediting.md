@@ -287,24 +287,33 @@ In `docs/index.md`:
 //// step | Finish and validate
 
 1. Update `README.md` to describe your submission.
-2. Run these commands in order. Skip `pdk pdf` if your local environment does
-   not support PDF builds. Leave `zensical serve` running while you check the
-   site in step 3.
+2. Choose the tab for your local environment and run its commands in order.
+   Leave `zensical serve` running while you check the site in step 3.
 
-    ```bash
-    zensical build --clean --strict
-    pdk pdf
-    zensical serve
-    ```
+    === "pdk pdf available"
+
+        ```bash
+        zensical build --clean --strict
+        pdk pdf
+        zensical serve
+        ```
+
+    === "pdk pdf unavailable"
+
+        ```bash
+        zensical build --clean --strict
+        zensical serve
+        ```
+
+        You can inspect the website now. PDF inspection must wait until your
+        document updates are merged and the PDF is available on the website.
+        Follow the [post-merge PDF check](#review-before-committing) then.
 
 3. Check the Surrey cover, navigation, and automatic metadata. Confirm that
    `site_name` appears in the website header and `copyright` in its footer. If
    you built a PDF, check its running header and footer too. No header or footer
    markup or stylesheet edits are needed. Remove any remaining template
    placeholders, then stop the preview server with `Ctrl+C`.
-4. If you cannot build a PDF locally, follow the
-   [post-merge PDF check](#review-before-committing).
-
 ////
 
 ///

@@ -515,7 +515,7 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         assert steps is not None
         actions = [step.find("ol") for step in steps.find_all("li", recursive=False)]
         assert len(actions) == 5
-        assert [len(action.find_all("li", recursive=False)) for action in actions] == [4, 4, 3, 1, 4]
+        assert [len(action.find_all("li", recursive=False)) for action in actions] == [4, 4, 3, 1, 3]
         warning = steps.find_all("li", recursive=False)[2].select_one(".admonition.warning")
         assert warning is not None
         assert "brackets and commas" in warning.get_text()
@@ -523,6 +523,15 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         assert [child.name for child in report_actions.children if child.name] == [
             "li", "div", "li", "li"
         ]
+        validation_step = steps.find_all("li", recursive=False)[4]
+        assert [label.get_text(strip=True) for label in validation_step.select(".tabbed-labels label")] == [
+            "pdk pdf available",
+            "pdk pdf unavailable",
+        ]
+        pdf_available, pdf_unavailable = validation_step.select(".tabbed-content .tabbed-block")
+        assert "pdk pdf" in pdf_available.get_text()
+        assert "pdk pdf" not in pdf_unavailable.select_one("code").get_text()
+        assert "PDF inspection must wait" in pdf_unavailable.get_text()
 
 
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:
