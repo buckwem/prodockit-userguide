@@ -286,9 +286,15 @@ In `docs/index.md`:
 //// step | Finish and validate
 
 1. Update `README.md` to describe your submission.
-2. Run `zensical build --clean --strict`. If your local environment supports
-   PDFs, run `pdk pdf`; otherwise skip it. Then run `zensical serve` and leave
-   it running while you check the site in step 3.
+2. Run these commands in order. Skip `pdk pdf` if your local environment does
+   not support PDF builds. Leave `zensical serve` running while you check the
+   site in step 3.
+
+    ```bash
+    zensical build --clean --strict
+    pdk pdf
+    zensical serve
+    ```
 
 3. Check the Surrey cover, navigation, and automatic metadata. Confirm that
    `site_name` appears in the website header and `copyright` in its footer. If
