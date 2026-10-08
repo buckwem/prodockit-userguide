@@ -218,6 +218,121 @@ the dashboard compares their server-recorded creation times
     beside your edits. Review the diagram source and exported image there as
     well, and make sure unrelated files are not part of the change.
 
+{% if is_surrey %}
+### Perform initial template configuration
+
+Do this once after cloning and preparing your generated coursework repository,
+before replacing the template report content. Make the changes on your issue
+branch so you can review them before committing.
+
+/// steps
+
+//// step | Set the project identity
+
+In `zensical.toml`:
+
+1. Set `site_name` to your module title. This supplies the website header,
+   PDF running header, and cover title.
+2. Replace `site_description` with a short assignment description, such as
+   `Security Solution Architecture for Crested Eagle Finance`.
+3. Set `site_author` to your student serial number.
+4. Set `copyright` to `Author: <student serial number>` for the website footer.
+
+////
+
+//// step | Complete the Surrey cover
+
+In `docs/index.md`:
+
+1. In the Surrey cover branch, replace `module_id - module_name` with your
+   module ID and name, for example
+   `COMM058 - Architectural Thinking for Security`.
+2. In the shared author-and-date block below, replace `Insert Name Here` with
+   your student serial number.
+3. Replace `Submission Date` with your submission date, for example
+   `11th December 2026`.
+4. Check the faculty, school, and programme wording against your assignment
+   instructions.
+
+////
+
+//// step | Select the report pages
+
+1. In `project.nav` in `zensical.toml`, remove entries for pages your
+   assignment does not need. Examples may include `6-operations.md`,
+   `7-examples.md`, `acronyms.md`, `glossary.md`, and `bibliography.md`.
+
+    !!! warning "Check the brackets and commas"
+
+        Double-check the remaining square brackets, curly brackets, and
+        separating commas. An extra or missing bracket or comma can make
+        `zensical.toml` invalid and stop the website build.
+
+2. Delete the matching Markdown files under `docs/`, but keep any page your
+   assignment or citations require.
+3. Check for links to removed pages. Heading and chapter numbers update from
+   the remaining navigation; do not renumber headings by hand.
+
+////
+
+//// step | Set the PDF footer
+
+1. Open `pdk-pdf.toml` and find `copyright` under `[document]`. Replace
+   `Author: Mark Buckwell and contributors. Licensed under the MIT License.`
+   with `Author: <your student serial number>.` Keep the “Made with” credits
+   unchanged.
+
+////
+
+//// step | Finish and validate
+
+1. Update `README.md` to describe your submission.
+2. Choose the tab for your local environment and run its commands in order.
+   Leave `zensical serve` running while you check the site in the following step.
+
+    === "pdk pdf available"
+
+        ```bash
+        zensical build --clean --strict
+        pdk pdf
+        zensical serve
+        ```
+
+    === "pdk pdf unavailable"
+
+        ```bash
+        zensical build --clean --strict
+        zensical serve
+        ```
+
+        You can inspect the website now. PDF inspection must wait until your
+        document updates are merged and the PDF is available on the website.
+        Follow the [post-merge PDF check](#review-before-committing) then.
+
+3. Check the Surrey cover, navigation, and automatic metadata. Confirm that
+   `site_name` appears in the website header and `copyright` in its footer. If
+   you built a PDF, check its running header and footer too. No header or footer
+   markup or stylesheet edits are needed. Remove any remaining template
+   placeholders, then stop the preview server with `Ctrl+C`.
+////
+
+///
+
+!!! warning "Leave generated and managed values unchanged"
+
+    Set `site_name` once in `zensical.toml`. Do not change or hard-code:
+
+    - The cover's automatically supplied title expression.
+    - The automatically supplied word count.
+    - The applied template release.
+    - The repository URL.
+    - The `is_surrey` value.
+    - Managed Prodockit styles.
+
+    Use project-specific styles only if the assignment genuinely requires a
+    different presentation.
+{% endif %}
+
 ### Insert an image with a caption
 
 Keep the drawing you can edit and the image you publish as separate files. For

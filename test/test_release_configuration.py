@@ -471,6 +471,73 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     assert "https://" not in "\n".join(str(badge) for badge in badges)
 
 
+def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
+    from macros import _detect_is_surrey
+
+    source = _text("docs/startediting.md")
+    edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
+    start = source.index("{% if is_surrey %}\n### Perform initial template configuration")
+    end = source.index("{% endif %}", start)
+    image = source.index("### Insert an image with a caption")
+    section = source[start:end]
+
+    assert edit < start < end < image
+    for expected in (
+        "site_name",
+        "site_description",
+        "site_author",
+        "copyright",
+        "module_id - module_name",
+        "Insert Name Here",
+        "Submission Date",
+        "6-operations.md",
+        "7-examples.md",
+        "acronyms.md",
+        "glossary.md",
+        "bibliography.md",
+        "pdk-pdf.toml",
+        "README.md",
+        "zensical build --clean --strict",
+        "zensical serve",
+        "pdk pdf",
+        "automatically supplied word count",
+    ):
+        assert expected in section
+    assert "pdf_copyright" not in section
+    assert "Author: Mark Buckwell and contributors. Licensed under the MIT License." in section
+    assert "Author: <your student serial number>." in section
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    heading = page.select_one("#perform-initial-template-configuration")
+    assert (heading is not None) == _detect_is_surrey()
+    if heading is not None:
+        steps = heading.find_next("ol", class_="prodockit-steps")
+        assert steps is not None
+        actions = [step.find("ol") for step in steps.find_all("li", recursive=False)]
+        assert len(actions) == 5
+        assert [len(action.find_all("li", recursive=False)) for action in actions] == [4, 4, 3, 1, 3]
+        warning = steps.find_all("li", recursive=False)[2].select_one(".admonition.warning")
+        assert warning is not None
+        assert "brackets and commas" in warning.get_text()
+        report_actions = actions[2]
+        assert [child.name for child in report_actions.children if child.name] == [
+            "li", "div", "li", "li"
+        ]
+        validation_step = steps.find_all("li", recursive=False)[4]
+        assert [label.get_text(strip=True) for label in validation_step.select(".tabbed-labels label")] == [
+            "pdk pdf available",
+            "pdk pdf unavailable",
+        ]
+        pdf_available, pdf_unavailable = validation_step.select(".tabbed-content .tabbed-block")
+        assert "pdk pdf" in pdf_available.get_text()
+        assert "pdk pdf" not in pdf_unavailable.select_one("code").get_text()
+        assert "PDF inspection must wait" in pdf_unavailable.get_text()
+        managed_values = steps.find_next_sibling("div", class_="warning")
+        assert managed_values is not None
+        assert "Leave generated and managed values unchanged" in managed_values.get_text()
+        assert len(managed_values.select("li")) == 6
+
+
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:
     source = _text("docs/startediting.md")
     edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
