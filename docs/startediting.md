@@ -277,10 +277,10 @@ In `docs/index.md`:
 
 //// step | Set the PDF footer
 
-1. Change the PDF footer author text in `[document].copyright` in
-   `pdk-pdf.toml`. If your generated repository has `pdf_copyright` in
-   `zensical.toml` instead, update that value. Otherwise the PDF footer can
-   still show the template author.
+1. Open `pdk-pdf.toml` and find `copyright` under `[document]`. Replace
+   `Author: Mark Buckwell and contributors` with
+   `Author: <your student serial number>`. Keep the licence and “Made with”
+   credits unchanged.
 
 ////
 

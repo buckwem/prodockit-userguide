@@ -496,7 +496,6 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         "glossary.md",
         "bibliography.md",
         "pdk-pdf.toml",
-        "pdf_copyright",
         "README.md",
         "zensical build --clean --strict",
         "zensical serve",
@@ -504,6 +503,7 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         "automatically supplied word count",
     ):
         assert expected in section
+    assert "pdf_copyright" not in section
 
     page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
     heading = page.select_one("#perform-initial-template-configuration")
