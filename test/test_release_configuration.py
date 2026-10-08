@@ -517,6 +517,10 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         warning = steps.find_all("li", recursive=False)[2].select_one(".admonition.warning")
         assert warning is not None
         assert "brackets and commas" in warning.get_text()
+        report_actions = actions[2]
+        assert [child.name for child in report_actions.children if child.name] == [
+            "li", "div", "li", "li"
+        ]
 
 
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:
