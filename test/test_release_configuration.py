@@ -532,6 +532,10 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         assert "pdk pdf" in pdf_available.get_text()
         assert "pdk pdf" not in pdf_unavailable.select_one("code").get_text()
         assert "PDF inspection must wait" in pdf_unavailable.get_text()
+        managed_values = steps.find_next_sibling("div", class_="warning")
+        assert managed_values is not None
+        assert "Leave generated and managed values unchanged" in managed_values.get_text()
+        assert len(managed_values.select("li")) == 6
 
 
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:

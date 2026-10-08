@@ -318,12 +318,19 @@ In `docs/index.md`:
 
 ///
 
-Edit `site_name` once in `zensical.toml`; leave the cover's
-automatically supplied title expression in place. Do not replace or hard-code
-the automatically supplied word count, applied template release, repository
-URL, or `is_surrey` value. Do not edit managed Prodockit styles for these
-identity changes; use project-specific styles only if the assignment genuinely
-requires different presentation.
+!!! warning "Leave generated and managed values unchanged"
+
+    Set `site_name` once in `zensical.toml`. Do not change or hard-code:
+
+    - The cover's automatically supplied title expression.
+    - The automatically supplied word count.
+    - The applied template release.
+    - The repository URL.
+    - The `is_surrey` value.
+    - Managed Prodockit styles.
+
+    Use project-specific styles only if the assignment genuinely requires a
+    different presentation.
 {% endif %}
 
 ### Insert an image with a caption
