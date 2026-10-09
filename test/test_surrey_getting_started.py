@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_snapshot_is_complete_and_pinned() -> None:
     data = surrey.manifest()
     surrey.verify_snapshot(data)
-    assert data["version"] == "0.74.0"
+    assert data["version"] == "0.74.3"
     assert len(data["revision"]) == 40
     assert len(data["pages"]) == 7
     assert data["pages"][0]["path"] == "gettingstarted.md"
@@ -187,7 +187,7 @@ def test_imported_pages_render_the_selected_host_text() -> None:
         assert "Coursework with a prepared repository" in choose
         assert "This stage publishes your working local site on Surrey GitLab Pages." in adopt
         assert "This stage publishes your working local site on GitHub Pages or GitLab Pages." not in adopt
-        assert bootstrap.select_one('a[href="https://gitlab.surrey.ac.uk/mb0105/prodockit-template"]')
+        assert bootstrap.select_one('a[href="https://gitlab.surrey.ac.uk/csee/mb0105/prodockit-template"]')
         assert "use Surrey GitLab for your coursework" in manual
         assert "Check the connection to Surrey GitLab" in troubleshooting
         assert "Check the connection to GitLab or GitHub" not in troubleshooting
