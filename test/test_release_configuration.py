@@ -150,7 +150,15 @@ def test_retired_automation_and_paths_are_not_shipped() -> None:
 
 
 def test_custom_domain_is_consistent() -> None:
-    config = _text("zensical.toml")
+    # GitLab CI overlays its disposable checkout with its own Pages URL.
+    # Verify the committed configuration, which must stay canonical for GitHub.
+    config = subprocess.run(
+        ["git", "show", "HEAD:zensical.toml"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
     readme = _text("README.md")
     cname = _text("docs/CNAME").strip()
 
