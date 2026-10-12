@@ -162,13 +162,21 @@ of the assessment period; a CI file alone does not meet those checks.
 
 ### Raise the issue and create a branch
 
-1. Open your project in a browser. On GitHub, select **Issues** > **New issue**.
-    On GitLab, select **Plan** > **Work items** > **New item**, choose **Issue**,
-    and create it. If your GitLab version shows **Issues** directly, use its
-    **New issue** button instead.
-2. Give it a specific title, such as **Write the system context section and
-    diagram**. In the description, record what a reviewer should be able to
-    check:
+Open your project in a browser and start a new issue:
+
+=== ":fontawesome-brands-github: GitHub"
+
+    Select **Issues** > **New issue**.
+
+=== ":fontawesome-brands-gitlab: GitLab"
+
+    Select **Plan** > **Work items** > **New item**, then choose **Issue**. If
+    your GitLab version shows **Issues** directly, use its **New issue** button
+    instead.
+
+1. Give the issue a specific title, such as **Write the system context section
+    and diagram**. In the description, record what a reviewer should be able
+    to check:
 
     - Explain the system boundary, its users, and the external systems it
         interacts with in the relevant Markdown chapter.
@@ -177,10 +185,10 @@ of the assessment period; a CI file alone does not meet those checks.
     - Add the diagram to the chapter with useful alternative text and a
         caption; check it in both the website and PDF.
 
-3. Note the issue number. This example uses `#12`; use the number your project
-    gives you. Before editing, create a branch from `main` named after the
-    issue, such as `12-system-context`. In Visual Studio Code, click the active
-    branch name in the bottom-left status bar and select
+2. Create the issue and note its number. This example uses `#12`; use the
+    number your project gives you. Before editing, create a branch from `main`
+    named after the issue, such as `12-system-context`. In Visual Studio Code,
+    click the active branch name in the bottom-left status bar and select
     **:material-plus: Create new branch...**{: .bg-blue}. If the branch name
     is missing, follow the [branch-name recovery note](#synchronise-your-updates)
     under **Save and push your updates**.
@@ -244,9 +252,8 @@ In `zensical.toml`:
 
 In `docs/index.md`:
 
-1. In the Surrey cover branch, replace `module_id - module_name` with your
-   module ID and name, for example
-   `COMM058 - Architectural Thinking for Security`.
+1. In the Surrey cover branch, replace `module_id` with your module ID, for
+   example `COMM058`.
 2. In the shared author-and-date block below, replace `Insert Name Here` with
    your student serial number.
 3. Replace `Submission Date` with your submission date, for example
@@ -280,40 +287,19 @@ In `docs/index.md`:
 1. Open `pdk-pdf.toml` and find `copyright` under `[document]`. Replace
    `Author: Mark Buckwell and contributors. Licensed under the MIT License.`
    with `Author: <your student serial number>.` Keep the “Made with” credits
-   unchanged.
+   unchanged, including the `<br>` at the start.
 
 ////
 
-//// step | Finish and validate
+//// step | Remove template-only files
 
-1. Update `README.md` to describe your submission.
-2. Choose the tab for your local environment and run its commands in order.
-   Leave `zensical serve` running while you check the site in the following step.
+1. In `README.md`, remove the entire repo-badges section: start with the line
+   beginning `<!-- repo-badges:start` and remove everything through the
+   `<!-- repo-badges:end -->` line, including both marker lines.
+2. Remove `CONTRIBUTING.md`, `LICENSE.md`, and `CHANGELOG.md` from the project
+   root; these template files are not needed for your submission.
+3. Update `README.md` to describe your submission.
 
-    === "pdk pdf available"
-
-        ```bash
-        zensical build --clean --strict
-        pdk pdf
-        zensical serve
-        ```
-
-    === "pdk pdf unavailable"
-
-        ```bash
-        zensical build --clean --strict
-        zensical serve
-        ```
-
-        You can inspect the website now. PDF inspection must wait until your
-        document updates are merged and the PDF is available on the website.
-        Follow the [post-merge PDF check](#review-before-committing) then.
-
-3. Check the Surrey cover, navigation, and automatic metadata. Confirm that
-   `site_name` appears in the website header and `copyright` in its footer. If
-   you built a PDF, check its running header and footer too. No header or footer
-   markup or stylesheet edits are needed. Remove any remaining template
-   placeholders, then stop the preview server with `Ctrl+C`.
 ////
 
 ///
@@ -681,7 +667,7 @@ your uncommitted edits with you.
         Commit changes
         ///
 
-    6. Press **Publish Branch**{: .bg-blue} to push a new branch to GitLab or GitHub. For later commits on the same branch, use **Sync Changes**{: .bg-blue}.
+    6. Press **Publish Branch**{: .bg-blue} to push a new branch to GitLab or GitHub. For later commits on the same branch, use **Sync Changes**{: .bg-blue}. If Sync Changes reports that it cannot find the remote branch, follow the [missing-branch recovery](#if-sync-changes-cannot-find-the-branch-on-origin).
 
         ![Sync changes](images/sync-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -784,6 +770,41 @@ If the push to `main` **succeeded**, the commit is already on the remote
 `main` branch. Do not make a second branch just to push the same commit. Check
 with your repository maintainer, because the expected branch protection may
 not be enabled.
+
+### If Sync Changes cannot find the branch on `origin`
+
+If Visual Studio Code reports `fatal: couldn't find remote ref` after running
+`git pull --tags origin <branch-name>`, it tried to pull a branch that does not
+yet exist on the remote. Your local commit is still safe. The accompanying
+`rpc error: code = Canceled` can follow that failed pull; do not repeatedly
+select **Sync Changes** or force-push.
+
+1. In Visual Studio Code, open **View** > **Terminal** and check the active
+   branch and remote:
+
+    ```bash
+    git branch --show-current
+    git remote -v
+    git status -sb
+    ```
+
+    Confirm that you are on your issue branch, **not `main`**, and that
+    `origin` points to your intended GitLab or GitHub project. If either is
+    wrong, stop and ask your maintainer before pushing.
+
+2. Publish the branch using **Publish Branch**{: .bg-blue} in the
+   :gitlab-branch: **Source Control** view. If Visual Studio Code only offers
+   **Sync Changes**, push from the terminal instead. For example, if your
+   active branch is `template-update-8c6cf8410`, run:
+
+    ```bash
+    git push -u origin template-update-8c6cf8410
+    ```
+
+    Replace the example name with the branch shown by
+    `git branch --show-current`. This creates the remote branch and sets it as
+    the upstream for later syncs. If the push fails, keep the error message
+    and ask your maintainer; do not force-push.
 
 ## Review and merge the issue branch
 
