@@ -495,7 +495,7 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         "site_description",
         "site_author",
         "copyright",
-        "module_id - module_name",
+        "replace `module_id` with your module ID",
         "Insert Name Here",
         "Submission Date",
         "6-operations.md",
@@ -505,12 +505,18 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         "bibliography.md",
         "pdk-pdf.toml",
         "README.md",
-        "zensical build --clean --strict",
-        "zensical serve",
-        "pdk pdf",
+        "repo-badges:start",
+        "repo-badges:end",
+        "CONTRIBUTING.md",
+        "LICENSE.md",
+        "CHANGELOG.md",
         "automatically supplied word count",
     ):
         assert expected in section
+    assert "module_id - module_name" not in section
+    assert "zensical build --clean --strict" in source
+    assert "zensical serve" in source
+    assert "pdk pdf" in source
     assert "pdf_copyright" not in section
     assert "Author: Mark Buckwell and contributors. Licensed under the MIT License." in section
     assert "Author: <your student serial number>." in section
@@ -531,15 +537,11 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         assert [child.name for child in report_actions.children if child.name] == [
             "li", "div", "li", "li"
         ]
-        validation_step = steps.find_all("li", recursive=False)[4]
-        assert [label.get_text(strip=True) for label in validation_step.select(".tabbed-labels label")] == [
-            "pdk pdf available",
-            "pdk pdf unavailable",
-        ]
-        pdf_available, pdf_unavailable = validation_step.select(".tabbed-content .tabbed-block")
-        assert "pdk pdf" in pdf_available.get_text()
-        assert "pdk pdf" not in pdf_unavailable.select_one("code").get_text()
-        assert "PDF inspection must wait" in pdf_unavailable.get_text()
+        cleanup_step = steps.find_all("li", recursive=False)[4]
+        assert "Remove template-only files" in cleanup_step.get_text()
+        assert "repo-badges:start" in cleanup_step.get_text()
+        assert "CONTRIBUTING.md" in cleanup_step.get_text()
+        assert not cleanup_step.select(".tabbed-labels label")
         managed_values = steps.find_next_sibling("div", class_="warning")
         assert managed_values is not None
         assert "Leave generated and managed values unchanged" in managed_values.get_text()
@@ -670,7 +672,7 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
     assert "### The website and PDF do not have exactly the same layout" in editing
-    assert "Write the system context section and" in editing
+    assert "Write the system context section and diagram" in re.sub(r"\s+", " ", editing)
     assert "### Check that `main` is protected" in editing
     assert "**Rules** > **Rulesets**" in editing
     assert "**Repository** > **Branch rules**" in editing
