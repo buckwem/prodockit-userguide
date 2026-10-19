@@ -1,5 +1,6 @@
 """Release floors, canonical domains, and coordinated documentation."""
 
+import hashlib
 import re
 import subprocess
 import tomllib
@@ -54,6 +55,38 @@ def test_required_tool_versions_match_the_supported_renderers() -> None:
     assert f"zensical=={versions['zensical']}" in requirements
     assert f"pymdown-extensions=={versions['pymdown-extensions']}" in requirements
     assert f"markdown=={versions['markdown']}" in requirements
+
+
+def test_reviewed_template_release_and_windows_fix_are_recorded() -> None:
+    stamp = tomllib.loads(_text(".prodockit-template"))
+    assert stamp == {
+        "revision": "25f0f7b6d1cc5d7bf084030d028de196b5695a53",
+        "applied_release": "0.0.75",
+    }
+    versions = tomllib.loads(_text(".prodockit-toolchain.toml"))["versions"]
+    assert versions["prodockit"] == "0.74.4"
+    assert "pdk-pdf-0.74.4" in _text(".gitlab-ci.yml")
+    # Keep the guide's existing release redeploy rather than adding the
+    # template's second workflow, which would deploy twice for one release.
+    assert (ROOT / ".github/workflows/redeploy-after-release.yml").is_file()
+    assert not (ROOT / ".github/workflows/release-redeploy.yml").exists()
+
+
+def test_template_lightbox_styles_are_bundled_and_loaded_before_overrides() -> None:
+    config = tomllib.loads(_text("zensical.toml"))["project"]
+    styles = config["extra_css"]
+    assert styles.index("stylesheets/glightbox.min.css") < styles.index(
+        "stylesheets/extra.css"
+    )
+    assert "stylesheets/branding.css" in styles
+    assert (ROOT / "docs/stylesheets/glightbox.LICENSE.md").is_file()
+    assert ".gslide" in _text("docs/stylesheets/glightbox.min.css")
+    # Byte-identical assets from the recorded, immutable template release.
+    for name, digest in {
+        "glightbox.min.css": "6d3f62d4d17969f9c70e9438cf671004725019e868123f2ebc295a006f8d5d2d",
+        "glightbox.LICENSE.md": "41555b530e2e4e65cc9956cf581f69942fd29fac9400e76b136f504f49e157f4",
+    }.items():
+        assert hashlib.sha256((ROOT / "docs/stylesheets" / name).read_bytes()).hexdigest() == digest
 
 
 def test_page_outline_uses_the_right_sidebar() -> None:
