@@ -73,6 +73,25 @@ pass, then open the published website and PDF.
 
 ///
 
+\ref{figure-edit-process} summarises the hand-offs between the tools
+used in the steps above. In this GitLab example, the issue and merge request
+live in GitLab, the branch and document edits happen in Visual Studio Code,
+and the pipeline publishes the accepted change.
+
+![Swimlane diagram: open an issue in GitLab Work Items; create a branch, edit, commit and push in Visual Studio Code; open and approve a merge request in GitLab; then let the GitLab pipeline deploy Pages.](images/edit-process.png){ width="100%" }
+/// figure-caption
+    attrs: {id: figure-edit-process}
+
+The editing workflow across GitLab, Visual Studio Code, and the Pages pipeline
+///
+
+On GitHub, the equivalent tools are **Issues**, **Pull requests**, and
+**GitHub Actions/Pages**; the Visual Studio Code steps are the same. The
+approval box applies when your project requires an eligible reviewer. The
+diagram omits the local preview and document checks for space: do those before
+committing, then confirm the issue is closed and inspect the published website
+and PDF after the merge.
+
 The example below follows one issue from the first description through its
 Markdown edit, diagram, review, and merge.
 

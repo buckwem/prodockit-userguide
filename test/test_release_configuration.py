@@ -578,6 +578,35 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         assert len(managed_values.select("li")) == 6
 
 
+def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
+    source = _text("docs/startediting.md")
+    cycle = source.split("## Follow the everyday cycle", 1)[1].split(
+        "## Start with an issue and edit the source", 1
+    )[0]
+    assert cycle.index("//// step | Confirm closure and publication") < cycle.index(
+        r"\ref{figure-edit-process}"
+    )
+    assert "attrs: {id: figure-edit-process}" in cycle
+    assert "GitHub Actions/Pages" in cycle
+    assert "when your project requires an eligible reviewer" in cycle
+
+    diagram = ROOT / "tools/documentation-diagrams/edit-process.drawio"
+    exported = ROOT / "docs/images/edit-process.png"
+    assert ET.parse(diagram).getroot().tag == "mxfile"
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1200
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    figure = page.select_one("figure#figure-edit-process")
+    assert figure is not None
+    image = figure.select_one('img[src="../images/edit-process.png"]')
+    assert image is not None
+    assert "GitLab Work Items" in image["alt"]
+    assert "The editing workflow across GitLab" in figure.get_text()
+    assert page.select_one('a.prodockit-ref[href="#figure-edit-process"]') is not None
+
+
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:
     source = _text("docs/startediting.md")
     edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
