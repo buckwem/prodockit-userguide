@@ -490,17 +490,14 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     parsed = BeautifulSoup(surrey_content, "html.parser")
     badges = parsed.select(".measurement-badge:not(.measurement-badge--example)")
 
-    assert len(badges) == 2 * len(expected)
     assert parsed.select_one(".measurement-badge--example").get_text() == "M"
     assert {badge.get_text() for badge in badges} == set(expected)
-    assert all(
-        sum(badge.get_text() == code for badge in badges) == 2
-        for code in expected
-    )
     table = surrey_content.split("| Measurement | Section | Specific task |", 1)[1].split(
         "\n\n", 1
     )[0]
-    assert table.count('| <span class="measurement-badge"') == len(expected)
+    table_badges = BeautifulSoup(table, "html.parser").select(".measurement-badge")
+    assert len(table_badges) == len(expected)
+    assert {badge.get_text() for badge in table_badges} == set(expected)
     for badge in badges:
         code = badge.get_text()
         assert badge.get("role") == "img"
@@ -579,6 +576,35 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
         assert managed_values is not None
         assert "Leave generated and managed values unchanged" in managed_values.get_text()
         assert len(managed_values.select("li")) == 6
+
+
+def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
+    source = _text("docs/startediting.md")
+    cycle = source.split("## Follow the everyday cycle", 1)[1].split(
+        "## Start with an issue and edit the source", 1
+    )[0]
+    assert cycle.index("//// step | Confirm closure and publication") < cycle.index(
+        r"\ref{figure-edit-process}"
+    )
+    assert "attrs: {id: figure-edit-process}" in cycle
+    assert "GitHub Actions/Pages" in cycle
+    assert "when your project requires an eligible reviewer" in cycle
+
+    diagram = ROOT / "tools/documentation-diagrams/edit-process.drawio"
+    exported = ROOT / "docs/images/edit-process.png"
+    assert ET.parse(diagram).getroot().tag == "mxfile"
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1200
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    figure = page.select_one("figure#figure-edit-process")
+    assert figure is not None
+    image = figure.select_one('img[src="../images/edit-process.png"]')
+    assert image is not None
+    assert "GitLab Work Items" in image["alt"]
+    assert "The editing workflow across GitLab" in figure.get_text()
+    assert page.select_one('a.prodockit-ref[href="#figure-edit-process"]') is not None
 
 
 def test_edit_image_example_has_source_export_caption_and_reference() -> None:
@@ -706,7 +732,7 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "### Mermaid or mathematics appears as source text" in editing
     assert "### The website and PDF do not have exactly the same layout" in editing
     assert "Write the system context section and diagram" in re.sub(r"\s+", " ", editing)
-    assert "### Check that `main` is protected" in editing
+    assert "{% if not is_surrey %}\n### Check that `main` is protected" in editing
     assert "**Rules** > **Rulesets**" in editing
     assert "**Repository** > **Branch rules**" in editing
     assert "configured to run for merge requests" in editing
@@ -721,6 +747,22 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "Publish Branch" in editing
     assert "merge request on GitLab" in editing
     assert '=== "Merge locally"' not in editing
+
+
+def test_protection_section_is_absent_only_on_surrey_site() -> None:
+    from macros import _detect_is_surrey
+
+    source = _text("docs/startediting.md")
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    is_surrey = _detect_is_surrey()
+
+    assert "#check-that-main-is-protected" not in source
+    assert "[4.2.1 Raise the issue](#raise-the-issue-and-create-a-branch)" in source
+    assert (page.select_one("#check-that-main-is-protected") is None) == is_surrey
+    issue_heading = page.select_one("#raise-the-issue-and-create-a-branch")
+    assert issue_heading is not None
+    if is_surrey:
+        assert not page.select('a[href="#check-that-main-is-protected"]')
 
 
 def test_surrey_pages_address_forms_are_documented() -> None:

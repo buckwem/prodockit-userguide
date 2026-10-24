@@ -73,6 +73,25 @@ pass, then open the published website and PDF.
 
 ///
 
+\ref{figure-edit-process} summarises the hand-offs between the tools
+used in the steps above. In this GitLab example, the issue and merge request
+live in GitLab, the branch and document edits happen in Visual Studio Code,
+and the pipeline publishes the accepted change.
+
+![Swimlane diagram: open an issue in GitLab Work Items; create a branch, edit, commit and push in Visual Studio Code; open and approve a merge request in GitLab; then let the GitLab pipeline deploy Pages.](images/edit-process.png){ width="100%" }
+/// figure-caption
+    attrs: {id: figure-edit-process}
+
+The editing workflow across GitLab, Visual Studio Code, and the Pages pipeline
+///
+
+On GitHub, the equivalent tools are **Issues**, **Pull requests**, and
+**GitHub Actions/Pages**; the Visual Studio Code steps are the same. The
+approval box applies when your project requires an eligible reviewer. The
+diagram omits the local preview and document checks for space: do those before
+committing, then confirm the issue is closed and inspect the published website
+and PDF after the merge.
+
 The example below follows one issue from the first description through its
 Markdown edit, diagram, review, and merge.
 
@@ -84,15 +103,15 @@ for the measurement definitions and your own results.
 | Measurement | Section | Specific task |
 | --- | --- | --- |
 | <span class="measurement-badge" role="img" aria-label="Measurement M2.1: protected pull or merge request route" title="M2.1 — protected PR/MR route">M2.1</span> — PR/MR route | [4.7 Review and merge](#merging-your-branch-back) | Bring changes into `main` through a merge or pull request. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span> — Protected by midpoint | [4.2.1 Protect `main`](#check-that-main-is-protected) | Check that `main` is protected by the module midpoint. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span> — Protection sustained | [4.2.1 Protect `main`](#check-that-main-is-protected) | Keep protection enabled through the deadline; recheck after settings change. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span> — Protected by midpoint | [4.7 Review and merge](#merging-your-branch-back) | Check that `main` is protected by the module midpoint. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span> — Protection sustained | [4.7 Review and merge](#merging-your-branch-back) | Keep protection enabled through the deadline; recheck after settings change. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M2.4: no direct push to main" title="M2.4 — no direct push">M2.4</span> — No direct push | [4.6 Save and push](#synchronise-your-updates) | Push the issue branch, not directly to `main`. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span> — CI by midpoint | [4.2.1 Protect `main`](#check-that-main-is-protected) | Have a CI configuration on `main` by the midpoint. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span> — CI by midpoint | [4.8.1 Automated build](#automated-builds) | Have a CI configuration on `main` by the midpoint. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span> — CI sustained | [4.8.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the setup-to-midpoint weeks. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span> — Checks required | [4.2.1 Protect `main`](#check-that-main-is-protected) | Require passing checks or a pipeline before a request can merge. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span> — Checks required | [4.7 Review and merge](#merging-your-branch-back) | Require passing checks or a pipeline before a request can merge. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span> — Validation passes | [4.8.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the midpoint-to-deadline weeks. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span> — Work-item link | [4.7 Review and merge](#merging-your-branch-back) | Link the issue in the request description, for example with `Closes #12`. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [4.2.2 Raise the issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [4.2.1 Raise the issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [4.7 Review and merge](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [4.7 Review and merge](#merging-your-branch-back) | Resolve review discussions before merging the request. |
 
@@ -108,6 +127,7 @@ An issue records the work before the first edit, so the branch and review have
 a clear purpose. For example, suppose you need to write a **System context**
 section and draw a system context diagram.
 
+{% if not is_surrey %}
 ### Check that `main` is protected
 
 The project maintainer may already have set this up during installation.
@@ -143,21 +163,6 @@ maintainer to confirm them. If a required guardrail is missing, ask the
 maintainer to put it in place before you rely on the workflow. Recheck after
 repository-setting changes and before later merges; protection and passing CI
 need to persist, not just exist on the day the project was created.
-{% if is_surrey %}
-
-For your module's measured workflow, have protection in place by the midpoint
-<span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span>
-and keep it enabled through the deadline
-<span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span>.
-Have CI configured on `main` by the midpoint
-<span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span>
-and require its checks to pass before merge
-<span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span>.
-Keep checking that the latest pipeline actually succeeds during the first half
-<span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span>
-and second half
-<span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span>
-of the assessment period; a CI file alone does not meet those checks.
 {% endif %}
 
 ### Raise the issue and create a branch

@@ -13,5 +13,8 @@ documentation. Keep the Draw.io pages and their PNG outputs together by name:
 system-context example in **Start editing**. Its export is
 `docs/images/system-context-example.png`.
 
+`edit-process.drawio` is the editable swimlane diagram of the workflow in
+**Start editing**. Its export is `docs/images/edit-process.png`.
+
 Export PNG files with a scale of 2 and a 20-pixel border. The editable
 `.drawio` file is the source of truth; do not edit the exported PNG directly.
