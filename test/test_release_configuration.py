@@ -490,6 +490,8 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     parsed = BeautifulSoup(surrey_content, "html.parser")
     badges = parsed.select(".measurement-badge:not(.measurement-badge--example)")
 
+    assert "### Development Measurements" in surrey_content
+    assert "### Development Measurements" not in standard_content
     assert parsed.select_one(".measurement-badge--example").get_text() == "M"
     assert {badge.get_text() for badge in badges} == set(expected)
     table = surrey_content.split("| Measurement | Section | Specific task |", 1)[1].split(
@@ -584,6 +586,11 @@ def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     cycle = source.split("## Follow the everyday cycle", 1)[1].split(
         "## Start with an issue", 1
     )[0]
+    assert cycle.startswith("\n\n### Development Lifecycle\n")
+    assert cycle.index("### Development Lifecycle") < cycle.index("/// steps")
+    assert cycle.index("### Development Measurements") > cycle.index(
+        "The example below follows one issue"
+    )
     assert cycle.count("//// step |") == 8
     assert cycle.index("//// step | Confirm the published result") < cycle.index(
         r"\ref{figure-edit-process}"
@@ -602,6 +609,7 @@ def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
     cycle_heading = page.select_one("#follow-the-everyday-cycle")
     assert cycle_heading is not None
+    assert page.select_one("#development-lifecycle") is not None
     cycle_steps = cycle_heading.find_next("ol", class_="prodockit-steps")
     assert cycle_steps is not None
     assert len(cycle_steps.find_all("li", recursive=False)) == 8
