@@ -258,32 +258,8 @@ follow the [rejected-push recovery](#if-you-committed-and-tried-to-push-from-mai
 
 ## Edit the source
 
-Use the issue branch to edit your Markdown, configure the template where
-applicable, and add any diagrams or images the document needs.
-
-### Edit and review the Markdown file in Visual Studio Code
-
-1. Open the project's folder with **File** > **Open Folder...**. In the
-    **Explorer** sidebar, expand `docs/` and select the `.md` file containing
-    the chapter. If the section needs its own new page, create the Markdown
-    file under `docs/` and add it to the project's navigation in
-    `zensical.toml`.
-2. In the editor, add a **System context** heading at the right level and
-    write a short explanation of what is inside the system boundary, who uses
-    the system, and which outside systems connect to it. Draw the diagram in
-    your project's chosen tool. Save its editable source in the project, export
-    an image under `docs/`, and insert it in the Markdown with descriptive
-    alternative text and a caption as shown in the next section.
-3. Save the Markdown with `Ctrl+S` on Windows/Linux or `Cmd+S` on macOS. To
-    see the file as ordinary Markdown beside its source, press `Ctrl+K V` on
-    Windows/Linux or `Cmd+K V` on macOS. This built-in preview is useful for
-    prose and basic formatting, but it does not reproduce all of Zensical's
-    captions, numbering, or site styling; check those in the browser preview
-    in the next section.
-4. Click the :gitlab-branch: **Source Control** icon and select the Markdown
-    file under **Changes**. The side-by-side diff shows the earlier version
-    beside your edits. Review the diagram source and exported image there as
-    well, and make sure unrelated files are not part of the change.
+Use the issue branch to configure the template where applicable, then edit
+your Markdown and add any diagrams or images the document needs.
 
 {% if is_surrey %}
 ### Perform initial template configuration
@@ -377,6 +353,31 @@ In `docs/index.md`:
     Use project-specific styles only if the assignment genuinely requires a
     different presentation.
 {% endif %}
+
+### Edit and review the Markdown file in Visual Studio Code
+
+1. Open the project's folder with **File** > **Open Folder...**. In the
+    **Explorer** sidebar, expand `docs/` and select the `.md` file containing
+    the chapter. If the section needs its own new page, create the Markdown
+    file under `docs/` and add it to the project's navigation in
+    `zensical.toml`.
+2. In the editor, add a **System context** heading at the right level and
+    write a short explanation of what is inside the system boundary, who uses
+    the system, and which outside systems connect to it. Draw the diagram in
+    your project's chosen tool. Save its editable source in the project, export
+    an image under `docs/`, and insert it in the Markdown with descriptive
+    alternative text and a caption as shown in the next section.
+3. Save the Markdown with `Ctrl+S` on Windows/Linux or `Cmd+S` on macOS. To
+    see the file as ordinary Markdown beside its source, press `Ctrl+K V` on
+    Windows/Linux or `Cmd+K V` on macOS. This built-in preview is useful for
+    prose and basic formatting, but it does not reproduce all of Zensical's
+    captions, numbering, or site styling; check those later with the
+    [preview server](#start-the-preview-server).
+4. Click the :gitlab-branch: **Source Control** icon and select the Markdown
+    file under **Changes**. The side-by-side diff shows the earlier version
+    beside your edits. Review the diagram source and exported image there as
+    well, and make sure unrelated files are not part of the change.
+
 
 ### Insert an image with a caption
 

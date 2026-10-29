@@ -520,7 +520,7 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
     image = source.index("### Insert an image with a caption")
     section = source[start:end]
 
-    assert edit < start < end < image
+    assert start < end < edit < image
     for expected in (
         "site_name",
         "site_description",
