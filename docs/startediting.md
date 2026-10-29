@@ -28,6 +28,8 @@ Commands are explained for authors who are new to Git or the terminal.
 
 ## Follow the everyday cycle
 
+### Development Lifecycle
+
 /// steps
 
 //// step | Start with an issue
@@ -113,9 +115,32 @@ The example below follows one issue from the first description through its
 Markdown edit, diagram, review, and merge.
 
 {% if is_surrey %}
-For individual work, use this table to find the action behind each badge.
-These are working practices, not a live scorecard; check your module dashboard
-for the measurement definitions and your own results.
+### Development Measurements
+
+The 20%, 50% and 80% checkpoints mark progress through the assessment period;
+they are not marks awarded. At each one, prepare a working increment for
+lecturer-controlled validation. The submission checkpoint validates the final
+assignment. On your module dashboard, open your personal **Student reports**
+page and find **Assignment details → Checkpoints**. Its **Date** column gives
+the actual dates for all four checkpoints; the assignment summary above it
+shows your effective submission deadline. Use those dates when planning your
+work, rather than treating the percentages in the diagram as calendar dates.
+
+\ref{figure-development-checkpoints} shows how the checkpoints fit around the
+edit cycle. Repeat the issue, branch, edit, check and merge-request steps for
+each change. Protect `main` and configure CI before the midpoint; keep the
+protection and passing pipelines in place through submission.
+
+![Four checkpoints in order: 20% early, 50% midpoint, 80% later, and submission, each with lecturer validation. Between checkpoints, repeat the issue-to-merge edit cycle. Protect main and configure CI before midpoint, then maintain protection and passing pipelines through submission.](images/development-checkpoints.png){ width="100%" }
+/// figure-caption
+    attrs: {id: figure-development-checkpoints}
+
+Four development checkpoints and the continuing edit and verification cycle
+///
+
+For individual work, \ref{table-development-measurements} maps each badge to
+an action in this guide. These are working practices, not a live scorecard;
+check your module dashboard for the full definitions and your own results.
 
 | Measurement | Section | Specific task |
 | --- | --- | --- |
@@ -131,11 +156,16 @@ for the measurement definitions and your own results.
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [10.2.1 Raise an issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [10.7 Create a merge request](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [10.8 Approve the merge request](#approve-the-merge-request) | Resolve review discussions before merging the request. |
+/// table-caption | <
+    attrs: {id: table-development-measurements}
 
-The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment
-validation checks are not covered by these editing steps. Follow your module's
-scheduled checkpoint and validator instructions; a local preview or build does
-not by itself provide that evidence.
+Individual development measurements and the Edit tasks that support them
+///
+
+The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment validation
+checks use your module's scheduled checkpoint and validator instructions.
+The edit cycle helps prepare the work, but a local preview or build does not
+by itself provide that evidence.
 {% endif %}
 
 ## Start with an issue

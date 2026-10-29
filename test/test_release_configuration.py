@@ -467,6 +467,8 @@ def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
 
 
 def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
+    from macros import _detect_is_surrey
+
     source = _text("docs/startediting.md")
     expected = {
         "M2.1": "protected pull or merge request route",
@@ -490,6 +492,17 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     parsed = BeautifulSoup(surrey_content, "html.parser")
     badges = parsed.select(".measurement-badge:not(.measurement-badge--example)")
 
+    assert "### Development Measurements" in surrey_content
+    assert "### Development Measurements" not in standard_content
+    assert "Assignment details → Checkpoints" in surrey_content
+    assert "Assignment details → Checkpoints" not in standard_content
+    assert r"\ref{figure-development-checkpoints}" in surrey_content
+    assert r"\ref{table-development-measurements}" in surrey_content
+    assert "attrs: {id: figure-development-checkpoints}" in surrey_content
+    assert "attrs: {id: table-development-measurements}" in surrey_content
+    assert surrey_content.index("images/development-checkpoints.png") < surrey_content.index(
+        "| Measurement | Section | Specific task |"
+    )
     assert parsed.select_one(".measurement-badge--example").get_text() == "M"
     assert {badge.get_text() for badge in badges} == set(expected)
     table = surrey_content.split("| Measurement | Section | Specific task |", 1)[1].split(
@@ -508,6 +521,31 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     assert "academic development" not in standard_content
     assert "module dashboard" in surrey_content
     assert "https://" not in "\n".join(str(badge) for badge in badges)
+
+    diagram = ROOT / "tools/documentation-diagrams/development-checkpoints.drawio"
+    exported = ROOT / "docs/images/development-checkpoints.png"
+    diagram_xml = ET.parse(diagram)
+    assert diagram_xml.getroot().tag == "mxfile"
+    diagram_labels = " ".join(
+        cell.get("value", "") for cell in diagram_xml.iter("mxCell")
+    )
+    for checkpoint in ("20%", "50%", "80%", "Submission checkpoint"):
+        assert checkpoint in diagram_labels
+    assert "Lecturer validation" in diagram_labels
+    assert "Raise an issue" in diagram_labels
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1200
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    heading = page.select_one("#development-measurements")
+    assert (heading is not None) == _detect_is_surrey()
+    assert (page.select_one("#figure-development-checkpoints") is not None) == _detect_is_surrey()
+    assert (page.select_one("#table-development-measurements") is not None) == _detect_is_surrey()
+    if heading is not None:
+        image = page.select_one("#figure-development-checkpoints img")
+        assert image is not None
+        assert all(label in image["alt"] for label in ("20%", "50%", "80%", "submission"))
 
 
 def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
@@ -584,6 +622,11 @@ def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     cycle = source.split("## Follow the everyday cycle", 1)[1].split(
         "## Start with an issue", 1
     )[0]
+    assert cycle.startswith("\n\n### Development Lifecycle\n")
+    assert cycle.index("### Development Lifecycle") < cycle.index("/// steps")
+    assert cycle.index("### Development Measurements") > cycle.index(
+        "The example below follows one issue"
+    )
     assert cycle.count("//// step |") == 8
     assert cycle.index("//// step | Confirm the published result") < cycle.index(
         r"\ref{figure-edit-process}"
@@ -602,6 +645,7 @@ def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
     cycle_heading = page.select_one("#follow-the-everyday-cycle")
     assert cycle_heading is not None
+    assert page.select_one("#development-lifecycle") is not None
     cycle_steps = cycle_heading.find_next("ol", class_="prodockit-steps")
     assert cycle_steps is not None
     assert len(cycle_steps.find_all("li", recursive=False)) == 8
