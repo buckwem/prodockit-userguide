@@ -117,16 +117,21 @@ Markdown edit, diagram, review, and merge.
 {% if is_surrey %}
 ### Development Measurements
 
-Some measurements check a milestone; others check whether a practice continues
-through a period. \ref{figure-development-checkpoints} shows the branch
-protection and CI checks from setup to the deadline. Configure CI before its
-first pipeline check; the midpoint check confirms that it is present on `main`.
+The 20%, 50% and 80% checkpoints mark progress through the assessment period;
+they are not marks awarded. At each one, prepare a working increment for
+lecturer-controlled validation. The submission checkpoint validates the final
+assignment. Your module dashboard gives the dates and results.
 
-![Timeline with two rows: protect main before midpoint, verify M2.2 at midpoint and sustain protection for M2.3 through the deadline; check the latest CI pipeline for M3.2 before midpoint, verify M3.1 CI is present on main at midpoint, and check the latest pipeline for M3.4 afterwards.](images/development-checkpoints.png){ width="100%" }
+\ref{figure-development-checkpoints} shows how the checkpoints fit around the
+edit cycle. Repeat the issue, branch, edit, check and merge-request steps for
+each change. Protect `main` and configure CI before the midpoint; keep the
+protection and passing pipelines in place through submission.
+
+![Four checkpoints in order: 20% early, 50% midpoint, 80% later, and submission, each with lecturer validation. Between checkpoints, repeat the issue-to-merge edit cycle. Protect main and configure CI before midpoint, then maintain protection and passing pipelines through submission.](images/development-checkpoints.png){ width="100%" }
 /// figure-caption
     attrs: {id: figure-development-checkpoints}
 
-Development checkpoints for protected `main` and passing CI
+Four development checkpoints and the continuing edit and verification cycle
 ///
 
 For individual work, \ref{table-development-measurements} maps each badge to
@@ -153,10 +158,10 @@ check your module dashboard for the full definitions and your own results.
 Individual development measurements and the Edit tasks that support them
 ///
 
-The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment
-validation checks are not covered by these editing steps. Follow your module's
-scheduled checkpoint and validator instructions; a local preview or build does
-not by itself provide that evidence.
+The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment validation
+checks use your module's scheduled checkpoint and validator instructions.
+The edit cycle helps prepare the work, but a local preview or build does not
+by itself provide that evidence.
 {% endif %}
 
 ## Start with an issue

@@ -522,7 +522,15 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
 
     diagram = ROOT / "tools/documentation-diagrams/development-checkpoints.drawio"
     exported = ROOT / "docs/images/development-checkpoints.png"
-    assert ET.parse(diagram).getroot().tag == "mxfile"
+    diagram_xml = ET.parse(diagram)
+    assert diagram_xml.getroot().tag == "mxfile"
+    diagram_labels = " ".join(
+        cell.get("value", "") for cell in diagram_xml.iter("mxCell")
+    )
+    for checkpoint in ("20%", "50%", "80%", "Submission checkpoint"):
+        assert checkpoint in diagram_labels
+    assert "Lecturer validation" in diagram_labels
+    assert "Raise an issue" in diagram_labels
     png = exported.read_bytes()
     assert png.startswith(b"\x89PNG\r\n\x1a\n")
     assert int.from_bytes(png[16:20], "big") >= 1200
@@ -532,6 +540,10 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     assert (heading is not None) == _detect_is_surrey()
     assert (page.select_one("#figure-development-checkpoints") is not None) == _detect_is_surrey()
     assert (page.select_one("#table-development-measurements") is not None) == _detect_is_surrey()
+    if heading is not None:
+        image = page.select_one("#figure-development-checkpoints img")
+        assert image is not None
+        assert all(label in image["alt"] for label in ("20%", "50%", "80%", "submission"))
 
 
 def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
