@@ -120,7 +120,11 @@ Markdown edit, diagram, review, and merge.
 The 20%, 50% and 80% checkpoints mark progress through the assessment period;
 they are not marks awarded. At each one, prepare a working increment for
 lecturer-controlled validation. The submission checkpoint validates the final
-assignment. Your module dashboard gives the dates and results.
+assignment. On your module dashboard, open your personal **Student reports**
+page and find **Assignment details → Checkpoints**. Its **Date** column gives
+the actual dates for all four checkpoints; the assignment summary above it
+shows your effective submission deadline. Use those dates when planning your
+work, rather than treating the percentages in the diagram as calendar dates.
 
 \ref{figure-development-checkpoints} shows how the checkpoints fit around the
 edit cycle. Repeat the issue, branch, edit, check and merge-request steps for

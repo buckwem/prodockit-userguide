@@ -494,6 +494,8 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
 
     assert "### Development Measurements" in surrey_content
     assert "### Development Measurements" not in standard_content
+    assert "Assignment details → Checkpoints" in surrey_content
+    assert "Assignment details → Checkpoints" not in standard_content
     assert r"\ref{figure-development-checkpoints}" in surrey_content
     assert r"\ref{table-development-measurements}" in surrey_content
     assert "attrs: {id: figure-development-checkpoints}" in surrey_content
