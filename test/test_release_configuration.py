@@ -498,6 +498,7 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     table_badges = BeautifulSoup(table, "html.parser").select(".measurement-badge")
     assert len(table_badges) == len(expected)
     assert {badge.get_text() for badge in table_badges} == set(expected)
+    assert table.count("| [10.") == len(expected)
     for badge in badges:
         code = badge.get_text()
         assert badge.get("role") == "img"
@@ -581,14 +582,14 @@ def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
 def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     source = _text("docs/startediting.md")
     cycle = source.split("## Follow the everyday cycle", 1)[1].split(
-        "## Start with an issue and edit the source", 1
+        "## Start with an issue", 1
     )[0]
     assert cycle.index("//// step | Confirm closure and publication") < cycle.index(
         r"\ref{figure-edit-process}"
     )
     assert "attrs: {id: figure-edit-process}" in cycle
     assert "GitHub Actions/Pages" in cycle
-    assert "when your project requires an eligible reviewer" in cycle
+    assert "when your project requires an eligible reviewer" in " ".join(cycle.split())
 
     diagram = ROOT / "tools/documentation-diagrams/edit-process.drawio"
     exported = ROOT / "docs/images/edit-process.png"
@@ -603,6 +604,7 @@ def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     image = figure.select_one('img[src="../images/edit-process.png"]')
     assert image is not None
     assert "GitLab Work Items" in image["alt"]
+    assert "preview and check" in image["alt"]
     assert "The editing workflow across GitLab" in figure.get_text()
     assert page.select_one('a.prodockit-ref[href="#figure-edit-process"]') is not None
 
@@ -611,7 +613,7 @@ def test_edit_image_example_has_source_export_caption_and_reference() -> None:
     source = _text("docs/startediting.md")
     edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
     image = source.index("### Insert an image with a caption")
-    preview = source.index("## Preview the website locally")
+    preview = source.index("## Build, preview and review locally")
     section = source[image:preview]
 
     assert edit < image < preview
@@ -703,18 +705,31 @@ def test_edit_section_follows_the_author_workflow() -> None:
     editing = _text("docs/startediting.md")
 
     headings = (
-        "## Start with an issue and edit the source",
-        "## Preview the website locally",
-        "## Build and check the downloadable documents",
-        "## Review your work before committing",
-        "## Save and push your updates",
-        "## Review and merge the issue branch",
+        "## Start with an issue",
+        "## Create a branch and publish",
+        "## Edit the source",
+        "## Build, preview and review locally",
+        "## Save and share your changes",
+        "## Create a merge request",
+        "## Approve the merge request",
         "## Confirm the published website and documents",
         "## Help with common problems",
     )
     positions = [editing.index(heading) for heading in headings]
 
     assert positions == sorted(positions)
+    terminal = editing.index("### Open a terminal")
+    documents = editing.index("### Build and check the downloadable documents")
+    preview = editing.index("### Start the preview server")
+    review = editing.index("### Review your work before committing")
+    save = editing.index("## Save and share your changes")
+    assert terminal < documents < preview < review < save
+    process = editing.index("### Save, commit and push")
+    rejected_push = editing.index("### If you committed and tried to push from `main`")
+    missing_branch = editing.index("### If Sync Changes cannot find the branch on `origin`")
+    create_request = editing.index("## Create a merge request")
+    approve_request = editing.index("## Approve the merge request")
+    assert save < process < rejected_push < missing_branch < create_request < approve_request
     assert '<div class="grid cards one-column" markdown>' not in editing
     assert "SSH" in editing
     assert "rm -rf public" not in editing
@@ -725,8 +740,15 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "After the branch is merged and the" in editing
     assert "Open the published PDF from the website's **Download PDF** button" in editing
     assert "## Prepare the final report" not in editing
-    assert editing.count('=== ":material-microsoft-visual-studio-code: Visual Studio Code"') == 2
-    assert editing.count('=== ":material-console: Command line"') == 2
+    assert editing.count('=== ":material-microsoft-visual-studio-code: Visual Studio Code"') == 3
+    assert editing.count('=== ":material-console: Command line"') == 3
+    branch_section = editing.split("## Create a branch and publish", 1)[1].split("## Edit the source", 1)[0]
+    save_section = editing.split("### Save, commit and push", 1)[1].split("### If you committed and tried to push from `main`", 1)[0]
+    assert "git switch -c 12-system-context" in branch_section
+    assert "Publish Branch" in branch_section
+    assert "git switch -c" not in save_section
+    assert "Publish Branch" not in save_section
+    assert "**Sync Changes**" in save_section
     assert "### A cross-page reference looks stale in the live preview" in editing
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
@@ -740,12 +762,16 @@ def test_edit_section_follows_the_author_workflow() -> None:
     assert "select the Markdown" in editing and "under **Changes**" in editing
     assert "git switch -c 12-system-context" in editing
     assert "git push -u origin 12-system-context" in editing
-    assert "Closes #12" in editing
-    assert "eligible reviewer to record it" in editing
-    assert "resolve discussions before merging" in editing
+    assert "Close #12" in editing
+    assert "choose an eligible reviewer" in re.sub(r"\s+", " ", editing)
+    assert "resolve the discussion when addressed" in re.sub(r"\s+", " ", editing)
+    assert "Under **Open**, find the request" in re.sub(r"\s+", " ", editing)
     assert "confirm the linked issue is **Closed**" in editing
+    assert "## Create a merge request" in editing
+    assert "## Approve the merge request" in editing
+    assert '!!! note "Comment on the merge and close the issue"' in editing
     assert "Publish Branch" in editing
-    assert "merge request on GitLab" in editing
+    assert "**Code** > **Merge requests**" in editing
     assert '=== "Merge locally"' not in editing
 
 
@@ -757,10 +783,13 @@ def test_protection_section_is_absent_only_on_surrey_site() -> None:
     is_surrey = _detect_is_surrey()
 
     assert "#check-that-main-is-protected" not in source
-    assert "[4.2.1 Raise the issue](#raise-the-issue-and-create-a-branch)" in source
+    assert "[10.2.1 Raise an issue](#raise-the-issue-and-create-a-branch)" in source
     assert (page.select_one("#check-that-main-is-protected") is None) == is_surrey
     issue_heading = page.select_one("#raise-the-issue-and-create-a-branch")
     assert issue_heading is not None
+    branch_heading = page.select_one("#create-a-branch-and-publish")
+    assert branch_heading is not None
+    assert issue_heading.sourceline < branch_heading.sourceline
     if is_surrey:
         assert not page.select('a[href="#check-that-main-is-protected"]')
 
