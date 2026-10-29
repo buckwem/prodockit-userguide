@@ -28,6 +28,8 @@ Commands are explained for authors who are new to Git or the terminal.
 
 ## Follow the everyday cycle
 
+### Development Lifecycle
+
 /// steps
 
 //// step | Start with an issue
@@ -113,6 +115,8 @@ The example below follows one issue from the first description through its
 Markdown edit, diagram, review, and merge.
 
 {% if is_surrey %}
+### Development Measurements
+
 For individual work, use this table to find the action behind each badge.
 These are working practices, not a live scorecard; check your module dashboard
 for the measurement definitions and your own results.
