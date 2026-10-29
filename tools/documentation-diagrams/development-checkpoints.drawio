@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" modified="2026-10-29T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="development-checkpoints" name="Development checkpoints">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1340" pageHeight="550" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="phase1" value="Setup to midpoint" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#194B69;strokeColor=#194B69;fontColor=#FFFFFF;fontFamily=Arial;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="240" y="25" width="300" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="phase2" value="Midpoint" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#194B69;strokeColor=#194B69;fontColor=#FFFFFF;fontFamily=Arial;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="580" y="25" width="300" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="phase3" value="Midpoint to deadline" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#194B69;strokeColor=#194B69;fontColor=#FFFFFF;fontFamily=Arial;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="25" width="300" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="row-protection" value="Protected main" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF2F5;strokeColor=#7B9DAD;strokeWidth=2;fontColor=#173447;fontFamily=Arial;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="25" y="145" width="170" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="row-ci" value="CI validation" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF2F5;strokeColor=#7B9DAD;strokeWidth=2;fontColor=#173447;fontFamily=Arial;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="25" y="335" width="170" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="protect-setup" value="Enable protection&#10;on main" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#E7F7ED;strokeColor=#18A85C;strokeWidth=2;fontColor=#183B2B;fontFamily=Arial;fontSize=21;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="240" y="145" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="protect-mid" value="M2.2&#10;Protected by midpoint" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#E7F7ED;strokeColor=#18A85C;strokeWidth=2;fontColor=#183B2B;fontFamily=Arial;fontSize=21;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="580" y="145" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="protect-late" value="M2.3&#10;Keep protection enabled" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#E7F7ED;strokeColor=#18A85C;strokeWidth=2;fontColor=#183B2B;fontFamily=Arial;fontSize=21;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="145" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ci-setup" value="M3.2&#10;Latest pipeline passes&#10;during setup weeks" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF3FF;strokeColor=#3982C6;strokeWidth=2;fontColor=#153B61;fontFamily=Arial;fontSize=21;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="240" y="335" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ci-mid" value="M3.1&#10;CI present on main&#10;by midpoint" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF3FF;strokeColor=#3982C6;strokeWidth=2;fontColor=#153B61;fontFamily=Arial;fontSize=21;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="580" y="335" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ci-late" value="M3.4&#10;Latest pipeline passes&#10;during later weeks" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF3FF;strokeColor=#3982C6;strokeWidth=2;fontColor=#153B61;fontFamily=Arial;fontSize=21;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="335" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#365266;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="protect-setup" target="protect-mid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#365266;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="protect-mid" target="protect-late">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#365266;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ci-setup" target="ci-mid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#365266;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ci-mid" target="ci-late">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

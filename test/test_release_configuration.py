@@ -467,6 +467,8 @@ def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
 
 
 def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
+    from macros import _detect_is_surrey
+
     source = _text("docs/startediting.md")
     expected = {
         "M2.1": "protected pull or merge request route",
@@ -492,6 +494,13 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
 
     assert "### Development Measurements" in surrey_content
     assert "### Development Measurements" not in standard_content
+    assert r"\ref{figure-development-checkpoints}" in surrey_content
+    assert r"\ref{table-development-measurements}" in surrey_content
+    assert "attrs: {id: figure-development-checkpoints}" in surrey_content
+    assert "attrs: {id: table-development-measurements}" in surrey_content
+    assert surrey_content.index("images/development-checkpoints.png") < surrey_content.index(
+        "| Measurement | Section | Specific task |"
+    )
     assert parsed.select_one(".measurement-badge--example").get_text() == "M"
     assert {badge.get_text() for badge in badges} == set(expected)
     table = surrey_content.split("| Measurement | Section | Specific task |", 1)[1].split(
@@ -510,6 +519,19 @@ def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
     assert "academic development" not in standard_content
     assert "module dashboard" in surrey_content
     assert "https://" not in "\n".join(str(badge) for badge in badges)
+
+    diagram = ROOT / "tools/documentation-diagrams/development-checkpoints.drawio"
+    exported = ROOT / "docs/images/development-checkpoints.png"
+    assert ET.parse(diagram).getroot().tag == "mxfile"
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1200
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    heading = page.select_one("#development-measurements")
+    assert (heading is not None) == _detect_is_surrey()
+    assert (page.select_one("#figure-development-checkpoints") is not None) == _detect_is_surrey()
+    assert (page.select_one("#table-development-measurements") is not None) == _detect_is_surrey()
 
 
 def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:

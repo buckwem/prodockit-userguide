@@ -117,9 +117,21 @@ Markdown edit, diagram, review, and merge.
 {% if is_surrey %}
 ### Development Measurements
 
-For individual work, use this table to find the action behind each badge.
-These are working practices, not a live scorecard; check your module dashboard
-for the measurement definitions and your own results.
+Some measurements check a milestone; others check whether a practice continues
+through a period. \ref{figure-development-checkpoints} shows the branch
+protection and CI checks from setup to the deadline. Configure CI before its
+first pipeline check; the midpoint check confirms that it is present on `main`.
+
+![Timeline with two rows: protect main before midpoint, verify M2.2 at midpoint and sustain protection for M2.3 through the deadline; check the latest CI pipeline for M3.2 before midpoint, verify M3.1 CI is present on main at midpoint, and check the latest pipeline for M3.4 afterwards.](images/development-checkpoints.png){ width="100%" }
+/// figure-caption
+    attrs: {id: figure-development-checkpoints}
+
+Development checkpoints for protected `main` and passing CI
+///
+
+For individual work, \ref{table-development-measurements} maps each badge to
+an action in this guide. These are working practices, not a live scorecard;
+check your module dashboard for the full definitions and your own results.
 
 | Measurement | Section | Specific task |
 | --- | --- | --- |
@@ -135,6 +147,11 @@ for the measurement definitions and your own results.
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [10.2.1 Raise an issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [10.7 Create a merge request](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
 | <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [10.8 Approve the merge request](#approve-the-merge-request) | Resolve review discussions before merging the request. |
+/// table-caption | <
+    attrs: {id: table-development-measurements}
+
+Individual development measurements and the Edit tasks that support them
+///
 
 The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment
 validation checks are not covered by these editing steps. Follow your module's
