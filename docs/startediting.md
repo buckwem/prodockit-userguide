@@ -30,44 +30,59 @@ Commands are explained for authors who are new to Git or the terminal.
 
 /// steps
 
-//// step | Record the task
+//// step | Start with an issue
 
 Raise an issue describing the change and what a finished result must include.
-Create a branch for that issue before editing.
+Record its number before starting work.
+
+////
+
+//// step | Create and publish a branch
+
+Create an issue branch from `main` and publish it to GitLab or GitHub before
+editing.
 
 ////
 
 //// step | Edit the source
 
-Update the Markdown file in Visual Studio Code and review the changed lines.
+Complete any initial template configuration, then update the Markdown and
+diagrams in Visual Studio Code. Review the changed files.
 
 ////
 
-//// step | Preview the website
+//// step | Build, preview, and review locally
 
-Open the project environment and use `zensical serve` while editing Markdown.
-
-////
-
-//// step | Build and check the documents
-
-Generate the PDF and any source bundle locally. Check them before publishing.
+Build and inspect the PDF and any source bundle when available. Start
+`zensical serve` to check the website, then complete the pre-commit checklist.
 
 ////
 
-//// step | Review, save, and propose the change
+//// step | Save, commit, and push
 
-Use the pre-commit checklist, then commit a labelled snapshot on your issue
-branch and push it through SSH to
-GitLab or GitHub. Open a merge or pull request into the protected `main`
-branch, linking it to the issue.
+Save your files, stage only the changes for the issue, commit them with a clear
+message, and sync the published branch over SSH.
 
 ////
 
-//// step | Confirm closure and publication
+//// step | Create a merge or pull request
 
-After the merge, check that the issue closed, wait for the automated build to
-pass, then open the published website and PDF.
+Open a request from the issue branch into protected `main`. Describe the work,
+include `Close #12` with your own issue number, and check the changed files.
+
+////
+
+//// step | Review, approve, and merge
+
+Check the latest pipeline and review comments. Obtain approval where required,
+merge the request, and close the linked issue if it remains open.
+
+////
+
+//// step | Confirm the published result
+
+Wait for the automated build to pass, then inspect the published website and
+PDF and confirm the issue is closed.
 
 ////
 

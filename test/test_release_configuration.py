@@ -584,7 +584,8 @@ def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     cycle = source.split("## Follow the everyday cycle", 1)[1].split(
         "## Start with an issue", 1
     )[0]
-    assert cycle.index("//// step | Confirm closure and publication") < cycle.index(
+    assert cycle.count("//// step |") == 8
+    assert cycle.index("//// step | Confirm the published result") < cycle.index(
         r"\ref{figure-edit-process}"
     )
     assert "attrs: {id: figure-edit-process}" in cycle
@@ -599,6 +600,11 @@ def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
     assert int.from_bytes(png[16:20], "big") >= 1200
 
     page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    cycle_heading = page.select_one("#follow-the-everyday-cycle")
+    assert cycle_heading is not None
+    cycle_steps = cycle_heading.find_next("ol", class_="prodockit-steps")
+    assert cycle_steps is not None
+    assert len(cycle_steps.find_all("li", recursive=False)) == 8
     figure = page.select_one("figure#figure-edit-process")
     assert figure is not None
     image = figure.select_one('img[src="../images/edit-process.png"]')
