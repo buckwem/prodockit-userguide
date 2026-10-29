@@ -30,44 +30,59 @@ Commands are explained for authors who are new to Git or the terminal.
 
 /// steps
 
-//// step | Record the task
+//// step | Start with an issue
 
 Raise an issue describing the change and what a finished result must include.
-Create a branch for that issue before editing.
+Record its number before starting work.
+
+////
+
+//// step | Create and publish a branch
+
+Create an issue branch from `main` and publish it to GitLab or GitHub before
+editing.
 
 ////
 
 //// step | Edit the source
 
-Update the Markdown file in Visual Studio Code and review the changed lines.
+Complete any initial template configuration, then update the Markdown and
+diagrams in Visual Studio Code. Review the changed files.
 
 ////
 
-//// step | Preview the website
+//// step | Build, preview, and review locally
 
-Open the project environment and use `zensical serve` while editing Markdown.
-
-////
-
-//// step | Build and check the documents
-
-Generate the PDF and any source bundle locally. Check them before publishing.
+Build and inspect the PDF and any source bundle when available. Start
+`zensical serve` to check the website, then complete the pre-commit checklist.
 
 ////
 
-//// step | Review, save, and propose the change
+//// step | Save, commit, and push
 
-Use the pre-commit checklist, then commit a labelled snapshot on your issue
-branch and push it through SSH to
-GitLab or GitHub. Open a merge or pull request into the protected `main`
-branch, linking it to the issue.
+Save your files, stage only the changes for the issue, commit them with a clear
+message, and sync the published branch over SSH.
 
 ////
 
-//// step | Confirm closure and publication
+//// step | Create a merge or pull request
 
-After the merge, check that the issue closed, wait for the automated build to
-pass, then open the published website and PDF.
+Open a request from the issue branch into protected `main`. Describe the work,
+include `Close #12` with your own issue number, and check the changed files.
+
+////
+
+//// step | Review, approve, and merge
+
+Check the latest pipeline and review comments. Obtain approval where required,
+merge the request, and close the linked issue if it remains open.
+
+////
+
+//// step | Confirm the published result
+
+Wait for the automated build to pass, then inspect the published website and
+PDF and confirm the issue is closed.
 
 ////
 
@@ -76,9 +91,11 @@ pass, then open the published website and PDF.
 \ref{figure-edit-process} summarises the hand-offs between the tools
 used in the steps above. In this GitLab example, the issue and merge request
 live in GitLab, the branch and document edits happen in Visual Studio Code,
-and the pipeline publishes the accepted change.
+and the pipeline publishes the accepted change. The 10.x labels follow the
+Surrey edition of this guide; on the public site, follow the same steps by
+their titles.
 
-![Swimlane diagram: open an issue in GitLab Work Items; create a branch, edit, commit and push in Visual Studio Code; open and approve a merge request in GitLab; then let the GitLab pipeline deploy Pages.](images/edit-process.png){ width="100%" }
+![Swimlane diagram: open an issue in GitLab Work Items; create and publish a branch, edit, preview and check, then commit and sync in Visual Studio Code; create and approve a merge request in GitLab; finally, let the GitLab pipeline deploy Pages.](images/edit-process.png){ width="100%" }
 /// figure-caption
     attrs: {id: figure-edit-process}
 
@@ -87,10 +104,10 @@ The editing workflow across GitLab, Visual Studio Code, and the Pages pipeline
 
 On GitHub, the equivalent tools are **Issues**, **Pull requests**, and
 **GitHub Actions/Pages**; the Visual Studio Code steps are the same. The
-approval box applies when your project requires an eligible reviewer. The
-diagram omits the local preview and document checks for space: do those before
-committing, then confirm the issue is closed and inspect the published website
-and PDF after the merge.
+preview-and-check box includes the local website and document checks before
+committing. The approval box applies when your project requires an eligible
+reviewer. After the merge, confirm the issue is closed and inspect the
+published website and PDF.
 
 The example below follows one issue from the first description through its
 Markdown edit, diagram, review, and merge.
@@ -102,18 +119,18 @@ for the measurement definitions and your own results.
 
 | Measurement | Section | Specific task |
 | --- | --- | --- |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.1: protected pull or merge request route" title="M2.1 — protected PR/MR route">M2.1</span> — PR/MR route | [4.7 Review and merge](#merging-your-branch-back) | Bring changes into `main` through a merge or pull request. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span> — Protected by midpoint | [4.7 Review and merge](#merging-your-branch-back) | Check that `main` is protected by the module midpoint. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span> — Protection sustained | [4.7 Review and merge](#merging-your-branch-back) | Keep protection enabled through the deadline; recheck after settings change. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M2.4: no direct push to main" title="M2.4 — no direct push">M2.4</span> — No direct push | [4.6 Save and push](#synchronise-your-updates) | Push the issue branch, not directly to `main`. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span> — CI by midpoint | [4.8.1 Automated build](#automated-builds) | Have a CI configuration on `main` by the midpoint. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span> — CI sustained | [4.8.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the setup-to-midpoint weeks. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span> — Checks required | [4.7 Review and merge](#merging-your-branch-back) | Require passing checks or a pipeline before a request can merge. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span> — Validation passes | [4.8.1 Automated build](#automated-builds) | Check that the latest recorded pipeline succeeds during the midpoint-to-deadline weeks. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span> — Work-item link | [4.7 Review and merge](#merging-your-branch-back) | Link the issue in the request description, for example with `Closes #12`. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [4.2.1 Raise the issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [4.7 Review and merge](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
-| <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [4.7 Review and merge](#merging-your-branch-back) | Resolve review discussions before merging the request. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.1: protected pull or merge request route" title="M2.1 — protected PR/MR route">M2.1</span> — PR/MR route | [10.7 Create a merge request](#merging-your-branch-back) | Bring changes into `main` through a merge or pull request. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.2: protected by midpoint" title="M2.2 — protected by midpoint">M2.2</span> — Protected by midpoint | [10.8 Approve the merge request](#approve-the-merge-request) | Check that `main` is protected by the module midpoint. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.3: protection sustained" title="M2.3 — protection sustained">M2.3</span> — Protection sustained | [10.8 Approve the merge request](#approve-the-merge-request) | Keep protection enabled through the deadline; recheck after settings change. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M2.4: no direct push to main" title="M2.4 — no direct push">M2.4</span> — No direct push | [10.6.1 Save, commit and push](#save-commit-and-push) | Push the issue branch, not directly to `main`. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.1: CI configured by midpoint" title="M3.1 — CI configured by midpoint">M3.1</span> — CI by midpoint | [10.9.1 What the automated build does](#automated-builds) | Have a CI configuration on `main` by the midpoint. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.2: CI sustained through midpoint" title="M3.2 — CI sustained through midpoint">M3.2</span> — CI sustained | [10.9.1 What the automated build does](#automated-builds) | Check that the latest recorded pipeline succeeds during the setup-to-midpoint weeks. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.3: passing checks required before merge" title="M3.3 — passing checks required before merge">M3.3</span> — Checks required | [10.8 Approve the merge request](#approve-the-merge-request) | Require passing checks or a pipeline before a request can merge. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M3.4: latest validation passes through deadline" title="M3.4 — latest validation passes through deadline">M3.4</span> — Validation passes | [10.9.1 What the automated build does](#automated-builds) | Check that the latest recorded pipeline succeeds during the midpoint-to-deadline weeks. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span> — Work-item link | [10.7 Create a merge request](#merging-your-branch-back) | Link the issue in the request description, for example with `Close #12`. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span> — Work precedes change | [10.2.1 Raise an issue](#raise-the-issue-and-create-a-branch) | Create the issue before opening the request; server creation times are compared. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.3: individual work uses the merge or pull request route" title="M4.3 — individual PR/MR route">M4.3</span> — Individual PR/MR route | [10.7 Create a merge request](#merging-your-branch-back) | Use the request route for changes to `main`; individual work is not scored on a second-person approval. |
+| <span class="measurement-badge" role="img" aria-label="Measurement M4.4: feedback resolved" title="M4.4 — feedback resolved">M4.4</span> — Feedback resolved | [10.8 Approve the merge request](#approve-the-merge-request) | Resolve review discussions before merging the request. |
 
 The M1.1–M1.4 delivery checkpoints and M5.1–M5.4 clean-environment
 validation checks are not covered by these editing steps. Follow your module's
@@ -121,7 +138,7 @@ scheduled checkpoint and validator instructions; a local preview or build does
 not by itself provide that evidence.
 {% endif %}
 
-## Start with an issue and edit the source
+## Start with an issue
 
 An issue records the work before the first edit, so the branch and review have
 a clear purpose. For example, suppose you need to write a **System context**
@@ -165,7 +182,7 @@ repository-setting changes and before later merges; protection and passing CI
 need to persist, not just exist on the day the project was created.
 {% endif %}
 
-### Raise the issue and create a branch
+### Raise an issue {: #raise-the-issue-and-create-a-branch }
 
 Open your project in a browser and start a new issue:
 
@@ -191,13 +208,7 @@ Open your project in a browser and start a new issue:
         caption; check it in both the website and PDF.
 
 2. Create the issue and note its number. This example uses `#12`; use the
-    number your project gives you. Before editing, create a branch from `main`
-    named after the issue, such as `12-system-context`. In Visual Studio Code,
-    click the active branch name in the bottom-left status bar and select
-    **:material-plus: Create new branch...**{: .bg-blue}. If the branch name
-    is missing, follow the [branch-name recovery note](#synchronise-your-updates)
-    under **Save and push your updates**.
-    The [command-line route](#synchronise-your-updates) is available too.
+    number your project gives you.
 
 Keep the issue open while you work. The merge request or pull request will
 close it when the finished change reaches `main`.
@@ -207,29 +218,63 @@ the dashboard compares their server-recorded creation times
 <span class="measurement-badge" role="img" aria-label="Measurement M4.2: work item precedes change" title="M4.2 — work item precedes change">M4.2</span>.
 {% endif %}
 
-### Edit and review the Markdown file in Visual Studio Code
+## Create a branch and publish
 
-1. Open the project's folder with **File** > **Open Folder...**. In the
-    **Explorer** sidebar, expand `docs/` and select the `.md` file containing
-    the chapter. If the section needs its own new page, create the Markdown
-    file under `docs/` and add it to the project's navigation in
-    `zensical.toml`.
-2. In the editor, add a **System context** heading at the right level and
-    write a short explanation of what is inside the system boundary, who uses
-    the system, and which outside systems connect to it. Draw the diagram in
-    your project's chosen tool. Save its editable source in the project, export
-    an image under `docs/`, and insert it in the Markdown with descriptive
-    alternative text and a caption as shown in the next section.
-3. Save the Markdown with `Ctrl+S` on Windows/Linux or `Cmd+S` on macOS. To
-    see the file as ordinary Markdown beside its source, press `Ctrl+K V` on
-    Windows/Linux or `Cmd+K V` on macOS. This built-in preview is useful for
-    prose and basic formatting, but it does not reproduce all of Zensical's
-    captions, numbering, or site styling; check those in the browser preview
-    in the next section.
-4. Click the :gitlab-branch: **Source Control** icon and select the Markdown
-    file under **Changes**. The side-by-side diff shows the earlier version
-    beside your edits. Review the diagram source and exported image there as
-    well, and make sure unrelated files are not part of the change.
+Before editing, create a branch from `main` named after the issue, such as
+`12-system-context`. A branch keeps `main` stable while you work. Publish it
+so the issue branch is available on GitLab or GitHub for later commits and
+review.
+
+=== ":material-microsoft-visual-studio-code: Visual Studio Code"
+
+    1. Click the active branch name in the bottom-left status bar. Make sure
+        you are starting from `main`, then select
+        **:material-plus: Create new branch...**{: .bg-blue} and enter a name
+        such as `12-system-context`. Visual Studio Code switches to the new
+        branch.
+
+        !!! note "Restoring a missing active branch name"
+            If no branch name appears, right-click the status bar and turn on
+            **Source Control Checkout**. If it still does not appear, open
+            **View** > **Terminal** and run `git branch --show-current`.
+            If the result is `main`, use the Command Palette
+            (`Ctrl+Shift+P` / `Cmd+Shift+P`) to run **Git: Create Branch...**.
+            If Git says this is not a repository, open the cloned project
+            folder with **File** > **Open Folder...**, then try again.
+
+    2. Open :gitlab-branch: **Source Control** and select
+        **Publish Branch**{: .bg-blue} to push the new branch.
+
+=== ":material-console: Command line"
+
+    1. In your project's terminal, switch to `main` and create the issue
+        branch:
+
+        ```bash
+        git switch main
+        git switch -c 12-system-context
+        ```
+
+    2. Publish the branch and set its upstream for later pushes:
+
+        ```bash
+        git push -u origin 12-system-context
+        ```
+
+        Substitute the branch name you chose if it differs.
+
+You can also create the branch from the issue in GitLab or GitHub. GitLab
+offers **Create branch** on an issue; GitHub offers it under **Development**.
+Check out that branch locally before editing.
+
+If you have already made uncommitted edits on `main`, create the branch before
+committing; your edits move with you. If you have already committed on `main`,
+follow the [rejected-push recovery](#if-you-committed-and-tried-to-push-from-main).
+
+## Edit the source
+
+Use the issue branch to configure the template where applicable, then edit
+your Markdown and add any diagrams or images the document needs.
 
 {% if is_surrey %}
 ### Perform initial template configuration
@@ -324,6 +369,31 @@ In `docs/index.md`:
     different presentation.
 {% endif %}
 
+### Edit and review the Markdown file in Visual Studio Code
+
+1. Open the project's folder with **File** > **Open Folder...**. In the
+    **Explorer** sidebar, expand `docs/` and select the `.md` file containing
+    the chapter. If the section needs its own new page, create the Markdown
+    file under `docs/` and add it to the project's navigation in
+    `zensical.toml`.
+2. In the editor, add a **System context** heading at the right level and
+    write a short explanation of what is inside the system boundary, who uses
+    the system, and which outside systems connect to it. Draw the diagram in
+    your project's chosen tool. Save its editable source in the project, export
+    an image under `docs/`, and insert it in the Markdown with descriptive
+    alternative text and a caption as shown in the next section.
+3. Save the Markdown with `Ctrl+S` on Windows/Linux or `Cmd+S` on macOS. To
+    see the file as ordinary Markdown beside its source, press `Ctrl+K V` on
+    Windows/Linux or `Cmd+K V` on macOS. This built-in preview is useful for
+    prose and basic formatting, but it does not reproduce all of Zensical's
+    captions, numbering, or site styling; check those later with the
+    [preview server](#start-the-preview-server).
+4. Click the :gitlab-branch: **Source Control** icon and select the Markdown
+    file under **Changes**. The side-by-side diff shows the earlier version
+    beside your edits. Review the diagram source and exported image there as
+    well, and make sure unrelated files are not part of the change.
+
+
 ### Insert an image with a caption
 
 Keep the drawing you can edit and the image you publish as separate files. For
@@ -395,11 +465,12 @@ The portal's external interactions are shown in \ref{figure-system-context-examp
 System context of the document portal
 ///
 
-Open this page with `zensical serve` and check the image, numbered caption,
-and reference in the website. Then build the PDF as described under
+Build the PDF as described under
 [Build and check the downloadable documents](#build-the-pdf) and check that
 the same image fits, its smallest labels remain readable, and the caption and
-reference have the expected number. Visual Studio Code's built-in Markdown
+reference have the expected number. Then [start the preview server](#start-the-preview-server)
+and check the image, numbered caption, and reference in the website.
+Visual Studio Code's built-in Markdown
 preview does not verify the final caption rendering. For more options, see
 [Add a caption](zensicalbasics.md#images),
 [Caption a figure](customisecontent.md#caption-a-figure), and the
@@ -410,11 +481,13 @@ Code. Make sure the changed Markdown file, the exported PNG, and its editable
 `.pptx` or `.drawio` source are all included on your issue branch; do not
 commit only the image and leave the drawing behind.
 
-## Preview the website locally
+## Build, preview and review locally {: #preview-the-website-locally }
 
-\index{Tasks!Preview a website} locally with Zensical while you write, without
-needing to push anything. This lets you check headings, links, images,
-diagrams, and PDF-only/web-only content before anyone else sees them.
+Build the downloadable documents, then \index{Tasks!Preview a website} locally
+with Zensical while you write, without needing to push anything. These checks
+let you inspect the PDF, headings, links, images, diagrams, and content that
+appears only on the website or in the PDF before anyone else sees it. Finish
+with the review checklist before committing.
 
 ### Open a terminal
 
@@ -515,30 +588,11 @@ activation and package commands throughout the guide and verify it selects
 Python 3.14 before continuing.
 
 
-### Start the preview server
+### Build and check the downloadable documents {: #build-the-pdf }
 
-1. In your terminal (with the virtual environment active), start the local preview server:
-
-    ```bash
-    zensical serve
-    ```
-
-2. Wait for it to finish starting - you'll see some log messages ending with a local web address.
-3. Open that address (typically [http://127.0.0.1:8000](http://127.0.0.1:8000)) in your browser to view your documentation.
-
-Leave `zensical serve` running in its terminal while you write - it watches your files and automatically rebuilds and refreshes the browser whenever you save a change, so you don't need to restart it after every edit. To stop it, click back into its terminal and press `Ctrl+C`.
-
-!!! tip
-    `zensical serve` only builds the website - it does not update
-    `docs/site_documentation.pdf`. Build and check the downloadable documents
-    separately before publishing.
-
-## Build and check the downloadable documents {: #build-the-pdf }
-
-Build downloadable documents separately because `zensical serve`
-updates the website preview but does not regenerate the PDF or
-source bundle. If your local environment can build them, do so before
-committing a change that should appear in them. Otherwise, follow the
+The preview server in the next subsection updates the website but does not
+regenerate the PDF or source bundle. Build these documents before starting
+the preview if your local environment supports them. Otherwise, follow the
 [pre-commit checklist](#review-before-committing) and check the PDF after the
 merge.
 
@@ -564,8 +618,8 @@ merge.
 
 The front-page download buttons already point to these files. They are generated
 locally and excluded from Git, so a fresh clone does not contain them and a
-normal commit does not upload them. Refresh the local website after building to
-test its download buttons.
+normal commit does not upload them. After starting the preview server below,
+test the download buttons in the local website.
 
 !!! note "What the source bundle contains"
 
@@ -580,7 +634,25 @@ Run these commands again whenever the downloadable documents need to reflect
 new edits. The automated build repeats them after a change reaches the default
 branch.
 
-## Review your work before committing {: #review-before-committing }
+### Start the preview server
+
+1. In your terminal (with the virtual environment active), start the local preview server:
+
+    ```bash
+    zensical serve
+    ```
+
+2. Wait for it to finish starting - you'll see some log messages ending with a local web address.
+3. Open that address (typically [http://127.0.0.1:8000](http://127.0.0.1:8000)) in your browser to view your documentation.
+
+Leave `zensical serve` running in its terminal while you write - it watches your files and automatically rebuilds and refreshes the browser whenever you save a change, so you don't need to restart it after every edit. To stop it, click back into its terminal and press `Ctrl+C`.
+
+!!! tip
+    `zensical serve` updates the website, but not
+    `docs/site_documentation.pdf`. After further edits, rerun the build
+    commands above before checking the downloadable documents again.
+
+### Review your work before committing {: #review-before-committing }
 
 Use this checklist after editing and building, but before you stage and commit
 the change. Check the result against the issue's description and acceptance
@@ -627,33 +699,28 @@ validation instructions and retain the required evidence.
     maintenance update can change generated output even when none of the
     document's Markdown files changed.
 
-## Save and push your updates {: #synchronise-your-updates }
+## Save and share your changes {: #synchronise-your-updates }
 
-\index{Tasks!Save and push changes} you want to keep. Stay on the
-\index{Git!branch} you created for the issue. If you have not made one yet,
-create it before committing because `main` is protected. Then
-\index{Git!commit} it (record a labelled snapshot in the project's history)
-and **push** the branch (upload it with \index{Git!push} to GitLab or GitHub).
-You can use Visual Studio Code's Source Control view or type Git commands
-directly. If you've already edited files on `main`, creating a branch carries
-your uncommitted edits with you.
+After reviewing your work, save the files, commit the changes you want to keep,
+and push the commit to the issue branch you published earlier. Follow the
+[normal procedure](#save-commit-and-push) below. If a push from `main` is
+rejected, use the [protected-branch recovery](#if-you-committed-and-tried-to-push-from-main).
+If **Sync Changes** cannot find the remote branch, use the
+[missing-branch recovery](#if-sync-changes-cannot-find-the-branch-on-origin).
+
+### Save, commit and push
+
+\index{Tasks!Save and push changes} on the issue \index{Git!branch} you
+[created and published earlier](#create-a-branch-and-publish). Save your files,
+stage only the changes for this issue, \index{Git!commit} them (record a
+labelled snapshot in the project's history), then \index{Git!push} the commit
+to GitLab or GitHub. You can use Visual Studio Code's Source Control view or
+type Git commands directly.
 
 === ":material-microsoft-visual-studio-code: Visual Studio Code"
 
     1. Make sure you've saved your changed files (a filled circle next to a file name in the Explorer tab means it has unsaved changes - select the file and press `Ctrl+S` / `Cmd+S`).
-    2. Check the branch name in the bottom-left of the status bar. If it says `main`, click it, select **:material-plus: Create new branch...**{: .bg-blue}, and enter a name that identifies your issue, such as `12-system-context`. Visual Studio Code switches to that branch, taking your uncommitted edits with it. If you are already on the issue branch, keep using it.
-
-        !!! note "Restoring a missing active branch name"
-            If no branch name appears, right-click the status bar and turn on
-            **Source Control Checkout**.
-
-            If it still does not appear, open the integrated terminal
-            (**View** > **Terminal**) and run `git branch --show-current`.
-            If the result is `main`, use the Command Palette
-            (`Ctrl+Shift+P` / `Cmd+Shift+P`) to run **Git: Create Branch...**.
-            If Git says this is not a repository, open the cloned project
-            folder with **File** > **Open Folder...**, then try again.
-    3. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file. Select each file to review its diff, then stage only the files for this issue with the **:material-plus: Stage Changes** control. For the example, include the Markdown chapter, exported diagram, and editable drawing source.
+    2. Click the :gitlab-branch: **Source Control** icon in the left-hand sidebar. You'll see a list of every changed and new file. Select each file to review its diff, then stage only the files for this issue with the **:material-plus: Stage Changes** control. For the example, include the Markdown chapter, exported diagram, and editable drawing source.
 
         ![Initial commit](images/initial-commit.png){ width="40%" .screenshot }
         /// figure-caption
@@ -662,8 +729,8 @@ your uncommitted edits with you.
         Initial commit
         ///
 
-    4. Type a short, descriptive message in the message box (for example, "Write system context section and diagram") - this is the label future-you (or a marker) will see when looking back through the history.
-    5. Press **Commit**{: .bg-blue} to record the staged files on your branch. This records the snapshot on your computer only - you haven't sent anything anywhere yet.
+    3. Type a short, descriptive message in the message box (for example, "Write system context section and diagram") - this is the label future-you (or a marker) will see when looking back through the history.
+    4. Press **Commit**{: .bg-blue} to record the staged files on your branch. This records the snapshot on your computer only - you haven't sent anything anywhere yet.
 
         ![Commit changes](images/commit-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -672,7 +739,7 @@ your uncommitted edits with you.
         Commit changes
         ///
 
-    6. Press **Publish Branch**{: .bg-blue} to push a new branch to GitLab or GitHub. For later commits on the same branch, use **Sync Changes**{: .bg-blue}. If Sync Changes reports that it cannot find the remote branch, follow the [missing-branch recovery](#if-sync-changes-cannot-find-the-branch-on-origin).
+    5. Press **Sync Changes**{: .bg-blue} to send the commit to your published branch. Use **Sync Changes** again for further commits on the same branch. If it reports that it cannot find the remote branch, follow the [missing-branch recovery](#if-sync-changes-cannot-find-the-branch-on-origin).
 
         ![Sync changes](images/sync-changes.png){ width="40%" .screenshot }
         /// figure-caption
@@ -683,22 +750,13 @@ your uncommitted edits with you.
 
 === ":material-console: Command line"
 
-    1. Check your current branch and what's changed:
+    1. Check what's changed:
 
         ```bash
-        git branch --show-current
         git status
         ```
 
-    2. If you are on `main`, create and switch to a branch named for the issue before committing. Any uncommitted edits come with you:
-
-        ```bash
-        git switch -c 12-system-context
-        ```
-
-        If you are already on a change branch, stay on it.
-
-    3. Stage the files for this issue - "staging" means marking them so Git includes them in the next commit. Use the paths shown by `git status`; for example, stage the changed Markdown file, exported image, and editable drawing source, but leave unrelated files out:
+    2. Stage the files for this issue - "staging" means marking them so Git includes them in the next commit. Use the paths shown by `git status`; for example, stage the changed Markdown file, exported image, and editable drawing source, but leave unrelated files out:
 
         ```bash
         git add docs/section1.md
@@ -709,7 +767,7 @@ your uncommitted edits with you.
 
         Replace those example paths with the locations used by your project.
 
-    4. Commit the staged changes with a short, descriptive message:
+    3. Commit the staged changes with a short, descriptive message:
 
         ```bash
         git commit -m "Write system context section and diagram"
@@ -717,21 +775,16 @@ your uncommitted edits with you.
 
         This records the snapshot on your computer only - you haven't sent anything anywhere yet.
 
-    5. Push the new branch to your GitLab or GitHub remote, telling Git to track it there:
+    4. Push the commit to the branch you published earlier:
 
         ```bash
-        git push -u origin 12-system-context
+        git push
         ```
 
-        Substitute your branch name if it differs. For later commits on the
-        same branch, a plain `git push` is enough.
+        Use `git push` again for further commits on the same branch.
 
-Pushing a branch does not publish the website or close its issue. Open a merge
-request on GitLab or a pull request on GitHub from your branch into `main`,
-include `Closes #12` in its description (using your actual issue number), wait
-for the checks, and merge it when approved. The protected `main` branch cannot
-be pushed to directly. See [Merging your branch back](#merging-your-branch-back)
-for the review steps.
+Pushing commits does not publish the website or close the issue. Continue with
+[reviewing and merging the branch](#merging-your-branch-back).
 
 !!! note
     Commit little and often. Small, clearly described commits are easier to review, easier to revert if something goes wrong, and give you a much more useful history to look back on than one huge commit at the deadline.
@@ -811,39 +864,112 @@ select **Sync Changes** or force-push.
     the upstream for later syncs. If the push fails, keep the error message
     and ask your maintainer; do not force-push.
 
-## Review and merge the issue branch
+<span id="review-and-merge-the-issue-branch"></span>
+{% if is_surrey %}
+## Create a merge request {: #merging-your-branch-back }
+{% else %}
+## Create a merge or pull request {: #merging-your-branch-back }
+{% endif %}
 
-The issue created at the start describes the intended result. Keep its branch
-and review connected to that issue until the change reaches protected `main`.
+The issue created at the start describes the intended result. Create a request
+from its published branch into protected `main`, so the change and its review
+stay connected to that issue.
 
-### Working with branches
+=== ":fontawesome-brands-gitlab: GitLab"
 
-A branch is a parallel, isolated line of work that keeps `main` (and therefore
-the published website and PDF) stable while you edit. Follow
-[Save and push your updates](#synchronise-your-updates) to create and publish
-one if you did not create it from the issue before editing.
+    1. Open the project on GitLab. Select **Code** > **Merge requests** >
+        **New merge request**. If GitLab offers **Create merge request** after
+        you push the branch, you can select that instead.
+    2. Choose your issue branch, such as `12-system-context`, as the **source**
+        and `main` as the **target**. Select **Compare branches and continue**.
+        Check that both branches belong to your project.
+    3. Give the request a clear title, such as **Write the system context
+        section and diagram**. In the description, summarise the Markdown and
+        diagram changes, what you checked locally, and any PDF check that must
+        wait until after the merge. Add the issue closing reference below.
+        Select a reviewer if your project requires one.
+    4. Select **Create merge request**. On the new request, open **Changes**
+        and confirm that only the intended Markdown, exported image, and
+        editable drawing source are included. Check the **Overview** for the
+        linked issue and the pipeline status.
 
-Creating the branch from the issue in GitLab or GitHub is another option:
-GitLab offers **Create branch** on an issue, while GitHub offers it under
-**Development**. Check out that branch locally before editing. Whatever
-method you use, put the closing reference in the merge/pull request
-description so reviewers can see the issue and its acceptance checklist.
+=== ":fontawesome-brands-github: GitHub"
+
+    1. Open **Pull requests** > **New pull request**. Set **base** to `main`
+        and **compare** to your issue branch.
+    2. Add a clear title and describe the change, local checks, and linked
+        issue. Request a review if your project requires one, then select
+        **Create pull request**.
+    3. Open **Files changed** and confirm that only the intended files are in
+        the request. Check the status checks before asking for approval.
+
+!!! note "Include the issue closing reference"
+    Add `Close #12` to the request description, replacing `12` with your own
+    issue number. This links the request to the issue and asks GitLab or GitHub
+    to close it when the request is merged into `main`. Keep the issue open
+    while the request is under review.
+
 {% if is_surrey %}
 That link also supplies the work-item evidence for
 <span class="measurement-badge" role="img" aria-label="Measurement M4.1: work item linkage" title="M4.1 — work item linkage">M4.1</span>.
 {% endif %}
 
-### Merging your branch back
+{% if is_surrey %}
+## Approve the merge request {: #approve-the-merge-request }
+{% else %}
+## Review and merge the request {: #approve-the-merge-request }
+{% endif %}
 
-Once you're happy with the branch, use the hosting service to merge it into
-protected `main`:
+Review the request and its checks before merging. Approval is recorded by an
+eligible reviewer when the project requires it; inviting someone to review is
+not the same as receiving approval.
 
-1. Open your project on GitLab or GitHub in a browser.
-2. Open a merge request (GitLab) or pull request (GitHub) from your issue branch into `main` - both platforms show a prompt for this as soon as you push a new branch, or you can start one from the **Merge requests**/**Pull requests** section of the sidebar.
-3. Describe the work and include `Closes #12` in the request description, replacing `12` with your issue number. This links the request to the issue and closes it when the change is merged into the default branch. Do not close the issue just because the branch was pushed or the request was opened.
-4. Compare the changed Markdown and diagram files with the issue's checklist. Check that the latest commit has a passing pipeline or required status checks. Respond to review comments, push revisions, and resolve discussions before merging. If your project requires approval, wait for an eligible reviewer to record it; an invitation alone is not an approval.
-5. Recheck that `main` still has the expected protections, then click **Merge**{: .bg-blue} on the merge/pull request page when it is ready. Do not bypass a failed check or try to merge locally and push directly to protected `main`.
-6. Confirm the issue is **Closed** and follow the [published-site checks](#confirm-the-published-website-and-documents). If the issue is still open, follow the recovery guidance there.
+=== ":fontawesome-brands-gitlab: GitLab"
+
+    1. Open your GitLab project in the browser. In the left sidebar, select
+        **Code** > **Merge requests**. Under **Open**, find the request by its
+        title or issue branch, such as `12-system-context`, and click its
+        title. If you have just selected **Create merge request**, you are
+        already on this page.
+    2. On **Overview**, check that the request merges your issue branch into
+        `main`. Scroll to the merge request widget to see the pipeline result,
+        approval status, conflicts, and unresolved threads. If the latest
+        pipeline failed, fix the cause on your issue branch and push the
+        correction before continuing.
+    3. Select **Changes** to inspect the diff. Compare the Markdown, exported
+        image, and editable drawing with the issue's checklist. A reviewer can
+        add a comment beside a changed line or start a review; the author
+        should reply to each comment and resolve the discussion when addressed.
+    4. If a correction is needed, edit locally, commit it, and use
+        **Sync Changes** in Visual Studio Code. Return to the merge request,
+        reload **Changes**, and wait for the new pipeline result before
+        approving or merging.
+    5. If approval is required and no reviewer is assigned, use **Reviewers**
+        > **Edit** in the right sidebar to choose an eligible reviewer. That
+        reviewer opens the request, checks **Changes**, then selects
+        **Approve** in the merge request widget. Check that GitLab shows the
+        required approvals as satisfied. If approval is not required, continue
+        once the review and checks are complete.
+    6. Return to **Overview**. Confirm that the latest pipeline passed, no
+        discussions or conflicts block the request, and `main` still has the
+        expected protection. Select **Merge**{: .bg-blue} in the request
+        widget, then confirm that GitLab shows **Merged** into `main`.
+
+=== ":fontawesome-brands-github: GitHub"
+
+    1. Check the pull request's **Files changed** and **Checks** tabs. Resolve
+        review comments, push any corrections, and wait for required checks.
+    2. If approval is required, wait for an eligible reviewer to submit an
+        approving review. Then select **Merge pull request** when the request
+        is ready and confirm that it merged into `main`.
+
+!!! note "Comment on the merge and close the issue"
+    After approval, where required, and the merge, comment on the merged
+    request to confirm the outcome. Add a comment to the linked issue with
+    a link to that request and a short summary of what was done. If `Close #12`
+    has not closed the issue automatically, close it manually after confirming
+    the work reached `main`. Then follow the
+    [published-site checks](#confirm-the-published-website-and-documents).
 
 {% if is_surrey %}
 The issue branch and merge/pull request route is measured by
@@ -870,7 +996,7 @@ rebuilds and republishes the website and PDF automatically.
 branch and the \index{continuous integration!pipeline} rebuilds the website and PDF.
 On the merged request, confirm the linked issue is **Closed**. If it remains
 open after the merge, check that the request targeted `main` and its description
-used your issue number (for example, `Closes #12`). Close it manually only
+used your issue number (for example, `Close #12`). Close it manually only
 after confirming the agreed work is on `main`; add a link to the merged request
 so the issue retains its history.
 
