@@ -1,5 +1,9 @@
 # Userguide releases
 
+## Unreleased
+
+- Cascade Prodockit 0.76.0 and qualified Zensical 0.1.0 for website and PDF builds.
+
 ## 1.18.21 (2026-09-24)
 
 - Cascade Prodockit 0.73.0 and qualified Zensical 0.0.64 for website and PDF builds.
