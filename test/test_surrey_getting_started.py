@@ -21,6 +21,8 @@ def test_snapshot_is_complete_and_pinned() -> None:
     assert len(data["revision"]) == 40
     assert len(data["pages"]) == 7
     assert data["pages"][0]["path"] == "gettingstarted.md"
+    bootstrap = (surrey.SOURCE / "docs/devcons/bootstrap.md").read_text(encoding="utf-8")
+    assert "```bash\npdk boot --configure\n```" in bootstrap
 
     assets = set(data["assets"])
     for page in surrey.page_paths(data):
