@@ -57,15 +57,15 @@ def test_required_tool_versions_match_the_supported_renderers() -> None:
     assert f"markdown=={versions['markdown']}" in requirements
 
 
-def test_reviewed_template_release_and_windows_fix_are_recorded() -> None:
+def test_reviewed_template_release_and_pdf_cache_are_recorded() -> None:
     stamp = tomllib.loads(_text(".prodockit-template"))
     assert stamp == {
         "revision": "25f0f7b6d1cc5d7bf084030d028de196b5695a53",
         "applied_release": "0.0.75",
     }
     versions = tomllib.loads(_text(".prodockit-toolchain.toml"))["versions"]
-    assert versions["prodockit"] == "0.74.4"
-    assert "pdk-pdf-0.74.4" in _text(".gitlab-ci.yml")
+    assert versions["prodockit"] == "0.76.0"
+    assert f"pdk-pdf-{versions['prodockit']}" in _text(".gitlab-ci.yml")
     # Keep the guide's existing release redeploy rather than adding the
     # template's second workflow, which would deploy twice for one release.
     assert (ROOT / ".github/workflows/redeploy-after-release.yml").is_file()
