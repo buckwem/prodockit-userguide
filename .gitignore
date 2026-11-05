@@ -5,6 +5,7 @@
 .venv
 .prodockit-quarantine/
 /.prodockit/cache/
+/.prodockit/cache/pdf/
 
 # Retired npm directories are ignored if left over from an older checkout.
 tools/mermaid/node_modules/
@@ -53,3 +54,4 @@ __pycache__/
 /docs/site_documentation.pdf
 /docs/source_bundle.pdf
 /docs/.prodockit-pdf-mermaid/
+.prodockit-template.log

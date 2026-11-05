@@ -7,7 +7,7 @@ icon: lucide/book-open
 # SPDX-License-Identifier: MIT
 -->
 
-{{ heading_counter_reset(page) }}
+{{ pdk_heading_counter_reset(page) }}
 
 # Document appearance and structure
 
@@ -364,8 +364,8 @@ exclude_from_word_count: true
 ---
 ```
 
-For the website, ProDocKit supplies `{% raw %}{{ word_count }}{% endraw %}` and
-`{% raw %}{{ repo_url }}{% endraw %}`. Zensical supplies the release through its
+For the website, ProDocKit supplies `{% raw %}{{ pdk_word_count }}{% endraw %}` and
+`{% raw %}{{ pdk_repo_url }}{% endraw %}`. Zensical supplies the release through its
 native `{% raw %}{{ git.short_tag }}{% endraw %}` variable. The website count is
 an estimate and can differ slightly from the final PDF count.
 

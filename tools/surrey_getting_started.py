@@ -144,13 +144,11 @@ def surrey_nav(config: dict, data: dict) -> list[dict]:
     imported = [{item["title"]: item["path"]} for item in data["pages"]]
     groups["Getting started"]["Getting started"] = [*imported, start[1]]
 
-    # About precedes the imported manual in the top menu, but is unnumbered:
-    # imported prose refers to chapters such as "section 3.1" and must retain
-    # the upstream 1..N chapter numbers.
+    # About precedes the imported manual and has a numbered h1. Count it in
+    # the sidebar too, so navigation agrees with the rendered chapter numbers.
     about = groups["About"]["About"]
     if about != [{"1. About this guide": "about.md"}]:
         raise ValueError("The canonical About navigation has changed")
-    about[0] = {"About this guide": "about.md"}
     ordered = [
         groups["Home"],
         groups["About"],

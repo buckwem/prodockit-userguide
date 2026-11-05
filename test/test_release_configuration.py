@@ -1,8 +1,10 @@
 """Release floors, canonical domains, and coordinated documentation."""
 
+import hashlib
 import re
 import subprocess
 import tomllib
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -53,6 +55,38 @@ def test_required_tool_versions_match_the_supported_renderers() -> None:
     assert f"zensical=={versions['zensical']}" in requirements
     assert f"pymdown-extensions=={versions['pymdown-extensions']}" in requirements
     assert f"markdown=={versions['markdown']}" in requirements
+
+
+def test_reviewed_template_release_and_windows_fix_are_recorded() -> None:
+    stamp = tomllib.loads(_text(".prodockit-template"))
+    assert stamp == {
+        "revision": "25f0f7b6d1cc5d7bf084030d028de196b5695a53",
+        "applied_release": "0.0.75",
+    }
+    versions = tomllib.loads(_text(".prodockit-toolchain.toml"))["versions"]
+    assert versions["prodockit"] == "0.74.4"
+    assert "pdk-pdf-0.74.4" in _text(".gitlab-ci.yml")
+    # Keep the guide's existing release redeploy rather than adding the
+    # template's second workflow, which would deploy twice for one release.
+    assert (ROOT / ".github/workflows/redeploy-after-release.yml").is_file()
+    assert not (ROOT / ".github/workflows/release-redeploy.yml").exists()
+
+
+def test_template_lightbox_styles_are_bundled_and_loaded_before_overrides() -> None:
+    config = tomllib.loads(_text("zensical.toml"))["project"]
+    styles = config["extra_css"]
+    assert styles.index("stylesheets/glightbox.min.css") < styles.index(
+        "stylesheets/extra.css"
+    )
+    assert "stylesheets/branding.css" in styles
+    assert (ROOT / "docs/stylesheets/glightbox.LICENSE.md").is_file()
+    assert ".gslide" in _text("docs/stylesheets/glightbox.min.css")
+    # Byte-identical assets from the recorded, immutable template release.
+    for name, digest in {
+        "glightbox.min.css": "6d3f62d4d17969f9c70e9438cf671004725019e868123f2ebc295a006f8d5d2d",
+        "glightbox.LICENSE.md": "41555b530e2e4e65cc9956cf581f69942fd29fac9400e76b136f504f49e157f4",
+    }.items():
+        assert hashlib.sha256((ROOT / "docs/stylesheets" / name).read_bytes()).hexdigest() == digest
 
 
 def test_page_outline_uses_the_right_sidebar() -> None:
@@ -149,7 +183,15 @@ def test_retired_automation_and_paths_are_not_shipped() -> None:
 
 
 def test_custom_domain_is_consistent() -> None:
-    config = _text("zensical.toml")
+    # GitLab CI overlays its disposable checkout with its own Pages URL.
+    # Verify the committed configuration, which must stay canonical for GitHub.
+    config = subprocess.run(
+        ["git", "show", "HEAD:zensical.toml"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
     readme = _text("README.md")
     cname = _text("docs/CNAME").strip()
 
@@ -399,16 +441,16 @@ def test_optional_homebrew_install_actions_remain_prominent() -> None:
 def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
     environment = Environment(autoescape=False)
     context = {
-        "acronym_style": lambda: "",
+        "pdk_acronym_style": lambda: "",
         "config": {"site_name": ""},
         "git": {"short_tag": ""},
-        "glossary_style": lambda: "",
-        "heading_counter_reset": lambda _page: "",
+        "pdk_glossary_style": lambda: "",
+        "pdk_heading_counter_reset": lambda _page: "",
         "is_surrey": False,
         "page": None,
-        "reference_style": lambda: "",
-        "repo_url": "",
-        "word_count": "",
+        "pdk_reference_style": lambda: "",
+        "pdk_repo_url": "",
+        "pdk_word_count": "",
     }
     standard = "\n".join(
         environment.from_string(_canonical_text(path)).render(context)
@@ -422,6 +464,235 @@ def test_surrey_guidance_is_hidden_from_the_standard_guide() -> None:
         standard,
         re.IGNORECASE,
     )
+
+
+def test_edit_measurement_badges_use_stable_codes_only_for_surrey() -> None:
+    from macros import _detect_is_surrey
+
+    source = _text("docs/startediting.md")
+    expected = {
+        "M2.1": "protected pull or merge request route",
+        "M2.2": "protected by midpoint",
+        "M2.3": "protection sustained",
+        "M2.4": "no direct push to main",
+        "M3.1": "CI configured by midpoint",
+        "M3.2": "CI sustained through midpoint",
+        "M3.3": "passing checks required before merge",
+        "M3.4": "latest validation passes through deadline",
+        "M4.1": "work item linkage",
+        "M4.2": "work item precedes change",
+        "M4.3": "individual work uses the merge or pull request route",
+        "M4.4": "feedback resolved",
+    }
+    blocks = re.findall(r"{% if is_surrey %}(.*?){% endif %}", source, re.DOTALL)
+    surrey_content = "\n".join(blocks)
+    standard_content = re.sub(
+        r"{% if is_surrey %}.*?{% endif %}", "", source, flags=re.DOTALL
+    )
+    parsed = BeautifulSoup(surrey_content, "html.parser")
+    badges = parsed.select(".measurement-badge:not(.measurement-badge--example)")
+
+    assert "### Development Measurements" in surrey_content
+    assert "### Development Measurements" not in standard_content
+    assert "Assignment details → Checkpoints" in surrey_content
+    assert "Assignment details → Checkpoints" not in standard_content
+    assert r"\ref{figure-development-checkpoints}" in surrey_content
+    assert r"\ref{table-development-measurements}" in surrey_content
+    assert "attrs: {id: figure-development-checkpoints}" in surrey_content
+    assert "attrs: {id: table-development-measurements}" in surrey_content
+    assert surrey_content.index("images/development-checkpoints.png") < surrey_content.index(
+        "| Measurement | Section | Specific task |"
+    )
+    assert parsed.select_one(".measurement-badge--example").get_text() == "M"
+    assert {badge.get_text() for badge in badges} == set(expected)
+    table = surrey_content.split("| Measurement | Section | Specific task |", 1)[1].split(
+        "\n\n", 1
+    )[0]
+    table_badges = BeautifulSoup(table, "html.parser").select(".measurement-badge")
+    assert len(table_badges) == len(expected)
+    assert {badge.get_text() for badge in table_badges} == set(expected)
+    assert table.count("| [10.") == len(expected)
+    for badge in badges:
+        code = badge.get_text()
+        assert badge.get("role") == "img"
+        assert badge.get("aria-label") == f"Measurement {code}: {expected[code]}"
+        assert badge.get("title")
+    assert "measurement-badge" not in standard_content
+    assert "academic development" not in standard_content
+    assert "module dashboard" in surrey_content
+    assert "https://" not in "\n".join(str(badge) for badge in badges)
+
+    diagram = ROOT / "tools/documentation-diagrams/development-checkpoints.drawio"
+    exported = ROOT / "docs/images/development-checkpoints.png"
+    diagram_xml = ET.parse(diagram)
+    assert diagram_xml.getroot().tag == "mxfile"
+    diagram_labels = " ".join(
+        cell.get("value", "") for cell in diagram_xml.iter("mxCell")
+    )
+    for checkpoint in ("20%", "50%", "80%", "Submission checkpoint"):
+        assert checkpoint in diagram_labels
+    assert "Lecturer validation" in diagram_labels
+    assert "Raise an issue" in diagram_labels
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1200
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    heading = page.select_one("#development-measurements")
+    assert (heading is not None) == _detect_is_surrey()
+    assert (page.select_one("#figure-development-checkpoints") is not None) == _detect_is_surrey()
+    assert (page.select_one("#table-development-measurements") is not None) == _detect_is_surrey()
+    if heading is not None:
+        image = page.select_one("#figure-development-checkpoints img")
+        assert image is not None
+        assert all(label in image["alt"] for label in ("20%", "50%", "80%", "submission"))
+
+
+def test_initial_template_configuration_is_surrey_only_and_in_order() -> None:
+    from macros import _detect_is_surrey
+
+    source = _text("docs/startediting.md")
+    edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
+    start = source.index("{% if is_surrey %}\n### Perform initial template configuration")
+    end = source.index("{% endif %}", start)
+    image = source.index("### Insert an image with a caption")
+    section = source[start:end]
+
+    assert start < end < edit < image
+    for expected in (
+        "site_name",
+        "site_description",
+        "site_author",
+        "copyright",
+        "replace `module_id` with your module ID",
+        "Insert Name Here",
+        "Submission Date",
+        "6-operations.md",
+        "7-examples.md",
+        "acronyms.md",
+        "glossary.md",
+        "bibliography.md",
+        "pdk-pdf.toml",
+        "README.md",
+        "repo-badges:start",
+        "repo-badges:end",
+        "CONTRIBUTING.md",
+        "LICENSE.md",
+        "CHANGELOG.md",
+        "automatically supplied word count",
+    ):
+        assert expected in section
+    assert "module_id - module_name" not in section
+    assert "zensical build --clean --strict" in source
+    assert "zensical serve" in source
+    assert "pdk pdf" in source
+    assert "pdf_copyright" not in section
+    assert "Author: Mark Buckwell and contributors. Licensed under the MIT License." in section
+    assert "Author: <your student serial number>." in section
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    heading = page.select_one("#perform-initial-template-configuration")
+    assert (heading is not None) == _detect_is_surrey()
+    if heading is not None:
+        steps = heading.find_next("ol", class_="prodockit-steps")
+        assert steps is not None
+        actions = [step.find("ol") for step in steps.find_all("li", recursive=False)]
+        assert len(actions) == 5
+        assert [len(action.find_all("li", recursive=False)) for action in actions] == [4, 4, 3, 1, 3]
+        warning = steps.find_all("li", recursive=False)[2].select_one(".admonition.warning")
+        assert warning is not None
+        assert "brackets and commas" in warning.get_text()
+        report_actions = actions[2]
+        assert [child.name for child in report_actions.children if child.name] == [
+            "li", "div", "li", "li"
+        ]
+        cleanup_step = steps.find_all("li", recursive=False)[4]
+        assert "Remove template-only files" in cleanup_step.get_text()
+        assert "repo-badges:start" in cleanup_step.get_text()
+        assert "CONTRIBUTING.md" in cleanup_step.get_text()
+        assert not cleanup_step.select(".tabbed-labels label")
+        managed_values = steps.find_next_sibling("div", class_="warning")
+        assert managed_values is not None
+        assert "Leave generated and managed values unchanged" in managed_values.get_text()
+        assert len(managed_values.select("li")) == 6
+
+
+def test_edit_cycle_swimlane_has_editable_source_and_caption() -> None:
+    source = _text("docs/startediting.md")
+    cycle = source.split("## Follow the everyday cycle", 1)[1].split(
+        "## Start with an issue", 1
+    )[0]
+    assert cycle.startswith("\n\n### Development Lifecycle\n")
+    assert cycle.index("### Development Lifecycle") < cycle.index("/// steps")
+    assert cycle.index("### Development Measurements") > cycle.index(
+        "The example below follows one issue"
+    )
+    assert cycle.count("//// step |") == 8
+    assert cycle.index("//// step | Confirm the published result") < cycle.index(
+        r"\ref{figure-edit-process}"
+    )
+    assert "attrs: {id: figure-edit-process}" in cycle
+    assert "GitHub Actions/Pages" in cycle
+    assert "when your project requires an eligible reviewer" in " ".join(cycle.split())
+
+    diagram = ROOT / "tools/documentation-diagrams/edit-process.drawio"
+    exported = ROOT / "docs/images/edit-process.png"
+    assert ET.parse(diagram).getroot().tag == "mxfile"
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1200
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    cycle_heading = page.select_one("#follow-the-everyday-cycle")
+    assert cycle_heading is not None
+    assert page.select_one("#development-lifecycle") is not None
+    cycle_steps = cycle_heading.find_next("ol", class_="prodockit-steps")
+    assert cycle_steps is not None
+    assert len(cycle_steps.find_all("li", recursive=False)) == 8
+    figure = page.select_one("figure#figure-edit-process")
+    assert figure is not None
+    image = figure.select_one('img[src="../images/edit-process.png"]')
+    assert image is not None
+    assert "GitLab Work Items" in image["alt"]
+    assert "preview and check" in image["alt"]
+    assert "The editing workflow across GitLab" in figure.get_text()
+    assert page.select_one('a.prodockit-ref[href="#figure-edit-process"]') is not None
+
+
+def test_edit_image_example_has_source_export_caption_and_reference() -> None:
+    source = _text("docs/startediting.md")
+    edit = source.index("### Edit and review the Markdown file in Visual Studio Code")
+    image = source.index("### Insert an image with a caption")
+    preview = source.index("## Build, preview and review locally")
+    section = source[image:preview]
+
+    assert edit < image < preview
+    assert section.index('=== "PowerPoint"') < section.index('=== "draw.io"')
+    assert "Save as\n        Picture" in section
+    assert "**File** > **Export As** > **PNG**" in section
+    assert section.count("/// figure-caption") == 2
+    assert section.count("attrs: {id: figure-system-context-example}") == 2
+    assert section.count(r"\ref{figure-system-context-example}") == 2
+    assert "alternative text" in section
+    assert "Source Control" in section
+
+    diagram = ROOT / "tools/documentation-diagrams/system-context-example.drawio"
+    exported = ROOT / "docs/images/system-context-example.png"
+    assert ET.parse(diagram).getroot().tag == "mxfile"
+    png = exported.read_bytes()
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert int.from_bytes(png[16:20], "big") >= 1400
+
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    assert page.select_one("#insert-an-image-with-a-caption") is not None
+    assert [label.get_text() for label in page.select("#insert-an-image-with-a-caption ~ .tabbed-set .tabbed-labels label")[:2]] == [
+        "PowerPoint", "draw.io"
+    ]
+    figure = page.select_one("figure#figure-system-context-example")
+    assert figure is not None
+    assert figure.select_one('img[src="../images/system-context-example.png"]') is not None
+    assert "System context of the document portal" in figure.get_text()
+    assert page.select_one('a.prodockit-ref[href="#figure-system-context-example"]') is not None
 
 
 
@@ -484,27 +755,112 @@ def test_edit_section_follows_the_author_workflow() -> None:
     editing = _text("docs/startediting.md")
 
     headings = (
-        "## Preview the website locally",
-        "## Build and check the downloadable documents",
-        "## Save and push your updates",
+        "## Start with an issue",
+        "## Create a branch and publish",
+        "## Edit the source",
+        "## Build, preview and review locally",
+        "## Save and share your changes",
+        "## Create a merge request",
+        "## Approve the merge request",
         "## Confirm the published website and documents",
-        "## Organise larger changes with branches and issues",
         "## Help with common problems",
     )
     positions = [editing.index(heading) for heading in headings]
 
     assert positions == sorted(positions)
+    terminal = editing.index("### Open a terminal")
+    documents = editing.index("### Build and check the downloadable documents")
+    preview = editing.index("### Start the preview server")
+    review = editing.index("### Review your work before committing")
+    save = editing.index("## Save and share your changes")
+    assert terminal < documents < preview < review < save
+    process = editing.index("### Save, commit and push")
+    rejected_push = editing.index("### If you committed and tried to push from `main`")
+    missing_branch = editing.index("### If Sync Changes cannot find the branch on `origin`")
+    create_request = editing.index("## Create a merge request")
+    approve_request = editing.index("## Approve the merge request")
+    assert save < process < rejected_push < missing_branch < create_request < approve_request
     assert '<div class="grid cards one-column" markdown>' not in editing
     assert "SSH" in editing
     assert "rm -rf public" not in editing
     assert "## Trouble shooting" not in editing
-    assert "### Use the author checklist" in editing
+    assert "- [ ] The issue describes this work" in editing
+    assert "- [ ] Check the list of files you are about to stage" in editing
+    assert '!!! note "When you cannot build the PDF locally"' in editing
+    assert "After the branch is merged and the" in editing
+    assert "Open the published PDF from the website's **Download PDF** button" in editing
+    assert "## Prepare the final report" not in editing
+    assert editing.count('=== ":material-microsoft-visual-studio-code: Visual Studio Code"') == 3
+    assert editing.count('=== ":material-console: Command line"') == 3
+    branch_section = editing.split("## Create a branch and publish", 1)[1].split("## Edit the source", 1)[0]
+    save_section = editing.split("### Save, commit and push", 1)[1].split("### If you committed and tried to push from `main`", 1)[0]
+    assert "git switch -c 12-system-context" in branch_section
+    assert "Publish Branch" in branch_section
+    assert "git switch -c" not in save_section
+    assert "Publish Branch" not in save_section
+    assert "**Sync Changes**" in save_section
     assert "### A cross-page reference looks stale in the live preview" in editing
     assert "### A reference opens the wrong repeated heading" in editing
     assert "### Mermaid or mathematics appears as source text" in editing
     assert "### The website and PDF do not have exactly the same layout" in editing
+    assert "Write the system context section and diagram" in re.sub(r"\s+", " ", editing)
+    assert "{% if not is_surrey %}\n### Check that `main` is protected" in editing
+    assert "**Rules** > **Rulesets**" in editing
+    assert "**Repository** > **Branch rules**" in editing
+    assert "configured to run for merge requests" in editing
+    assert "Ctrl+K V" in editing and "Cmd+K V" in editing
+    assert "select the Markdown" in editing and "under **Changes**" in editing
+    assert "git switch -c 12-system-context" in editing
+    assert "git push -u origin 12-system-context" in editing
+    assert "Close #12" in editing
+    assert "choose an eligible reviewer" in re.sub(r"\s+", " ", editing)
+    assert "resolve the discussion when addressed" in re.sub(r"\s+", " ", editing)
+    assert "Under **Open**, find the request" in re.sub(r"\s+", " ", editing)
+    assert "confirm the linked issue is **Closed**" in editing
+    assert "## Create a merge request" in editing
+    assert "## Approve the merge request" in editing
+    assert '!!! note "Comment on the merge and close the issue"' in editing
+    assert "Publish Branch" in editing
+    assert "**Code** > **Merge requests**" in editing
+    assert '=== "Merge locally"' not in editing
+
+
+def test_protection_section_is_absent_only_on_surrey_site() -> None:
+    from macros import _detect_is_surrey
+
+    source = _text("docs/startediting.md")
+    page = BeautifulSoup(_text("public/startediting/index.html"), "html.parser")
+    is_surrey = _detect_is_surrey()
+
+    assert "#check-that-main-is-protected" not in source
+    assert "[10.2.1 Raise an issue](#raise-the-issue-and-create-a-branch)" in source
+    assert (page.select_one("#check-that-main-is-protected") is None) == is_surrey
+    issue_heading = page.select_one("#raise-the-issue-and-create-a-branch")
+    assert issue_heading is not None
+    branch_heading = page.select_one("#create-a-branch-and-publish")
+    assert branch_heading is not None
+    assert issue_heading.sourceline < branch_heading.sourceline
+    if is_surrey:
+        assert not page.select('a[href="#check-that-main-is-protected"]')
+
+
+def test_surrey_pages_address_forms_are_documented() -> None:
+    source = _text("docs/startediting.md")
+    editing = source.split(
+        "## Confirm the published website and documents", 1
+    )[1]
+    gitlab_tab = editing.split('=== ":fontawesome-brands-gitlab: GitLab"', 1)[1].split(
+        "{% if is_surrey %}", 1
+    )[0]
+    surrey_tab = editing.split(
+        '{% if is_surrey %}\n=== ":fontawesome-brands-gitlab: Surrey GitLab"', 1
+    )[1].split("{% endif %}", 1)[0]
+    assert "gitlab.io" in gitlab_tab
+    assert "pages.surrey.ac.uk" not in gitlab_tab
+    assert "https://<user-id>.pages.surrey.ac.uk/<repo-name>" in surrey_tab
+    assert "https://<top-level-group>.pages.surrey.ac.uk/<subgroup>/<repo-name>" in surrey_tab
     assert "### The word count leaves out unexpected content" in editing
-    assert "After updating prodockit" in editing
+    assert "After updating prodockit" in source
 
 
 def test_basics_section_is_ordered_for_beginning_authors() -> None:

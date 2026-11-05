@@ -17,12 +17,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_snapshot_is_complete_and_pinned() -> None:
     data = surrey.manifest()
     surrey.verify_snapshot(data)
-    assert data["version"] == "0.73.1"
+    assert data["version"] == "0.74.3"
     assert len(data["revision"]) == 40
     assert len(data["pages"]) == 7
     assert data["pages"][0]["path"] == "gettingstarted.md"
     bootstrap = (surrey.SOURCE / "docs/devcons/bootstrap.md").read_text(encoding="utf-8")
-    assert "pdk boot --configure" in bootstrap
+    assert "```bash\npdk boot --configure\n```" in bootstrap
 
     assets = set(data["assets"])
     for page in surrey.page_paths(data):
@@ -85,7 +85,7 @@ def test_pinned_surrey_pages_use_the_theme_aware_stag_for_remotelabs_tabs() -> N
     assert 'fill="currentColor"' in icon.read_text(encoding="utf-8")
 
 
-def test_surrey_nav_puts_about_first_and_preserves_upstream_numbering() -> None:
+def test_surrey_nav_numbers_about_and_imported_pages_like_rendered_headings() -> None:
     config_text = (ROOT / "zensical.toml").read_text(encoding="utf-8")
     if config_text.startswith(surrey.START_MARKER):
         config_text = subprocess.check_output(
@@ -95,13 +95,13 @@ def test_surrey_nav_puts_about_first_and_preserves_upstream_numbering() -> None:
     data = surrey.manifest()
     nav = surrey.surrey_nav(canonical, data)
     assert nav[0] == {"Home": ["index.md"]}
-    assert nav[1] == {"About": [{"About this guide": "about.md"}]}
+    assert nav[1] == {"About": [{"1. About this guide": "about.md"}]}
     assert next(iter(nav[2])) == "Getting started"
     section = nav[2]["Getting started"]
     assert [next(iter(item.values())) for item in section[:7]] == surrey.page_paths(data)
-    assert next(iter(section[0])) == "1. prodockit overview"
-    assert section[-1] == {"8. Additional tooling": "additionaltooling.md"}
-    assert nav[3] == {"Edit": [{"9. Start editing": "startediting.md"}]}
+    assert next(iter(section[0])) == "2. prodockit overview"
+    assert section[-1] == {"9. Additional tooling": "additionaltooling.md"}
+    assert nav[3] == {"Edit": [{"10. Start editing": "startediting.md"}]}
     assert tomllib.loads("[project]\nnav = " + surrey._render_nav(nav))["project"]["nav"] == nav
     assert (ROOT / "docs/gettingstarted.md").read_text(encoding="utf-8").startswith("---")
 
@@ -189,7 +189,7 @@ def test_imported_pages_render_the_selected_host_text() -> None:
         assert "Coursework with a prepared repository" in choose
         assert "This stage publishes your working local site on Surrey GitLab Pages." in adopt
         assert "This stage publishes your working local site on GitHub Pages or GitLab Pages." not in adopt
-        assert bootstrap.select_one('a[href="https://gitlab.surrey.ac.uk/mb0105/prodockit-template"]')
+        assert bootstrap.select_one('a[href="https://gitlab.surrey.ac.uk/csee/mb0105/prodockit-template"]')
         assert "use Surrey GitLab for your coursework" in manual
         assert "Check the connection to Surrey GitLab" in troubleshooting
         assert "Check the connection to GitLab or GitHub" not in troubleshooting

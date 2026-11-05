@@ -2,7 +2,7 @@
 icon: lucide/rocket
 ---
 
-{{ heading_counter_reset(page) }}
+{{ pdk_heading_counter_reset(page) }}
 
 # Build a template site {: #bootstrap-machine-bootstrap }
 
@@ -23,7 +23,7 @@ activities.
 
 ## Start with prodockit-template {: #bootstrap-template }
 
-The \index{`prodockit-template`} project ({% if is_surrey %}[Surrey GitLab repository](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank" rel="noopener"}{% else %}[GitHub repository](https://github.com/buckwem/prodockit-template){% endif %}) is a ready-made
+The \index{`prodockit-template`} project ({% if is_surrey %}[Surrey GitLab repository](https://gitlab.surrey.ac.uk/csee/mb0105/prodockit-template){target="_blank" rel="noopener"}{% else %}[GitHub repository](https://github.com/buckwem/prodockit-template){% endif %}) is a ready-made
 Zensical project for coursework, assignments, and professional reports. Its
 central promise is **one source, two outputs**: write the report as Markdown
 under `docs/`, then build both a browsable website and a single PDF from the
@@ -35,7 +35,7 @@ your project into a live copy of the template.
 
 {% if is_surrey %}
 For coursework, Bootstrap downloads the template from
-[Surrey GitLab](https://gitlab.surrey.ac.uk/mb0105/prodockit-template){target="_blank" rel="noopener"}.
+[Surrey GitLab](https://gitlab.surrey.ac.uk/csee/mb0105/prodockit-template){target="_blank" rel="noopener"}.
 {% else %}
 The template is maintained on GitHub. Bootstrap uses that source when setting
 up projects on GitHub.com or GitLab.com.
@@ -392,9 +392,12 @@ while the prompt already says `(.venv)` does not switch environments.
     deactivate
     cd /path/to/your-project
     source .venv/bin/activate
+    unalias python 2>/dev/null || true
     ```
 
-    Replace the path with the project directory reported by Bootstrap.
+    Replace the path with the project directory reported by Bootstrap. A new
+    login may restore the `python` alias; remove it again after activating
+    the project's environment.
 {% endif %}
 
 ////

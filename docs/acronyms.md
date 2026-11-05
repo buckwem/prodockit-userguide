@@ -8,8 +8,8 @@ is_appendix: true
 # SPDX-License-Identifier: MIT
 -->
 
-{{ heading_counter_reset(page) }}
-{{ acronym_style() }}
+{{ pdk_heading_counter_reset(page) }}
+{{ pdk_acronym_style() }}
 
 # Acronyms
 
