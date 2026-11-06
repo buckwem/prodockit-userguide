@@ -37,7 +37,7 @@ This content used to live in `docs/starthere/` inside prodockit-template itself,
 ## Building locally
 
 This guide is based on [template 0.0.75](https://github.com/buckwem/prodockit-template/releases/tag/0.0.75)
-and requires Prodockit 0.76.0 or newer. `.prodockit-template` records the
+and requires Prodockit 0.78.0 or newer. `.prodockit-template` records the
 reviewed template revision; the guide retains its own publishing workflows,
 branding, bibliography and content.
 The exact supported renderer combination is recorded in `.prodockit-toolchain.toml`.

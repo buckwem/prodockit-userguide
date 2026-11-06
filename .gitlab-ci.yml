@@ -33,7 +33,7 @@ pages:
     PIP_NO_CACHE_DIR: "1"
   cache:
     key:
-      prefix: "${CI_JOB_IMAGE}-pdk-pdf-0.76.0"
+      prefix: "${CI_JOB_IMAGE}-pdk-pdf-0.78.0"
       files:
         - pdk-pdf.toml
         - pdf-requirements.txt
