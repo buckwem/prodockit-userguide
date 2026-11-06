@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Cascade Prodockit 0.76.0 and qualified Zensical 0.1.0 for website and PDF builds.
+- Cascade Prodockit 0.77.0 and its managed carousel styles and script.
 
 ## 1.18.21 (2026-09-24)
 
