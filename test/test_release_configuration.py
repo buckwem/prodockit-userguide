@@ -64,7 +64,7 @@ def test_reviewed_template_release_and_pdf_cache_are_recorded() -> None:
         "applied_release": "0.0.75",
     }
     versions = tomllib.loads(_text(".prodockit-toolchain.toml"))["versions"]
-    assert versions["prodockit"] == "0.78.0"
+    assert versions["prodockit"] == "0.80.0"
     assert f"pdk-pdf-{versions['prodockit']}" in _text(".gitlab-ci.yml")
     # Keep the guide's existing release redeploy rather than adding the
     # template's second workflow, which would deploy twice for one release.

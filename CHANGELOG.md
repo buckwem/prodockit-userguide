@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Upgrade to Prodockit 0.80.0 for image hotspots on the web and in PDFs, and improved page bibliography navigation.
 - Cascade Prodockit 0.78.0 and its managed carousel styles, script and finite navigation.
 
 ## 1.18.21 (2026-09-24)
