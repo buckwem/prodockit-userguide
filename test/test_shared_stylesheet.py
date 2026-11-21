@@ -22,12 +22,14 @@ def test_shared_assets_match_the_installed_release() -> None:
         "pdk.css",
         "pdk-pdf.css",
         "pdk.js",
+        "pdk-sleigh.png",
         "mathjax.js",
     ]
     assert [state.file.target for state in states] == [
         "docs/stylesheets/pdk.css",
         "docs/stylesheets/pdk-pdf.css",
         "docs/javascripts/pdk.js",
+        "docs/javascripts/pdk-sleigh.png",
         "docs/javascripts/mathjax.js",
     ]
     assert all(state.status == "current" for state in states)
