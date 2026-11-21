@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Pair Prodockit 0.81.0 with Zensical 0.1.3 and include its optional festive website assets.
 - Upgrade to Prodockit 0.80.0 for image hotspots on the web and in PDFs, and improved page bibliography navigation.
 - Cascade Prodockit 0.78.0 and its managed carousel styles, script and finite navigation.
 
